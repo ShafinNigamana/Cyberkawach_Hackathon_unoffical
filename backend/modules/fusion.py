@@ -11,6 +11,7 @@ from backend.models.evidence import (
     EvidenceType,
     IncidentEvidence,
     RiskAssessment,
+    RiskDirection,
     RiskLevel,
 )
 
@@ -24,7 +25,7 @@ _WEIGHTS = {
     EvidenceType.PATTERN_MATCH: 0.12,
     EvidenceType.URL_ANALYSIS: 0.10,
     EvidenceType.IOC_EXTRACTED: 0.05,
-    EvidenceType.THREAT_INTEL_MISS: -0.05,  # Negative — reduces score slightly
+    EvidenceType.THREAT_INTEL_MISS: 0.0,  # Neutral — absence of match never reduces risk score
     EvidenceType.LAYA_SIGNAL: 0.15,
     EvidenceType.REDIRECT_CHAIN: 0.08,
     EvidenceType.DOMAIN_AGE: 0.10,
@@ -66,16 +67,22 @@ def fuse_evidence(evidence: IncidentEvidence) -> IncidentEvidence:
             score=0.0,
             calibrated=False,
             contributing_factors=["No evidence items to evaluate"],
+            what_cannot_be_concluded=["No evidence was provided to reach a security conclusion."],
         )
         return evidence
 
     total_score = 0.0
     contributing_factors = []
+    what_cannot_be_concluded = []
 
     # Group evidence by type and compute weighted contribution
     type_contributions: dict[str, float] = {}
 
     for item in evidence.evidence:
+        # Neutral items (factual observations/misses) never alter score
+        if getattr(item, "risk_direction", None) == RiskDirection.NEUTRAL:
+            continue
+
         weight = _WEIGHTS.get(item.type, 0.05)
         conf = item.confidence if item.confidence is not None else 1.0
         contribution = weight * conf
@@ -115,11 +122,21 @@ def fuse_evidence(evidence: IncidentEvidence) -> IncidentEvidence:
         final_score = min(1.0, final_score + 0.10)
         contributing_factors.append("Brand mismatch + credential request = strong phishing signal")
 
+    # Epistemic bounds on threat intelligence
+    if evidence.threat_intel:
+        has_ti_hit = any(item.type == EvidenceType.THREAT_INTEL_HIT for item in evidence.evidence)
+        if not has_ti_hit:
+            what_cannot_be_concluded.append(
+                "Absence of threat intelligence matches indicates the URL is unlisted or newly active; "
+                "it does not prove the website is safe or legitimate."
+            )
+
     evidence.risk = RiskAssessment(
         level=_score_to_level(final_score),
         score=round(final_score, 3),
         calibrated=False,  # True only after Phase 4 calibration
         contributing_factors=contributing_factors,
+        what_cannot_be_concluded=what_cannot_be_concluded,
     )
 
     return evidence

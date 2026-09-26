@@ -11,7 +11,7 @@ from __future__ import annotations
 import httpx
 
 from backend.config import get_settings
-from backend.models.evidence import ThreatIntelResult
+from backend.models.evidence import ThreatIntelResult, ThreatIntelStatus
 from backend.utils.security_logging import safe_error_message
 
 _SAFE_BROWSING_URL = "https://safebrowsing.googleapis.com/v4/threatMatches:find"
@@ -28,7 +28,7 @@ async def check_safe_browsing(urls: list[str]) -> list[ThreatIntelResult]:
     """
     Query Google Safe Browsing Lookup API for a list of URLs.
     Returns one ThreatIntelResult per URL checked.
-    If API key is not configured, returns results with error field set.
+    If API key is not configured, returns results with error field set and SOURCE_UNAVAILABLE status.
     Never exposes API keys in error messages.
     """
     settings = get_settings()
@@ -40,6 +40,7 @@ async def check_safe_browsing(urls: list[str]) -> list[ThreatIntelResult]:
                 source="safe_browsing",
                 match=None,
                 lookup_url=url,
+                intel_status=ThreatIntelStatus.SOURCE_UNAVAILABLE,
                 error="API key not configured",
             ))
         return results
@@ -81,7 +82,8 @@ async def check_safe_browsing(urls: list[str]) -> list[ThreatIntelResult]:
                 source="safe_browsing",
                 match=is_match,
                 lookup_url=url,
-                details=f"Threat types: {', '.join(threat_details.get(url, []))}" if is_match else "No threats found",
+                intel_status=ThreatIntelStatus.KNOWN_MALICIOUS if is_match else ThreatIntelStatus.NO_KNOWN_MATCH,
+                details=f"Threat types: {', '.join(threat_details.get(url, []))}" if is_match else "No known match in Google Safe Browsing database",
             ))
 
     except httpx.TimeoutException:
@@ -90,6 +92,7 @@ async def check_safe_browsing(urls: list[str]) -> list[ThreatIntelResult]:
                 source="safe_browsing",
                 match=None,
                 lookup_url=url,
+                intel_status=ThreatIntelStatus.SOURCE_ERROR,
                 error="Request timed out",
             ))
     except Exception as e:
@@ -99,6 +102,7 @@ async def check_safe_browsing(urls: list[str]) -> list[ThreatIntelResult]:
                 source="safe_browsing",
                 match=None,
                 lookup_url=url,
+                intel_status=ThreatIntelStatus.SOURCE_ERROR,
                 error=cleaned_error,
             ))
 

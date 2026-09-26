@@ -9,12 +9,20 @@ from fastapi.testclient import TestClient
 
 from backend.main import app
 from backend.models.evidence import (
+    EvidenceItem,
+    EvidenceReliability,
+    EvidenceSeverity,
+    EvidenceStatus,
     EvidenceType,
     IncidentEvidence,
     InputType,
+    RiskDirection,
     RiskLevel,
+    ThreatIntelResult,
+    ThreatIntelStatus,
     UserState,
 )
+from backend.services.openphish import set_openphish_cache_for_testing, clear_openphish_cache
 from backend.modules.ingestion import extract_iocs
 from backend.modules.rules import apply_rules
 from backend.modules.ml_baseline import predict_scam_probability, run_ml_baseline
@@ -147,12 +155,77 @@ def test_threat_intel_graceful_degradation():
     evidence = extract_iocs(evidence)
     evidence = asyncio.run(query_threat_intel(evidence))
 
-    assert len(evidence.threat_intel) >= 2
+    assert len(evidence.threat_intel) >= 3
     sources = [ti.source for ti in evidence.threat_intel]
     assert "safe_browsing" in sources
     assert "phishtank" in sources
-    # Should not raise exception even with empty keys
-    assert all(ti.error is not None or ti.match is not None or ti.match is None for ti in evidence.threat_intel)
+    assert "openphish" in sources
+    # Should not raise exception even with empty keys and should set valid ThreatIntelStatus
+    assert all(ti.intel_status in (
+        ThreatIntelStatus.SOURCE_UNAVAILABLE,
+        ThreatIntelStatus.NO_KNOWN_MATCH,
+        ThreatIntelStatus.KNOWN_MALICIOUS,
+        ThreatIntelStatus.SOURCE_ERROR
+    ) for ti in evidence.threat_intel)
+
+
+def test_threat_intel_4_states():
+    """Verify 4 explicit ThreatIntelStatus states and EvidenceItem mapping."""
+    evidence = IncidentEvidence(
+        input_type=InputType.URL,
+        message="https://known-phish.xyz/login",
+    )
+    evidence = extract_iocs(evidence)
+
+    # Mock openphish cache to hit known-phish.xyz
+    set_openphish_cache_for_testing(["https://known-phish.xyz/login"])
+    try:
+        evidence = asyncio.run(query_threat_intel(evidence))
+        op_results = [ti for ti in evidence.threat_intel if ti.source == "openphish"]
+        assert len(op_results) == 1
+        assert op_results[0].intel_status == ThreatIntelStatus.KNOWN_MALICIOUS
+        assert op_results[0].match is True
+
+        op_evidence = [e for e in evidence.evidence if e.source == "openphish"]
+        assert len(op_evidence) == 1
+        assert op_evidence[0].status == EvidenceStatus.CONFIRMED
+        assert op_evidence[0].severity == EvidenceSeverity.CRITICAL
+        assert op_evidence[0].risk_direction == RiskDirection.INCREASES_RISK
+    finally:
+        clear_openphish_cache()
+
+
+def test_threat_intel_miss_does_not_reduce_score():
+    """Verify threat intel misses never penalize or reduce the risk score."""
+    # Baseline with a rule match
+    evidence_base = IncidentEvidence(
+        input_type=InputType.SMS,
+        message="Urgent action required: Update KYC",
+    )
+    evidence_base = apply_rules(evidence_base)
+    evidence_base = fuse_evidence(evidence_base)
+    base_score = evidence_base.risk.score
+
+    # Now add a threat intel miss
+    evidence_with_miss = IncidentEvidence(
+        input_type=InputType.SMS,
+        message="Urgent action required: Update KYC",
+    )
+    evidence_with_miss = apply_rules(evidence_with_miss)
+    evidence_with_miss.evidence.append(EvidenceItem(
+        type=EvidenceType.THREAT_INTEL_MISS,
+        source="safe_browsing",
+        description="Safe Browsing: No known match",
+        status=EvidenceStatus.OBSERVED,
+        risk_direction=RiskDirection.NEUTRAL,
+        severity=EvidenceSeverity.INFORMATIONAL,
+        confidence=None,
+    ))
+    evidence_with_miss = fuse_evidence(evidence_with_miss)
+
+    # Score MUST NOT be reduced by the miss!
+    assert evidence_with_miss.risk.score >= base_score
+    assert evidence_with_miss.risk.score == base_score
 
 
 def test_evidence_fusion_and_scoring():

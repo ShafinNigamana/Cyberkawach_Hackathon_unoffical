@@ -11,7 +11,7 @@ from __future__ import annotations
 import httpx
 
 from backend.config import get_settings
-from backend.models.evidence import ThreatIntelResult
+from backend.models.evidence import ThreatIntelResult, ThreatIntelStatus
 from backend.utils.security_logging import safe_error_message
 
 _PHISHTANK_URL = "https://checkurl.phishtank.com/checkurl/"
@@ -20,7 +20,7 @@ _PHISHTANK_URL = "https://checkurl.phishtank.com/checkurl/"
 async def check_phishtank(urls: list[str]) -> list[ThreatIntelResult]:
     """
     Query PhishTank for each URL. Returns one ThreatIntelResult per URL.
-    If API key is not configured, returns results with error field set.
+    If API key is not configured, returns results with error field set and SOURCE_UNAVAILABLE.
     """
     settings = get_settings()
     results = []
@@ -31,6 +31,7 @@ async def check_phishtank(urls: list[str]) -> list[ThreatIntelResult]:
                 source="phishtank",
                 match=None,
                 lookup_url=url,
+                intel_status=ThreatIntelStatus.SOURCE_UNAVAILABLE,
                 error="API key not configured",
             ))
         return results
@@ -58,11 +59,11 @@ async def check_phishtank(urls: list[str]) -> list[ThreatIntelResult]:
                     source="phishtank",
                     match=is_phish,
                     lookup_url=url,
+                    intel_status=ThreatIntelStatus.KNOWN_MALICIOUS if is_phish else ThreatIntelStatus.NO_KNOWN_MATCH,
                     details=(
                         f"Verified phish (ID: {result_data.get('phish_id', 'N/A')})"
                         if is_phish
-                        else "Not in PhishTank database" if not in_database
-                        else "In database but not verified as phish"
+                        else "No known match in PhishTank database"
                     ),
                 ))
 
@@ -71,6 +72,7 @@ async def check_phishtank(urls: list[str]) -> list[ThreatIntelResult]:
                     source="phishtank",
                     match=None,
                     lookup_url=url,
+                    intel_status=ThreatIntelStatus.SOURCE_ERROR,
                     error="Request timed out",
                 ))
             except Exception as e:
@@ -78,6 +80,7 @@ async def check_phishtank(urls: list[str]) -> list[ThreatIntelResult]:
                     source="phishtank",
                     match=None,
                     lookup_url=url,
+                    intel_status=ThreatIntelStatus.SOURCE_ERROR,
                     error=safe_error_message(e),
                 ))
 

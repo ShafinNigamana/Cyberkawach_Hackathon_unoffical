@@ -21,9 +21,10 @@ class Settings(BaseSettings):
     gemini_api_key: Optional[str] = None
     gemini_model: str = "gemini-flash-latest"
 
-    # ─── Threat Intel APIs (P0) ───
+    # ─── Threat Intel APIs (P0/P1) ───
     safe_browsing_api_key: Optional[str] = None
     phishtank_api_key: Optional[str] = None
+    openphish_enabled: bool = True
 
     # ─── Threat Intel APIs (P2 optional) ───
     abuseipdb_api_key: Optional[str] = None
@@ -65,6 +66,7 @@ class Settings(BaseSettings):
             # P0 threat-intel
             "safe_browsing": bool(self.safe_browsing_api_key and self.safe_browsing_api_key.strip()),
             "phishtank": bool(self.phishtank_api_key and self.phishtank_api_key.strip()),
+            "openphish": bool(self.openphish_enabled),
             # P2 optional threat-intel
             "abuseipdb": bool(self.abuseipdb_api_key and self.abuseipdb_api_key.strip()),
             "urlhaus": True,  # No key needed

@@ -11,89 +11,115 @@ import asyncio
 
 from backend.models.evidence import (
     EvidenceItem,
+    EvidenceReliability,
+    EvidenceSeverity,
+    EvidenceStatus,
     EvidenceType,
     IncidentEvidence,
+    RiskDirection,
+    ThreatIntelResult,
+    ThreatIntelStatus,
 )
 from backend.services.safe_browsing import check_safe_browsing
 from backend.services.phishtank import check_phishtank
+from backend.services.openphish import check_openphish
 
 
 async def query_threat_intel(evidence: IncidentEvidence) -> IncidentEvidence:
     """
-    Query all P0 threat-intel sources for URLs in the evidence.
-    Runs Safe Browsing and PhishTank in parallel.
-    Each result appears as its own sourced evidence item — never collapsed.
+    Query all configured threat-intel sources for URLs in the evidence.
+    Runs Safe Browsing, PhishTank, and OpenPhish in parallel.
+    Each result appears as its own sourced evidence item with explicit epistemic status.
     """
     if not evidence.urls:
         return evidence
 
     urls = [u.url for u in evidence.urls]
 
-    # Run P0 sources in parallel
-    sb_results, pt_results = await asyncio.gather(
+    # Run sources in parallel
+    results_list = await asyncio.gather(
         check_safe_browsing(urls),
         check_phishtank(urls),
+        check_openphish(urls),
         return_exceptions=True,
     )
 
-    # Process Safe Browsing results
-    if isinstance(sb_results, Exception):
-        evidence.errors.append(f"safe_browsing: {str(sb_results)}")
-    else:
-        for result in sb_results:
-            evidence.threat_intel.append(result)
-            if result.match is True:
-                evidence.evidence.append(EvidenceItem(
-                    type=EvidenceType.THREAT_INTEL_HIT,
-                    source="safe_browsing",
-                    description=f"Google Safe Browsing: URL flagged — {result.details or 'match found'}",
-                    confidence=0.9,
-                    raw_data={
-                        "source": "safe_browsing",
-                        "url": result.lookup_url,
-                        "details": result.details,
-                    },
-                ))
-            elif result.match is False:
-                evidence.evidence.append(EvidenceItem(
-                    type=EvidenceType.THREAT_INTEL_MISS,
-                    source="safe_browsing",
-                    description=f"Google Safe Browsing: URL not flagged",
-                    confidence=0.7,
-                    raw_data={
-                        "source": "safe_browsing",
-                        "url": result.lookup_url,
-                    },
-                ))
-            # match=None (error) — already captured in result.error
+    source_names = ["safe_browsing", "phishtank", "openphish"]
 
-    # Process PhishTank results
-    if isinstance(pt_results, Exception):
-        evidence.errors.append(f"phishtank: {str(pt_results)}")
-    else:
-        for result in pt_results:
+    for src_name, batch_result in zip(source_names, results_list):
+        if isinstance(batch_result, Exception):
+            evidence.errors.append(f"{src_name}: {str(batch_result)}")
+            continue
+
+        for result in batch_result:
+            if not isinstance(result, ThreatIntelResult):
+                continue
+
             evidence.threat_intel.append(result)
-            if result.match is True:
+
+            display_source = result.source.replace("_", " ").title()
+
+            if result.intel_status == ThreatIntelStatus.KNOWN_MALICIOUS:
                 evidence.evidence.append(EvidenceItem(
                     type=EvidenceType.THREAT_INTEL_HIT,
-                    source="phishtank",
-                    description=f"PhishTank: URL confirmed as phishing — {result.details or 'verified phish'}",
+                    source=result.source,
+                    description=f"{display_source}: URL confirmed malicious — {result.details or 'known threat match'}",
                     confidence=0.95,
+                    status=EvidenceStatus.CONFIRMED,
+                    reliability=EvidenceReliability.EXTERNAL_DB,
+                    severity=EvidenceSeverity.CRITICAL,
+                    risk_direction=RiskDirection.INCREASES_RISK,
+                    observed_value=f"{result.lookup_url} (match: {result.details or 'confirmed phish'})",
+                    interpretation=f"URL actively catalogued as malicious in {display_source} threat intelligence feed",
+                    correlation_group=f"threat_intel_{result.source}",
                     raw_data={
-                        "source": "phishtank",
+                        "source": result.source,
                         "url": result.lookup_url,
                         "details": result.details,
+                        "intel_status": result.intel_status.value,
                     },
                 ))
-            elif result.match is False:
+            elif result.intel_status == ThreatIntelStatus.NO_KNOWN_MATCH:
                 evidence.evidence.append(EvidenceItem(
                     type=EvidenceType.THREAT_INTEL_MISS,
-                    source="phishtank",
-                    description=f"PhishTank: URL not in phishing database",
-                    confidence=0.6,
+                    source=result.source,
+                    description=f"{display_source}: URL has no known match in feed",
+                    confidence=None,
+                    status=EvidenceStatus.OBSERVED,
+                    reliability=EvidenceReliability.EXTERNAL_DB,
+                    severity=EvidenceSeverity.INFORMATIONAL,
+                    risk_direction=RiskDirection.NEUTRAL,
+                    observed_value=f"{result.lookup_url} (no match)",
+                    interpretation=(
+                        f"URL is not currently listed in {display_source}; "
+                        "absence of a match does not guarantee the URL is safe"
+                    ),
+                    correlation_group=f"threat_intel_{result.source}",
                     raw_data={
-                        "source": "phishtank",
+                        "source": result.source,
                         "url": result.lookup_url,
+                        "intel_status": result.intel_status.value,
+                    },
+                ))
+            elif result.intel_status in (ThreatIntelStatus.SOURCE_UNAVAILABLE, ThreatIntelStatus.SOURCE_ERROR):
+                # Informational record that source was not available
+                evidence.evidence.append(EvidenceItem(
+                    type=EvidenceType.THREAT_INTEL_MISS,
+                    source=result.source,
+                    description=f"{display_source}: Source lookup unavailable ({result.error or 'unavailable'})",
+                    confidence=None,
+                    status=EvidenceStatus.UNAVAILABLE,
+                    reliability=EvidenceReliability.UNVERIFIED,
+                    severity=EvidenceSeverity.INFORMATIONAL,
+                    risk_direction=RiskDirection.NEUTRAL,
+                    observed_value=f"{result.lookup_url} ({result.error or 'unavailable'})",
+                    interpretation=f"{display_source} was unavailable; could not verify URL against this feed",
+                    correlation_group=f"threat_intel_{result.source}",
+                    raw_data={
+                        "source": result.source,
+                        "url": result.lookup_url,
+                        "intel_status": result.intel_status.value,
+                        "error": result.error,
                     },
                 ))
 
