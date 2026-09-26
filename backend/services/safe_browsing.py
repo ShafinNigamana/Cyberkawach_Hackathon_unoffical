@@ -3,14 +3,16 @@ Google Safe Browsing Lookup API v4 adapter.
 
 P0 threat-intel source. Free for non-commercial use.
 Returns whether a URL appears in Google's phishing/malware/social engineering lists.
+Hardened against secret leakage in error messages and exceptions.
 """
 
 from __future__ import annotations
 
+import httpx
+
 from backend.config import get_settings
 from backend.models.evidence import ThreatIntelResult
-
-import httpx
+from backend.utils.security_logging import safe_error_message
 
 _SAFE_BROWSING_URL = "https://safebrowsing.googleapis.com/v4/threatMatches:find"
 
@@ -27,6 +29,7 @@ async def check_safe_browsing(urls: list[str]) -> list[ThreatIntelResult]:
     Query Google Safe Browsing Lookup API for a list of URLs.
     Returns one ThreatIntelResult per URL checked.
     If API key is not configured, returns results with error field set.
+    Never exposes API keys in error messages.
     """
     settings = get_settings()
     results = []
@@ -90,12 +93,13 @@ async def check_safe_browsing(urls: list[str]) -> list[ThreatIntelResult]:
                 error="Request timed out",
             ))
     except Exception as e:
+        cleaned_error = safe_error_message(e)
         for url in urls:
             results.append(ThreatIntelResult(
                 source="safe_browsing",
                 match=None,
                 lookup_url=url,
-                error=str(e),
+                error=cleaned_error,
             ))
 
     return results

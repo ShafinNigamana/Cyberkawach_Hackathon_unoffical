@@ -1,17 +1,18 @@
 """
 API request/response schemas — the contract between frontend and backend.
 
-These are the HTTP-facing models. Internally, the pipeline uses IncidentEvidence.
+Hardened against injection, unexpected field pollution, and unbounded payloads.
 """
 
 from __future__ import annotations
 
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from backend.models.evidence import (
     AdaptiveResponse,
+    BrandMatch,
     EvidenceItem,
     FraudDNA,
     GeminiExplanation,
@@ -19,7 +20,6 @@ from backend.models.evidence import (
     RiskAssessment,
     ThreatIntelResult,
     URLSignal,
-    BrandMatch,
     UserState,
 )
 
@@ -29,8 +29,10 @@ from backend.models.evidence import (
 class AnalyzeRequest(BaseModel):
     """
     POST /api/analyze — primary endpoint.
-    Accepts text, URL, or both. Screenshot upload is a separate endpoint.
+    Accepts text, URL, or both. Rejects unknown fields.
     """
+    model_config = ConfigDict(extra="forbid")
+
     message: str = Field(
         ...,
         min_length=1,
@@ -47,18 +49,24 @@ class AnalyzeRequest(BaseModel):
     )
     urls: list[str] = Field(
         default_factory=list,
-        description="Additional URLs to analyze (auto-extracted from message too)",
+        max_length=20,
+        description="Additional URLs to analyze (max 20, auto-extracted from message too)",
     )
     language: str = Field(
         default="en",
-        description="ISO language code or 'hi-en' for code-mixed",
+        max_length=10,
+        pattern=r"^[a-zA-Z]{2}(-[a-zA-Z0-9]{2,4})?$",
+        description="ISO language code (e.g. 'en', 'hi', 'hi-en')",
     )
 
 
 class UpdateUserStateRequest(BaseModel):
     """
     POST /api/incidents/{incident_id}/state — update user state for adaptive response.
+    Rejects unknown fields.
     """
+    model_config = ConfigDict(extra="forbid")
+
     user_state: UserState
 
 
@@ -117,6 +125,15 @@ class HealthResponse(BaseModel):
         default_factory=dict,
         description="Which external APIs have keys configured",
     )
+
+
+class FileUploadResponse(BaseModel):
+    """Response model for uploaded screenshots/files."""
+    status: str
+    filename: str
+    size_bytes: int
+    content_type: str
+    incident_id: Optional[str] = None
 
 
 class ErrorResponse(BaseModel):

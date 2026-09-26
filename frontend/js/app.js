@@ -102,7 +102,7 @@
 
         // Render sample buttons
         samplesList.innerHTML = sampleMessages
-            .map(s => `<button type="button" class="sample-item" data-id="${s.id}">${Components.escapeHtml(s.label)}</button>`)
+            .map(s => `<button type="button" class="sample-item" data-id="${Components.escapeHtml(s.id)}">${Components.escapeHtml(s.label)}</button>`)
             .join('');
     }
 
