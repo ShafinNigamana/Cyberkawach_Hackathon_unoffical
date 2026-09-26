@@ -44,6 +44,16 @@
 
                 <!-- Accessibility Controls -->
                 <div class="gov-access-tools">
+                    <!-- Language Selector (i18n) -->
+                    <div class="gov-lang-select-wrap">
+                        <select id="lang-select" class="gov-lang-select" aria-label="Select Language">
+                            <option value="en">🇬🇧 English</option>
+                            <option value="hi">🇮🇳 हिंदी (Hindi)</option>
+                            <option value="gu">🇮🇳 ગુજરાતી (Gujarati)</option>
+                            <option value="ta">🇮🇳 தமிழ் (Tamil)</option>
+                        </select>
+                    </div>
+
                     <div class="gov-font-size-ctrl" role="group" aria-label="Text sizing">
                         <button type="button" class="btn-text-size" id="btn-font-dec" title="Decrease font size">A-</button>
                         <button type="button" class="btn-text-size active" id="btn-font-reset" title="Normal font size">A</button>
@@ -147,6 +157,11 @@
                     </h2>
                 </div>
                 <div class="panel-header-actions">
+                    <label for="screenshot-upload" class="btn-tool" id="btn-upload-screenshot" title="Upload screenshot to extract scam text via OCR" style="cursor: pointer;">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                        <span>OCR Screenshot</span>
+                    </label>
+                    <input type="file" id="screenshot-upload" accept="image/png,image/jpeg,image/webp" style="display: none;">
                     <button type="button" class="btn-tool" id="btn-paste-clip" title="Paste text from clipboard">
                         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
                         <span>Paste</span>
@@ -167,6 +182,7 @@
                         </label>
                         <span class="char-counter" id="char-counter">0 characters</span>
                     </div>
+                    <div id="upload-status" style="font-size: 0.8rem; font-weight: 600; color: var(--color-primary, #133e87); margin-bottom: 0.35rem; display: none;"></div>
                     <textarea id="message-input" class="form-textarea" rows="5" placeholder="Example: Dear Customer, Your electricity connection will be disconnected tonight at 9:30 PM due to unpaid bill. Immediately contact power officer on 9876543210 to update..." required></textarea>
                 </div>
 
@@ -238,7 +254,7 @@
                 <div class="loading-stages" id="loading-stages">
                     <span class="loading-pill active">IOC Extraction</span>
                     <span class="loading-pill active">Indian Scam Rules</span>
-                    <span class="loading-pill active">OpenPhish & SafeBrowsing</span>
+                    <span class="loading-pill active">Threat Intel Feeds</span>
                     <span class="loading-pill active">Two-Tier Risk Fusion</span>
                     <span class="loading-pill active">Attack Path & Response</span>
                 </div>
@@ -480,6 +496,7 @@
     </footer>
 
     <!-- Scripts -->
+    <script src="js/i18n.js?v=2.2"></script>
     <script src="js/api.js?v=2.2"></script>
     <script src="js/components.js?v=2.2"></script>
     <script src="js/app.js?v=2.2"></script>

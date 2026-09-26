@@ -1,0 +1,405 @@
+[
+  {
+    "case_num": 1,
+    "name": "Bank Impersonation + Suspicious URL",
+    "input": "Dear SBI user, your account has been temporarily suspended d...",
+    "classification": "HIGH RISK",
+    "category": "banking",
+    "url_findings": [
+      "sbi-kyc-verification.top"
+    ],
+    "brand_findings": [
+      "SBI"
+    ],
+    "threat_intel_findings": [
+      "safe_browsing:NO KNOWN MATCH",
+      "phishtank:SOURCE UNAVAILABLE",
+      "phishstats:SOURCE UNAVAILABLE"
+    ],
+    "osint_findings": "Not queried during /api/analyze (available on-demand via /api/incidents/{id}/osint)",
+    "evidence_count": 13,
+    "risk": "CRITICAL (0.880)",
+    "confidence": "SUFFICIENT",
+    "explanation": "This message shows strong indicators of a banking scam with multiple verified threat signals.",
+    "attack_path": [
+      "Attacker delivers unsolicited communication designed to create psychological urgency or authority pretexts regarding banking [Evidence 2, 3, 5]",
+      "Recipient is prompted to access unauthorized external domain 'sbi-kyc-verification.top' [Evidence 6, 7, 8]"
+    ],
+    "adaptive_response": "Urgency: urgent | Actions: 4",
+    "errors_fallbacks": "Fallback: True | Errors: []"
+  },
+  {
+    "case_num": 2,
+    "name": "UPI / Payment Scam",
+    "input": "Congratulations! You have received a cashback reward of Rs 4...",
+    "classification": "SUSPICIOUS",
+    "category": "lottery_prize",
+    "url_findings": [],
+    "brand_findings": [],
+    "threat_intel_findings": [],
+    "osint_findings": "None (No external URL provided)",
+    "evidence_count": 4,
+    "risk": "MEDIUM (0.422)",
+    "confidence": "PARTIAL",
+    "explanation": "This message contains some suspicious elements that suggest a possible lottery_prize scam.",
+    "attack_path": [
+      "Attacker delivers unsolicited communication designed to create psychological urgency or authority pretexts regarding lottery_prize [Evidence 1, 3, 4]",
+      "Attacker attempts to solicit sensitive credentials or financial transfer [Evidence 2]"
+    ],
+    "adaptive_response": "Urgency: normal | Actions: 4",
+    "errors_fallbacks": "Fallback: True | Errors: []"
+  },
+  {
+    "case_num": 3,
+    "name": "OTP / Credential Request",
+    "input": "URGENT: Transaction of Rs 75,000 initiated on your HDFC cred...",
+    "classification": "SUSPICIOUS",
+    "category": "banking",
+    "url_findings": [],
+    "brand_findings": [],
+    "threat_intel_findings": [],
+    "osint_findings": "None (No external URL provided)",
+    "evidence_count": 6,
+    "risk": "MEDIUM (0.505)",
+    "confidence": "PARTIAL",
+    "explanation": "This message contains some suspicious elements that suggest a possible banking scam.",
+    "attack_path": [
+      "Attacker delivers unsolicited communication designed to create psychological urgency or authority pretexts regarding banking [Evidence 2, 3, 5]",
+      "Recipient is directed to communicate with an unverified direct contact 'phone:9876543210' [Evidence 1]"
+    ],
+    "adaptive_response": "Urgency: normal | Actions: 4",
+    "errors_fallbacks": "Fallback: True | Errors: []"
+  },
+  {
+    "case_num": 4,
+    "name": "Courier Scam",
+    "input": "India Post: Your package #IN-948201 address is incorrect and...",
+    "classification": "HIGH RISK",
+    "category": "courier",
+    "url_findings": [
+      "indiapost-update.top"
+    ],
+    "brand_findings": [
+      "India Post"
+    ],
+    "threat_intel_findings": [
+      "safe_browsing:NO KNOWN MATCH",
+      "phishtank:SOURCE UNAVAILABLE",
+      "phishstats:SOURCE UNAVAILABLE"
+    ],
+    "osint_findings": "URL detected for on-demand OSINT query",
+    "evidence_count": 11,
+    "risk": "CRITICAL (0.880)",
+    "confidence": "SUFFICIENT",
+    "explanation": "This message shows strong indicators of a courier scam with multiple verified threat signals.",
+    "attack_path": [
+      "Attacker delivers unsolicited communication designed to create psychological urgency or authority pretexts regarding courier [Evidence 2, 4, 11]",
+      "Recipient is prompted to access unauthorized external domain 'indiapost-update.top' [Evidence 5, 6, 7]"
+    ],
+    "adaptive_response": "Urgency: urgent | Actions: 5",
+    "errors_fallbacks": "Fallback: True | Errors: []"
+  },
+  {
+    "case_num": 5,
+    "name": "Electricity Scam",
+    "input": "Dear consumer your electricity power will be disconnected to...",
+    "classification": "SUSPICIOUS",
+    "category": "electricity",
+    "url_findings": [],
+    "brand_findings": [],
+    "threat_intel_findings": [],
+    "osint_findings": "None (No external URL provided)",
+    "evidence_count": 5,
+    "risk": "MEDIUM (0.454)",
+    "confidence": "PARTIAL",
+    "explanation": "This message contains some suspicious elements that suggest a possible electricity scam.",
+    "attack_path": [
+      "Attacker delivers unsolicited communication designed to create psychological urgency or authority pretexts regarding electricity [Evidence 2, 3, 4]",
+      "Recipient is directed to communicate with an unverified direct contact 'phone:9876543210' [Evidence 1]"
+    ],
+    "adaptive_response": "Urgency: normal | Actions: 5",
+    "errors_fallbacks": "Fallback: True | Errors: []"
+  },
+  {
+    "case_num": 6,
+    "name": "Digital-Arrest Scam",
+    "input": "CBI & Mumbai Cyber Crime Police Notice: A parcel with contra...",
+    "classification": "SUSPICIOUS",
+    "category": "extortion_legal",
+    "url_findings": [],
+    "brand_findings": [],
+    "threat_intel_findings": [],
+    "osint_findings": "None (No external URL provided)",
+    "evidence_count": 4,
+    "risk": "MEDIUM (0.516)",
+    "confidence": "PARTIAL",
+    "explanation": "This message contains some suspicious elements that suggest a possible extortion_legal scam.",
+    "attack_path": [
+      "Attacker delivers unsolicited communication designed to create psychological urgency or authority pretexts regarding extortion_legal [Evidence 1, 2, 3]",
+      "Potential consequence: Exposure of personal contact details, credentials, or vulnerability to follow-up fraud attempts"
+    ],
+    "adaptive_response": "Urgency: normal | Actions: 4",
+    "errors_fallbacks": "Fallback: True | Errors: []"
+  },
+  {
+    "case_num": 7,
+    "name": "Legitimate Official Bank URL",
+    "input": "Your SBI savings account statement for August 2026 is ready....",
+    "classification": "LOW CONCERN",
+    "category": "banking",
+    "url_findings": [
+      "onlinesbi.sbi"
+    ],
+    "brand_findings": [],
+    "threat_intel_findings": [
+      "safe_browsing:NO KNOWN MATCH",
+      "phishtank:SOURCE UNAVAILABLE",
+      "phishstats:SOURCE UNAVAILABLE"
+    ],
+    "osint_findings": "onlinesbi.sbi verified registered domain",
+    "evidence_count": 7,
+    "risk": "LOW (0.150)",
+    "confidence": "PARTIAL",
+    "explanation": "This message has minor suspicious indicators but limited evidence of fraud.",
+    "attack_path": [
+      "Attacker delivers unsolicited communication designed to create psychological urgency or authority pretexts regarding banking [Evidence 2, 7]",
+      "Recipient is directed to communicate with an unverified direct contact 'url:https://onlinesbi.sbi' [Evidence 1]"
+    ],
+    "adaptive_response": "Urgency: normal | Actions: 4",
+    "errors_fallbacks": "Fallback: True | Errors: []"
+  },
+  {
+    "case_num": 8,
+    "name": "Screenshot Scam Upload",
+    "input": "[OCR Image Upload] Dear customer your SBI account is blocke...",
+    "classification": "HIGH RISK",
+    "category": "banking",
+    "url_findings": [
+      "sbi-phish.top"
+    ],
+    "brand_findings": [
+      "SBI"
+    ],
+    "threat_intel_findings": [
+      "safe_browsing:NO KNOWN MATCH",
+      "phishtank:SOURCE UNAVAILABLE",
+      "phishstats:SOURCE UNAVAILABLE"
+    ],
+    "osint_findings": "Domain extracted from screenshot for enrichment",
+    "evidence_count": 10,
+    "risk": "CRITICAL (0.880)",
+    "confidence": "SUFFICIENT",
+    "explanation": "This message shows strong indicators of a banking scam with multiple verified threat signals.",
+    "attack_path": [
+      "Attacker delivers unsolicited communication designed to create psychological urgency or authority pretexts regarding banking [Evidence 2, 3, 10]",
+      "Recipient is prompted to access unauthorized external domain 'sbi-phish.top' [Evidence 4, 5, 6]"
+    ],
+    "adaptive_response": "Urgency: urgent | Actions: 4",
+    "errors_fallbacks": "Fallback: True | Errors: []"
+  },
+  {
+    "case_num": 9,
+    "name": "Hindi Scam Message",
+    "input": "\u092a\u094d\u0930\u093f\u092f \u0917\u094d\u0930\u093e\u0939\u0915 \u0906\u092a\u0915\u093e \u090f\u0938\u092c\u0940\u0906\u0908 \u092c\u0948\u0902\u0915 \u0916\u093e\u0924\u093e \u092c\u094d\u0932\u0949\u0915 \u0915\u0930 \u0926\u093f\u092f\u093e \u0917\u092f\u093e \u0939\u0948\u0964 \u0905\u092a\u0928...",
+    "classification": "HIGH RISK",
+    "category": "banking",
+    "url_findings": [
+      "sbi-hindi.top"
+    ],
+    "brand_findings": [
+      "SBI"
+    ],
+    "threat_intel_findings": [
+      "safe_browsing:NO KNOWN MATCH",
+      "phishtank:SOURCE UNAVAILABLE",
+      "phishstats:SOURCE UNAVAILABLE"
+    ],
+    "osint_findings": "sbi-hindi.top parsed for on-demand query",
+    "evidence_count": 12,
+    "risk": "CRITICAL (0.880)",
+    "confidence": "SUFFICIENT",
+    "explanation": "\u0907\u0938 \u0938\u0902\u0926\u0947\u0936 \u092e\u0947\u0902 banking \u0927\u094b\u0916\u093e\u0927\u0921\u093c\u0940 (\u0938\u094d\u0915\u0948\u092e) \u0915\u0947 \u0915\u0908 \u092a\u0941\u0937\u094d\u091f \u0914\u0930 \u0905\u0924\u094d\u092f\u0927\u093f\u0915 \u0917\u0902\u092d\u0940\u0930 \u0916\u0924\u0930\u0947 \u092a\u093e\u090f \u0917\u090f \u0939\u0948\u0902\u0964",
+    "attack_path": [
+      "Attacker delivers unsolicited communication designed to create psychological urgency or authority pretexts regarding banking [Evidence 2, 3, 5]",
+      "Recipient is prompted to access unauthorized external domain 'sbi-hindi.top' [Evidence 6, 7, 8]"
+    ],
+    "adaptive_response": "Urgency: urgent | Actions: 4",
+    "errors_fallbacks": "Fallback: True | Errors: []"
+  },
+  {
+    "case_num": 10,
+    "name": "Gujarati Scam Message",
+    "input": "\u0aa4\u0aae\u0abe\u0ab0\u0ac1\u0a82 \u0aac\u0ac7\u0a82\u0a95 \u0a8f\u0a95\u0abe\u0a89\u0aa8\u0acd\u0a9f \u0aac\u0acd\u0ab2\u0acb\u0a95 \u0aa5\u0a88 \u0a97\u0aaf\u0ac1\u0a82 \u0a9b\u0ac7. \u0a95\u0ac7\u0ab5\u0abe\u0aaf\u0ab8\u0ac0 \u0a85\u0aaa\u0aa1\u0ac7\u0a9f \u0a95\u0ab0\u0ab5\u0abe \u0aae\u0abe\u0a9f...",
+    "classification": "SUSPICIOUS",
+    "category": "banking",
+    "url_findings": [
+      "bank-gujarati.top"
+    ],
+    "brand_findings": [],
+    "threat_intel_findings": [
+      "safe_browsing:NO KNOWN MATCH",
+      "phishtank:SOURCE UNAVAILABLE",
+      "phishstats:SOURCE UNAVAILABLE"
+    ],
+    "osint_findings": "bank-gujarati.top parsed for on-demand query",
+    "evidence_count": 10,
+    "risk": "MEDIUM (0.590)",
+    "confidence": "PARTIAL",
+    "explanation": "\u0a86 \u0ab8\u0a82\u0aa6\u0ac7\u0ab6\u0abe\u0aae\u0abe\u0a82 \u0a95\u0ac7\u0a9f\u0ab2\u0ac0\u0a95 \u0ab6\u0a82\u0a95\u0abe\u0ab8\u0acd\u0aaa\u0aa6 \u0aac\u0abe\u0aac\u0aa4\u0acb \u0a9b\u0ac7 \u0a9c\u0ac7 banking \u0ab8\u0acd\u0a95\u0ac7\u0aae \u0ab8\u0ac2\u0a9a\u0ab5\u0ac7 \u0a9b\u0ac7.",
+    "attack_path": [
+      "Attacker delivers unsolicited communication designed to create psychological urgency or authority pretexts regarding banking [Evidence 2, 4, 10]",
+      "Recipient is prompted to access unauthorized external domain 'bank-gujarati.top' [Evidence 5, 6]"
+    ],
+    "adaptive_response": "Urgency: normal | Actions: 4",
+    "errors_fallbacks": "Fallback: True | Errors: []"
+  },
+  {
+    "case_num": 11,
+    "name": "Tamil Scam Message",
+    "input": "\u0b89\u0b99\u0bcd\u0b95\u0bb3\u0bcd \u0bb5\u0b99\u0bcd\u0b95\u0bbf \u0b95\u0ba3\u0b95\u0bcd\u0b95\u0bc1 \u0bae\u0bc1\u0b9f\u0b95\u0bcd\u0b95\u0baa\u0bcd\u0baa\u0b9f\u0bcd\u0b9f\u0bc1\u0bb3\u0bcd\u0bb3\u0ba4\u0bc1. \u0b89\u0b9f\u0ba9\u0b9f\u0bbf\u0baf\u0bbe\u0b95 \u0b95\u0bc7\u0b92\u0baf\u0bcd\u0b9a\u0bbf \u0b9a\u0bb0\u0bbf...",
+    "classification": "HIGH RISK",
+    "category": "banking",
+    "url_findings": [
+      "tamil-bank-update.top"
+    ],
+    "brand_findings": [],
+    "threat_intel_findings": [
+      "safe_browsing:NO KNOWN MATCH",
+      "phishtank:SOURCE UNAVAILABLE",
+      "phishstats:SOURCE UNAVAILABLE"
+    ],
+    "osint_findings": "tamil-bank-update.top parsed for on-demand query",
+    "evidence_count": 10,
+    "risk": "HIGH (0.639)",
+    "confidence": "PARTIAL",
+    "explanation": "\u0b87\u0ba8\u0bcd\u0ba4 \u0b9a\u0bc6\u0baf\u0bcd\u0ba4\u0bbf\u0baf\u0bbf\u0bb2\u0bcd banking \u0bae\u0bcb\u0b9a\u0b9f\u0bbf\u0b95\u0bcd\u0b95\u0bbe\u0ba9 \u0bae\u0bc1\u0b95\u0bcd\u0b95\u0bbf\u0baf \u0b85\u0b9a\u0bcd\u0b9a\u0bc1\u0bb1\u0bc1\u0ba4\u0bcd\u0ba4\u0bb2\u0bcd \u0b85\u0bb1\u0bbf\u0b95\u0bc1\u0bb1\u0bbf\u0b95\u0bb3\u0bcd \u0b89\u0bb3\u0bcd\u0bb3\u0ba9. \u0b8e\u0b9a\u0bcd\u0b9a\u0bb0\u0bbf\u0b95\u0bcd\u0b95\u0bc8\u0baf\u0bc1\u0b9f\u0ba9\u0bcd \u0b87\u0bb0\u0bc1\u0b95\u0bcd\u0b95\u0bb5\u0bc1\u0bae\u0bcd.",
+    "attack_path": [
+      "Attacker delivers unsolicited communication designed to create psychological urgency or authority pretexts regarding banking [Evidence 2, 3, 4]",
+      "Recipient is prompted to access unauthorized external domain 'tamil-bank-update.top' [Evidence 5, 6]"
+    ],
+    "adaptive_response": "Urgency: normal | Actions: 4",
+    "errors_fallbacks": "Fallback: True | Errors: []"
+  },
+  {
+    "case_num": 12,
+    "name": "Unavailable Threat-Intel Provider (SafeBrowsing Timeout)",
+    "input": "Your account is temporarily suspended. Visit http://unknown-...",
+    "classification": "SUSPICIOUS",
+    "category": "banking",
+    "url_findings": [
+      "unknown-threat-test.xyz"
+    ],
+    "brand_findings": [],
+    "threat_intel_findings": [
+      "safe_browsing:NO KNOWN MATCH",
+      "phishtank:SOURCE UNAVAILABLE",
+      "phishstats:SOURCE UNAVAILABLE"
+    ],
+    "osint_findings": "Threat intel degradation handled gracefully without pipeline crash",
+    "evidence_count": 9,
+    "risk": "MEDIUM (0.517)",
+    "confidence": "PARTIAL",
+    "explanation": "This message contains some suspicious elements that suggest a possible banking scam.",
+    "attack_path": [
+      "Attacker delivers unsolicited communication designed to create psychological urgency or authority pretexts regarding banking [Evidence 2, 3, 9]",
+      "Recipient is prompted to access unauthorized external domain 'unknown-threat-test.xyz' [Evidence 4, 5]"
+    ],
+    "adaptive_response": "Urgency: normal | Actions: 4",
+    "errors_fallbacks": "Fallback: True | Errors: []"
+  },
+  {
+    "case_num": 13,
+    "name": "PhishStats 429 Rate Limit",
+    "input": "Urgent: Update your card details at http://test-phishstats-4...",
+    "classification": "SUSPICIOUS",
+    "category": "banking",
+    "url_findings": [
+      "test-phishstats-429.top"
+    ],
+    "brand_findings": [],
+    "threat_intel_findings": [
+      "safe_browsing:NO KNOWN MATCH",
+      "phishtank:SOURCE UNAVAILABLE",
+      "phishstats:SOURCE ERROR"
+    ],
+    "osint_findings": "PhishStats returned HTTP 429, mapped to SOURCE_ERROR without throwing exception",
+    "evidence_count": 10,
+    "risk": "MEDIUM (0.567)",
+    "confidence": "PARTIAL",
+    "explanation": "This message contains some suspicious elements that suggest a possible banking scam.",
+    "attack_path": [
+      "Attacker delivers unsolicited communication designed to create psychological urgency or authority pretexts regarding banking [Evidence 2, 3, 4]",
+      "Recipient is prompted to access unauthorized external domain 'test-phishstats-429.top' [Evidence 5, 6]"
+    ],
+    "adaptive_response": "Urgency: normal | Actions: 4",
+    "errors_fallbacks": "Fallback: True | Errors: []"
+  },
+  {
+    "case_num": 14,
+    "name": "Gemini Unavailable (Fallback Active)",
+    "input": "Your account is blocked. Verify KYC immediately at http://sc...",
+    "classification": "HIGH RISK",
+    "category": "banking",
+    "url_findings": [
+      "scam-gemini-down.top"
+    ],
+    "brand_findings": [],
+    "threat_intel_findings": [
+      "safe_browsing:NO KNOWN MATCH",
+      "phishtank:SOURCE UNAVAILABLE",
+      "phishstats:SOURCE UNAVAILABLE"
+    ],
+    "osint_findings": "Available on demand",
+    "evidence_count": 10,
+    "risk": "HIGH (0.734)",
+    "confidence": "PARTIAL",
+    "explanation": "This message has significant fraud indicators consistent with a banking scam attempt.",
+    "attack_path": [
+      "Attacker delivers unsolicited communication designed to create psychological urgency or authority pretexts regarding banking [Evidence 2, 3, 4]",
+      "Recipient is prompted to access unauthorized external domain 'scam-gemini-down.top' [Evidence 5, 6]"
+    ],
+    "adaptive_response": "Urgency: normal | Actions: 4",
+    "errors_fallbacks": "Fallback: True | Errors: ['gemini']"
+  },
+  {
+    "case_num": 15,
+    "name": "OCR Unavailable / Corrupt Image Handling",
+    "input": "[Corrupt Binary Image Upload]",
+    "classification": "N/A (Upload Validation Rejection)",
+    "category": "N/A",
+    "url_findings": [],
+    "brand_findings": [],
+    "threat_intel_findings": [],
+    "osint_findings": "N/A",
+    "evidence_count": 0,
+    "risk": "BLOCKED (HTTP 400)",
+    "confidence": "HIGH",
+    "explanation": "Security upload gate rejected corrupt file: status 400",
+    "attack_path": [
+      "Image validation check failed before OCR processing"
+    ],
+    "adaptive_response": "Upload rejected safely without crash or decompression bomb vulnerability",
+    "errors_fallbacks": "HTTP 400: File content does not match any allowed image signature (PNG, JPEG, WebP)"
+  },
+  {
+    "case_num": 16,
+    "name": "User Already Paid (Golden Hour Guidance)",
+    "input": "Electricity cutoff alert: You were instructed to transfer Rs...",
+    "classification": "SUSPICIOUS",
+    "category": "electricity",
+    "url_findings": [],
+    "brand_findings": [],
+    "threat_intel_findings": [],
+    "osint_findings": "None (No external URL provided)",
+    "evidence_count": 4,
+    "risk": "MEDIUM (0.365)",
+    "confidence": "PARTIAL",
+    "explanation": "This message contains some suspicious elements that suggest a possible electricity scam.",
+    "attack_path": [
+      "Attacker delivers unsolicited communication designed to create psychological urgency or authority pretexts regarding electricity [Evidence 1, 3, 4]",
+      "Attacker attempts to solicit sensitive credentials or financial transfer [Evidence 2]"
+    ],
+    "adaptive_response": "Urgency: critical | Immediate Actions: ['IMMEDIATELY contact your bank to report unauthorized debit and request transaction reversal', \"Call 1930 IMMEDIATELY \u2014 the first 'Golden Hour' is critical for inter-bank fund freezing via I4C\"]",
+    "errors_fallbacks": "Fallback: True | Errors: []"
+  }
+]

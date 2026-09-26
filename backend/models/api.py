@@ -138,6 +138,14 @@ class FileUploadResponse(BaseModel):
     size_bytes: int
     content_type: str
     incident_id: Optional[str] = None
+    extracted_text: Optional[str] = None
+
+
+class OSINTResponse(BaseModel):
+    """Response model for asynchronous OSINT enrichment."""
+    status: str
+    evidence: list[EvidenceItem] = Field(default_factory=list)
+    raw: dict = Field(default_factory=dict)
 
 
 class ErrorResponse(BaseModel):

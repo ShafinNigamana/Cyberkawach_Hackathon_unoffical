@@ -124,6 +124,19 @@ def _url_to_signal(url: str) -> URLSignal:
     )
 
 
+def detect_script_language(text: str) -> str:
+    """Detect native Indic script language based on Unicode code blocks."""
+    if not text:
+        return "en"
+    if re.search(r'[\u0900-\u097F]', text):
+        return "hi"  # Devanagari (Hindi)
+    if re.search(r'[\u0A80-\u0AFF]', text):
+        return "gu"  # Gujarati
+    if re.search(r'[\u0B80-\u0BFF]', text):
+        return "ta"  # Tamil
+    return "en"
+
+
 def extract_iocs(evidence: IncidentEvidence, additional_urls: list[str] | None = None) -> IncidentEvidence:
     """
     Main ingestion entry point.
@@ -133,6 +146,12 @@ def extract_iocs(evidence: IncidentEvidence, additional_urls: list[str] | None =
     # Normalize
     normalized = _normalize_text(evidence.message)
     evidence.message = normalized
+
+    # Auto-detect native script language if not already specified as non-English
+    if evidence.language in ("en", ""):
+        script_lang = detect_script_language(normalized)
+        if script_lang != "en":
+            evidence.language = script_lang
 
     # Extract URLs from message
     found_urls = _extract_urls(normalized)

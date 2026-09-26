@@ -24,7 +24,10 @@ class Settings(BaseSettings):
     # ─── Threat Intel APIs (P0/P1) ───
     safe_browsing_api_key: Optional[str] = None
     phishtank_api_key: Optional[str] = None
-    openphish_enabled: bool = True
+    phishstats_api_key: Optional[str] = None
+
+    # ─── OSINT Enrichment ───
+    osint_enabled: bool = True
 
     # ─── Threat Intel APIs (P2 optional) ───
     abuseipdb_api_key: Optional[str] = None
@@ -65,8 +68,9 @@ class Settings(BaseSettings):
             "gemini": bool(self.gemini_api_key and self.gemini_api_key.strip()),
             # P0 threat-intel
             "safe_browsing": bool(self.safe_browsing_api_key and self.safe_browsing_api_key.strip()),
-            "openphish": bool(self.openphish_enabled),
-            "phishtank": False,  # Deprecated and replaced by OpenPhish feed
+            "phishtank": bool(self.phishtank_api_key and self.phishtank_api_key.strip()),
+            "phishstats": bool(self.phishstats_api_key and self.phishstats_api_key.strip()),
+            "osint": bool(self.osint_enabled),
             # P2 optional threat-intel
             "abuseipdb": bool(self.abuseipdb_api_key and self.abuseipdb_api_key.strip()),
             "urlhaus": True,  # No key needed

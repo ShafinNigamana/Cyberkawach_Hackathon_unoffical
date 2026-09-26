@@ -14,7 +14,7 @@ from threading import Lock
 from fastapi import Depends, FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from backend.config import get_settings
@@ -23,6 +23,7 @@ from backend.models.api import (
     AnalyzeResponse,
     FileUploadResponse,
     HealthResponse,
+    OSINTResponse,
     UpdateUserStateRequest,
 )
 from backend.models.evidence import IncidentEvidence, InputType
@@ -30,6 +31,7 @@ from backend.utils.file_security import validate_file_security
 from backend.utils.rate_limiter import check_rate_limit
 from backend.utils.request_limits import RequestSizeLimitMiddleware
 from backend.utils.sanitize import (
+    escape_for_display,
     sanitize_message,
     sanitize_url,
     validate_incident_id,
@@ -193,8 +195,9 @@ async def verification_status():
     return {
         "gemini_configured": avail.get("gemini", False),
         "safe_browsing_configured": avail.get("safe_browsing", False),
-        "phishtank_configured": False,
-        "openphish_configured": avail.get("openphish", True),
+        "phishtank_configured": avail.get("phishtank", False),
+        "phishstats_configured": avail.get("phishstats", False),
+        "osint_configured": avail.get("osint", True),
         "deterministic_fallback_available": True,
         "laya_available": True,
         "security_protections": {
@@ -281,8 +284,8 @@ async def health_check():
             "laya": True,  # Phase 3 fast typed-decision triage
             "fusion": True,
             "gemini": True,  # Non-critical — deterministic fallback always available
-            "ocr": False,  # P1 — not wired yet
-            "fraud_dna": False,  # P2 — not wired yet
+            "ocr": True,  # Phase 3 — wired up
+            "fraud_dna": True,  # Phase 2 — wired up
         },
         api_keys_configured=settings.api_availability(),
     )
@@ -418,6 +421,15 @@ async def analyze_message(request: AnalyzeRequest, raw_request: Request):
         modules_failed.append("response")
         evidence.errors.append(f"response: {safe_error_message(e)}")
 
+    # Stage 9: Fraud DNA & Campaign Syndicate Correlation
+    try:
+        from backend.modules.fraud_dna import compute_fraud_dna
+        evidence.fraud_dna = compute_fraud_dna(evidence)
+        modules_executed.append("fraud_dna")
+    except Exception as e:
+        modules_failed.append("fraud_dna")
+        evidence.errors.append(f"fraud_dna: {safe_error_message(e)}")
+
     # Finalize
     elapsed_ms = (time.time() - start_time) * 1000
     evidence.processing_time_ms = elapsed_ms
@@ -498,6 +510,66 @@ async def update_user_state(
     )
 
 
+@app.post("/api/incidents/{incident_id}/osint", response_model=OSINTResponse)
+async def get_incident_osint(
+    incident_id: str,
+    raw_request: Request = None,
+):
+    """
+    Asynchronous OSINT enrichment endpoint for an incident.
+    Fetches WHOIS domain age and crt.sh Certificate Transparency logs
+    via a background thread pool, translates facts to Evidence Contract items,
+    and returns {status, evidence, raw}.
+    """
+    if raw_request:
+        check_rate_limit(raw_request)
+
+    current_settings = get_settings()
+    if not current_settings.osint_enabled:
+        return OSINTResponse(status="disabled", evidence=[], raw={})
+
+    if not validate_incident_id(incident_id):
+        raise HTTPException(status_code=400, detail="Invalid incident ID format")
+
+    if incident_id not in _incidents:
+        raise HTTPException(status_code=404, detail="Incident or domain not found")
+
+    incident = _incidents[incident_id]
+
+    # Resolve domain from incident's extracted URLs or IOCs
+    domain = None
+    if incident.urls:
+        for u in incident.urls:
+            if u.domain:
+                domain = u.domain
+                break
+
+    if not domain and incident.iocs:
+        for ioc in incident.iocs:
+            clean_ioc = ioc.strip().lower()
+            if "." in clean_ioc and "/" not in clean_ioc and " " not in clean_ioc and not clean_ioc.endswith("."):
+                domain = clean_ioc
+                break
+
+    if not domain:
+        raise HTTPException(status_code=404, detail="Incident or domain not found")
+
+    import anyio
+    from backend.services.osint_enrichment import get_osint_enrichment
+    from backend.services.osint_evidence_translator import translate_osint_evidence
+
+    # Run blocking whois / requests calls in thread pool
+    raw = await anyio.to_thread.run_sync(get_osint_enrichment, domain)
+
+    evidence_items = translate_osint_evidence(raw)
+
+    return OSINTResponse(
+        status=raw.get("status", "unavailable"),
+        evidence=evidence_items,
+        raw=raw,
+    )
+
+
 @app.post("/api/upload/screenshot", response_model=FileUploadResponse)
 async def upload_screenshot(
     file: UploadFile = File(...),
@@ -529,9 +601,124 @@ async def upload_screenshot(
     if not is_valid:
         raise HTTPException(status_code=400, detail=err)
 
+    # Run OCR extraction
+    extracted_text = ""
+    try:
+        from backend.services.ocr import extract_text_from_image
+        extracted_text = extract_text_from_image(content, safe_name)
+    except Exception as e:
+        logger.warning(f"OCR extraction error: {safe_error_message(e)}")
+
     return FileUploadResponse(
         status="ok",
         filename=safe_name,
         size_bytes=len(content),
         content_type=file.content_type,
+        extracted_text=extracted_text or None,
     )
+
+
+@app.get("/api/incidents/{incident_id}/export")
+async def export_incident(
+    incident_id: str,
+    format: str = "json",
+    raw_request: Request = None,
+):
+    """
+    Export full forensic incident dossier for Law Enforcement / National Cyber Crime Helpline (1930).
+    Format options: 'json' or 'html' (printable official cyber police complaint format).
+    """
+    if raw_request:
+        check_rate_limit(raw_request)
+
+    if not validate_incident_id(incident_id):
+        raise HTTPException(status_code=400, detail="Invalid incident ID format")
+
+    if incident_id not in _incidents:
+        raise HTTPException(status_code=404, detail="Incident not found")
+
+    incident = _incidents[incident_id]
+
+    import hashlib
+    raw_hash = hashlib.sha256((incident.message or "").encode("utf-8")).hexdigest()
+
+    evidence_summary = [
+        {
+            "source": item.source,
+            "description": item.description,
+            "confidence": f"{item.confidence:.0%}" if item.confidence is not None else "100%",
+            "type": item.type.value if hasattr(item.type, "value") else str(item.type),
+        }
+        for item in incident.evidence
+    ]
+
+    export_data = {
+        "incident_id": incident.incident_id,
+        "timestamp_utc": incident.created_at.isoformat(),
+        "sha256_message_hash": raw_hash,
+        "risk_level": incident.risk.level.value,
+        "risk_score": incident.risk.score,
+        "fraud_category": incident.fraud_category or "generic",
+        "evidence_dossier": evidence_summary,
+        "extracted_urls": [u.url for u in incident.urls],
+        "extracted_domains": [u.domain for u in incident.urls if u.domain],
+        "campaign_id": incident.fraud_dna.campaign_id if incident.fraud_dna.available else None,
+        "related_incidents": incident.fraud_dna.related_incidents if incident.fraud_dna.available else [],
+        "helpline_1930_advisory": (
+            "If financial loss occurred within the last 24 hours (Golden Hour), "
+            "immediately call 1930 or submit details on https://cybercrime.gov.in."
+        ),
+    }
+
+    if format.lower() == "html":
+        ioc_rows = "".join(f"<tr><td>Domain/URL</td><td>{escape_for_display(u.url)}</td></tr>" for u in incident.urls) if incident.urls else "<tr><td colspan='2'>No web URLs extracted</td></tr>"
+        evidence_rows = "".join(f"<tr><td>{escape_for_display(item['source'])}</td><td>{escape_for_display(item['description'])}</td><td>{item['confidence']}</td></tr>" for item in evidence_summary)
+
+        html_content = f"""<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Cyber Crime Forensic Incident Dossier - {escape_for_display(incident.incident_id)}</title>
+    <style>
+        body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; color: #222; max-width: 800px; margin: 30px auto; padding: 25px; border: 1px solid #ddd; border-radius: 8px; }}
+        h1 {{ color: #b91c1c; border-bottom: 2px solid #b91c1c; padding-bottom: 8px; font-size: 20px; }}
+        h2 {{ font-size: 15px; color: #374151; margin-top: 18px; }}
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 12px; }}
+        th {{ background-color: #f3f4f6; }}
+        .badge {{ display: inline-block; padding: 4px 8px; border-radius: 4px; font-weight: bold; background: #fee2e2; color: #991b1b; }}
+        .evidence-box {{ background: #f9fafb; padding: 12px; border-left: 4px solid #3b82f6; margin-top: 8px; font-size: 13px; font-family: monospace; white-space: pre-wrap; }}
+        .print-btn {{ margin-bottom: 15px; padding: 8px 16px; background: #2563eb; color: white; border: none; border-radius: 4px; cursor: pointer; }}
+        @media print {{ .print-btn {{ display: none; }} }}
+    </style>
+</head>
+<body>
+    <button class="print-btn" onclick="window.print()">Print / Save as PDF</button>
+    <h1>CYBER FRAUD FORENSIC INCIDENT DOSSIER</h1>
+    <p><strong>Complaint Reference / Incident ID:</strong> {escape_for_display(incident.incident_id)}</p>
+    <p><strong>Timestamp (UTC):</strong> {escape_for_display(incident.created_at.isoformat())}</p>
+    <p><strong>Threat Classification:</strong> <span class="badge">{escape_for_display(incident.risk.level.value.upper())} ({incident.risk.score:.0%})</span> | Category: {escape_for_display(incident.fraud_category or 'Unspecified')}</p>
+    <p><strong>SHA-256 Content Hash:</strong> <code>{raw_hash}</code></p>
+    
+    <h2>1. Untrusted Evidentiary Message</h2>
+    <div class="evidence-box">{escape_for_display(incident.message)}</div>
+
+    <h2>2. Extracted Indicators of Compromise (IOCs)</h2>
+    <table>
+        <tr><th>Type</th><th>Observed Value</th></tr>
+        {ioc_rows}
+    </table>
+
+    <h2>3. Forensic Evidence Dossier</h2>
+    <table>
+        <tr><th>Source Module</th><th>Finding & Forensic Description</th><th>Confidence</th></tr>
+        {evidence_rows}
+    </table>
+
+    <h2>4. National Cyber Crime Reporting Advisory</h2>
+    <p>For financial fraud: Call <strong>1930</strong> (National Cyber Crime Reporting Helpline) within the golden hour, or file a complaint at <strong>https://cybercrime.gov.in</strong> quoting this technical dossier.</p>
+</body>
+</html>"""
+        return HTMLResponse(content=html_content, status_code=200)
+
+    return JSONResponse(content=export_data, status_code=200)
