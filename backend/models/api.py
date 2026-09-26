@@ -138,6 +138,7 @@ class FileUploadResponse(BaseModel):
     size_bytes: int
     content_type: str
     incident_id: Optional[str] = None
+    extracted_text: Optional[str] = None
 
 
 class ErrorResponse(BaseModel):

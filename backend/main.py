@@ -282,7 +282,7 @@ async def health_check():
             "laya": True,  # Phase 3 fast typed-decision triage
             "fusion": True,
             "gemini": True,  # Non-critical — deterministic fallback always available
-            "ocr": False,  # P1 — not wired yet
+            "ocr": True,  # Phase 3 — wired up
             "fraud_dna": True,  # Phase 2 — wired up
         },
         api_keys_configured=settings.api_availability(),
@@ -539,9 +539,18 @@ async def upload_screenshot(
     if not is_valid:
         raise HTTPException(status_code=400, detail=err)
 
+    # Run OCR extraction
+    extracted_text = ""
+    try:
+        from backend.services.ocr import extract_text_from_image
+        extracted_text = extract_text_from_image(content, safe_name)
+    except Exception as e:
+        logger.warning(f"OCR extraction error: {safe_error_message(e)}")
+
     return FileUploadResponse(
         status="ok",
         filename=safe_name,
         size_bytes=len(content),
         content_type=file.content_type,
+        extracted_text=extracted_text or None,
     )
