@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cyber Fraud Guardian — evidence-driven fraud message analysis for citizens">
+    <title>Cyber Fraud Guardian</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <!-- ─── Header ─── -->
+    <header class="header" id="header">
+        <div class="header-inner">
+            <div class="header-brand">
+                <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <h1 class="header-title">Cyber Fraud Guardian</h1>
+            </div>
+            <div class="header-meta">
+                <span class="header-badge" id="health-status">Checking...</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <!-- ─── Input Panel ─── -->
+        <section class="panel input-panel" id="input-panel">
+            <h2 class="panel-title">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                Analyze Message
+            </h2>
+
+            <form id="analyze-form">
+                <div class="form-group">
+                    <label for="message-input" class="form-label">Paste suspicious message</label>
+                    <textarea id="message-input" class="form-textarea" rows="6" placeholder="Paste the suspicious SMS, email, or chat message here..." required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group form-group--half">
+                        <label for="input-type" class="form-label">Message type</label>
+                        <select id="input-type" class="form-select">
+                            <option value="text">Text</option>
+                            <option value="sms">SMS</option>
+                            <option value="email">Email</option>
+                            <option value="chat">Chat/WhatsApp</option>
+                        </select>
+                    </div>
+                    <div class="form-group form-group--half">
+                        <label for="user-state" class="form-label">Your situation</label>
+                        <select id="user-state" class="form-select">
+                            <option value="received">I only received this message</option>
+                            <option value="clicked">I clicked a link in it</option>
+                            <option value="entered_credentials">I entered my details/OTP</option>
+                            <option value="paid">I made a payment</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="urls-input" class="form-label">Additional URLs (optional, one per line)</label>
+                    <textarea id="urls-input" class="form-textarea form-textarea--small" rows="2" placeholder="https://suspicious-link.example.com"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn--primary" id="analyze-btn">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        Analyze Message
+                    </button>
+                    <button type="button" class="btn btn--ghost" id="sample-btn">Load Sample</button>
+                </div>
+            </form>
+
+            <!-- Sample message selector -->
+            <div class="samples-dropdown" id="samples-dropdown" hidden>
+                <div class="samples-list" id="samples-list"></div>
+            </div>
+        </section>
+
+        <!-- ─── Loading ─── -->
+        <div class="loading" id="loading" hidden>
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Analyzing message through detection pipeline...</p>
+            <div class="loading-stages" id="loading-stages"></div>
+        </div>
+
+        <!-- ─── Results Panel ─── -->
+        <section class="results" id="results" hidden>
+
+            <!-- Risk Score Banner -->
+            <div class="risk-banner" id="risk-banner">
+                <div class="risk-score-circle" id="risk-circle">
+                    <span class="risk-score-value" id="risk-score">0</span>
+                </div>
+                <div class="risk-info">
+                    <h2 class="risk-level" id="risk-level">UNKNOWN</h2>
+                    <p class="risk-category" id="risk-category">Analyzing...</p>
+                    <p class="risk-meta" id="risk-meta"></p>
+                </div>
+            </div>
+
+            <!-- Explanation -->
+            <section class="panel" id="explanation-panel">
+                <h2 class="panel-title">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                    Explanation
+                    <span class="badge badge--subtle" id="explanation-source"></span>
+                </h2>
+                <div id="explanation-content"></div>
+            </section>
+
+            <!-- Evidence Items -->
+            <section class="panel" id="evidence-panel">
+                <h2 class="panel-title">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    Evidence Items
+                    <span class="badge" id="evidence-count">0</span>
+                </h2>
+                <div class="evidence-list" id="evidence-list"></div>
+            </section>
+
+            <!-- Threat Intelligence -->
+            <section class="panel" id="threat-intel-panel">
+                <h2 class="panel-title">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    Threat Intelligence
+                </h2>
+                <div class="threat-intel-list" id="threat-intel-list"></div>
+            </section>
+
+            <!-- URL Analysis -->
+            <section class="panel" id="url-panel" hidden>
+                <h2 class="panel-title">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                    URL Analysis
+                </h2>
+                <div id="url-list"></div>
+            </section>
+
+            <!-- Adaptive Response -->
+            <section class="panel" id="response-panel">
+                <h2 class="panel-title">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>
+                    What You Should Do
+                </h2>
+                <div id="response-content"></div>
+
+                <!-- State switcher for demo -->
+                <div class="state-switcher" id="state-switcher">
+                    <label class="form-label">Change your situation (demo):</label>
+                    <div class="state-buttons" id="state-buttons">
+                        <button class="btn btn--small" data-state="received">Only Received</button>
+                        <button class="btn btn--small" data-state="clicked">Clicked Link</button>
+                        <button class="btn btn--small" data-state="entered_credentials">Entered Details</button>
+                        <button class="btn btn--small" data-state="paid">Made Payment</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Attack Path -->
+            <section class="panel" id="attack-path-panel" hidden>
+                <h2 class="panel-title">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+                    Attack Path
+                </h2>
+                <div id="attack-path-content"></div>
+            </section>
+
+            <!-- Processing Meta -->
+            <div class="meta-bar" id="meta-bar">
+                <span id="meta-time"></span>
+                <span id="meta-modules"></span>
+                <span id="meta-incident-id"></span>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>Cyber Fraud Guardian — Cyber Kavach Challenge 2026 · BSides Ahmedabad</p>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/components.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

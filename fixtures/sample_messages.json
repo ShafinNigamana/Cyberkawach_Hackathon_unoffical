@@ -1,0 +1,50 @@
+[
+  {
+    "id": "demo-banking-sbi",
+    "label": "SBI KYC Scam (Banking)",
+    "input_type": "sms",
+    "message": "Dear Customer, Your SBI account has been BLOCKED due to incomplete KYC verification. Update your KYC immediately to avoid permanent account closure. Click here: https://sbi-kyc-update.xyz/verify?ref=8827361 or call 9876543210. Last date: 24 hours. -SBI Team",
+    "expected_category": "banking",
+    "expected_risk": "HIGH"
+  },
+  {
+    "id": "demo-courier-delivery",
+    "label": "Fake Delivery (Courier)",
+    "input_type": "sms",
+    "message": "Your parcel from Amazon could not be delivered due to incorrect address. Please reschedule delivery by paying Rs. 25 customs charge: https://amaz0n-delivery.top/reschedule Track: AWB7839201. -Delhivery",
+    "expected_category": "courier",
+    "expected_risk": "HIGH"
+  },
+  {
+    "id": "demo-govt-tax",
+    "label": "Income Tax Refund (Government)",
+    "input_type": "email",
+    "message": "Subject: Income Tax Refund - Rs 18,500 Credited\n\nDear Taxpayer,\n\nYour income tax refund of Rs 18,500 has been approved. Due to outdated bank details, the refund could not be processed. Please update your bank account details within 48 hours to receive your refund:\n\nhttps://incometax-refund.click/update-bank\n\nFailure to update will result in cancellation of refund.\n\nRegards,\nIncome Tax Department, Govt. of India",
+    "expected_category": "government",
+    "expected_risk": "HIGH"
+  },
+  {
+    "id": "demo-lottery",
+    "label": "Lottery Prize (Lottery)",
+    "input_type": "chat",
+    "message": "🎉 CONGRATULATIONS! You have WON Rs 25,00,000 in the Google Annual Lottery 2026! Your ticket number: GL-29384. To claim your prize, pay the processing fee of Rs 4,999 via Google Pay to merchant@gpay. Contact: lottery.winner2026@gmail.com. Hurry, offer expires in 12 hours!",
+    "expected_category": "lottery_prize",
+    "expected_risk": "HIGH"
+  },
+  {
+    "id": "demo-job-scam",
+    "label": "Work From Home (Job Offer)",
+    "input_type": "chat",
+    "message": "Hi! We are hiring for part-time data entry work from home. Earn Rs 15,000-45,000/month. No experience needed. Work 2-3 hours daily. Registration fee: Rs 999 only. Pay via PhonePe to 9988776655. Limited seats! Join our WhatsApp group: https://chat-link.site/join/wfh2026",
+    "expected_category": "job_offer",
+    "expected_risk": "MEDIUM"
+  },
+  {
+    "id": "demo-safe-message",
+    "label": "Legitimate Bank Alert (Safe)",
+    "input_type": "sms",
+    "message": "Your SBI account XX1234 has been debited with Rs 2,500.00 on 25-Sep-2026. Available balance: Rs 45,230.50. If not done by you, call 1800-111-111 immediately. -SBI",
+    "expected_category": "banking",
+    "expected_risk": "LOW"
+  }
+]

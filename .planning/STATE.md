@@ -9,14 +9,14 @@ See: .planning/PROJECT.md (updated 2026-09-25)
 
 ## Current Phase
 
-**Phase 0: Architecture Freeze**
+**Phase 1: Core Pipeline (P0 — Must Demo)**
 - Status: Active
-- Started: 2026-09-25
-- Goal: Lock all contracts, schemas, repo structure, and environment before any feature code.
+- Started: 2026-09-26
+- Goal: Complete end-to-end pipeline from input to adaptive response. Must work as a full demo even with every optional component disabled.
 
 ## Phase History
 
-(None yet)
+- **Phase 0: Architecture Freeze** — Completed 2026-09-26. Evidence Contract, API surface, repo layout, env config locked. 5 scope-tightening changes applied.
 
 ## Active Decisions
 
