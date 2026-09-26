@@ -10,6 +10,7 @@ from fastapi.testclient import TestClient
 from backend.main import app
 from backend.models.evidence import (
     AttackStep,
+    BrandMatch,
     EvidenceItem,
     EvidenceReliability,
     EvidenceSeverity,
@@ -890,6 +891,115 @@ def test_traceable_attack_path_unknown_minimal_evidence():
     # Ensure it acknowledges insufficient evidence rather than asserting a full breach campaign
     all_text = " ".join(s.description for s in steps).lower()
     assert "insufficient" in all_text or "unconfirmed" in all_text or "unverified" in all_text
+
+
+def test_adaptive_response_low_risk_proportionality():
+    """Verify that LOW risk received messages provide calm, educational guidance without panic alarms."""
+    evidence = IncidentEvidence(
+        input_type=InputType.SMS,
+        message="Your HDFC Bank OTP is 654321 for login to netbanking.hdfcbank.com. Do not share OTP.",
+        fraud_category="banking",
+    )
+    evidence.risk.level = RiskLevel.LOW
+    evidence.risk.score = 0.10
+    evidence.risk.category = UserCategory.LOW_CONCERN
+
+    evidence = generate_response(evidence, UserState.RECEIVED)
+    resp = evidence.response
+
+    assert resp is not None
+    assert resp.urgency == "normal"
+    all_actions = " ".join(resp.immediate_actions).lower()
+    assert "verify sender" in all_actions or "proceed securely" in all_actions
+    assert "never share otp" in all_actions
+    # Must NOT include emergency breach commands
+    assert "freeze online transactions" not in all_actions
+    assert "freeze your account" not in all_actions
+
+
+def test_adaptive_response_golden_hour_paid_state():
+    """Verify that PAID state activates critical urgency, 1930 Golden Hour advice, and RBI ombudsman."""
+    evidence = IncidentEvidence(
+        input_type=InputType.SMS,
+        message="Paid Rs 15000 to electricity bill link",
+        fraud_category="electricity",
+    )
+    evidence.risk.level = RiskLevel.CRITICAL
+    evidence.risk.score = 0.95
+
+    evidence = generate_response(evidence, UserState.PAID)
+    resp = evidence.response
+
+    assert resp is not None
+    assert resp.urgency == "critical"
+    all_immediate = " ".join(resp.immediate_actions)
+    assert "1930" in all_immediate
+    assert "Golden Hour" in all_immediate or "golden hour" in all_immediate.lower()
+    assert "reversal" in all_immediate.lower()
+
+    all_recovery = " ".join(resp.recovery_steps)
+    assert "cybercrime.gov.in" in all_recovery or "FIR" in all_recovery
+    assert "RBI Banking Ombudsman" in all_recovery or "rbi" in all_recovery.lower()
+
+
+def test_adaptive_response_contextual_brand_and_upi_enrichment():
+    """Verify that brand lookalike detection and UPI identifiers enrich recovery and dispute reporting."""
+    evidence = IncidentEvidence(
+        input_type=InputType.SMS,
+        message="SBI debit card locked. Pay Rs 100 to upi: support@fakebank or visit http://sbi-fraud.xyz",
+        fraud_category="upi",
+        brands=[
+            BrandMatch(
+                brand_name="State Bank of India",
+                suspicious_domain="sbi-fraud.xyz",
+                legitimate_domain="onlinesbi.sbi",
+                confidence=0.9,
+            )
+        ],
+        iocs=["support@fakebank"],
+    )
+    evidence.risk.level = RiskLevel.HIGH
+    evidence.risk.score = 0.88
+
+    # Test ENTERED_CREDENTIALS state
+    evidence_creds = generate_response(evidence, UserState.ENTERED_CREDENTIALS)
+    resp_creds = evidence_creds.response
+    assert resp_creds.urgency == "critical"
+    all_recovery = " ".join(resp_creds.recovery_steps)
+    assert "https://onlinesbi.sbi" in all_recovery
+    all_reporting = " ".join(resp_creds.reporting_info)
+    assert "UPI Dispute" in all_reporting
+
+    # Test PAID state
+    evidence_paid = generate_response(evidence, UserState.PAID)
+    resp_paid = evidence_paid.response
+    assert "UPI app" in " ".join(resp_paid.reporting_info)
+
+
+def test_adaptive_response_electricity_and_courier_typology_guidance():
+    """Verify typology-specific warnings for electricity disconnection and courier fee scams."""
+    # Electricity scam
+    ev_elec = IncidentEvidence(
+        input_type=InputType.SMS,
+        message="Electricity bill overdue. Power disconnected tonight at 9:30 PM.",
+        fraud_category="electricity",
+    )
+    ev_elec.risk.level = RiskLevel.HIGH
+    ev_elec = generate_response(ev_elec, UserState.RECEIVED)
+    elec_actions = " ".join(ev_elec.response.immediate_actions)
+    assert "Electricity disconnection notices" in elec_actions
+
+    # Courier scam
+    ev_courier = IncidentEvidence(
+        input_type=InputType.SMS,
+        message="IndiaPost: Your parcel is held due to wrong address. Pay Rs 25.",
+        fraud_category="courier",
+    )
+    ev_courier.risk.level = RiskLevel.HIGH
+    ev_courier = generate_response(ev_courier, UserState.RECEIVED)
+    courier_actions = " ".join(ev_courier.response.immediate_actions)
+    assert "postal/courier" in courier_actions.lower() or "courier" in courier_actions.lower()
+
 
 
 
