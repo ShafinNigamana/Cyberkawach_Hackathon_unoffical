@@ -14,9 +14,22 @@ from difflib import SequenceMatcher
 from backend.models.evidence import (
     BrandMatch,
     EvidenceItem,
+    EvidenceReliability,
+    EvidenceSeverity,
+    EvidenceStatus,
     EvidenceType,
     IncidentEvidence,
+    RiskDirection,
 )
+
+
+def is_official_brand_domain(domain: str) -> bool:
+    """Check if domain is a registered legitimate brand domain."""
+    d = domain.lower().strip().removeprefix('www.')
+    for _, (legit_domains, _) in _BRAND_REGISTRY.items():
+        if any(d == ld or d.endswith('.' + ld) for ld in legit_domains):
+            return True
+    return False
 
 
 # ─── Brand registry: brand_name → (legitimate_domains, keywords_in_messages) ───
@@ -175,6 +188,13 @@ def check_brands(evidence: IncidentEvidence) -> IncidentEvidence:
                         f"(similarity: {confidence:.0%})"
                     ),
                     confidence=confidence,
+                    status=EvidenceStatus.SUSPICIOUS,
+                    reliability=EvidenceReliability.HEURISTIC,
+                    severity=EvidenceSeverity.HIGH if confidence >= 0.8 else EvidenceSeverity.MEDIUM,
+                    risk_direction=RiskDirection.INCREASES_RISK,
+                    observed_value=f"{domain} (similarity to {best_legit or legit_domains[0]}: {confidence:.0%})",
+                    interpretation=f"Host is a lookalike domain potentially impersonating brand '{brand_name}'",
+                    correlation_group="brand_impersonation",
                     raw_data={
                         "brand": brand_name,
                         "suspicious_domain": domain,
@@ -201,6 +221,13 @@ def check_brands(evidence: IncidentEvidence) -> IncidentEvidence:
                         f"but is not a known legitimate domain (expected: {legit_domains[0]})"
                     ),
                     confidence=brand_in_domain * 0.8,
+                    status=EvidenceStatus.SUSPICIOUS,
+                    reliability=EvidenceReliability.HEURISTIC,
+                    severity=EvidenceSeverity.MEDIUM,
+                    risk_direction=RiskDirection.INCREASES_RISK,
+                    observed_value=f"{domain} (contains brand: {brand_name})",
+                    interpretation=f"Domain incorporates brand keyword '{brand_name}' without being on official registrar list",
+                    correlation_group="brand_impersonation",
                     raw_data={
                         "brand": brand_name,
                         "suspicious_domain": domain,
@@ -234,6 +261,13 @@ def check_brands(evidence: IncidentEvidence) -> IncidentEvidence:
                     f"known legitimate domain ({', '.join(legit_domains)})"
                 ),
                 confidence=0.5,
+                status=EvidenceStatus.SUSPICIOUS,
+                reliability=EvidenceReliability.HEURISTIC,
+                severity=EvidenceSeverity.MEDIUM,
+                risk_direction=RiskDirection.INCREASES_RISK,
+                observed_value=f"Claimed: {brand_name}, URL domains: {', '.join(u.domain for u in evidence.urls)}",
+                interpretation=f"Sender references {brand_name} but directs user to unrelated domain infrastructure",
+                correlation_group="brand_impersonation",
                 raw_data={
                     "brand": brand_name,
                     "legitimate_domains": legit_domains,

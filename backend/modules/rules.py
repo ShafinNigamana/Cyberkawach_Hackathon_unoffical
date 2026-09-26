@@ -13,8 +13,12 @@ from __future__ import annotations
 import re
 from backend.models.evidence import (
     EvidenceItem,
+    EvidenceReliability,
+    EvidenceSeverity,
+    EvidenceStatus,
     EvidenceType,
     IncidentEvidence,
+    RiskDirection,
 )
 
 
@@ -116,6 +120,13 @@ def apply_rules(evidence: IncidentEvidence) -> IncidentEvidence:
             source="rules",
             description=f"Message matches fraud category: {top_category} (score: {category_scores[top_category]:.2f})",
             confidence=category_scores[top_category],
+            status=EvidenceStatus.OBSERVED,
+            reliability=EvidenceReliability.DETERMINISTIC_FACT,
+            severity=EvidenceSeverity.MEDIUM if category_scores[top_category] >= 0.5 else EvidenceSeverity.LOW,
+            risk_direction=RiskDirection.INCREASES_RISK,
+            observed_value=f"Lexical category match: {top_category} (score: {category_scores[top_category]:.2f})",
+            interpretation=f"Text vocabulary aligns with known {top_category} scam solicitation patterns",
+            correlation_group="rules_category",
             raw_data={"category_scores": category_scores},
         ))
 
@@ -133,6 +144,13 @@ def apply_rules(evidence: IncidentEvidence) -> IncidentEvidence:
             source="rules",
             description=f"Urgency/pressure tactics detected: {', '.join(set(h[0] for h in urgency_hits))}",
             confidence=min(0.3 * len(urgency_hits), 0.9),
+            status=EvidenceStatus.OBSERVED,
+            reliability=EvidenceReliability.HEURISTIC,
+            severity=EvidenceSeverity.MEDIUM,
+            risk_direction=RiskDirection.INCREASES_RISK,
+            observed_value=f"Urgency tokens: {', '.join(set(h[1] for h in urgency_hits))}",
+            interpretation="Message uses psychological time pressure to bypass critical reflection",
+            correlation_group="rules_urgency",
             raw_data={"urgency_signals": [{"type": h[0], "text": h[1]} for h in urgency_hits]},
         ))
 
@@ -150,6 +168,13 @@ def apply_rules(evidence: IncidentEvidence) -> IncidentEvidence:
             source="rules",
             description=f"Credential/action request detected: {', '.join(set(h[0] for h in credential_hits))}",
             confidence=min(0.4 * len(credential_hits), 0.95),
+            status=EvidenceStatus.OBSERVED,
+            reliability=EvidenceReliability.HEURISTIC,
+            severity=EvidenceSeverity.HIGH,
+            risk_direction=RiskDirection.INCREASES_RISK,
+            observed_value=f"Credential request tokens: {', '.join(set(h[1] for h in credential_hits))}",
+            interpretation="Message actively solicits personal authentication credentials or sensitive information",
+            correlation_group="rules_credential",
             raw_data={"credential_signals": [{"type": h[0], "text": h[1]} for h in credential_hits]},
         ))
 
@@ -167,6 +192,13 @@ def apply_rules(evidence: IncidentEvidence) -> IncidentEvidence:
             source="rules",
             description=f"Financial action signals: {', '.join(set(h[0] for h in financial_hits))}",
             confidence=min(0.35 * len(financial_hits), 0.9),
+            status=EvidenceStatus.OBSERVED,
+            reliability=EvidenceReliability.HEURISTIC,
+            severity=EvidenceSeverity.MEDIUM,
+            risk_direction=RiskDirection.INCREASES_RISK,
+            observed_value=f"Financial tokens: {', '.join(set(h[1] for h in financial_hits))}",
+            interpretation="Message prompts monetary transfers, fees, or account financial actions",
+            correlation_group="rules_financial",
             raw_data={"financial_signals": [{"type": h[0], "text": h[1]} for h in financial_hits]},
         ))
 

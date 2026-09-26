@@ -20,6 +20,8 @@ from backend.models.evidence import (
     RiskLevel,
     ThreatIntelResult,
     ThreatIntelStatus,
+    URLSignal,
+    UserCategory,
     UserState,
 )
 from backend.services.openphish import set_openphish_cache_for_testing, clear_openphish_cache
@@ -476,6 +478,133 @@ def test_evidence_model_semantics():
     assert risk.category == UserCategory.SUSPICIOUS
     assert risk.evidence_sufficiency == "PARTIAL"
     assert len(risk.what_cannot_be_concluded) == 2
+
+
+def test_tier1_confirmed_threat_intel_override():
+    """Verify Tier 1 hard override triggers when threat intel confirms malicious domain."""
+    evidence = IncidentEvidence(
+        input_type=InputType.URL,
+        message="https://malicious-feed-hit.xyz",
+    )
+    evidence.evidence.append(EvidenceItem(
+        type=EvidenceType.THREAT_INTEL_HIT,
+        source="safe_browsing",
+        description="Google Safe Browsing: Confirmed malware",
+        status=EvidenceStatus.CONFIRMED,
+        risk_direction=RiskDirection.INCREASES_RISK,
+        severity=EvidenceSeverity.CRITICAL,
+        confidence=0.95,
+    ))
+    evidence = fuse_evidence(evidence)
+
+    assert evidence.risk.level == RiskLevel.CRITICAL
+    assert evidence.risk.category == UserCategory.CONFIRMED_HIGH_RISK
+    assert evidence.risk.score >= 0.95
+    assert evidence.risk.evidence_sufficiency == "SUFFICIENT"
+    assert any("OVERRIDE" in f for f in evidence.risk.contributing_factors)
+
+
+def test_tier1_brand_credential_override():
+    """Verify Tier 1 override when brand impersonation is paired with credential demand."""
+    evidence = IncidentEvidence(
+        input_type=InputType.SMS,
+        message="SBI Account Blocked! Enter NetBanking password at http://sbi-verify.xyz",
+    )
+    evidence.evidence.append(EvidenceItem(
+        type=EvidenceType.BRAND_MISMATCH,
+        source="brand_check",
+        description="Possible SBI impersonation",
+        confidence=0.85,
+        status=EvidenceStatus.SUSPICIOUS,
+        risk_direction=RiskDirection.INCREASES_RISK,
+    ))
+    evidence.evidence.append(EvidenceItem(
+        type=EvidenceType.PATTERN_MATCH,
+        source="rules",
+        description="Credential/action request detected",
+        confidence=0.8,
+        status=EvidenceStatus.OBSERVED,
+        risk_direction=RiskDirection.INCREASES_RISK,
+        raw_data={"credential_signals": [{"type": "credential_request"}]},
+    ))
+    evidence = fuse_evidence(evidence)
+
+    assert evidence.risk.level == RiskLevel.CRITICAL
+    assert evidence.risk.category == UserCategory.HIGH_RISK
+    assert evidence.risk.score >= 0.85
+    assert evidence.risk.evidence_sufficiency == "SUFFICIENT"
+
+
+def test_tier2_correlation_dampening():
+    """Verify that multiple correlated rule hits within the same group suffer diminishing returns."""
+    # Single urgency hit
+    ev1 = IncidentEvidence(input_type=InputType.SMS, message="Urgent action required")
+    ev1.evidence.append(EvidenceItem(
+        type=EvidenceType.PATTERN_MATCH,
+        source="rules",
+        description="Urgency hit 1",
+        confidence=0.8,
+        risk_direction=RiskDirection.INCREASES_RISK,
+        correlation_group="rules_urgency",
+    ))
+    ev1 = fuse_evidence(ev1)
+    score_single = ev1.risk.score
+
+    # 4 urgency hits in the exact same group
+    ev2 = IncidentEvidence(input_type=InputType.SMS, message="Urgent urgent immediately now")
+    for i in range(4):
+        ev2.evidence.append(EvidenceItem(
+            type=EvidenceType.PATTERN_MATCH,
+            source="rules",
+            description=f"Urgency hit {i}",
+            confidence=0.8,
+            risk_direction=RiskDirection.INCREASES_RISK,
+            correlation_group="rules_urgency",
+        ))
+    ev2 = fuse_evidence(ev2)
+    score_multi = ev2.risk.score
+
+    # Without dampening, 4 hits would be 4 * score_single.
+    # With dampening, score_multi must be substantially less than 4x score_single!
+    assert score_multi < (score_single * 2.8)
+
+
+def test_evidentiary_sufficiency_unknown():
+    """Verify that short/ambiguous messages with no indicators evaluate to UNKNOWN sufficiency."""
+    evidence = IncidentEvidence(
+        input_type=InputType.SMS,
+        message="Hello sir",
+    )
+    evidence = fuse_evidence(evidence)
+
+    assert evidence.risk.level == RiskLevel.UNKNOWN
+    assert evidence.risk.category == UserCategory.UNKNOWN
+    assert evidence.risk.evidence_sufficiency == "INSUFFICIENT"
+    assert len(evidence.risk.uncertainty_reasons) > 0
+
+
+def test_contradictory_signal_official_domain_dampening():
+    """Verify that verified official domains dampen lexical false positives."""
+    evidence = IncidentEvidence(
+        input_type=InputType.SMS,
+        message="Your HDFC Bank account OTP is 123456. Visit https://netbanking.hdfcbank.com to manage cards.",
+        urls=[URLSignal(url="https://netbanking.hdfcbank.com", domain="netbanking.hdfcbank.com")],
+    )
+    # Generic banking keyword rules fire
+    evidence.evidence.append(EvidenceItem(
+        type=EvidenceType.RULE_MATCH,
+        source="rules",
+        description="Message matches fraud category: banking",
+        confidence=0.7,
+        risk_direction=RiskDirection.INCREASES_RISK,
+        correlation_group="rules_category",
+    ))
+    evidence = fuse_evidence(evidence)
+
+    assert evidence.risk.score <= 0.20
+    assert evidence.risk.level == RiskLevel.LOW
+    assert evidence.risk.category == UserCategory.LOW_CONCERN
+    assert any("official" in f.lower() for f in evidence.risk.contributing_factors)
 
 
 
