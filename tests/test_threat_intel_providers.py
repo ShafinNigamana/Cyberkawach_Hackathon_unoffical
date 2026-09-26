@@ -262,6 +262,66 @@ def test_phishstats_malformed_json():
     assert results[0].intel_status == ThreatIntelStatus.SOURCE_ERROR
 
 
+def test_phishstats_empty_response():
+    mock_settings = Settings(phishstats_api_key="psk_mock_key")
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.json.return_value = []
+
+    with patch("backend.services.phishstats.get_settings", return_value=mock_settings):
+        with patch("httpx.AsyncClient.get", new_callable=AsyncMock, return_value=mock_response):
+            results = asyncio.run(check_phishstats(["https://empty-response.com"]))
+
+    assert len(results) == 1
+    assert results[0].match is False
+    assert results[0].intel_status == ThreatIntelStatus.NO_KNOWN_MATCH
+
+
+def test_phishstats_unavailable():
+    mock_settings = Settings(phishstats_api_key="psk_mock_key")
+    mock_response = MagicMock()
+    mock_response.status_code = 503
+
+    with patch("backend.services.phishstats.get_settings", return_value=mock_settings):
+        with patch("httpx.AsyncClient.get", new_callable=AsyncMock, return_value=mock_response):
+            results = asyncio.run(check_phishstats(["https://service-down.com"]))
+
+    assert len(results) == 1
+    assert results[0].match is None
+    assert results[0].intel_status == ThreatIntelStatus.SOURCE_ERROR
+    assert "503" in (results[0].error or "")
+
+
+def test_safe_browsing_unavailable_http_error():
+    mock_settings = Settings(safe_browsing_api_key="mock_key")
+    mock_response = MagicMock()
+    mock_response.status_code = 500
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError("Server Error", request=MagicMock(), response=mock_response)
+
+    with patch("backend.services.safe_browsing.get_settings", return_value=mock_settings):
+        with patch("httpx.AsyncClient.post", new_callable=AsyncMock, return_value=mock_response):
+            results = asyncio.run(check_safe_browsing(["https://down-site.com"]))
+
+    assert len(results) == 1
+    assert results[0].intel_status == ThreatIntelStatus.SOURCE_ERROR
+    assert results[0].match is None
+
+
+def test_phishtank_unavailable_http_error():
+    mock_settings = Settings(phishtank_api_key="mock_key")
+    mock_response = MagicMock()
+    mock_response.status_code = 502
+    mock_response.raise_for_status.side_effect = httpx.HTTPStatusError("Bad Gateway", request=MagicMock(), response=mock_response)
+
+    with patch("backend.services.phishtank.get_settings", return_value=mock_settings):
+        with patch("httpx.AsyncClient.post", new_callable=AsyncMock, return_value=mock_response):
+            results = asyncio.run(check_phishtank(["https://down-site.com"]))
+
+    assert len(results) == 1
+    assert results[0].intel_status == ThreatIntelStatus.SOURCE_ERROR
+    assert results[0].match is None
+
+
 # ─────────────────────────────────────────────────────────────
 # 4. OpenPhish Total Removal Verification
 # ─────────────────────────────────────────────────────────────
