@@ -653,4 +653,108 @@ def test_contradictory_signal_official_domain_dampening():
     assert any("official" in f.lower() for f in evidence.risk.contributing_factors)
 
 
+def test_gemini_prompt_grounding_and_negative_bounds():
+    """Verify that Gemini prompt builder includes observed values, interpretations, and negative bounds."""
+    from backend.modules.gemini import _build_evidence_prompt
+
+    evidence = IncidentEvidence(
+        input_type=InputType.SMS,
+        message="Your SBI debit card is suspended. Verify immediately at http://sbi-verification.xyz",
+    )
+    evidence.risk.level = RiskLevel.CRITICAL
+    evidence.risk.score = 0.95
+    evidence.risk.category = UserCategory.HIGH_RISK
+    evidence.risk.evidence_sufficiency = "SUFFICIENT"
+    evidence.risk.what_cannot_be_concluded = [
+        "Whether recipient's card was actually suspended",
+        "Whether recipient visited the link or lost funds",
+    ]
+    evidence.risk.uncertainty_reasons = ["Domain registration date is unverified"]
+    evidence.evidence.append(EvidenceItem(
+        type=EvidenceType.BRAND_MISMATCH,
+        source="brand_check",
+        description="Brand impersonation detected",
+        confidence=0.88,
+        status=EvidenceStatus.SUSPICIOUS,
+        severity=EvidenceSeverity.HIGH,
+        observed_value="sbi-verification.xyz",
+        interpretation="Unregistered lookalike domain impersonating SBI",
+        risk_direction=RiskDirection.INCREASES_RISK,
+    ))
+
+    prompt = _build_evidence_prompt(evidence)
+
+    assert "Known Epistemic Negative Bounds (What CANNOT be concluded):" in prompt
+    assert "Whether recipient's card was actually suspended" in prompt
+    assert "Observed: sbi-verification.xyz" in prompt
+    assert "Signifies: Unregistered lookalike domain impersonating SBI" in prompt
+    assert "[SUSPICIOUS]" in prompt
+    assert "Uncertainty Rationale:" in prompt
+    assert "Domain registration date is unverified" in prompt
+
+
+def test_gemini_validation_preserves_negative_bounds():
+    """Verify that LLM validation parses model negative bounds and unions them with system bounds."""
+    import json
+    from backend.modules.gemini import validate_and_parse_llm_response
+
+    evidence = IncidentEvidence(
+        input_type=InputType.SMS,
+        message="Account suspended, click link",
+    )
+    evidence.risk.what_cannot_be_concluded = ["System cannot conclude user credentials were stolen"]
+
+    llm_payload = {
+        "summary": "This message is a phishing attempt impersonating a financial institution.",
+        "reasons": ["The domain does not belong to the institution"],
+        "attack_path": ["Sender sends coercive message", "Link directs to phishing portal"],
+        "user_action": ["Do not click the link", "Delete the SMS"],
+        "uncertainty": "Exact infrastructure origin is unknown",
+        "what_cannot_be_concluded": [
+            "Cannot conclude whether the sender has access to any user account"
+        ],
+    }
+
+    explanation = validate_and_parse_llm_response(
+        raw_text=json.dumps(llm_payload),
+        evidence=evidence,
+        model_name="gemini-2.5-flash",
+    )
+
+    assert explanation is not None
+    assert "Cannot conclude whether the sender has access to any user account" in explanation.what_cannot_be_concluded
+    assert "System cannot conclude user credentials were stolen" in explanation.what_cannot_be_concluded
+
+
+def test_fallback_explanation_epistemic_phrasing_and_bounds():
+    """Verify fallback explanation respects negative bounds and avoids unwarranted breach assumptions."""
+    evidence = IncidentEvidence(
+        input_type=InputType.SMS,
+        message="Urgent: Your bank account is locked. Update KYC at http://phish.example",
+    )
+    evidence.risk.level = RiskLevel.CRITICAL
+    evidence.risk.score = 0.92
+    evidence.risk.category = UserCategory.HIGH_RISK
+    evidence.fraud_category = "phishing"
+    evidence.risk.what_cannot_be_concluded = [
+        "Whether the recipient clicked the link",
+        "Whether credentials were compromised",
+    ]
+    evidence.risk.uncertainty_reasons = ["Absence of live telemetry on recipient device"]
+
+    evidence = generate_fallback_explanation(evidence)
+
+    assert evidence.explanation is not None
+    assert evidence.explanation.what_cannot_be_concluded == [
+        "Whether the recipient clicked the link",
+        "Whether credentials were compromised",
+    ]
+    assert "Absence of live telemetry" in evidence.explanation.uncertainty
+
+    attack_path_text = " ".join(evidence.explanation.attack_path)
+    assert any(term in attack_path_text.lower() for term in ["attempts to", "prompted to", "directs to", "designed to"])
+    assert "account was compromised" not in attack_path_text.lower()
+
+
+
 

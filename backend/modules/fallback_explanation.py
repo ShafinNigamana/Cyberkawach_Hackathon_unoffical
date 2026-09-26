@@ -30,59 +30,60 @@ _SUMMARY_TEMPLATES = {
 
 # ─── Attack path templates by fraud category ───
 
+# ─── Attack path templates by fraud category (Conditional / Intent-focused) ───
+
 _ATTACK_PATHS = {
     "banking": [
-        "Victim receives message impersonating a bank notification",
-        "Message creates urgency (account blocked/KYC required/suspicious activity)",
-        "Victim is directed to click a link to a fake banking portal",
-        "Fake portal harvests login credentials, OTP, or card details",
-        "Attacker uses stolen credentials to drain the account",
+        "Sender impersonates a trusted financial institution or banking service",
+        "Message creates artificial urgency (e.g. account suspension or KYC deadline)",
+        "Recipient is directed to an unauthorized external link or form",
+        "The external form attempts to capture login credentials, OTP, or card numbers",
+        "Captured credentials could be used to attempt unauthorized account access",
     ],
     "courier": [
-        "Victim receives fake delivery notification",
-        "Message claims a package needs rescheduling or customs payment",
-        "Victim clicks link to a fake courier tracking page",
-        "Page requests payment or personal details for 'redelivery'",
-        "Attacker collects payment credentials or personal data",
+        "Sender presents an unverified parcel delivery or tracking alert",
+        "Message asserts a customs fee or reschedule payment is pending",
+        "Recipient is directed to a lookalike tracking page",
+        "The page attempts to capture payment card details or identity information",
+        "Submitted payment data could lead to fraudulent card transactions",
     ],
     "government": [
-        "Victim receives message impersonating a government agency",
-        "Message threatens penalties, legal action, or loss of benefits",
-        "Victim is directed to click a link or call a number",
-        "Fake page/agent requests personal details, Aadhaar, or payment",
-        "Attacker harvests identity documents or money",
+        "Sender claims authority from a government ministry, court, or police department",
+        "Message exerts psychological pressure regarding fines, legal action, or subsidies",
+        "Recipient is directed to an unofficial portal or contact channel",
+        "Unauthorized channel solicits identity documents, Aadhaar, or monetary transfer",
+        "Collected information risks identity impersonation or financial loss",
     ],
     "lottery_prize": [
-        "Victim receives message claiming they've won a prize",
-        "Message asks for a 'processing fee' or personal details to claim",
-        "Victim is directed to pay a fee or provide bank details",
-        "Attacker collects the fee and/or bank credentials",
-        "No prize exists — victim loses money and personal data",
+        "Sender informs recipient of an unverified prize, lottery, or cash reward",
+        "Message demands an upfront 'processing fee' or bank account details to claim",
+        "Recipient is directed to transfer advance fees to third-party accounts",
+        "Advance fees are captured without any genuine prize distribution",
     ],
     "job_offer": [
-        "Victim receives unsolicited job offer with attractive salary",
-        "Message requests a 'registration fee' or personal documents",
-        "Victim pays fee or shares sensitive personal information",
-        "No real job exists — attacker disappears with money/data",
+        "Sender promotes an unsolicited high-paying employment opportunity",
+        "Message requests advance 'registration fees' or personal background documents",
+        "Recipient is guided to make advance payments or provide sensitive documents",
+        "Attacker collects advance fees without providing bona fide employment",
     ],
     "investment": [
-        "Victim receives message promising guaranteed returns",
-        "Initial small investment shows fake 'profits' to build trust",
-        "Victim invests larger amounts based on fabricated returns",
-        "Attacker blocks withdrawal or disappears with funds",
+        "Sender promises guaranteed or inflated returns in trading or crypto schemes",
+        "Communication directs recipient to join private unmonitored channels",
+        "Victim is induced to deposit funds into unverified platforms",
+        "Deposited capital is withheld with withdrawal restrictions",
     ],
     "tech_support": [
-        "Victim receives alert about a virus or security breach",
-        "Message directs to call a fake tech support number",
-        "Fake agent requests remote access to victim's device",
-        "Attacker installs malware or steals data via remote access",
+        "Sender displays simulated security warnings or malware infection notices",
+        "Message prompts recipient to call an unverified helpline or install software",
+        "Unauthorized agent attempts to acquire remote device access",
+        "Remote access risks software tampering or sensitive file access",
     ],
 }
 
 _DEFAULT_ATTACK_PATH = [
-    "Victim receives a suspicious message with fraudulent content",
-    "Message attempts to manipulate victim into taking action",
-    "Action leads to data theft, financial loss, or malware",
+    "Sender delivers an unverified message containing coercive or deceptive elements",
+    "Message attempts to induce recipient to click external links or execute actions",
+    "Subsequent actions risk exposure of personal credentials or unauthorized transfers",
 ]
 
 # ─── User action templates by risk level ───
@@ -152,7 +153,7 @@ def generate_fallback_explanation(evidence: IncidentEvidence) -> IncidentEvidenc
     user_action = _USER_ACTIONS.get(risk.level, _USER_ACTIONS[RiskLevel.UNKNOWN])
 
     # ─── Uncertainty ───
-    uncertainty_parts = []
+    uncertainty_parts = list(evidence.risk.uncertainty_reasons)
     failed_sources = [
         ti.source for ti in evidence.threat_intel
         if ti.error is not None
@@ -168,7 +169,7 @@ def generate_fallback_explanation(evidence: IncidentEvidence) -> IncidentEvidenc
     if risk.level == RiskLevel.UNKNOWN:
         uncertainty_parts.append("Insufficient evidence for a confident assessment")
 
-    uncertainty = ". ".join(uncertainty_parts) + "." if uncertainty_parts else ""
+    uncertainty = ". ".join(dict.fromkeys(uncertainty_parts)) + "." if uncertainty_parts else ""
 
     evidence.explanation = GeminiExplanation(
         summary=summary,
@@ -176,6 +177,7 @@ def generate_fallback_explanation(evidence: IncidentEvidence) -> IncidentEvidenc
         attack_path=attack_path,
         user_action=user_action,
         uncertainty=uncertainty,
+        what_cannot_be_concluded=list(evidence.risk.what_cannot_be_concluded),
         model_used="deterministic-fallback",
         evidence_cited=[str(i + 1) for i in range(len(evidence.evidence))],
         is_fallback=True,
