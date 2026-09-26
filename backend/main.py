@@ -6,9 +6,12 @@ Defines API routes and wires the analysis pipeline.
 from __future__ import annotations
 
 import time
+from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 from backend.config import get_settings
 from backend.models.api import (
@@ -39,6 +42,25 @@ app.add_middleware(
 # In-memory incident store — ponytail: no DB for hackathon demo
 _incidents: dict[str, IncidentEvidence] = {}
 
+# Static files mounts for frontend and demo fixtures
+frontend_path = Path(__file__).resolve().parent.parent / "frontend"
+fixtures_path = Path(__file__).resolve().parent.parent / "fixtures"
+
+if fixtures_path.exists():
+    app.mount("/fixtures", StaticFiles(directory=str(fixtures_path)), name="fixtures")
+
+if frontend_path.exists():
+    css_path = frontend_path / "css"
+    js_path = frontend_path / "js"
+    if css_path.exists():
+        app.mount("/css", StaticFiles(directory=str(css_path)), name="css")
+    if js_path.exists():
+        app.mount("/js", StaticFiles(directory=str(js_path)), name="js")
+
+    @app.get("/")
+    async def serve_index():
+        return FileResponse(str(frontend_path / "index.html"))
+
 
 @app.get("/api/health", response_model=HealthResponse)
 async def health_check():
@@ -49,6 +71,7 @@ async def health_check():
         modules={
             "ingestion": True,
             "rules": True,
+            "ml_baseline": True,
             "url_analyzer": True,
             "brand_check": True,
             "threat_intel": True,
@@ -101,6 +124,15 @@ async def analyze_message(request: AnalyzeRequest):
     except Exception as e:
         modules_failed.append("rules")
         evidence.errors.append(f"rules: {str(e)}")
+
+    # Stage 2b: ML baseline (TF-IDF + Logistic Regression statistical classifier)
+    try:
+        from backend.modules.ml_baseline import run_ml_baseline
+        evidence = run_ml_baseline(evidence)
+        modules_executed.append("ml_baseline")
+    except Exception as e:
+        modules_failed.append("ml_baseline")
+        evidence.errors.append(f"ml_baseline: {str(e)}")
 
     # Stage 3: URL & domain analysis
     try:

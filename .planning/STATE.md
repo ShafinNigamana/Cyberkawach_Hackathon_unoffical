@@ -10,13 +10,18 @@ See: .planning/PROJECT.md (updated 2026-09-25)
 ## Current Phase
 
 **Phase 1: Core Pipeline (P0 — Must Demo)**
+- Status: Completed (2026-09-26)
+- Verified: End-to-end analysis pipeline, ML baseline, fallback explanation, adaptive response, 11/11 pytest unit/integration tests passing.
+
+**Phase 2: Security & Stability Hardening**
 - Status: Active
 - Started: 2026-09-26
-- Goal: Complete end-to-end pipeline from input to adaptive response. Must work as a full demo even with every optional component disabled.
+- Goal: Harden every trust boundary and external dependency (SSRF, rate limiting, prompt injection defense, PII redaction).
 
 ## Phase History
 
 - **Phase 0: Architecture Freeze** — Completed 2026-09-26. Evidence Contract, API surface, repo layout, env config locked. 5 scope-tightening changes applied.
+- **Phase 1: Core Pipeline (P0 — Must Demo)** — Completed 2026-09-26. Delivered ingestion, rule engine, TF-IDF + Logistic Regression ML baseline, URL analyzer, brand check, Safe Browsing + PhishTank adapters, fusion scoring, Gemini + deterministic fallback, adaptive response, citizen-trust UI, and 11/11 passing tests.
 
 ## Active Decisions
 
@@ -24,10 +29,11 @@ See: .planning/PROJECT.md (updated 2026-09-25)
 - OCR deferred to P1 (Phase 4)
 - Evidence Contract as the internal API between all modules
 - Free APIs only
+- Gemini non-critical with deterministic fallback explanation
 
 ## Blockers
 
 None currently.
 
 ---
-*Last updated: 2026-09-25 after initialization*
+*Last updated: 2026-09-26 after Phase 1 verification*
