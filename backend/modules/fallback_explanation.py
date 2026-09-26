@@ -29,6 +29,30 @@ _SUMMARY_TEMPLATES = {
     RiskLevel.UNKNOWN: "Insufficient evidence to determine if this message is fraudulent.",
 }
 
+_SUMMARY_TEMPLATES_HI = {
+    RiskLevel.CRITICAL: "इस संदेश में {category} धोखाधड़ी (स्कैम) के कई पुष्ट और अत्यधिक गंभीर खतरे पाए गए हैं।",
+    RiskLevel.HIGH: "इस संदेश में {category} धोखाधड़ी के महत्वपूर्ण संकेत पाए गए हैं। सावधान रहें।",
+    RiskLevel.MEDIUM: "इस संदेश में कुछ संदिग्ध तत्व हैं जो {category} स्कैम की संभावना दर्शाते हैं।",
+    RiskLevel.LOW: "इस संदेश में धोखाधड़ी के बहुत कम संकेत हैं।",
+    RiskLevel.UNKNOWN: "इस संदेश का धोखाधड़ी होना तय करने के लिए पर्याप्त साक्ष्य उपलब्ध नहीं हैं।",
+}
+
+_SUMMARY_TEMPLATES_GU = {
+    RiskLevel.CRITICAL: "આ સંદેશામાં {category} છેતરપિંડી (સ્કેમ) ના અત્યંત ગંભીર સંકેતો મળી આવ્યા છે.",
+    RiskLevel.HIGH: "આ સંદેશામાં {category} છેતરપિંડીના નોંધપાત્ર જોખમી સંકેતો મળ્યા છે.",
+    RiskLevel.MEDIUM: "આ સંદેશામાં કેટલીક શંકાસ્પદ બાબતો છે જે {category} સ્કેમ સૂચવે છે.",
+    RiskLevel.LOW: "આ સંદેશામાં છેતરપિંડીના ખૂબ ઓછા સંકેતો છે.",
+    RiskLevel.UNKNOWN: "આ સંદેશ છેતરપિંડીયુક્ત છે કે નહીં તે નક્કી કરવા માટે પૂરતા પુરાવા નથી.",
+}
+
+_SUMMARY_TEMPLATES_TA = {
+    RiskLevel.CRITICAL: "இந்த செய்தியில் {category} மோசடி தொடர்பான கடுமையான அச்சுறுத்தல்கள் கண்டறியப்பட்டுள்ளன.",
+    RiskLevel.HIGH: "இந்த செய்தியில் {category} மோசடிக்கான முக்கிய அச்சுறுத்தல் அறிகுறிகள் உள்ளன. எச்சரிக்கையுடன் இருக்கவும்.",
+    RiskLevel.MEDIUM: "இந்த செய்தியில் {category} மோசடியைக் குறிக்கும் சில சந்தேகத்திற்குரிய கூறுகள் உள்ளன.",
+    RiskLevel.LOW: "இந்த செய்தியில் மிகக் குறைந்த மோசடி அறிகுறிகளே உள்ளன.",
+    RiskLevel.UNKNOWN: "இது மோசடி செய்தியா என்பதை உறுதிப்படுத்த போதுமான ஆதாரங்கள் இல்லை.",
+}
+
 # ─── Attack path templates by fraud category ───
 
 # ─── Attack path templates by fraud category (Conditional / Intent-focused) ───
@@ -315,7 +339,15 @@ def generate_fallback_explanation(evidence: IncidentEvidence) -> IncidentEvidenc
     category = evidence.fraud_category or "unknown"
 
     # ─── Build summary from template + evidence ───
-    template = _SUMMARY_TEMPLATES.get(risk.level, _SUMMARY_TEMPLATES[RiskLevel.UNKNOWN])
+    lang = (evidence.language or "en").lower()
+    if lang.startswith("hi"):
+        template = _SUMMARY_TEMPLATES_HI.get(risk.level, _SUMMARY_TEMPLATES_HI[RiskLevel.UNKNOWN])
+    elif lang.startswith("gu"):
+        template = _SUMMARY_TEMPLATES_GU.get(risk.level, _SUMMARY_TEMPLATES_GU[RiskLevel.UNKNOWN])
+    elif lang.startswith("ta"):
+        template = _SUMMARY_TEMPLATES_TA.get(risk.level, _SUMMARY_TEMPLATES_TA[RiskLevel.UNKNOWN])
+    else:
+        template = _SUMMARY_TEMPLATES.get(risk.level, _SUMMARY_TEMPLATES[RiskLevel.UNKNOWN])
     summary = template.format(category=category)
 
     # ─── Build reasons from evidence items ───
