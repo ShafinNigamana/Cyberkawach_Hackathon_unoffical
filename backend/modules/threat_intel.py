@@ -21,14 +21,13 @@ from backend.models.evidence import (
     ThreatIntelStatus,
 )
 from backend.services.safe_browsing import check_safe_browsing
-from backend.services.phishtank import check_phishtank
 from backend.services.openphish import check_openphish
 
 
 async def query_threat_intel(evidence: IncidentEvidence) -> IncidentEvidence:
     """
     Query all configured threat-intel sources for URLs in the evidence.
-    Runs Safe Browsing, PhishTank, and OpenPhish in parallel.
+    Runs Safe Browsing and OpenPhish in parallel (OpenPhish replaces PhishTank as primary phishing feed).
     Each result appears as its own sourced evidence item with explicit epistemic status.
     """
     if not evidence.urls:
@@ -39,12 +38,11 @@ async def query_threat_intel(evidence: IncidentEvidence) -> IncidentEvidence:
     # Run sources in parallel
     results_list = await asyncio.gather(
         check_safe_browsing(urls),
-        check_phishtank(urls),
         check_openphish(urls),
         return_exceptions=True,
     )
 
-    source_names = ["safe_browsing", "phishtank", "openphish"]
+    source_names = ["safe_browsing", "openphish"]
 
     for src_name, batch_result in zip(source_names, results_list):
         if isinstance(batch_result, Exception):

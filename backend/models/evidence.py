@@ -203,6 +203,19 @@ class EvidenceItem(BaseModel):
     raw_data: Optional[dict] = None  # Preserved for provenance
 
 
+class AttackStep(BaseModel):
+    """
+    A traceable step in an attack causal chain linking observed evidence to harm.
+    Enforces the causal graph: Evidence Item -> Attack Step -> Consequence.
+    """
+    step_number: int
+    description: str
+    causal_stage: str = "lure"  # "lure", "redirection", "exploitation", "monetization", "execution"
+    evidence_indices: list[int] = Field(default_factory=list)  # 1-indexed references to evidence items
+    observed_basis: Optional[str] = None  # Specific observed value or signal
+    intended_consequence: Optional[str] = None  # Downstream threat if victim complies
+
+
 class GeminiExplanation(BaseModel):
     """
     Explanation output — structured, never freeform.
@@ -211,6 +224,7 @@ class GeminiExplanation(BaseModel):
     summary: str = ""
     reasons: list[str] = Field(default_factory=list)
     attack_path: list[str] = Field(default_factory=list)
+    structured_attack_path: list[AttackStep] = Field(default_factory=list)
     user_action: list[str] = Field(default_factory=list)
     uncertainty: str = ""
     what_cannot_be_concluded: list[str] = Field(default_factory=list)

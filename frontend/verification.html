@@ -277,7 +277,7 @@
                 <table class="kv-table">
                     <tr><td>Google Gemini API</td><td id="cfg-gemini">--</td></tr>
                     <tr><td>Google Safe Browsing v4</td><td id="cfg-safebrowsing">--</td></tr>
-                    <tr><td>PhishTank API</td><td id="cfg-phishtank">--</td></tr>
+                    <tr><td>OpenPhish Community Feed</td><td id="cfg-openphish">--</td></tr>
                     <tr><td>Deterministic Fallback</td><td id="cfg-fallback"><span class="badge badge--pass">ALWAYS ON</span></td></tr>
                 </table>
                 <div class="test-action">
@@ -452,7 +452,7 @@
                 </p>
                 <table class="kv-table">
                     <tr><td>Google Safe Browsing</td><td id="ext-sb-status">--</td></tr>
-                    <tr><td>PhishTank (Unconfigured)</td><td id="ext-pt-status">--</td></tr>
+                    <tr><td>OpenPhish Community Feed</td><td id="ext-op-status">--</td></tr>
                     <tr><td>Pipeline Degrades Gracefully</td><td id="ext-degrade-status">--</td></tr>
                 </table>
                 <div class="code-block" id="ext-details">Click below to verify graceful degradation...</div>
@@ -508,9 +508,9 @@
                     ? '<span class="badge badge--pass">CONFIGURED</span>'
                     : '<span class="badge badge--warn">NOT CONFIGURED</span>';
 
-                document.getElementById('cfg-phishtank').innerHTML = data.phishtank_configured
-                    ? '<span class="badge badge--pass">CONFIGURED</span>'
-                    : '<span class="badge badge--muted">NOT CONFIGURED</span>';
+                document.getElementById('cfg-openphish').innerHTML = data.openphish_configured
+                    ? '<span class="badge badge--pass">ACTIVE (COMMUNITY FEED)</span>'
+                    : '<span class="badge badge--muted">DISABLED</span>';
 
                 badge.className = 'badge badge--pass';
                 badge.textContent = 'VERIFIED';
@@ -836,22 +836,22 @@
                     badge.textContent = 'PASS';
 
                     const sb = (data.threat_intel || []).find(t => t.source === 'safe_browsing');
-                    const pt = (data.threat_intel || []).find(t => t.source === 'phishtank');
+                    const op = (data.threat_intel || []).find(t => t.source === 'openphish');
 
                     document.getElementById('ext-sb-status').innerHTML = sb 
-                        ? `<span class="badge badge--info">${sb.error || (sb.match ? 'MATCH' : 'CLEAN')}</span>` 
+                        ? `<span class="badge badge--info">${sb.error || (sb.match ? 'MATCH' : 'NO MATCH')}</span>` 
                         : '<span class="badge badge--muted">UNCONFIGURED</span>';
 
-                    document.getElementById('ext-pt-status').innerHTML = pt 
-                        ? `<span class="badge badge--muted">${pt.error || 'UNCONFIGURED'}</span>` 
+                    document.getElementById('ext-op-status').innerHTML = op 
+                        ? `<span class="badge badge--pass">${op.error || (op.match ? 'MATCH' : 'NO MATCH')}</span>` 
                         : '<span class="badge badge--muted">GRACEFUL MISS</span>';
 
                     document.getElementById('ext-degrade-status').innerHTML = '<span class="badge badge--pass">100% OPERATIONAL (ZERO CRASH)</span>';
 
                     document.getElementById('ext-details').textContent = 
                         `Threat Intel Feed Results:\n` +
-                        `Safe Browsing: ${sb ? (sb.error ? sb.error : (sb.match ? 'Confirmed malicious' : 'Clean')) : 'N/A'}\n` +
-                        `PhishTank: ${pt ? (pt.error ? pt.error : (pt.match ? 'Confirmed phish' : 'Clean')) : 'API key unconfigured (gracefully handled)'}\n` +
+                        `Safe Browsing: ${sb ? (sb.error ? sb.error : (sb.match ? 'Confirmed malicious' : 'No match')) : 'N/A'}\n` +
+                        `OpenPhish: ${op ? (op.error ? op.error : (op.match ? 'Confirmed phish' : 'No match')) : 'N/A'}\n` +
                         `Pipeline Execution Status: ${data.modules_executed.join(', ')}`;
                     return true;
                 }

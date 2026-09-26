@@ -11,6 +11,7 @@ The demo must NEVER fail because Gemini is unavailable.
 from __future__ import annotations
 
 from backend.models.evidence import (
+    AttackStep,
     EvidenceType,
     GeminiExplanation,
     IncidentEvidence,
@@ -123,6 +124,187 @@ _USER_ACTIONS = {
 }
 
 
+def _build_traceable_fallback_attack_path(
+    evidence: IncidentEvidence,
+) -> tuple[list[str], list[AttackStep]]:
+    """
+    Construct an explicit causal graph:
+    Evidence Item -> Attack Step -> Potential Risk / Harm
+    Without ungrounded assumptions.
+    """
+    structured_steps: list[AttackStep] = []
+    category = evidence.fraud_category or "suspicious"
+    risk_level = evidence.risk.level
+
+    # Collect indices and categorize evidence items (1-indexed for citations)
+    lure_indices: list[int] = []
+    infra_indices: list[int] = []
+    exploit_indices: list[int] = []
+
+    for i, item in enumerate(evidence.evidence, 1):
+        grp = item.correlation_group or ""
+        desc_lower = item.description.lower()
+        if grp in ("rules_urgency", "rules_coercion", "rules_category", "rules_threat") or item.source in ("laya", "ml_baseline"):
+            lure_indices.append(i)
+        elif item.type in (EvidenceType.BRAND_MISMATCH, EvidenceType.URL_ANALYSIS, EvidenceType.THREAT_INTEL_HIT) or item.source in ("url_analyzer", "brand_check", "threat_intel"):
+            infra_indices.append(i)
+        elif grp in ("rules_credential", "rules_financial") or any(k in desc_lower for k in ("credential", "otp", "password", "bank", "payment", "upi")):
+            exploit_indices.append(i)
+
+    step_num = 1
+
+    # Stage 1: Lure / Initial Contact
+    if risk_level == RiskLevel.UNKNOWN or evidence.risk.evidence_sufficiency == "INSUFFICIENT":
+        structured_steps.append(
+            AttackStep(
+                step_number=step_num,
+                description="Sender delivers an unverified message with insufficient indicators to establish fraudulent intent",
+                causal_stage="lure",
+                evidence_indices=[1] if evidence.evidence else [],
+                intended_consequence="Initial outreach; intent cannot be definitively confirmed without further evidence",
+            )
+        )
+    elif lure_indices:
+        cite_str = f" [Evidence {', '.join(str(idx) for idx in lure_indices[:3])}]"
+        structured_steps.append(
+            AttackStep(
+                step_number=step_num,
+                description=f"Attacker delivers unsolicited communication designed to create psychological urgency or authority pretexts regarding {category}{cite_str}",
+                causal_stage="lure",
+                evidence_indices=lure_indices[:3],
+                observed_basis=evidence.evidence[lure_indices[0] - 1].observed_value or evidence.evidence[lure_indices[0] - 1].description,
+                intended_consequence="Manipulate recipient into hasty engagement before verifying authenticity",
+            )
+        )
+    else:
+        structured_steps.append(
+            AttackStep(
+                step_number=step_num,
+                description=f"Sender initiates contact with an unsolicited communication regarding {category}",
+                causal_stage="lure",
+                evidence_indices=[1] if evidence.evidence else [],
+                intended_consequence="Engage recipient in communication",
+            )
+        )
+    step_num += 1
+
+    # Stage 2: Redirection / Infrastructure
+    if infra_indices:
+        cite_str = f" [Evidence {', '.join(str(idx) for idx in infra_indices[:3])}]"
+        target_domain = ""
+        if evidence.urls:
+            target_domain = evidence.urls[0].domain
+        elif evidence.brands:
+            target_domain = evidence.brands[0].suspicious_domain
+        if not target_domain:
+            for idx in infra_indices:
+                if evidence.evidence[idx - 1].observed_value:
+                    target_domain = evidence.evidence[idx - 1].observed_value
+                    break
+        domain_part = f" '{target_domain}'" if target_domain else ""
+
+        structured_steps.append(
+            AttackStep(
+                step_number=step_num,
+                description=f"Recipient is prompted to access unauthorized external domain{domain_part}{cite_str}",
+                causal_stage="redirection",
+                evidence_indices=infra_indices[:3],
+                observed_basis=target_domain or "Suspicious URL/infrastructure",
+                intended_consequence="Bypass verified organizational channels and steer victim to unverified external infrastructure",
+            )
+        )
+        step_num += 1
+    elif evidence.iocs:
+        ioc_val = evidence.iocs[0]
+        ioc_indices = [i for i, item in enumerate(evidence.evidence, 1) if item.type == EvidenceType.IOC_EXTRACTED][:2]
+        cite_str = f" [Evidence {', '.join(str(idx) for idx in ioc_indices)}]" if ioc_indices else ""
+        structured_steps.append(
+            AttackStep(
+                step_number=step_num,
+                description=f"Recipient is directed to communicate with an unverified direct contact '{ioc_val}'{cite_str}",
+                causal_stage="redirection",
+                evidence_indices=ioc_indices,
+                observed_basis=ioc_val,
+                intended_consequence="Bypass formal support channels and establish unmonitored communication",
+            )
+        )
+        step_num += 1
+
+    # Stage 3: Exploitation / Solicitation
+    if exploit_indices:
+        cite_str = f" [Evidence {', '.join(str(idx) for idx in exploit_indices[:3])}]"
+        structured_steps.append(
+            AttackStep(
+                step_number=step_num,
+                description=f"Attacker attempts to solicit sensitive credentials or financial transfer{cite_str}",
+                causal_stage="exploitation",
+                evidence_indices=exploit_indices[:3],
+                observed_basis=evidence.evidence[exploit_indices[0] - 1].observed_value or "Credential/financial demand",
+                intended_consequence="Capture authentication factors or extract unauthorized funds",
+            )
+        )
+        step_num += 1
+    elif risk_level in (RiskLevel.CRITICAL, RiskLevel.HIGH):
+        cat_exploit_map = {
+            "banking": "Attacker typically attempts to solicit netbanking credentials, OTP, or card details via deceptive portal",
+            "courier": "Attacker typically prompts victim for payment card details under pretext of delivery or customs fee",
+            "lottery_prize": "Attacker typically demands advance fee or deposit transfer to claim promised funds",
+            "investment": "Attacker typically induces victim to transfer capital into unverified investment schemes",
+            "job_offer": "Attacker typically solicits advance registration fees or identity records",
+            "government": "Attacker typically demands urgent fine settlement or identity document submission",
+            "tech_support": "Attacker typically attempts to persuade victim to install remote device management tools",
+        }
+        exploit_desc = cat_exploit_map.get(
+            category,
+            "Attacker typically attempts to solicit confidential authentication factors or personal data",
+        )
+        structured_steps.append(
+            AttackStep(
+                step_number=step_num,
+                description=exploit_desc,
+                causal_stage="exploitation",
+                evidence_indices=[],
+                intended_consequence="Acquire victim secrets or monetary transfers",
+            )
+        )
+        step_num += 1
+
+    # Stage 4: Risk / Consequence (Epistemically modest & non-assumptive)
+    if risk_level in (RiskLevel.CRITICAL, RiskLevel.HIGH):
+        structured_steps.append(
+            AttackStep(
+                step_number=step_num,
+                description="Potential consequence: Unauthorized financial loss or account takeover if recipient complies with requested actions",
+                causal_stage="monetization",
+                evidence_indices=[],
+                intended_consequence="Financial loss or account compromise (unconfirmed, contingent on user compliance)",
+            )
+        )
+    elif risk_level == RiskLevel.MEDIUM:
+        structured_steps.append(
+            AttackStep(
+                step_number=step_num,
+                description="Potential consequence: Exposure of personal contact details, credentials, or vulnerability to follow-up fraud attempts",
+                causal_stage="monetization",
+                evidence_indices=[],
+                intended_consequence="Information disclosure or secondary targeting",
+            )
+        )
+    else:
+        structured_steps.append(
+            AttackStep(
+                step_number=step_num,
+                description="Potential consequence: Unconfirmed without verified recipient interaction; standard caution advised",
+                causal_stage="monetization",
+                evidence_indices=[],
+                intended_consequence="Minimal or unknown risk",
+            )
+        )
+
+    attack_path_strings = [s.description for s in structured_steps]
+    return attack_path_strings, structured_steps
+
+
 def generate_fallback_explanation(evidence: IncidentEvidence) -> IncidentEvidence:
     """
     Generate a deterministic explanation from evidence objects.
@@ -146,8 +328,8 @@ def generate_fallback_explanation(evidence: IncidentEvidence) -> IncidentEvidenc
     if not reasons:
         reasons = ["No strong fraud indicators detected in the available evidence."]
 
-    # ─── Attack path ───
-    attack_path = _ATTACK_PATHS.get(category, _DEFAULT_ATTACK_PATH)
+    # ─── Attack path (Traceable Causal Graph) ───
+    attack_path, structured_attack_path = _build_traceable_fallback_attack_path(evidence)
 
     # ─── User actions ───
     user_action = _USER_ACTIONS.get(risk.level, _USER_ACTIONS[RiskLevel.UNKNOWN])
@@ -175,6 +357,7 @@ def generate_fallback_explanation(evidence: IncidentEvidence) -> IncidentEvidenc
         summary=summary,
         reasons=reasons,
         attack_path=attack_path,
+        structured_attack_path=structured_attack_path,
         user_action=user_action,
         uncertainty=uncertainty,
         what_cannot_be_concluded=list(evidence.risk.what_cannot_be_concluded),

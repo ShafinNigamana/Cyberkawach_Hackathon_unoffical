@@ -65,8 +65,8 @@ class Settings(BaseSettings):
             "gemini": bool(self.gemini_api_key and self.gemini_api_key.strip()),
             # P0 threat-intel
             "safe_browsing": bool(self.safe_browsing_api_key and self.safe_browsing_api_key.strip()),
-            "phishtank": bool(self.phishtank_api_key and self.phishtank_api_key.strip()),
             "openphish": bool(self.openphish_enabled),
+            "phishtank": False,  # Deprecated and replaced by OpenPhish feed
             # P2 optional threat-intel
             "abuseipdb": bool(self.abuseipdb_api_key and self.abuseipdb_api_key.strip()),
             "urlhaus": True,  # No key needed
