@@ -5,6 +5,7 @@ Defines API routes and wires the analysis pipeline.
 
 from __future__ import annotations
 
+import logging
 import time
 from pathlib import Path
 
@@ -22,6 +23,13 @@ from backend.models.api import (
     UpdateUserStateRequest,
 )
 from backend.models.evidence import IncidentEvidence, InputType
+from backend.utils.rate_limit import RateLimitMiddleware
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+)
+logger = logging.getLogger("cyber_guardian.main")
 
 settings = get_settings()
 
@@ -38,6 +46,7 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
+app.add_middleware(RateLimitMiddleware, max_requests=120, window_seconds=60)
 
 # In-memory incident store — ponytail: no DB for hackathon demo
 _incidents: dict[str, IncidentEvidence] = {}
