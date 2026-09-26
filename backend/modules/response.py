@@ -214,13 +214,17 @@ def generate_response(evidence: IncidentEvidence, user_state: UserState) -> Inci
         )
 
     # Typology-specific advisories
-    if category == "electricity" and user_state == UserState.RECEIVED:
+    if category in ("electricity", "electricity_bill") and user_state == UserState.RECEIVED:
         immediate_actions.append(
             "Electricity disconnection notices are never issued via individual mobile numbers; check dues only on your state power utility portal"
         )
     elif category == "courier" and user_state == UserState.RECEIVED:
         immediate_actions.append(
             "Legitimate postal/courier services do not require small fee payments via SMS links to release packages"
+        )
+    elif category in ("upi", "upi_fraud") and user_state == UserState.RECEIVED:
+        immediate_actions.append(
+            "Never enter your UPI PIN or approve collect requests to receive refunds or payments; receiving money on UPI never requires entering a PIN"
         )
 
     evidence.response = AdaptiveResponse(

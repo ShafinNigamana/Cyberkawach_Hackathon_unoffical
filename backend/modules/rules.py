@@ -62,6 +62,30 @@ _FRAUD_CATEGORIES: list[tuple[str, list[tuple[re.Pattern, float]]]] = [
         (re.compile(r'\b(?:microsoft|apple|google|amazon)\s*(?:support|helpline|customer\s*care)\b', re.I), 0.4),
         (re.compile(r'\b(?:remote\s*access|teamviewer|anydesk|quick\s*support)\b', re.I), 0.5),
     ]),
+    ("electricity", [
+        (re.compile(r'\b(?:electricity|power|power\s*cut|electric|light\s*bill|bill\s*update)\b', re.I), 0.45),
+        (re.compile(r'\b(?:disconnect(?:ed|ion)?|cut\s*off|suspended)\b', re.I), 0.35),
+        (re.compile(r'\b(?:electricity\s*office|electricity\s*officer|discom|bescom|tneb|mseb|bses|uppcl)\b', re.I), 0.4),
+    ]),
+    ("telecom", [
+        (re.compile(r'\b(?:sim|telecom|cellular|network|5g|4g|esim)\b', re.I), 0.35),
+        (re.compile(r'\b(?:jio|airtel|vi|vodafone|bsnl)\b', re.I), 0.4),
+        (re.compile(r'\b(?:deactivat(?:ed|ion)|block(?:ed)?|disconnect(?:ed)?)\b', re.I), 0.35),
+    ]),
+    ("loan_fraud", [
+        (re.compile(r'\b(?:loan|personal\s*loan|instant\s*loan|credit\s*line|lending|emi)\b', re.I), 0.4),
+        (re.compile(r'\b(?:pre[\s-]?approved|zero\s*documents?|no\s*cibil|instant\s*disburs(?:al|ement))\b', re.I), 0.45),
+        (re.compile(r'\b(?:apk|download\s*app|interest\s*rate)\b', re.I), 0.25),
+    ]),
+    ("extortion_legal", [
+        (re.compile(r'\b(?:cbi|customs|cyber\s*crime|police|narcotics|ncb|court|enforcement\s*directorate|ed)\b', re.I), 0.45),
+        (re.compile(r'\b(?:arrest|warrant|summons?|contraband|illegal\s*parcel|fir|ipc)\b', re.I), 0.45),
+        (re.compile(r'\b(?:digital\s*arrest|skype|surrender|police\s*station)\b', re.I), 0.4),
+    ]),
+    ("upi_fraud", [
+        (re.compile(r'\b(?:upi|gpay|google\s*pay|phonepe|paytm|bhim)\b', re.I), 0.35),
+        (re.compile(r'\b(?:collect\s*request|approve\s*(?:request|collect)|enter\s*pin\s*to\s*receive|refund)\b', re.I), 0.45),
+    ]),
 ]
 
 # ─── Urgency/pressure signals ───
@@ -81,6 +105,7 @@ _CREDENTIAL_PATTERNS: list[tuple[re.Pattern, str]] = [
     (re.compile(r'\b(?:click|tap|open)\s*(?:this|the|below|here|on)\s*(?:link|url|button)\b', re.I), "click_bait"),
     (re.compile(r'\b(?:login|log\s*in|sign\s*in|verify)\s*(?:here|now|to|at|using)\b', re.I), "login_redirect"),
     (re.compile(r'\b(?:scan|use)\s*(?:this|the|below)?\s*(?:qr|barcode)\b', re.I), "qr_redirect"),
+    (re.compile(r'\b(?:call|contact|whatsapp|reach)\s*(?:our|the|this)?\s*(?:officer|executive|manager|care|center|agent|helpline)?\s*(?:at|on|immediately|urgently|now)?\s*(?:at\s*)?\+?\d{7,12}\b', re.I), "contact_demand"),
 ]
 
 # ─── Financial action signals ───
@@ -143,7 +168,7 @@ def apply_rules(evidence: IncidentEvidence) -> IncidentEvidence:
             type=EvidenceType.PATTERN_MATCH,
             source="rules",
             description=f"Urgency/pressure tactics detected: {', '.join(set(h[0] for h in urgency_hits))}",
-            confidence=min(0.3 * len(urgency_hits), 0.9),
+            confidence=min(0.55 + 0.20 * len(urgency_hits), 0.95),
             status=EvidenceStatus.OBSERVED,
             reliability=EvidenceReliability.HEURISTIC,
             severity=EvidenceSeverity.MEDIUM,
@@ -167,7 +192,7 @@ def apply_rules(evidence: IncidentEvidence) -> IncidentEvidence:
             type=EvidenceType.PATTERN_MATCH,
             source="rules",
             description=f"Credential/action request detected: {', '.join(set(h[0] for h in credential_hits))}",
-            confidence=min(0.4 * len(credential_hits), 0.95),
+            confidence=min(0.60 + 0.20 * len(credential_hits), 0.95),
             status=EvidenceStatus.OBSERVED,
             reliability=EvidenceReliability.HEURISTIC,
             severity=EvidenceSeverity.HIGH,
@@ -191,7 +216,7 @@ def apply_rules(evidence: IncidentEvidence) -> IncidentEvidence:
             type=EvidenceType.PATTERN_MATCH,
             source="rules",
             description=f"Financial action signals: {', '.join(set(h[0] for h in financial_hits))}",
-            confidence=min(0.35 * len(financial_hits), 0.9),
+            confidence=min(0.55 + 0.20 * len(financial_hits), 0.95),
             status=EvidenceStatus.OBSERVED,
             reliability=EvidenceReliability.HEURISTIC,
             severity=EvidenceSeverity.MEDIUM,

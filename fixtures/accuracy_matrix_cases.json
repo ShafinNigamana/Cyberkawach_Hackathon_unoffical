@@ -1,0 +1,220 @@
+[
+  {
+    "id": "case-01-legit-sbi-sms",
+    "name": "Legitimate SBI Transaction SMS",
+    "category": "legitimate_banking",
+    "message": "Dear SBI Customer, your A/C ending in 4921 has been debited by Rs 1,450.00 on 26-Sep-2026. Ref: UPI/626918291048. Avail Bal: Rs 34,820.00. For disputes, visit https://www.onlinesbi.sbi or call 18001234. -State Bank of India",
+    "user_state": "received",
+    "expected_risk": ["LOW"],
+    "max_score": 0.20,
+    "expected_sufficiency": ["SUFFICIENT", "PARTIAL"],
+    "must_contain_response": ["official", "verify"],
+    "is_legitimate": true
+  },
+  {
+    "id": "case-02-legit-hdfc-otp",
+    "name": "Legitimate HDFC Bank OTP",
+    "category": "legitimate_banking",
+    "message": "481920 is your secret OTP for transaction of Rs 3,200.00 at AMAZON INDIA with HDFC Bank Card ending 1042. OTP valid for 10 mins. Never share OTP or password with anyone, including bank officials.",
+    "user_state": "received",
+    "expected_risk": ["LOW"],
+    "max_score": 0.28,
+    "expected_sufficiency": ["SUFFICIENT", "PARTIAL", "INSUFFICIENT"],
+    "must_contain_response": ["Never share", "OTP"],
+    "is_legitimate": true
+  },
+  {
+    "id": "case-03-legit-indiapost-tracking",
+    "name": "Legitimate India Post Tracking",
+    "category": "legitimate_courier",
+    "message": "Your India Post consignment EK928371928IN has reached Bangalore NSH. Expected delivery by 27-Sep-2026. Track your consignment at https://www.indiapost.gov.in/_layouts/15/dpt/track.aspx",
+    "user_state": "received",
+    "expected_risk": ["LOW"],
+    "max_score": 0.15,
+    "expected_sufficiency": ["SUFFICIENT", "PARTIAL"],
+    "must_contain_response": ["official", "verify"],
+    "is_legitimate": true
+  },
+  {
+    "id": "case-04-legit-bescom-receipt",
+    "name": "Legitimate BESCOM Electricity Payment Receipt",
+    "category": "legitimate_utility",
+    "message": "Dear Consumer, payment of Rs 1,840 for BESCOM Account ID 8920192810 received successfully on 25-Sep-2026 via BBPS. Download official receipt from https://bescom.karnataka.gov.in -BESCOM",
+    "user_state": "received",
+    "expected_risk": ["LOW"],
+    "max_score": 0.15,
+    "expected_sufficiency": ["SUFFICIENT", "PARTIAL"],
+    "must_contain_response": ["official", "verify"],
+    "is_legitimate": true
+  },
+  {
+    "id": "case-05-legit-upi-paytm",
+    "name": "Legitimate Paytm UPI Payment Alert",
+    "category": "legitimate_payment",
+    "message": "Paid Rs 450 to Chai Point successfully from your UPI Linked Account. UPI Ref No: 426819283910. Check passbook in Paytm app.",
+    "user_state": "received",
+    "expected_risk": ["LOW"],
+    "max_score": 0.25,
+    "expected_sufficiency": ["SUFFICIENT", "PARTIAL", "INSUFFICIENT"],
+    "must_contain_response": ["official", "verify"],
+    "is_legitimate": true
+  },
+  {
+    "id": "case-06-phish-sbi-ip-literal",
+    "name": "SBI Phishing with IP Literal URL",
+    "category": "banking",
+    "message": "URGENT: Your SBI YONO account has been suspended due to pending PAN-Aadhaar KYC. Click here immediately to update: http://192.168.1.105/sbi/kyc-update to prevent permanent account suspension. -SBI Support",
+    "user_state": "received",
+    "expected_risk": ["HIGH", "CRITICAL"],
+    "min_score": 0.65,
+    "expected_sufficiency": ["SUFFICIENT", "PARTIAL"],
+    "is_phishing": true
+  },
+  {
+    "id": "case-07-phish-hdfc-typosquat",
+    "name": "HDFC Phishing with Typosquat Domain",
+    "category": "banking",
+    "message": "Dear HDFC Customer, your NetBanking access is temporarily disabled due to suspicious login attempt. Reactivate your netbanking profile now at https://hdfc-bank-netbanking-verify.com/login before 24 hrs.",
+    "user_state": "received",
+    "expected_risk": ["HIGH", "CRITICAL"],
+    "min_score": 0.65,
+    "expected_sufficiency": ["SUFFICIENT", "PARTIAL"],
+    "is_phishing": true
+  },
+  {
+    "id": "case-08-phish-icici-shortener",
+    "name": "ICICI Phishing with URL Shortener",
+    "category": "banking",
+    "message": "Important Notice from ICICI Bank: Your debit card will be blocked within 12 hours due to unverified KYC. Click http://bit.ly/icici-kyc-verify to verify details now.",
+    "user_state": "received",
+    "expected_risk": ["HIGH", "CRITICAL"],
+    "min_score": 0.60,
+    "expected_sufficiency": ["SUFFICIENT", "PARTIAL"],
+    "is_phishing": true
+  },
+  {
+    "id": "case-09-scam-electricity-cutoff",
+    "name": "Urgent Electricity Disconnection Threat",
+    "category": "electricity",
+    "message": "Dear consumer your electricity power will be disconnected tonight at 9:30 pm from electricity office because your previous month bill was not updated. Please immediately contact our electricity officer at 9821839201. -Electricity Department",
+    "user_state": "received",
+    "expected_risk": ["MEDIUM", "HIGH", "CRITICAL"],
+    "min_score": 0.35,
+    "must_contain_response": ["electricity", "disconnection"],
+    "is_phishing": true
+  },
+  {
+    "id": "case-10-scam-courier-address",
+    "name": "India Post Fake Delivery / Address Update",
+    "category": "courier",
+    "message": "India Post: Your package IN9827381 could not be delivered due to incomplete street address. Please update your address within 24 hours at https://indiapost-parcel-update.top/address to avoid return to sender.",
+    "user_state": "received",
+    "expected_risk": ["HIGH", "CRITICAL"],
+    "min_score": 0.60,
+    "must_contain_response": ["courier"],
+    "is_phishing": true
+  },
+  {
+    "id": "case-11-scam-kbc-lottery",
+    "name": "KBC Lottery Prize WhatsApp Fraud",
+    "category": "lottery_prize",
+    "message": "CONGRATULATIONS! You have won Rs 25,00,000 from KBC Kaun Banega Crorepati Lottery Lucky Draw 2026. Send your name and bank account on WhatsApp +91-9123456789 to claim prize money. Cheque number: KBC-9821.",
+    "user_state": "received",
+    "expected_risk": ["MEDIUM", "HIGH", "CRITICAL"],
+    "min_score": 0.35,
+    "is_phishing": true
+  },
+  {
+    "id": "case-12-scam-telegram-task",
+    "name": "Part-Time Job / Telegram Task Scam",
+    "category": "job_offer",
+    "message": "Earn Rs 3,000 to Rs 8,000 daily from home! Part time online job: simply like YouTube videos and write hotel reviews. No investment needed. Contact manager on Telegram: @amazon_review_job2026 to start now.",
+    "user_state": "received",
+    "expected_risk": ["MEDIUM", "HIGH", "CRITICAL"],
+    "min_score": 0.30,
+    "is_phishing": true
+  },
+  {
+    "id": "case-13-scam-upi-collect-refund",
+    "name": "UPI Collect Request / Fake Refund",
+    "category": "upi_fraud",
+    "message": "Dear customer, your refund of Rs 4,500 for order #89281 has been initiated. Open PhonePe or Google Pay and approve the collect request sent to your UPI ID to receive money in your account.",
+    "user_state": "received",
+    "expected_risk": ["MEDIUM", "HIGH", "CRITICAL"],
+    "min_score": 0.35,
+    "must_contain_response": ["PIN", "collect"],
+    "is_phishing": true
+  },
+  {
+    "id": "case-14-scam-digital-arrest",
+    "name": "Digital Arrest / CBI Impersonation",
+    "category": "extortion_legal",
+    "message": "OFFICIAL SUMMONS: Central Bureau of Investigation (CBI) & Cyber Crime Division. An illegal parcel containing contraband has been intercepted in your name. Arrest warrant issued under IPC 420/120B. Connect on Skype/WhatsApp immediately to avoid immediate police arrest.",
+    "user_state": "received",
+    "expected_risk": ["MEDIUM", "HIGH", "CRITICAL"],
+    "min_score": 0.40,
+    "is_phishing": true
+  },
+  {
+    "id": "case-15-scam-preapproved-loan",
+    "name": "Fake Instant Loan with Malicious APK",
+    "category": "loan_fraud",
+    "message": "Dear Sir, Congratulations! Your pre-approved personal loan of Rs 5,00,000 at 1% interest is ready for immediate disbursal with ZERO documents and NO CIBIL score required. Download loan app: http://instant-cash-india.xyz/loan.apk",
+    "user_state": "received",
+    "expected_risk": ["HIGH", "CRITICAL"],
+    "min_score": 0.60,
+    "is_phishing": true
+  },
+  {
+    "id": "case-16-scam-incometax-refund",
+    "name": "Income Tax Refund Phishing",
+    "category": "government",
+    "message": "Income Tax Dept Alert: Your tax refund of Rs 24,890 has been approved. The amount could not be credited due to IFSC code mismatch. Enter your bank details at https://incometax-efiling-refund.info/login to process immediately.",
+    "user_state": "received",
+    "expected_risk": ["HIGH", "CRITICAL"],
+    "min_score": 0.60,
+    "is_phishing": true
+  },
+  {
+    "id": "case-17-scam-sim-block-telecom",
+    "name": "Telecom SIM Block Urgency Scam",
+    "category": "telecom",
+    "message": "Alert: Your Jio 5G SIM will be permanently blocked in 12 hours due to Aadhaar re-verification failure. To maintain uninterrupted calling and data, immediately call verification center at 9811223344.",
+    "user_state": "received",
+    "expected_risk": ["MEDIUM", "HIGH", "CRITICAL"],
+    "min_score": 0.35,
+    "is_phishing": true
+  },
+  {
+    "id": "case-18-ambiguous-low-evidence",
+    "name": "Ambiguous Message with Minimal Telemetry",
+    "category": "conversational",
+    "message": "Hey, please call me back when you get a chance. Need to discuss something.",
+    "user_state": "received",
+    "expected_risk": ["LOW", "UNKNOWN"],
+    "max_score": 0.35,
+    "expected_sufficiency": ["INSUFFICIENT", "PARTIAL"],
+    "is_ambiguous": true
+  },
+  {
+    "id": "case-19-edge-brand-with-official-domain",
+    "name": "HDFC Official Promotion with Verified Domain",
+    "category": "legitimate_promotion",
+    "message": "Special festive offer from HDFC Bank! Get 10% instant discount on major shopping sites with HDFC Credit Cards. Visit https://www.hdfcbank.com to explore festive treats. T&C apply.",
+    "user_state": "received",
+    "expected_risk": ["LOW"],
+    "max_score": 0.15,
+    "expected_sufficiency": ["SUFFICIENT", "PARTIAL"],
+    "is_legitimate": true
+  },
+  {
+    "id": "case-20-state-compromised-paid",
+    "name": "Compromised State - Funds Already Paid",
+    "category": "compromised_paid",
+    "message": "Transfer completed of Rs 75,000 to merchant UPI ID fastinvest@okaxis for guaranteed daily stock return.",
+    "user_state": "paid",
+    "expected_urgency": "critical",
+    "must_contain_response": ["1930", "freeze", "Golden Hour"],
+    "is_compromised": true
+  }
+]

@@ -33,8 +33,8 @@ from backend.modules.brand_check import is_official_brand_domain
 _WEIGHTS = {
     EvidenceType.THREAT_INTEL_HIT: 0.30,
     EvidenceType.BRAND_MISMATCH: 0.20,
-    EvidenceType.RULE_MATCH: 0.15,
-    EvidenceType.PATTERN_MATCH: 0.12,
+    EvidenceType.RULE_MATCH: 0.22,
+    EvidenceType.PATTERN_MATCH: 0.15,
     EvidenceType.URL_ANALYSIS: 0.10,
     EvidenceType.IOC_EXTRACTED: 0.05,
     EvidenceType.THREAT_INTEL_MISS: 0.0,  # Neutral — absence of match never reduces risk score
@@ -48,8 +48,8 @@ _WEIGHTS = {
 
 _THRESHOLDS = {
     RiskLevel.CRITICAL: 0.85,
-    RiskLevel.HIGH: 0.65,
-    RiskLevel.MEDIUM: 0.40,
+    RiskLevel.HIGH: 0.60,
+    RiskLevel.MEDIUM: 0.30,
     RiskLevel.LOW: 0.15,
 }
 
