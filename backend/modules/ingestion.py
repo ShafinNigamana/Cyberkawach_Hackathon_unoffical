@@ -146,11 +146,11 @@ def extract_iocs(evidence: IncidentEvidence, additional_urls: list[str] | None =
     # Build URL signals
     evidence.urls = [_url_to_signal(u) for u in found_urls]
 
-    # Extract other IOCs
-    emails = _EMAIL_PATTERN.findall(normalized)
+    # Extract other IOCs with fast pre-filters to prevent ReDoS
+    emails = _EMAIL_PATTERN.findall(normalized) if '@' in normalized else []
     phones = [p.strip() for p in _PHONE_PATTERN.findall(normalized) if len(p.strip()) >= 7]
-    ips = _IP_PATTERN.findall(normalized)
-    upi_ids = _UPI_PATTERN.findall(normalized)
+    ips = _IP_PATTERN.findall(normalized) if any(c.isdigit() for c in normalized) else []
+    upi_ids = _UPI_PATTERN.findall(normalized) if '@' in normalized else []
 
     all_iocs = []
     for email in emails:

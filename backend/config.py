@@ -27,7 +27,6 @@ class Settings(BaseSettings):
 
     # ─── Threat Intel APIs (P2 optional) ───
     abuseipdb_api_key: Optional[str] = None
-    # URLhaus: no key needed, wired in Phase 4 if time allows
 
     # ─── Application ───
     app_env: str = "development"
@@ -43,7 +42,7 @@ class Settings(BaseSettings):
     allowed_upload_types: str = "image/png,image/jpeg,image/webp"
 
     # ─── Security ───
-    cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000"
+    cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000,http://localhost:8000,http://127.0.0.1:8000"
     max_message_length: int = 10000
     max_urls_per_message: int = 20
 
@@ -51,7 +50,9 @@ class Settings(BaseSettings):
 
     @property
     def cors_origin_list(self) -> list[str]:
-        return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
+        origins = [o.strip() for o in self.cors_origins.split(",") if o.strip()]
+        # Disallow wildcard when credentials are used
+        return [o for o in origins if o != "*"]
 
     @property
     def allowed_upload_type_list(self) -> list[str]:

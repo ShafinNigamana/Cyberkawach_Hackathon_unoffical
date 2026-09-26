@@ -16,25 +16,26 @@ import ipaddress
 import re
 from urllib.parse import urlparse
 
+_INCIDENT_ID_PATTERN = re.compile(r"^INC-\d{4}-[A-Fa-f0-9]{8}$")
+_LANGUAGE_PATTERN = re.compile(r"^[a-zA-Z]{2}(-[a-zA-Z0-9]{2,4})?$")
+_DANGEROUS_SCHEMES = ('javascript:', 'data:', 'vbscript:', 'file:', 'blob:', 'about:')
+
 
 def sanitize_message(text: str, max_length: int = 10000) -> str:
     """
     Sanitize user-submitted message text.
     - Truncate to max length
-    - Strip null bytes and control characters (except newlines/tabs)
+    - Strip null bytes
+    - Strip control characters (except newline, tab, carriage return)
+    - Strip bidirectional override characters used in spoofing attacks
     """
     if not text:
         return ""
 
-    # Truncate
-    text = text[:max_length]
-
-    # Remove null bytes
+    text = str(text)[:max_length]
     text = text.replace('\x00', '')
-
-    # Remove control characters except \n, \r, \t
+    text = re.sub(r'[\u202A-\u202E\u2066-\u2069]', '', text)
     text = re.sub(r'[\x01-\x08\x0b\x0c\x0e-\x1f\x7f]', '', text)
-
     return text
 
 
@@ -42,17 +43,18 @@ def sanitize_url(url: str, max_length: int = 2048) -> str:
     """
     Basic URL sanitization.
     - Truncate to max length
-    - Strip whitespace
-    - Reject dangerous URI schemes
+    - Strip whitespace and control characters
+    - Reject dangerous schemes (javascript:, data:, file:, etc.)
     """
     if not url:
         return ""
 
-    url = url.strip()[:max_length]
+    url = str(url).strip()[:max_length]
+    url = url.replace('\x00', '')
+    url = re.sub(r'[\x01-\x1f\x7f]', '', url)
 
-    # Block dangerous URI schemes
     lower = url.lower().strip()
-    if lower.startswith(('javascript:', 'data:', 'vbscript:', 'file:', 'about:', 'blob:')):
+    if lower.startswith(_DANGEROUS_SCHEMES):
         return ""
 
     return url
@@ -161,6 +163,23 @@ def defend_prompt_injection(text: str) -> str:
     return sanitized
 
 
+def validate_incident_id(incident_id: str) -> bool:
+    """Validate incident ID matches canonical format (e.g. INC-2026-A1B2C3D4)."""
+    if not incident_id or not isinstance(incident_id, str):
+        return False
+    return bool(_INCIDENT_ID_PATTERN.match(incident_id.strip()))
+
+
+def validate_language(lang: str) -> str:
+    """Validate and sanitize language code, defaulting to 'en' if invalid."""
+    if not lang or not isinstance(lang, str):
+        return "en"
+    clean = lang.strip().lower()
+    if _LANGUAGE_PATTERN.match(clean):
+        return clean
+    return "en"
+
+
 def escape_for_display(text: str) -> str:
     """HTML-escape text for safe display in UI."""
-    return html.escape(text, quote=True)
+    return html.escape(str(text), quote=True)

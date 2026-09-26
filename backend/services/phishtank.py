@@ -3,6 +3,7 @@ PhishTank API adapter.
 
 P0 threat-intel source. Free, requires registration for API key.
 Checks URLs against PhishTank's verified phishing database.
+Hardened against secret leakage in error messages.
 """
 
 from __future__ import annotations
@@ -11,6 +12,7 @@ import httpx
 
 from backend.config import get_settings
 from backend.models.evidence import ThreatIntelResult
+from backend.utils.security_logging import safe_error_message
 
 _PHISHTANK_URL = "https://checkurl.phishtank.com/checkurl/"
 
@@ -76,7 +78,7 @@ async def check_phishtank(urls: list[str]) -> list[ThreatIntelResult]:
                     source="phishtank",
                     match=None,
                     lookup_url=url,
-                    error=str(e),
+                    error=safe_error_message(e),
                 ))
 
     return results

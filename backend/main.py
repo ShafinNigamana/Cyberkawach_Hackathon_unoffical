@@ -1,29 +1,42 @@
 """
 FastAPI application entry point.
-Defines API routes and wires the analysis pipeline.
+Defines API routes, security middleware, and wires the analysis pipeline.
 """
 
 from __future__ import annotations
 
 import logging
 import time
+from collections import OrderedDict
 from pathlib import Path
+from threading import Lock
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import Depends, FastAPI, File, HTTPException, Request, UploadFile
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from backend.config import get_settings
 from backend.models.api import (
     AnalyzeRequest,
     AnalyzeResponse,
-    ErrorResponse,
+    FileUploadResponse,
     HealthResponse,
     UpdateUserStateRequest,
 )
 from backend.models.evidence import IncidentEvidence, InputType
-from backend.utils.rate_limit import RateLimitMiddleware
+from backend.utils.file_security import validate_file_security
+from backend.utils.rate_limiter import check_rate_limit
+from backend.utils.request_limits import RequestSizeLimitMiddleware
+from backend.utils.sanitize import (
+    sanitize_message,
+    sanitize_url,
+    validate_incident_id,
+    validate_language,
+)
+from backend.utils.security_headers import SecurityHeadersMiddleware
+from backend.utils.security_logging import safe_error_message
 
 logging.basicConfig(
     level=logging.INFO,
@@ -39,19 +52,113 @@ app = FastAPI(
     version="0.1.0",
 )
 
+# ─── Middleware Stack (applied in reverse order of addition) ───
+
+# 1. Enforce strict response security headers (CSP, nosniff, frame-ancestors, etc.)
+app.add_middleware(SecurityHeadersMiddleware)
+
+# 2. Enforce request size limits (prevents payload-based DoS)
+app.add_middleware(
+    RequestSizeLimitMiddleware,
+    max_bytes=settings.max_upload_size_mb * 1024 * 1024,
+)
+
+# 3. Explicit, hardened CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origin_list,
     allow_credentials=True,
     allow_methods=["GET", "POST"],
-    allow_headers=["*"],
+    allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
 )
-app.add_middleware(RateLimitMiddleware, max_requests=120, window_seconds=60)
 
-# In-memory incident store — ponytail: no DB for hackathon demo
-_incidents: dict[str, IncidentEvidence] = {}
 
-# Static files mounts for frontend and demo fixtures
+# ─── Bounded Incident Storage (anti-DoS memory exhaustion) ───
+
+class BoundedIncidentStore:
+    """Thread-safe bounded in-memory incident cache with LRU eviction."""
+
+    def __init__(self, max_capacity: int = 1000):
+        self.max_capacity = max_capacity
+        self._store: OrderedDict[str, IncidentEvidence] = OrderedDict()
+        self._lock = Lock()
+
+    def get(self, incident_id: str) -> IncidentEvidence | None:
+        with self._lock:
+            if incident_id in self._store:
+                self._store.move_to_end(incident_id)
+                return self._store[incident_id]
+            return None
+
+    def set(self, incident_id: str, evidence: IncidentEvidence) -> None:
+        with self._lock:
+            if incident_id in self._store:
+                self._store.move_to_end(incident_id)
+            self._store[incident_id] = evidence
+            if len(self._store) > self.max_capacity:
+                self._store.popitem(last=False)
+
+    def __contains__(self, incident_id: str) -> bool:
+        with self._lock:
+            return incident_id in self._store
+
+    def __getitem__(self, incident_id: str) -> IncidentEvidence:
+        with self._lock:
+            return self._store[incident_id]
+
+    def __setitem__(self, incident_id: str, evidence: IncidentEvidence) -> None:
+        self.set(incident_id, evidence)
+
+    def clear(self) -> None:
+        with self._lock:
+            self._store.clear()
+
+
+_incidents = BoundedIncidentStore(max_capacity=1000)
+
+
+# ─── Exception Handlers (no stack traces or internal leaks) ───
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """Safe validation error handler that strips sensitive payload data."""
+    errors = []
+    for err in exc.errors():
+        loc = " -> ".join(str(l) for l in err.get("loc", []))
+        msg = err.get("msg", "Invalid value")
+        errors.append(f"{loc}: {msg}")
+    return JSONResponse(
+        status_code=422,
+        content={"error": "Validation Error", "detail": "; ".join(errors)},
+    )
+
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    """Uniform HTTP error handler preserving custom headers (e.g. Retry-After)."""
+    headers = getattr(exc, "headers", None)
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"error": exc.detail, "detail": exc.detail},
+        headers=headers,
+    )
+
+
+@app.exception_handler(Exception)
+async def generic_exception_handler(request: Request, exc: Exception):
+    """Catch-all error handler preventing stack traces or path disclosure."""
+    safe_msg = safe_error_message(exc)
+    return JSONResponse(
+        status_code=500,
+        content={
+            "error": "Internal Server Error",
+            "detail": "An internal error occurred during processing. Please try again later.",
+        },
+    )
+
+
+# ─── Static Files Mounts ───
+
 frontend_path = Path(__file__).resolve().parent.parent / "frontend"
 fixtures_path = Path(__file__).resolve().parent.parent / "fixtures"
 
@@ -155,6 +262,8 @@ async def rate_limit_test(request: Request):
     return {"status": "ok", "requests_in_window": len(window), "limit": 5}
 
 
+# ─── Endpoints ───
+
 @app.get("/api/health", response_model=HealthResponse)
 async def health_check():
     """System health — which modules and APIs are available."""
@@ -179,35 +288,43 @@ async def health_check():
 
 
 @app.post("/api/analyze", response_model=AnalyzeResponse)
-async def analyze_message(request: AnalyzeRequest):
+async def analyze_message(request: AnalyzeRequest, raw_request: Request):
     """
     Primary analysis endpoint.
     Runs the full pipeline: ingest → rules → URL analysis → brand check →
     threat intel → fusion → explanation (Gemini with deterministic fallback) → adaptive response.
     """
+    # Rate limit enforcement
+    check_rate_limit(raw_request)
+
     start_time = time.time()
+
+    # Sanitize and bound all inputs at entry boundary
+    cleaned_message = sanitize_message(request.message, settings.max_message_length)
+    cleaned_urls = [sanitize_url(u) for u in request.urls if sanitize_url(u)]
+    cleaned_lang = validate_language(request.language)
 
     # Create evidence contract instance
     evidence = IncidentEvidence(
         input_type=request.input_type,
-        message=request.message,
-        original_input=request.message,
-        language=request.language,
+        message=cleaned_message,
+        original_input=cleaned_message,
+        language=cleaned_lang,
     )
 
     modules_executed = []
     modules_failed = []
 
-    # ─── Pipeline stages (each will be implemented in Phase 1) ───
+    # ─── Pipeline stages ───
 
     # Stage 1: Ingestion & IOC extraction
     try:
         from backend.modules.ingestion import extract_iocs
-        evidence = extract_iocs(evidence, request.urls)
+        evidence = extract_iocs(evidence, cleaned_urls)
         modules_executed.append("ingestion")
     except Exception as e:
         modules_failed.append("ingestion")
-        evidence.errors.append(f"ingestion: {str(e)}")
+        evidence.errors.append(f"ingestion: {safe_error_message(e)}")
 
     # Stage 2: Rule-based detection
     try:
@@ -216,16 +333,16 @@ async def analyze_message(request: AnalyzeRequest):
         modules_executed.append("rules")
     except Exception as e:
         modules_failed.append("rules")
-        evidence.errors.append(f"rules: {str(e)}")
+        evidence.errors.append(f"rules: {safe_error_message(e)}")
 
-    # Stage 2b: ML baseline (TF-IDF + Logistic Regression statistical classifier)
+    # Stage 2b: ML baseline
     try:
         from backend.modules.ml_baseline import run_ml_baseline
         evidence = run_ml_baseline(evidence)
         modules_executed.append("ml_baseline")
     except Exception as e:
         modules_failed.append("ml_baseline")
-        evidence.errors.append(f"ml_baseline: {str(e)}")
+        evidence.errors.append(f"ml_baseline: {safe_error_message(e)}")
 
     # Stage 3: URL & domain analysis
     try:
@@ -234,7 +351,7 @@ async def analyze_message(request: AnalyzeRequest):
         modules_executed.append("url_analyzer")
     except Exception as e:
         modules_failed.append("url_analyzer")
-        evidence.errors.append(f"url_analyzer: {str(e)}")
+        evidence.errors.append(f"url_analyzer: {safe_error_message(e)}")
 
     # Stage 4: Brand impersonation check
     try:
@@ -243,7 +360,7 @@ async def analyze_message(request: AnalyzeRequest):
         modules_executed.append("brand_check")
     except Exception as e:
         modules_failed.append("brand_check")
-        evidence.errors.append(f"brand_check: {str(e)}")
+        evidence.errors.append(f"brand_check: {safe_error_message(e)}")
 
     # Stage 5: Threat intelligence
     try:
@@ -252,7 +369,7 @@ async def analyze_message(request: AnalyzeRequest):
         modules_executed.append("threat_intel")
     except Exception as e:
         modules_failed.append("threat_intel")
-        evidence.errors.append(f"threat_intel: {str(e)}")
+        evidence.errors.append(f"threat_intel: {safe_error_message(e)}")
 
     # Stage 5b: Laya fast typed-decision triage (Phase 3)
     try:
@@ -261,7 +378,7 @@ async def analyze_message(request: AnalyzeRequest):
         modules_executed.append("laya")
     except Exception as e:
         modules_failed.append("laya")
-        evidence.errors.append(f"laya: {str(e)}")
+        evidence.errors.append(f"laya: {safe_error_message(e)}")
 
     # Stage 6: Evidence fusion + risk scoring
     try:
@@ -270,7 +387,7 @@ async def analyze_message(request: AnalyzeRequest):
         modules_executed.append("fusion")
     except Exception as e:
         modules_failed.append("fusion")
-        evidence.errors.append(f"fusion: {str(e)}")
+        evidence.errors.append(f"fusion: {safe_error_message(e)}")
 
     # Stage 7: Explanation — Gemini with deterministic fallback
     try:
@@ -279,9 +396,9 @@ async def analyze_message(request: AnalyzeRequest):
         modules_executed.append("gemini")
     except Exception as e:
         modules_failed.append("gemini")
-        evidence.errors.append(f"gemini: {str(e)}")
+        evidence.errors.append(f"gemini: {safe_error_message(e)}")
 
-    # Deterministic fallback: if Gemini didn't produce an explanation, generate one from evidence
+    # Deterministic fallback if Gemini produced no explanation
     if evidence.explanation is None:
         try:
             from backend.modules.fallback_explanation import generate_fallback_explanation
@@ -289,7 +406,7 @@ async def analyze_message(request: AnalyzeRequest):
             modules_executed.append("fallback_explanation")
         except Exception as e:
             modules_failed.append("fallback_explanation")
-            evidence.errors.append(f"fallback_explanation: {str(e)}")
+            evidence.errors.append(f"fallback_explanation: {safe_error_message(e)}")
 
     # Stage 8: Adaptive response
     try:
@@ -298,7 +415,7 @@ async def analyze_message(request: AnalyzeRequest):
         modules_executed.append("response")
     except Exception as e:
         modules_failed.append("response")
-        evidence.errors.append(f"response: {str(e)}")
+        evidence.errors.append(f"response: {safe_error_message(e)}")
 
     # Finalize
     elapsed_ms = (time.time() - start_time) * 1000
@@ -306,7 +423,7 @@ async def analyze_message(request: AnalyzeRequest):
     evidence.modules_executed = modules_executed
     evidence.modules_failed = modules_failed
 
-    # Store for later state updates
+    # Store in bounded incident store
     _incidents[evidence.incident_id] = evidence
 
     return AnalyzeResponse(
@@ -331,11 +448,21 @@ async def analyze_message(request: AnalyzeRequest):
 
 
 @app.post("/api/incidents/{incident_id}/state", response_model=AnalyzeResponse)
-async def update_user_state(incident_id: str, request: UpdateUserStateRequest):
+async def update_user_state(
+    incident_id: str,
+    request: UpdateUserStateRequest,
+    raw_request: Request,
+):
     """
     Update user interaction state and regenerate adaptive response.
-    Demo feature: shows response branching when user state changes.
+    Validates incident ID format and enforces rate limiting.
     """
+    check_rate_limit(raw_request)
+
+    # Validate incident ID format to prevent injection / path traversal
+    if not validate_incident_id(incident_id):
+        raise HTTPException(status_code=400, detail="Invalid incident ID format")
+
     if incident_id not in _incidents:
         raise HTTPException(status_code=404, detail="Incident not found")
 
@@ -345,7 +472,7 @@ async def update_user_state(incident_id: str, request: UpdateUserStateRequest):
         from backend.modules.response import generate_response
         evidence = generate_response(evidence, request.user_state)
     except Exception as e:
-        evidence.errors.append(f"response_update: {str(e)}")
+        evidence.errors.append(f"response_update: {safe_error_message(e)}")
 
     _incidents[incident_id] = evidence
 
@@ -367,4 +494,43 @@ async def update_user_state(incident_id: str, request: UpdateUserStateRequest):
         processing_time_ms=evidence.processing_time_ms,
         modules_executed=evidence.modules_executed,
         modules_failed=evidence.modules_failed,
+    )
+
+
+@app.post("/api/upload/screenshot", response_model=FileUploadResponse)
+async def upload_screenshot(
+    file: UploadFile = File(...),
+    raw_request: Request = None,
+):
+    """
+    Secure screenshot upload endpoint.
+    Enforces maximum size, MIME verification, magic bytes verification,
+    filename sanitization, and path traversal defense.
+    """
+    if raw_request:
+        check_rate_limit(raw_request)
+
+    max_bytes = settings.max_upload_size_mb * 1024 * 1024
+    content = await file.read(max_bytes + 1)
+    if len(content) > max_bytes:
+        raise HTTPException(
+            status_code=413,
+            detail=f"File exceeds maximum allowed size of {settings.max_upload_size_mb} MB",
+        )
+
+    is_valid, safe_name, err = validate_file_security(
+        content=content,
+        original_filename=file.filename or "screenshot.png",
+        declared_content_type=file.content_type or "application/octet-stream",
+        max_size_bytes=max_bytes,
+    )
+
+    if not is_valid:
+        raise HTTPException(status_code=400, detail=err)
+
+    return FileUploadResponse(
+        status="ok",
+        filename=safe_name,
+        size_bytes=len(content),
+        content_type=file.content_type,
     )
