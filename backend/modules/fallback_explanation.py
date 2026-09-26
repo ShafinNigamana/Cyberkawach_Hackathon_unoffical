@@ -138,7 +138,8 @@ def generate_fallback_explanation(evidence: IncidentEvidence) -> IncidentEvidenc
     # ─── Build reasons from evidence items ───
     reasons = []
     for item in evidence.evidence:
-        if item.confidence >= 0.3 and item.type not in (EvidenceType.THREAT_INTEL_MISS, EvidenceType.IOC_EXTRACTED):
+        conf = item.confidence if item.confidence is not None else 1.0
+        if conf >= 0.3 and item.type not in (EvidenceType.THREAT_INTEL_MISS, EvidenceType.IOC_EXTRACTED):
             reasons.append(f"[{item.source}] {item.description}")
 
     if not reasons:

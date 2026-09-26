@@ -1,11 +1,13 @@
 """
 Evidence Contract — the internal API between all pipeline modules.
 
-Every module downstream of ingestion reads and writes this object.
-`laya` stays populated with sane defaults/nulls even when Laya (P1)
-isn't wired up yet, so fusion never has to special-case its absence.
-
-This is the CONTRACT, not just a data shape.
+Phase 1 Accuracy Update:
+Enriches EvidenceItem with:
+- Epistemic status: CONFIRMED, OBSERVED, SUSPICIOUS, POSSIBLE, UNKNOWN, UNAVAILABLE
+- Factual observation vs. interpretation separation
+- Source reliability and risk direction
+- Correlation grouping to prevent double-counting
+- Uncertainty and negative finding bounding
 """
 
 from __future__ import annotations
@@ -21,12 +23,24 @@ from pydantic import BaseModel, Field
 # ─── Enums ───
 
 class RiskLevel(str, Enum):
-    """Risk levels — used identically across every screen."""
+    """Internal risk levels — used identically across every screen and API contract."""
     UNKNOWN = "UNKNOWN"
     LOW = "LOW"
     MEDIUM = "MEDIUM"
     HIGH = "HIGH"
     CRITICAL = "CRITICAL"
+
+
+class UserCategory(str, Enum):
+    """
+    Citizen-facing categorical risk assessment.
+    Avoids equating low risk with a false guarantee of safety.
+    """
+    CONFIRMED_HIGH_RISK = "CONFIRMED HIGH RISK"
+    HIGH_RISK = "HIGH RISK"
+    SUSPICIOUS = "SUSPICIOUS"
+    LOW_CONCERN = "LOW CONCERN"
+    UNKNOWN = "UNKNOWN"
 
 
 class InputType(str, Enum):
@@ -55,11 +69,59 @@ class EvidenceType(str, Enum):
     THREAT_INTEL_HIT = "threat_intel_hit"
     THREAT_INTEL_MISS = "threat_intel_miss"
     LAYA_SIGNAL = "laya_signal"
+    ML_SIGNAL = "ml_signal"
     IOC_EXTRACTED = "ioc_extracted"
     PATTERN_MATCH = "pattern_match"
     DOMAIN_AGE = "domain_age"
     REDIRECT_CHAIN = "redirect_chain"
     CAMPAIGN_LINK = "campaign_link"
+
+
+class EvidenceStatus(str, Enum):
+    """
+    Epistemic status of a single piece of evidence.
+    Distinguishes verified external hits from empirical facts, heuristics, and inferences.
+    """
+    CONFIRMED = "CONFIRMED"      # Verified by a trusted external source or ground truth
+    OBSERVED = "OBSERVED"        # Directly measured or extracted objective fact
+    SUSPICIOUS = "SUSPICIOUS"    # Evidence indicates elevated concern without proven malice
+    POSSIBLE = "POSSIBLE"        # Plausible interpretation with insufficient support
+    UNKNOWN = "UNKNOWN"          # Insufficient information to make a determination
+    UNAVAILABLE = "UNAVAILABLE"  # Check could not be performed (e.g. source down or unconfigured)
+
+
+class EvidenceReliability(str, Enum):
+    """Reliability tier of the source producing the evidence."""
+    CRYPTOGRAPHIC = "CRYPTOGRAPHIC"            # E.g. TLS certificates, cryptographic proofs
+    EXTERNAL_DB = "EXTERNAL_DB"                # E.g. Google Safe Browsing, PhishTank, OpenPhish
+    DETERMINISTIC_FACT = "DETERMINISTIC_FACT"  # E.g. raw IP literal, port, length, exact regex
+    HEURISTIC = "HEURISTIC"                    # E.g. keyword searches, lexical patterns, TLD checks
+    MODEL_SIGNAL = "MODEL_SIGNAL"              # E.g. statistical classifier, Laya inference
+    UNVERIFIED = "UNVERIFIED"                  # E.g. uncorroborated user inference
+
+
+class RiskDirection(str, Enum):
+    """Directional influence of this evidence on fraud assessment."""
+    INCREASES_RISK = "INCREASES_RISK"
+    NEUTRAL = "NEUTRAL"
+    DECREASES_RISK = "DECREASES_RISK"
+
+
+class EvidenceSeverity(str, Enum):
+    """Severity magnitude of the finding."""
+    CRITICAL = "CRITICAL"
+    HIGH = "HIGH"
+    MEDIUM = "MEDIUM"
+    LOW = "LOW"
+    INFORMATIONAL = "INFORMATIONAL"
+
+
+class ThreatIntelStatus(str, Enum):
+    """State classification for threat intelligence lookups."""
+    KNOWN_MALICIOUS = "KNOWN MALICIOUS"
+    NO_KNOWN_MATCH = "NO KNOWN MATCH"
+    SOURCE_UNAVAILABLE = "SOURCE UNAVAILABLE"
+    SOURCE_ERROR = "SOURCE ERROR"
 
 
 # ─── Sub-models ───
@@ -99,31 +161,45 @@ class LayaResult(BaseModel):
 
 class ThreatIntelResult(BaseModel):
     """Single threat-intelligence source result."""
-    source: str  # P0: "safe_browsing", "phishtank" | P2: "urlhaus", "abuseipdb"
+    source: str  # "safe_browsing", "phishtank", "openphish"
     match: Optional[bool] = None  # None = lookup failed / unavailable
     details: Optional[str] = None
     lookup_url: Optional[str] = None
     error: Optional[str] = None  # Non-null when API call failed
     timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    intel_status: ThreatIntelStatus = ThreatIntelStatus.NO_KNOWN_MATCH
 
 
 class RiskAssessment(BaseModel):
-    """Fused risk assessment."""
+    """Fused risk assessment with separate confidence, sufficiency, and limits."""
     level: RiskLevel = RiskLevel.UNKNOWN
+    category: UserCategory = UserCategory.UNKNOWN
     score: float = Field(default=0.0, ge=0.0, le=1.0)
     calibrated: bool = False
+    evidence_sufficiency: str = "INSUFFICIENT"  # "SUFFICIENT", "PARTIAL", "INSUFFICIENT"
+    uncertainty_reasons: list[str] = Field(default_factory=list)
+    what_cannot_be_concluded: list[str] = Field(default_factory=list)
     contributing_factors: list[str] = Field(default_factory=list)
 
 
 class EvidenceItem(BaseModel):
     """
     Single piece of evidence — rendered as its own labeled item in the UI
-    with a source. Never collapsed into one opaque verdict.
+    with a source, status, reliability, and correlation grouping.
+    Never collapsed into one opaque verdict.
     """
     type: EvidenceType
     source: str  # Which module produced this evidence
     description: str
-    confidence: float = Field(default=0.0, ge=0.0, le=1.0)
+    observed_value: Optional[str] = None  # Factual measured or extracted data
+    interpretation: Optional[str] = None   # What the observation signifies
+    status: EvidenceStatus = EvidenceStatus.OBSERVED  # Epistemic status
+    confidence: Optional[float] = Field(default=None, ge=0.0, le=1.0)
+    reliability: EvidenceReliability = EvidenceReliability.DETERMINISTIC_FACT
+    risk_direction: RiskDirection = RiskDirection.INCREASES_RISK
+    severity: EvidenceSeverity = EvidenceSeverity.MEDIUM
+    correlation_group: Optional[str] = None  # Prevents double-counting correlated signals
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     raw_data: Optional[dict] = None  # Preserved for provenance
 
 
@@ -137,7 +213,7 @@ class GeminiExplanation(BaseModel):
     attack_path: list[str] = Field(default_factory=list)
     user_action: list[str] = Field(default_factory=list)
     uncertainty: str = ""
-    model_used: str = ""  # "gemini-2.0-flash-lite", "deterministic-fallback", etc.
+    model_used: str = ""  # "gemini-flash-latest", "deterministic-fallback", etc.
     evidence_cited: list[str] = Field(default_factory=list)  # IDs of evidence items used
     is_fallback: bool = False  # True when generated by deterministic template
 

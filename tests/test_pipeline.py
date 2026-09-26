@@ -93,6 +93,40 @@ def test_url_analyzer_signals():
     assert "no_https" in signals
 
 
+def test_url_analyzer_ipv4_no_subdomain_bug():
+    """Regression test: IPv4 addresses like 127.0.0.1 must NEVER be labeled as excessive subdomains."""
+    evidence = IncidentEvidence(input_type=InputType.URL, message="http://127.0.0.1:8000/api/health")
+    evidence = extract_iocs(evidence)
+    evidence = asyncio.run(analyze_urls(evidence))
+
+    assert len(evidence.urls) == 1
+    signals = evidence.urls[0].signals
+    assert "loopback_ip" in signals
+    assert "excessive_subdomains" not in signals  # Crucial regression invariant
+
+    # Check evidence items: must not claim subdomains
+    url_items = [e for e in evidence.evidence if e.type == EvidenceType.URL_ANALYSIS]
+    assert not any("subdomain" in e.description.lower() for e in url_items)
+    assert any("internal" in e.description.lower() or "loopback" in e.description.lower() for e in url_items)
+
+
+def test_url_analyzer_ip_categorization():
+    """Verify separate handling of private IPs, cloud metadata, and public IPs."""
+    test_cases = [
+        ("http://10.0.0.1/admin", "private_ip"),
+        ("http://169.254.169.254/latest/meta-data", "cloud_metadata_ip"),
+        ("http://185.220.101.5/login", "public_ip_literal"),
+    ]
+    for url, expected_signal in test_cases:
+        ev = IncidentEvidence(input_type=InputType.URL, message=url)
+        ev = extract_iocs(ev)
+        ev = asyncio.run(analyze_urls(ev))
+        signals = ev.urls[0].signals
+        assert expected_signal in signals
+        assert "excessive_subdomains" not in signals
+
+
+
 def test_brand_impersonation_detection():
     """Verify brand check identifies domain impersonation resembling registered brands."""
     text = "Visit http://sbi-kyc-update.xyz to verify your credentials"
@@ -302,5 +336,73 @@ def test_laya_graceful_fallback():
     evidence = asyncio.run(run_laya_triage(evidence))
 
     assert evidence.laya.available is False
+
+
+def test_evidence_model_semantics():
+    """Verify Phase 1 Evidence Model enums, epistemic statuses, and correlation properties."""
+    from backend.models.evidence import (
+        EvidenceItem,
+        EvidenceReliability,
+        EvidenceSeverity,
+        EvidenceStatus,
+        EvidenceType,
+        RiskAssessment,
+        RiskDirection,
+        RiskLevel,
+        ThreatIntelResult,
+        ThreatIntelStatus,
+        UserCategory,
+    )
+
+    # 1. EvidenceItem structure and defaults
+    item = EvidenceItem(
+        type=EvidenceType.URL_ANALYSIS,
+        source="url_analyzer",
+        description="Raw IP literal used instead of domain name",
+        observed_value="192.168.1.1",
+        interpretation="Accesses infrastructure by IP rather than standard domain",
+        status=EvidenceStatus.OBSERVED,
+        reliability=EvidenceReliability.DETERMINISTIC_FACT,
+        risk_direction=RiskDirection.INCREASES_RISK,
+        severity=EvidenceSeverity.MEDIUM,
+        correlation_group="url_network_identity",
+    )
+
+    assert item.status == EvidenceStatus.OBSERVED
+    assert item.observed_value == "192.168.1.1"
+    assert item.interpretation == "Accesses infrastructure by IP rather than standard domain"
+    assert item.correlation_group == "url_network_identity"
+    assert item.confidence is None  # Deterministic facts do not have fake model probabilities
+
+    # 2. Status vocabulary verification
+    assert EvidenceStatus.CONFIRMED.value == "CONFIRMED"
+    assert EvidenceStatus.OBSERVED.value == "OBSERVED"
+    assert EvidenceStatus.SUSPICIOUS.value == "SUSPICIOUS"
+    assert EvidenceStatus.POSSIBLE.value == "POSSIBLE"
+    assert EvidenceStatus.UNKNOWN.value == "UNKNOWN"
+    assert EvidenceStatus.UNAVAILABLE.value == "UNAVAILABLE"
+
+    # 3. Threat Intel Status
+    ti = ThreatIntelResult(
+        source="safe_browsing",
+        match=False,
+        intel_status=ThreatIntelStatus.NO_KNOWN_MATCH,
+    )
+    assert ti.intel_status == ThreatIntelStatus.NO_KNOWN_MATCH
+    assert ti.intel_status != "Clean"
+
+    # 4. RiskAssessment uncertainty & categorical bounds
+    risk = RiskAssessment(
+        level=RiskLevel.MEDIUM,
+        category=UserCategory.SUSPICIOUS,
+        score=0.45,
+        evidence_sufficiency="PARTIAL",
+        uncertainty_reasons=["No external threat intel hits, but lexical patterns suspicious"],
+        what_cannot_be_concluded=["No confirmed malware detected", "No confirmed credential theft occurred"],
+    )
+    assert risk.category == UserCategory.SUSPICIOUS
+    assert risk.evidence_sufficiency == "PARTIAL"
+    assert len(risk.what_cannot_be_concluded) == 2
+
 
 

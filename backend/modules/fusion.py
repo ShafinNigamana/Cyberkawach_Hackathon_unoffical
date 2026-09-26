@@ -77,7 +77,8 @@ def fuse_evidence(evidence: IncidentEvidence) -> IncidentEvidence:
 
     for item in evidence.evidence:
         weight = _WEIGHTS.get(item.type, 0.05)
-        contribution = weight * item.confidence
+        conf = item.confidence if item.confidence is not None else 1.0
+        contribution = weight * conf
         total_score += contribution
 
         type_key = item.type.value
