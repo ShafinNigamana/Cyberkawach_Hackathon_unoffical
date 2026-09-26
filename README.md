@@ -21,15 +21,15 @@ Rather than relying on ungrounded LLM guesses or opaque black-box classifiers, *
 ### 2. Two-Tier Risk Fusion Engine
 - **Tier 1 — Deterministic Safety Overrides**:
   - **Official Domain Dampening ($\le 0.15$)**: Preserves a **strict zero false-positive rate** on verified government, banking, utility, and courier infrastructure (e.g., `*.sbi`, `*.gov.in`, `hdfcbank.com`).
-  - **High-Hazard Overrides ($\ge 0.85$)**: Instantly escalates verified blacklist matches (Safe Browsing, OpenPhish), raw IPv4/IPv6 literals, or active typosquatting impersonations to `HIGH` or `CRITICAL`.
+  - **High-Hazard Overrides ($\ge 0.85$)**: Instantly escalates verified blacklist matches (Safe Browsing, PhishTank, PhishStats), raw IPv4/IPv6 literals, or active typosquatting impersonations to `HIGH` or `CRITICAL`.
 - **Tier 2 — Calibrated Multi-Signal Fusion**:
-  - Computes weighted linear combinations across 9 independent signal dimensions (Rules, Patterns, ML, Brand, URL, Safe Browsing, OpenPhish, AbuseIPDB, URLhaus).
+  - Computes weighted linear combinations across signal dimensions (Rules, Patterns, ML, Brand, URL, Safe Browsing, PhishTank, PhishStats, AbuseIPDB, URLhaus).
   - Multi-signal correlation dampening prevents compounding noise from inflating benign messages.
 
 ### 3. Fault-Tolerant 4-State Threat Intelligence
-- **OpenPhish Community Feed**: Live community feed ingestion with 1-hour in-memory cache and non-negative scoring.
+- **Safe Browsing, PhishTank & PhishStats**: Multi-feed intelligence with in-memory TTL caching and non-negative scoring.
 - **Google Safe Browsing v4**: Real-time lookup for malware and deceptive web IOCs.
-- **4-State Fault Boundary**: Explicitly maps every intelligence check to `FOUND`, `NOT_FOUND`, `RATE_LIMITED`, or `UNAVAILABLE`. Never treats an API timeout or rate-limit as proof that a domain is safe!
+- **4-State Fault Boundary**: Explicitly maps every intelligence check to `KNOWN_MALICIOUS`, `NO_KNOWN_MATCH`, `RATE_LIMITED`, or `SOURCE_UNAVAILABLE`. Never treats an API timeout or rate-limit as proof that a domain is safe!
 
 ### 4. Adaptive State-Machine Response Protocol
 - **Citizen Journey Mapping**: Tailors defensive guidance to victim vulnerability:
@@ -96,7 +96,7 @@ The guardian is verified against 20 high-fidelity scenarios covering all major I
         Urgency, Contact Regex)       Phone, UPI VPA)              Regression Model)
                │                            │                            │
                │                   [ Threat Intelligence ]               │
-               │              (OpenPhish Feed + Google SafeB)            │
+               │        (Google SafeB + PhishTank + PhishStats)          │
                │                            │                            │
                └────────────────────────────┼────────────────────────────┘
                                             │
@@ -212,8 +212,9 @@ CyberKawach/
 │   │   ├── fallback_explanation.py # Deterministic template engine
 │   │   └── response.py          # State-proportional response machine
 │   ├── services/
-│   │   ├── openphish.py         # OpenPhish live feed parser with caching
 │   │   ├── safe_browsing.py     # Google Safe Browsing v4 client
+│   │   ├── phishtank.py         # PhishTank verified database adapter
+│   │   ├── phishstats.py        # PhishStats intelligence adapter
 │   │   ├── urlhaus.py           # URLhaus malware adapter
 │   │   └── abuseipdb.py         # AbuseIPDB reputation adapter
 │   └── utils/

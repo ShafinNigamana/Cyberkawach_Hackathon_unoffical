@@ -26,7 +26,7 @@ from backend.models.evidence import (
     UserCategory,
     UserState,
 )
-from backend.services.openphish import set_openphish_cache_for_testing, clear_openphish_cache
+from backend.services.phishstats import set_phishstats_cache_for_testing, clear_phishstats_cache
 from backend.modules.ingestion import extract_iocs
 from backend.modules.rules import apply_rules
 from backend.modules.ml_baseline import predict_scam_probability, run_ml_baseline
@@ -159,10 +159,11 @@ def test_threat_intel_graceful_degradation():
     evidence = extract_iocs(evidence)
     evidence = asyncio.run(query_threat_intel(evidence))
 
-    assert len(evidence.threat_intel) >= 2
+    assert len(evidence.threat_intel) >= 3
     sources = [ti.source for ti in evidence.threat_intel]
     assert "safe_browsing" in sources
-    assert "openphish" in sources
+    assert "phishtank" in sources
+    assert "phishstats" in sources
     # Should not raise exception even with empty keys and should set valid ThreatIntelStatus
     assert all(ti.intel_status in (
         ThreatIntelStatus.SOURCE_UNAVAILABLE,
@@ -173,29 +174,36 @@ def test_threat_intel_graceful_degradation():
 
 
 def test_threat_intel_4_states():
-    """Verify 4 explicit ThreatIntelStatus states and EvidenceItem mapping."""
+    """Verify 4 explicit ThreatIntelStatus states and EvidenceItem mapping for PhishStats."""
     evidence = IncidentEvidence(
         input_type=InputType.URL,
         message="https://known-phish.xyz/login",
     )
     evidence = extract_iocs(evidence)
 
-    # Mock openphish cache to hit known-phish.xyz
-    set_openphish_cache_for_testing(["https://known-phish.xyz/login"])
+    # Mock phishstats cache to hit known-phish.xyz
+    mock_res = ThreatIntelResult(
+        source="phishstats",
+        match=True,
+        lookup_url="https://known-phish.xyz/login",
+        intel_status=ThreatIntelStatus.KNOWN_MALICIOUS,
+        details="PhishStats Score: 8.5/10 | Country: US",
+    )
+    set_phishstats_cache_for_testing("https://known-phish.xyz/login", mock_res)
     try:
         evidence = asyncio.run(query_threat_intel(evidence))
-        op_results = [ti for ti in evidence.threat_intel if ti.source == "openphish"]
-        assert len(op_results) == 1
-        assert op_results[0].intel_status == ThreatIntelStatus.KNOWN_MALICIOUS
-        assert op_results[0].match is True
+        ps_results = [ti for ti in evidence.threat_intel if ti.source == "phishstats"]
+        assert len(ps_results) == 1
+        assert ps_results[0].intel_status == ThreatIntelStatus.KNOWN_MALICIOUS
+        assert ps_results[0].match is True
 
-        op_evidence = [e for e in evidence.evidence if e.source == "openphish"]
-        assert len(op_evidence) == 1
-        assert op_evidence[0].status == EvidenceStatus.CONFIRMED
-        assert op_evidence[0].severity == EvidenceSeverity.CRITICAL
-        assert op_evidence[0].risk_direction == RiskDirection.INCREASES_RISK
+        ps_evidence = [e for e in evidence.evidence if e.source == "phishstats"]
+        assert len(ps_evidence) == 1
+        assert ps_evidence[0].status == EvidenceStatus.CONFIRMED
+        assert ps_evidence[0].severity == EvidenceSeverity.CRITICAL
+        assert ps_evidence[0].risk_direction == RiskDirection.INCREASES_RISK
     finally:
-        clear_openphish_cache()
+        clear_phishstats_cache()
 
 
 def test_threat_intel_miss_does_not_reduce_score():

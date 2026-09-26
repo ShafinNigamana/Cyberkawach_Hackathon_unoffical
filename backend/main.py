@@ -193,8 +193,9 @@ async def verification_status():
     return {
         "gemini_configured": avail.get("gemini", False),
         "safe_browsing_configured": avail.get("safe_browsing", False),
-        "phishtank_configured": False,
-        "openphish_configured": avail.get("openphish", True),
+        "phishtank_configured": avail.get("phishtank", False),
+        "phishstats_configured": avail.get("phishstats", False),
+        "osint_configured": avail.get("osint", True),
         "deterministic_fallback_available": True,
         "laya_available": True,
         "security_protections": {

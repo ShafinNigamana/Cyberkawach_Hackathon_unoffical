@@ -93,7 +93,7 @@ class EvidenceStatus(str, Enum):
 class EvidenceReliability(str, Enum):
     """Reliability tier of the source producing the evidence."""
     CRYPTOGRAPHIC = "CRYPTOGRAPHIC"            # E.g. TLS certificates, cryptographic proofs
-    EXTERNAL_DB = "EXTERNAL_DB"                # E.g. Google Safe Browsing, PhishTank, OpenPhish
+    EXTERNAL_DB = "EXTERNAL_DB"                # E.g. Google Safe Browsing, PhishTank, PhishStats
     DETERMINISTIC_FACT = "DETERMINISTIC_FACT"  # E.g. raw IP literal, port, length, exact regex
     HEURISTIC = "HEURISTIC"                    # E.g. keyword searches, lexical patterns, TLD checks
     MODEL_SIGNAL = "MODEL_SIGNAL"              # E.g. statistical classifier, Laya inference
@@ -161,7 +161,7 @@ class LayaResult(BaseModel):
 
 class ThreatIntelResult(BaseModel):
     """Single threat-intelligence source result."""
-    source: str  # "safe_browsing", "phishtank", "openphish"
+    source: str  # "safe_browsing", "phishtank", "phishstats"
     match: Optional[bool] = None  # None = lookup failed / unavailable
     details: Optional[str] = None
     lookup_url: Optional[str] = None

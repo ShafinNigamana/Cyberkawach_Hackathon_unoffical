@@ -96,8 +96,8 @@ const Components = {
 
         const sourceLabel = {
             'safe_browsing': 'Google Safe Browsing v4',
-            'openphish': 'OpenPhish Community Feed',
             'phishtank': 'PhishTank Database',
+            'phishstats': 'PhishStats Feed',
             'urlhaus': 'URLhaus Community Feed',
             'abuseipdb': 'AbuseIPDB Feed',
         }[ti.source] || ti.source;
