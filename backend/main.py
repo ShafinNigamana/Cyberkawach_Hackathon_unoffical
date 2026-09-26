@@ -23,6 +23,7 @@ from backend.models.api import (
     AnalyzeResponse,
     FileUploadResponse,
     HealthResponse,
+    OSINTResponse,
     UpdateUserStateRequest,
 )
 from backend.models.evidence import IncidentEvidence, InputType
@@ -506,6 +507,66 @@ async def update_user_state(
         processing_time_ms=evidence.processing_time_ms,
         modules_executed=evidence.modules_executed,
         modules_failed=evidence.modules_failed,
+    )
+
+
+@app.post("/api/incidents/{incident_id}/osint", response_model=OSINTResponse)
+async def get_incident_osint(
+    incident_id: str,
+    raw_request: Request = None,
+):
+    """
+    Asynchronous OSINT enrichment endpoint for an incident.
+    Fetches WHOIS domain age and crt.sh Certificate Transparency logs
+    via a background thread pool, translates facts to Evidence Contract items,
+    and returns {status, evidence, raw}.
+    """
+    if raw_request:
+        check_rate_limit(raw_request)
+
+    current_settings = get_settings()
+    if not current_settings.osint_enabled:
+        return OSINTResponse(status="disabled", evidence=[], raw={})
+
+    if not validate_incident_id(incident_id):
+        raise HTTPException(status_code=400, detail="Invalid incident ID format")
+
+    if incident_id not in _incidents:
+        raise HTTPException(status_code=404, detail="Incident or domain not found")
+
+    incident = _incidents[incident_id]
+
+    # Resolve domain from incident's extracted URLs or IOCs
+    domain = None
+    if incident.urls:
+        for u in incident.urls:
+            if u.domain:
+                domain = u.domain
+                break
+
+    if not domain and incident.iocs:
+        for ioc in incident.iocs:
+            clean_ioc = ioc.strip().lower()
+            if "." in clean_ioc and "/" not in clean_ioc and " " not in clean_ioc and not clean_ioc.endswith("."):
+                domain = clean_ioc
+                break
+
+    if not domain:
+        raise HTTPException(status_code=404, detail="Incident or domain not found")
+
+    import anyio
+    from backend.services.osint_enrichment import get_osint_enrichment
+    from backend.services.osint_evidence_translator import translate_osint_evidence
+
+    # Run blocking whois / requests calls in thread pool
+    raw = await anyio.to_thread.run_sync(get_osint_enrichment, domain)
+
+    evidence_items = translate_osint_evidence(raw)
+
+    return OSINTResponse(
+        status=raw.get("status", "unavailable"),
+        evidence=evidence_items,
+        raw=raw,
     )
 
 

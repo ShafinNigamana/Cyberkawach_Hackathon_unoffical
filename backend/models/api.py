@@ -141,6 +141,13 @@ class FileUploadResponse(BaseModel):
     extracted_text: Optional[str] = None
 
 
+class OSINTResponse(BaseModel):
+    """Response model for asynchronous OSINT enrichment."""
+    status: str
+    evidence: list[EvidenceItem] = Field(default_factory=list)
+    raw: dict = Field(default_factory=dict)
+
+
 class ErrorResponse(BaseModel):
     """Standard error response."""
     error: str

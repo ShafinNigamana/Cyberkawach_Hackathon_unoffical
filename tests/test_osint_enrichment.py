@@ -115,3 +115,66 @@ def test_get_osint_enrichment_status_unavailable():
     assert res["status"] == "unavailable"
     assert res["domain_age"] is None
     assert res["cert_transparency"] is None
+
+
+def test_osint_endpoint_success():
+    from fastapi.testclient import TestClient
+    from backend.main import app, _incidents
+    from backend.models.evidence import IncidentEvidence, URLSignal
+
+    client = TestClient(app)
+
+    # Setup incident in store
+    incident = IncidentEvidence(
+        incident_id="INC-2026-A1B2C3D4",
+        message="Please click http://test-scam.xyz/verify",
+        urls=[URLSignal(url="http://test-scam.xyz/verify", domain="test-scam.xyz")],
+    )
+    _incidents[incident.incident_id] = incident
+
+    mock_osint_result = {
+        "status": "complete",
+        "domain": "test-scam.xyz",
+        "domain_age": {"days_old": 2, "registrar": "BadRegistrar"},
+        "cert_transparency": {"shared_cert_domains": ["partner-scam.top"]},
+    }
+
+    with patch("backend.services.osint_enrichment.get_osint_enrichment", return_value=mock_osint_result):
+        resp = client.post(f"/api/incidents/{incident.incident_id}/osint")
+
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["status"] == "complete"
+    assert "evidence" in data
+    assert len(data["evidence"]) >= 1
+    assert data["raw"]["domain"] == "test-scam.xyz"
+
+
+def test_osint_endpoint_disabled_flag():
+    from fastapi.testclient import TestClient
+    from backend.main import app, _incidents
+    from backend.models.evidence import IncidentEvidence, URLSignal
+    from backend.config import Settings
+
+    client = TestClient(app)
+    incident = IncidentEvidence(
+        incident_id="INC-2026-E5F6A7B8",
+        urls=[URLSignal(url="http://test-disabled.xyz", domain="test-disabled.xyz")]
+    )
+    _incidents[incident.incident_id] = incident
+
+    mock_settings = Settings(osint_enabled=False)
+    with patch("backend.main.get_settings", return_value=mock_settings):
+        resp = client.post(f"/api/incidents/{incident.incident_id}/osint")
+
+    assert resp.status_code == 200
+    assert resp.json()["status"] == "disabled"
+
+
+def test_osint_endpoint_incident_not_found():
+    from fastapi.testclient import TestClient
+    from backend.main import app
+
+    client = TestClient(app)
+    resp = client.post("/api/incidents/INC-2026-99999999/osint")
+    assert resp.status_code == 404
