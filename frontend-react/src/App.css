@@ -1,0 +1,67 @@
+/* ─── App Layout ─── */
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  padding: var(--space-8) var(--space-4);
+}
+
+.page-container {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* Header */
+.page-header {
+  margin-bottom: var(--space-8);
+}
+
+.page-title {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: var(--space-3);
+}
+
+.page-subtitle {
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 540px;
+}
+
+/* Back button */
+.back-button {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-6);
+  padding: var(--space-2) 0;
+  transition: color var(--transition-fast);
+}
+
+.back-button:hover {
+  color: var(--brand);
+}
+
+/* ─── Responsive ─── */
+
+@media (max-width: 640px) {
+  .main-content {
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .page-title {
+    font-size: var(--font-size-xl);
+  }
+
+  .page-header {
+    margin-bottom: var(--space-6);
+  }
+}

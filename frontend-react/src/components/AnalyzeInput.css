@@ -1,0 +1,215 @@
+/* ─── AnalyzeInput ─── */
+
+.analyze-input {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+/* Tabs */
+.input-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  padding: 0 var(--space-6);
+  gap: var(--space-6);
+}
+
+.input-tab {
+  padding: var(--space-4) 0;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--text-tertiary);
+  letter-spacing: 0.04em;
+  border-bottom: 2px solid transparent;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+  margin-bottom: -1px;
+}
+
+.input-tab:hover {
+  color: var(--text-primary);
+}
+
+.input-tab--active {
+  color: var(--brand);
+  border-bottom-color: var(--brand);
+}
+
+/* Panel */
+.input-panel {
+  padding: var(--space-6);
+}
+
+.input-label {
+  display: block;
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: var(--space-3);
+}
+
+.input-textarea {
+  width: 100%;
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  resize: vertical;
+  min-height: 140px;
+  color: var(--text-primary);
+  background: var(--bg);
+  transition: border-color var(--transition-fast);
+}
+
+.input-textarea:focus {
+  outline: none;
+  border-color: var(--brand);
+}
+
+.input-textarea::placeholder {
+  color: var(--text-tertiary);
+}
+
+.input-url {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  background: var(--bg);
+  transition: border-color var(--transition-fast);
+}
+
+.input-url:focus {
+  outline: none;
+  border-color: var(--brand);
+}
+
+.input-url::placeholder {
+  color: var(--text-tertiary);
+}
+
+.input-note {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+  margin-top: var(--space-3);
+}
+
+/* Upload zone */
+.upload-zone {
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-10) var(--space-6);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+  background: var(--bg);
+}
+
+.upload-zone:hover,
+.upload-zone--drag {
+  border-color: var(--brand);
+  background: var(--brand-light);
+}
+
+.upload-zone-icon {
+  font-size: var(--font-size-xl);
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-2);
+}
+
+.upload-zone-text {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-1);
+}
+
+.upload-zone-hint {
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
+}
+
+/* Upload preview */
+.upload-preview {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.upload-preview-img {
+  max-height: 200px;
+  width: 100%;
+  object-fit: contain;
+  background: var(--bg);
+}
+
+.upload-preview-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--border);
+}
+
+.upload-preview-name {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.upload-preview-remove {
+  font-size: var(--font-size-sm);
+  color: var(--danger);
+  font-weight: 500;
+}
+
+.upload-preview-remove:hover {
+  color: var(--danger-dark);
+}
+
+/* Actions */
+.input-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--border-light);
+}
+
+/* Buttons */
+.btn {
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  transition: all var(--transition-fast);
+  line-height: 1.5;
+}
+
+.btn--primary {
+  background: var(--brand);
+  color: #fff;
+}
+
+.btn--primary:hover:not(:disabled) {
+  background: var(--brand-dark);
+}
+
+.btn--primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn--ghost {
+  color: var(--text-secondary);
+}
+
+.btn--ghost:hover:not(:disabled) {
+  color: var(--text-primary);
+  background: var(--bg);
+}
+
+.btn--ghost:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

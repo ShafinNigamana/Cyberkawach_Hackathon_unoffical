@@ -42,7 +42,7 @@ class Settings(BaseSettings):
     allowed_upload_types: str = "image/png,image/jpeg,image/webp"
 
     # ─── Security ───
-    cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000,http://localhost:8000,http://127.0.0.1:8000"
+    cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000,http://localhost:8000,http://127.0.0.1:8000,http://localhost:5173,http://127.0.0.1:5173"
     max_message_length: int = 10000
     max_urls_per_message: int = 20
 
