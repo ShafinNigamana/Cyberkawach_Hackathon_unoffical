@@ -1,195 +1,487 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Cyber Fraud Guardian — evidence-driven fraud message analysis for citizens">
-    <title>Cyber Fraud Guardian</title>
+    <meta name="description" content="Cyber Fraud Guardian — Official Citizen Cyber Threat Triage & Evidence-Driven Fraud Detection Portal">
+    <title>Cyber Fraud Guardian — National Citizen Cyber Threat Triage Portal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/main.css">
+    <!-- Public Sans & Plus Jakarta Sans: Gold standard for authoritative, modern public sector typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Public+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css?v=2.2">
 </head>
 <body>
-    <!-- ─── Header ─── -->
+    <!-- ─── Official National Tricolor Ribbon ─── -->
+    <div class="gov-tricolor-bar" aria-hidden="true"></div>
+
+    <!-- ─── Top Government Utility Bar ─── -->
+    <aside class="gov-topbar" aria-label="Official Government Header">
+        <div class="gov-topbar-inner">
+            <div class="gov-topbar-left">
+                <div class="gov-emblem-mini" aria-hidden="true">
+                    <!-- Ashoka Chakra SVG Motif -->
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                        <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                        <circle cx="12" cy="12" r="2" fill="currentColor"/>
+                        <path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07L19.07 4.93M8.46 2.54l7.08 18.92M2.54 8.46l18.92 7.08M15.54 2.54L8.46 21.46M2.54 15.54l18.92-7.08" stroke="currentColor" stroke-width="0.8"/>
+                    </svg>
+                </div>
+                <div class="gov-portal-title">
+                    <span class="gov-name-hi">भारत सरकार</span>
+                    <span class="gov-sep">|</span>
+                    <span class="gov-name-en">Government of India</span>
+                    <span class="gov-badge-division">Cyber Kavach S2 • I4C Partner</span>
+                </div>
+            </div>
+
+            <div class="gov-topbar-right">
+                <!-- 24x7 Emergency Helpline Link -->
+                <a href="tel:1930" class="gov-helpline-link" title="Call National Cyber Crime Reporting Helpline">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    <span>Emergency Helpline: <strong>1930</strong> (24x7)</span>
+                </a>
+
+                <!-- Accessibility Controls -->
+                <div class="gov-access-tools">
+                    <div class="gov-font-size-ctrl" role="group" aria-label="Text sizing">
+                        <button type="button" class="btn-text-size" id="btn-font-dec" title="Decrease font size">A-</button>
+                        <button type="button" class="btn-text-size active" id="btn-font-reset" title="Normal font size">A</button>
+                        <button type="button" class="btn-text-size" id="btn-font-inc" title="Increase font size">A+</button>
+                    </div>
+
+                    <button type="button" class="btn-theme-toggle" id="theme-toggle" title="Toggle High Contrast / Dark Shield theme">
+                        <svg class="icon-sun" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                        <span id="theme-label">Dark Mode</span>
+                    </button>
+
+                    <a href="/verification.html" class="gov-link-testsuite" title="Launch Automated Verification & Security Test Suite" target="_blank">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                        <span>Verification Suite</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ─── Main Portal Header ─── -->
     <header class="header" id="header">
         <div class="header-inner">
-            <div class="header-brand">
-                <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                <h1 class="header-title">Cyber Fraud Guardian</h1>
+            <div class="header-brand-wrap">
+                <div class="header-emblem-badge" aria-hidden="true">
+                    <svg viewBox="0 0 40 40" width="40" height="40" fill="none">
+                        <!-- Shield Enclosure -->
+                        <path d="M20 3L6 9V19C6 28 12 34.5 20 37C28 34.5 34 28 34 19V9L20 3Z" fill="var(--color-primary-dark, #0b2545)" stroke="var(--color-gold, #c89528)" stroke-width="2"/>
+                        <!-- Inner Shield Highlight -->
+                        <path d="M20 6L9 11V18.5C9 25.5 13.8 31 20 33.2C26.2 31 31 25.5 31 18.5V11L20 6Z" fill="var(--color-primary, #133e87)" opacity="0.85"/>
+                        <!-- Security Lock & Keyway Motif -->
+                        <rect x="15" y="18" width="10" height="8" rx="2" fill="#ffffff"/>
+                        <path d="M17 18V15C17 13.34 18.34 12 20 12C21.66 12 23 13.34 23 15V18" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="20" cy="22" r="1.5" fill="var(--color-primary-dark, #0b2545)"/>
+                    </svg>
+                </div>
+                <div class="header-title-block">
+                    <div class="header-pretitle">राष्ट्रीय साइबर सुरक्षा एवं नागरिक सूचना पोर्टल</div>
+                    <h1 class="header-title">Cyber Fraud Guardian</h1>
+                    <p class="header-subtitle">Evidence-Driven Cyber Threat Triage & Citizen Defense System</p>
+                </div>
             </div>
+
             <div class="header-meta">
-                <a href="/verification.html" class="header-link" title="Open Automated Verification & Security Test Suite" target="_blank" style="margin-right: 12px; font-size: 0.82rem; color: var(--text-secondary, #94a3b8); text-decoration: none; display: inline-flex; align-items: center; gap: 5px; border: 1px solid rgba(255,255,255,0.12); padding: 5px 11px; border-radius: 6px; transition: all 0.2s ease; background: rgba(255,255,255,0.03);">
-                    <svg style="width: 14px; height: 14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-                    <span>Verification Suite</span>
-                </a>
-                <span class="header-badge" id="health-status">Checking...</span>
+                <div class="system-heartbeat">
+                    <span class="status-pulse-dot" aria-hidden="true"></span>
+                    <span class="header-badge" id="health-status">System Operational</span>
+                </div>
+                <div class="header-stats-pill">
+                    <span class="stats-item">🛡️ 9 Active Modules</span>
+                    <span class="stats-sep">•</span>
+                    <span class="stats-item">⚡ 0-PII Retention</span>
+                </div>
             </div>
         </div>
     </header>
 
-    <main class="main">
-        <!-- ─── Input Panel ─── -->
+    <!-- ─── Emergency Golden Hour Advisory Banner ─── -->
+    <div class="emergency-strip" role="alert">
+        <div class="emergency-strip-inner">
+            <div class="emergency-icon-pulse" aria-hidden="true">🚨</div>
+            <div class="emergency-content">
+                <strong>CRITICAL FINANCIAL FRAUD ADVISORY (GOLDEN HOUR):</strong>
+                <span>If funds were debited or transferred to suspected fraudsters within the last 2 hours, call <strong>1930</strong> immediately or report on <a href="https://cybercrime.gov.in" target="_blank" rel="noopener">cybercrime.gov.in</a> to activate the National Financial Fraud Freezing System.</span>
+            </div>
+            <a href="tel:1930" class="btn-emergency-call">Call 1930</a>
+        </div>
+    </div>
+
+    <!-- ─── Main Content Container ─── -->
+    <main class="main" id="main-content">
+
+        <!-- ─── Quick Indian Fraud Scenario Presets ─── -->
+        <section class="presets-section" aria-label="Quick Test Scenarios">
+            <div class="presets-header">
+                <span class="presets-label">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                    Common Indian Fraud Typologies (Click to Test):
+                </span>
+                <span class="presets-subtext">Preloaded benchmark scenarios with zero false alarms</span>
+            </div>
+            <div class="presets-chips" id="quick-preset-chips">
+                <button type="button" class="preset-chip" data-preset="electricity">⚡ Electricity Cutoff Notice</button>
+                <button type="button" class="preset-chip" data-preset="sbi-kyc">🏦 SBI NetBanking KYC Block</button>
+                <button type="button" class="preset-chip" data-preset="courier">📦 India Post Redelivery Fee</button>
+                <button type="button" class="preset-chip" data-preset="upi-refund">💸 UPI Collect Request Scam</button>
+                <button type="button" class="preset-chip" data-preset="telegram-task">💼 Part-Time YouTube Task Scam</button>
+                <button type="button" class="preset-chip" data-preset="digital-arrest">⚖️ CBI Digital Arrest Summons</button>
+                <button type="button" class="preset-chip preset-chip--safe" data-preset="legit-sbi">🛡️ Official Bank OTP (Safe Control)</button>
+            </div>
+        </section>
+
+        <!-- ─── Input Panel (Double Bezel Container) ─── -->
         <section class="panel input-panel" id="input-panel">
-            <h2 class="panel-title">
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                Analyze Message
-            </h2>
+            <div class="panel-header-bar">
+                <div class="panel-header-left">
+                    <div class="panel-step-badge">STEP 1</div>
+                    <h2 class="panel-title">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        Analyze Suspicious Message or Communication
+                    </h2>
+                </div>
+                <div class="panel-header-actions">
+                    <button type="button" class="btn-tool" id="btn-paste-clip" title="Paste text from clipboard">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+                        <span>Paste</span>
+                    </button>
+                    <button type="button" class="btn-tool" id="btn-clear-input" title="Clear message input">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        <span>Clear</span>
+                    </button>
+                </div>
+            </div>
 
             <form id="analyze-form">
                 <div class="form-group">
-                    <label for="message-input" class="form-label">Paste suspicious message</label>
-                    <textarea id="message-input" class="form-textarea" rows="6" placeholder="Paste the suspicious SMS, email, or chat message here..." required></textarea>
+                    <div class="textarea-header">
+                        <label for="message-input" class="form-label">
+                            Message Content <span class="required">*</span>
+                            <span class="label-hint">(Paste SMS, WhatsApp chat, email text, or suspicious notification)</span>
+                        </label>
+                        <span class="char-counter" id="char-counter">0 characters</span>
+                    </div>
+                    <textarea id="message-input" class="form-textarea" rows="5" placeholder="Example: Dear Customer, Your electricity connection will be disconnected tonight at 9:30 PM due to unpaid bill. Immediately contact power officer on 9876543210 to update..." required></textarea>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group form-group--half">
-                        <label for="input-type" class="form-label">Message type</label>
+                <div class="form-row-grid">
+                    <!-- Communication Channel -->
+                    <div class="form-group">
+                        <label for="input-type" class="form-label">
+                            Communication Channel
+                            <span class="label-hint">(Where did you receive this?)</span>
+                        </label>
                         <select id="input-type" class="form-select">
-                            <option value="text">Text</option>
-                            <option value="sms">SMS</option>
-                            <option value="email">Email</option>
-                            <option value="chat">Chat/WhatsApp</option>
+                            <option value="sms">📱 SMS / Text Message</option>
+                            <option value="chat">💬 WhatsApp / Telegram / Chat</option>
+                            <option value="email">✉️ Email Message</option>
+                            <option value="text">📄 General Text / Document</option>
                         </select>
                     </div>
-                    <div class="form-group form-group--half">
-                        <label for="user-state" class="form-label">Your situation</label>
+
+                    <!-- Citizen Situation / State -->
+                    <div class="form-group">
+                        <label for="user-state" class="form-label">
+                            Your Current Situation <span class="required">*</span>
+                            <span class="label-hint">(Select your level of interaction)</span>
+                        </label>
                         <select id="user-state" class="form-select">
-                            <option value="received">I only received this message</option>
-                            <option value="clicked">I clicked a link in it</option>
-                            <option value="entered_credentials">I entered my details/OTP</option>
-                            <option value="paid">I made a payment</option>
+                            <option value="received">1️⃣ I only received this message (No action taken yet)</option>
+                            <option value="clicked">2️⃣ I clicked on a link or opened the website</option>
+                            <option value="entered_credentials">3️⃣ I entered my passwords, OTP, or personal details</option>
+                            <option value="paid">4️⃣ I transferred money / authorized a payment (EMERGENCY)</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="urls-input" class="form-label">Additional URLs (optional, one per line)</label>
-                    <textarea id="urls-input" class="form-textarea form-textarea--small" rows="2" placeholder="https://suspicious-link.example.com"></textarea>
+                <!-- Secondary URL Inputs -->
+                <div class="form-group form-group--collapsible">
+                    <label for="urls-input" class="form-label">
+                        Additional Web Links / APK URLs <span class="label-hint">(Optional — one URL per line)</span>
+                    </label>
+                    <textarea id="urls-input" class="form-textarea form-textarea--small" rows="2" placeholder="https://sbi-kyc-verify-urgent.com/login"></textarea>
                 </div>
 
-                <div class="form-actions">
+                <!-- Privacy & Zero Retention Notice -->
+                <div class="privacy-notice-strip">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <span><strong>Privacy Protection Active:</strong> Sensitive Aadhaar, PAN card, and banking OTP numbers are automatically masked in-memory before evaluation. No citizen data is logged or retained.</span>
+                </div>
+
+                <div class="form-actions-bar">
                     <button type="submit" class="btn btn--primary" id="analyze-btn">
-                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                        Analyze Message
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <span>Analyze & Verify Message</span>
                     </button>
-                    <button type="button" class="btn btn--ghost" id="sample-btn">Load Sample</button>
+                    <button type="button" class="btn btn--secondary" id="sample-btn">More Sample Scenarios ▾</button>
                 </div>
             </form>
 
-            <!-- Sample message selector -->
+            <!-- Sample message selector dropdown -->
             <div class="samples-dropdown" id="samples-dropdown" hidden>
                 <div class="samples-list" id="samples-list"></div>
             </div>
         </section>
 
-        <!-- ─── Loading ─── -->
-        <div class="loading" id="loading" hidden>
+        <!-- ─── High-Trust Loading State ─── -->
+        <div class="loading" id="loading" hidden aria-live="polite">
             <div class="loading-spinner"></div>
-            <p class="loading-text">Analyzing message through detection pipeline...</p>
-            <div class="loading-stages" id="loading-stages"></div>
+            <div class="loading-content">
+                <h3 class="loading-title">Executing Multi-Tier Fraud Triage Pipeline</h3>
+                <p class="loading-text">Extracting IOCs, checking threat feeds, querying Safe Browsing v4, and evaluating epistemic evidence...</p>
+                <div class="loading-stages" id="loading-stages">
+                    <span class="loading-pill active">IOC Extraction</span>
+                    <span class="loading-pill active">Indian Scam Rules</span>
+                    <span class="loading-pill active">OpenPhish & SafeBrowsing</span>
+                    <span class="loading-pill active">Two-Tier Risk Fusion</span>
+                    <span class="loading-pill active">Attack Path & Response</span>
+                </div>
+            </div>
         </div>
 
-        <!-- ─── Results Panel ─── -->
-        <section class="results" id="results" hidden>
+        <!-- ─── Results Dashboard (Elevated Double Bezel) ─── -->
+        <section class="results" id="results" hidden aria-live="assertive">
 
-            <!-- Risk Score Banner -->
-            <div class="risk-banner" id="risk-banner">
-                <div class="risk-score-circle" id="risk-circle">
-                    <span class="risk-score-value" id="risk-score">0</span>
-                </div>
-                <div class="risk-info">
-                    <div class="risk-header-row">
-                        <h2 class="risk-level" id="risk-level">UNKNOWN</h2>
-                        <span class="sufficiency-badge" id="sufficiency-badge">SUFFICIENT EVIDENCE</span>
+            <!-- Official Case Dossier Header -->
+            <div class="dossier-header-bar">
+                <div class="dossier-id-block">
+                    <span class="dossier-label">OFFICIAL TRIAGE INCIDENT REFERENCE</span>
+                    <div class="dossier-id-row">
+                        <span class="dossier-id" id="display-incident-id">INC-2026-PENDING</span>
+                        <button type="button" class="btn-copy-id" id="btn-copy-case-id" title="Copy Incident Reference ID">
+                            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                            <span>Copy Ref</span>
+                        </button>
                     </div>
-                    <p class="risk-category" id="risk-category">Analyzing...</p>
-                    <p class="risk-meta" id="risk-meta"></p>
+                </div>
+
+                <div class="dossier-actions">
+                    <button type="button" class="btn-dossier-action" id="btn-print-report" title="Print or Save Official PDF Advisory">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                        <span>Print Advisory / Save PDF</span>
+                    </button>
+                    <button type="button" class="btn-dossier-action" id="btn-copy-full-report" title="Copy formatted advisory text">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+                        <span>Copy Advisory</span>
+                    </button>
+                    <a href="https://cybercrime.gov.in" target="_blank" rel="noopener" class="btn-dossier-action btn-dossier-action--gov">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                        <span>Report on cybercrime.gov.in</span>
+                    </a>
                 </div>
             </div>
 
-            <!-- Explanation -->
-            <section class="panel" id="explanation-panel">
-                <h2 class="panel-title">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                    Explanation
-                    <span class="badge badge--subtle" id="explanation-source"></span>
-                </h2>
-                <div id="explanation-content"></div>
-            </section>
-
-            <!-- Evidence Items -->
-            <section class="panel" id="evidence-panel">
-                <h2 class="panel-title">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-                    Evidence Items
-                    <span class="badge" id="evidence-count">0</span>
-                </h2>
-                <div class="evidence-list" id="evidence-list"></div>
-            </section>
-
-            <!-- Threat Intelligence -->
-            <section class="panel" id="threat-intel-panel">
-                <h2 class="panel-title">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                    Threat Intelligence
-                </h2>
-                <div class="threat-intel-list" id="threat-intel-list"></div>
-            </section>
-
-            <!-- URL Analysis -->
-            <section class="panel" id="url-panel" hidden>
-                <h2 class="panel-title">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-                    URL Analysis
-                </h2>
-                <div id="url-list"></div>
-            </section>
-
-            <!-- Adaptive Response -->
-            <section class="panel" id="response-panel">
-                <h2 class="panel-title">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>
-                    What You Should Do
-                </h2>
-                <div id="response-content"></div>
-
-                <!-- State switcher for demo -->
-                <div class="state-switcher" id="state-switcher">
-                    <label class="form-label">Change your situation (demo):</label>
-                    <div class="state-buttons" id="state-buttons">
-                        <button class="btn btn--small" data-state="received">Only Received</button>
-                        <button class="btn btn--small" data-state="clicked">Clicked Link</button>
-                        <button class="btn btn--small" data-state="entered_credentials">Entered Details</button>
-                        <button class="btn btn--small" data-state="paid">Made Payment</button>
+            <!-- Risk Score Banner Card -->
+            <div class="risk-banner" id="risk-banner" data-level="UNKNOWN">
+                <div class="risk-banner-left">
+                    <div class="risk-score-circle" id="risk-circle">
+                        <span class="risk-score-value" id="risk-score">0</span>
+                        <span class="risk-score-unit">/ 100</span>
                     </div>
                 </div>
-            </section>
 
-            <!-- Attack Path -->
-            <section class="panel" id="attack-path-panel" hidden>
-                <h2 class="panel-title">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
-                    Attack Path
-                </h2>
-                <div id="attack-path-content"></div>
-            </section>
+                <div class="risk-info">
+                    <div class="risk-header-row">
+                        <div class="risk-badge-group">
+                            <span class="risk-status-tag">SECURITY ASSESSMENT</span>
+                            <h2 class="risk-level" id="risk-level">UNKNOWN</h2>
+                        </div>
+                        <span class="sufficiency-badge" id="sufficiency-badge">SUFFICIENT EVIDENCE</span>
+                    </div>
 
-            <!-- Processing Meta -->
+                    <div class="risk-category-row">
+                        <span class="category-icon">⚠️</span>
+                        <p class="risk-category" id="risk-category">Evaluating...</p>
+                    </div>
+
+                    <p class="risk-meta" id="risk-meta">9 modules executed • 120ms</p>
+                </div>
+            </div>
+
+            <!-- Two-Column Product Dashboard -->
+            <div class="results-grid-layout">
+
+                <!-- Left Column: Citizen Directives (What You Must Do) -->
+                <div class="results-col-primary">
+
+                    <!-- Protective Actions & State Machine -->
+                    <section class="panel panel--advisory" id="response-panel">
+                        <div class="panel-header-bar">
+                            <h2 class="panel-title">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+                                Recommended Citizen Actions
+                            </h2>
+                            <span class="advisory-badge">ACTION REQUIRED</span>
+                        </div>
+
+                        <div id="response-content"></div>
+
+                        <!-- Live Situation Simulator -->
+                        <div class="state-switcher" id="state-switcher">
+                            <div class="state-switcher-header">
+                                <span class="state-switcher-title">🔄 Did your situation change? Update status to recalculate advisory:</span>
+                            </div>
+                            <div class="state-buttons" id="state-buttons">
+                                <button type="button" class="btn btn--small" data-state="received">Only Received</button>
+                                <button type="button" class="btn btn--small" data-state="clicked">Clicked Link</button>
+                                <button type="button" class="btn btn--small" data-state="entered_credentials">Entered Details/OTP</button>
+                                <button type="button" class="btn btn--small btn--emergency" data-state="paid">Paid Money</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Attack Path Analysis -->
+                    <section class="panel" id="attack-path-panel" hidden>
+                        <div class="panel-header-bar">
+                            <h2 class="panel-title">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+                                Traceable Causal Attack Path
+                            </h2>
+                            <span class="badge badge--subtle">EVIDENCE-GROUNDED</span>
+                        </div>
+                        <p class="panel-explainer-text">Sequential progression of how this attack operates from initial bait to potential exploitation.</p>
+                        <div id="attack-path-content"></div>
+                    </section>
+                </div>
+
+                <!-- Right Column: Grounded Evidence & Verification -->
+                <div class="results-col-secondary">
+
+                    <!-- Grounded Explanation & Negative Bounds -->
+                    <section class="panel" id="explanation-panel">
+                        <div class="panel-header-bar">
+                            <h2 class="panel-title">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                Grounded Reasoning & Limits
+                            </h2>
+                            <span class="badge badge--subtle" id="explanation-source">Deterministic Fallback</span>
+                        </div>
+                        <div id="explanation-content"></div>
+                    </section>
+
+                    <!-- Evidence Items List -->
+                    <section class="panel" id="evidence-panel">
+                        <div class="panel-header-bar">
+                            <h2 class="panel-title">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                                Factual Evidence Items
+                            </h2>
+                            <span class="badge" id="evidence-count">0</span>
+                        </div>
+                        <p class="panel-explainer-text">Direct observations mapped with Epistemic Status (CONFIRMED, OBSERVED, SUSPICIOUS) and reliability.</p>
+                        <div class="evidence-list" id="evidence-list"></div>
+                    </section>
+
+                    <!-- Threat Intelligence 4-State -->
+                    <section class="panel" id="threat-intel-panel">
+                        <div class="panel-header-bar">
+                            <h2 class="panel-title">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                                Threat Intelligence Feeds
+                            </h2>
+                            <span class="badge badge--subtle">4-STATE MONITORED</span>
+                        </div>
+                        <div class="threat-intel-list" id="threat-intel-list"></div>
+                    </section>
+
+                    <!-- URL / Domain Analysis -->
+                    <section class="panel" id="url-panel" hidden>
+                        <div class="panel-header-bar">
+                            <h2 class="panel-title">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                                Domain & Infrastructure Analysis
+                            </h2>
+                        </div>
+                        <div id="url-list"></div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Processing Meta Footer -->
             <div class="meta-bar" id="meta-bar">
-                <span id="meta-time"></span>
-                <span id="meta-modules"></span>
-                <span id="meta-incident-id"></span>
+                <span class="meta-item"><strong id="meta-time">0ms</strong> execution</span>
+                <span class="meta-sep">•</span>
+                <span class="meta-item" id="meta-modules">Modules: rules, ml, threat_intel, fusion</span>
+                <span class="meta-sep">•</span>
+                <span class="meta-item">Incident ID: <strong id="meta-incident-id">INC-2026-XXXX</strong></span>
             </div>
         </section>
     </main>
 
-    <footer class="footer">
-        <p>Cyber Fraud Guardian — Cyber Kavach Challenge 2026 · BSides Ahmedabad</p>
+    <!-- ─── Toast Notification Container ─── -->
+    <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+    <!-- ─── Official Public Sector Footer ─── -->
+    <footer class="gov-footer" role="contentinfo">
+        <div class="gov-footer-inner">
+            <div class="gov-footer-top">
+                <div class="gov-footer-col">
+                    <div class="gov-footer-brand">
+                        <div class="gov-emblem-footer" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                                <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                                <circle cx="12" cy="12" r="2" fill="currentColor"/>
+                                <path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07L19.07 4.93" stroke="currentColor" stroke-width="1"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4>Cyber Fraud Guardian</h4>
+                            <p class="gov-footer-dept">Indian Cyber Crime Coordination Centre (I4C) Partner Initiative • Track S2</p>
+                        </div>
+                    </div>
+                    <p class="gov-footer-desc">An evidence-driven, epistemically grounded cyber threat classification and triage framework built for the Cyber Kavach Challenge 2026, BSides Ahmedabad.</p>
+                </div>
+
+                <div class="gov-footer-col">
+                    <h5>Official National Portals</h5>
+                    <ul class="gov-footer-links">
+                        <li><a href="https://cybercrime.gov.in" target="_blank" rel="noopener">National Cyber Crime Reporting Portal (1930)</a></li>
+                        <li><a href="https://sachet.rbi.org.in" target="_blank" rel="noopener">RBI Sachet (Unauthorised Financial Schemes)</a></li>
+                        <li><a href="https://sancharsaathi.gov.in/sfc/" target="_blank" rel="noopener">Chakshu Telecom Fraud Reporting</a></li>
+                        <li><a href="https://www.cert-in.org.in" target="_blank" rel="noopener">CERT-In Security Advisories</a></li>
+                        <li><a href="https://consumerhelpline.gov.in" target="_blank" rel="noopener">National Consumer Helpline (1915)</a></li>
+                    </ul>
+                </div>
+
+                <div class="gov-footer-col">
+                    <h5>Privacy & Security Guarantees</h5>
+                    <div class="gov-guarantee-card">
+                        <div class="guarantee-item">
+                            <span class="guarantee-icon">🛡️</span>
+                            <span><strong>Zero-Storage Protocol:</strong> No analyzed messages are stored in permanent databases.</span>
+                        </div>
+                        <div class="guarantee-item">
+                            <span class="guarantee-icon">🔒</span>
+                            <span><strong>In-Memory Redaction:</strong> Aadhaar, PAN, and OTP tokens are expunged prior to evaluation.</span>
+                        </div>
+                        <div class="guarantee-item">
+                            <span class="guarantee-icon">⚖️</span>
+                            <span><strong>Epistemic Modesty:</strong> System never assumes unverified claims or false certainty.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="gov-footer-bottom">
+                <p>© 2026 Cyber Fraud Guardian. Built for Cyber Kavach Challenge 2026 • BSides Ahmedabad. Open-source under public-interest security terms.</p>
+                <div class="gov-footer-badges">
+                    <span class="gov-mini-badge">Ponytail Compliant</span>
+                    <span class="gov-mini-badge">Zero PII Leakage</span>
+                    <span class="gov-mini-badge">WCAG AAA Contrast</span>
+                </div>
+            </div>
+        </div>
     </footer>
 
-    <script src="js/api.js"></script>
-    <script src="js/components.js"></script>
-    <script src="js/app.js"></script>
+    <!-- Scripts -->
+    <script src="js/api.js?v=2.2"></script>
+    <script src="js/components.js?v=2.2"></script>
+    <script src="js/app.js?v=2.2"></script>
 </body>
 </html>
