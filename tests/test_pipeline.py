@@ -262,3 +262,45 @@ def test_prompt_injection_defense():
     assert "[FILTERED_COMMAND]" in defended
     assert "Ignore all previous instructions" not in defended
 
+
+def test_laya_typed_decisions():
+    """Verify Laya fast typed-decision triage outputs structured decisions (Phase 3)."""
+    from backend.modules.laya import run_laya_triage
+
+    scam_msg = "Dear Customer, Your SBI account has been BLOCKED. Update KYC immediately at http://sbi-kyc.xyz or call 9876543210."
+    evidence = IncidentEvidence(input_type=InputType.SMS, message=scam_msg)
+    evidence = asyncio.run(run_laya_triage(evidence))
+
+    assert evidence.laya.available is True
+    assert evidence.laya.fraud is not None and evidence.laya.fraud > 0.60
+    assert evidence.laya.fraud_category in ["banking", "courier", "government", "lottery_prize", "job_offer", "investment", "tech_support"]
+    assert evidence.laya.brand_impersonation is not None
+    assert evidence.laya.credential_request is not None and evidence.laya.credential_request > 0.40
+    assert evidence.laya.latency_ms is not None
+    # Provenance item added
+    assert any(item.type == EvidenceType.LAYA_SIGNAL and item.source == "laya" for item in evidence.evidence)
+
+
+def test_laya_benign_decision():
+    """Verify Laya identifies benign messages with low fraud probability."""
+    from backend.modules.laya import run_laya_triage
+
+    benign_msg = "Your SBI account XX1234 has been debited with Rs 2,500.00 on 25-Sep-2026. Available balance Rs 45,230.50. Call 1800111111 if not you -SBI"
+    evidence = IncidentEvidence(input_type=InputType.SMS, message=benign_msg)
+    evidence = asyncio.run(run_laya_triage(evidence))
+
+    assert evidence.laya.available is True
+    assert evidence.laya.fraud < 0.45
+    assert evidence.laya.deep_analysis_required < 0.40
+
+
+def test_laya_graceful_fallback():
+    """Verify Laya preserves fallback on empty/invalid input without exceptions."""
+    from backend.modules.laya import run_laya_triage
+
+    evidence = IncidentEvidence(input_type=InputType.TEXT, message="")
+    evidence = asyncio.run(run_laya_triage(evidence))
+
+    assert evidence.laya.available is False
+
+

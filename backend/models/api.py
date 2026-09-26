@@ -16,6 +16,7 @@ from backend.models.evidence import (
     FraudDNA,
     GeminiExplanation,
     InputType,
+    LayaResult,
     RiskAssessment,
     ThreatIntelResult,
     URLSignal,
@@ -93,6 +94,9 @@ class AnalyzeResponse(BaseModel):
 
     # Adaptive response
     response: Optional[AdaptiveResponse] = None
+
+    # Laya fast decision output (Phase 3)
+    laya: Optional[LayaResult] = None
 
     # Campaign (when available)
     fraud_dna: Optional[FraudDNA] = None

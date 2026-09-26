@@ -88,10 +88,13 @@ class LayaResult(BaseModel):
     is not active — fusion reads this without special-casing.
     """
     fraud: Optional[float] = None
+    fraud_category: Optional[str] = None
     brand_impersonation: Optional[float] = None
     credential_request: Optional[float] = None
+    payment_request: Optional[float] = None
     deep_analysis_required: Optional[float] = None
     available: bool = False  # False when Laya is not wired up
+    latency_ms: Optional[float] = None
 
 
 class ThreatIntelResult(BaseModel):

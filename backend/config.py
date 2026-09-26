@@ -19,7 +19,7 @@ class Settings(BaseSettings):
 
     # ─── Gemini ───
     gemini_api_key: Optional[str] = None
-    gemini_model: str = "gemini-2.0-flash-lite"
+    gemini_model: str = "gemini-flash-latest"
 
     # ─── Threat Intel APIs (P0) ───
     safe_browsing_api_key: Optional[str] = None
@@ -58,15 +58,15 @@ class Settings(BaseSettings):
         return [t.strip() for t in self.allowed_upload_types.split(",") if t.strip()]
 
     def api_availability(self) -> dict[str, bool]:
-        """Check which external APIs have keys configured."""
+        """Check which external APIs have keys configured (safe boolean flags only)."""
         return {
-            "gemini": self.gemini_api_key is not None,
+            "gemini": bool(self.gemini_api_key and self.gemini_api_key.strip()),
             # P0 threat-intel
-            "safe_browsing": self.safe_browsing_api_key is not None,
-            "phishtank": self.phishtank_api_key is not None,
+            "safe_browsing": bool(self.safe_browsing_api_key and self.safe_browsing_api_key.strip()),
+            "phishtank": bool(self.phishtank_api_key and self.phishtank_api_key.strip()),
             # P2 optional threat-intel
-            "abuseipdb": self.abuseipdb_api_key is not None,
-            "urlhaus": True,  # No key needed, but P2 optional
+            "abuseipdb": bool(self.abuseipdb_api_key and self.abuseipdb_api_key.strip()),
+            "urlhaus": True,  # No key needed
         }
 
 

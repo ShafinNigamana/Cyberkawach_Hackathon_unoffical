@@ -9,7 +9,7 @@ import logging
 import time
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -70,6 +70,90 @@ if frontend_path.exists():
     async def serve_index():
         return FileResponse(str(frontend_path / "index.html"))
 
+    @app.get("/verification.html")
+    async def serve_verification():
+        return FileResponse(str(frontend_path / "verification.html"))
+
+
+# ─── Safe Verification Endpoints (No secrets exposed) ───
+_rate_test_tracker: dict[str, list[float]] = {}
+
+
+@app.get("/api/verification/status")
+async def verification_status():
+    """Returns boolean API availability status without exposing credentials."""
+    avail = settings.api_availability()
+    return {
+        "gemini_configured": avail.get("gemini", False),
+        "safe_browsing_configured": avail.get("safe_browsing", False),
+        "phishtank_configured": avail.get("phishtank", False),
+        "deterministic_fallback_available": True,
+        "laya_available": True,
+        "security_protections": {
+            "ssrf_protection": True,
+            "pii_redaction": True,
+            "prompt_injection_defense": True,
+            "rate_limiting": True,
+        },
+    }
+
+
+@app.post("/api/verification/check-ssrf")
+async def check_ssrf_test(data: dict):
+    """Test SSRF validation logic against synthetic targets."""
+    url = data.get("url", "")
+    from backend.utils.sanitize import is_safe_url
+    safe = is_safe_url(url)
+    return {
+        "url": url,
+        "is_safe": safe,
+        "status": "ALLOWED" if safe else "BLOCKED",
+        "reason": "External web destination" if safe else "Local/Private/Loopback target blocked (SSRF defense)",
+    }
+
+
+@app.post("/api/verification/check-pii")
+async def check_pii_test(data: dict):
+    """Test PII redaction against synthetic data."""
+    text = data.get("text", "")
+    from backend.utils.sanitize import redact_pii
+    redacted = redact_pii(text)
+    return {
+        "original": text,
+        "redacted": redacted,
+        "pii_detected": redacted != text,
+    }
+
+
+@app.post("/api/verification/check-prompt-injection")
+async def check_prompt_injection_test(data: dict):
+    """Test prompt-injection filtering against synthetic jailbreak payloads."""
+    text = data.get("text", "")
+    from backend.utils.sanitize import defend_prompt_injection
+    defended = defend_prompt_injection(text)
+    return {
+        "original": text,
+        "defended": defended,
+        "injection_detected": defended != text,
+    }
+
+
+@app.get("/api/verification/rate-limit-test")
+async def rate_limit_test(request: Request):
+    """Mini 5-request burst test to demonstrate 429 without hammering server."""
+    client_ip = request.client.host if request.client else "unknown"
+    now = time.time()
+    window = [t for t in _rate_test_tracker.get(client_ip, []) if now - t < 10]
+    if len(window) >= 5:
+        raise HTTPException(
+            status_code=429,
+            detail="Rate limit triggered: maximum 5 requests in 10s test window reached.",
+            headers={"Retry-After": "10"},
+        )
+    window.append(now)
+    _rate_test_tracker[client_ip] = window
+    return {"status": "ok", "requests_in_window": len(window), "limit": 5}
+
 
 @app.get("/api/health", response_model=HealthResponse)
 async def health_check():
@@ -84,9 +168,9 @@ async def health_check():
             "url_analyzer": True,
             "brand_check": True,
             "threat_intel": True,
+            "laya": True,  # Phase 3 fast typed-decision triage
             "fusion": True,
             "gemini": True,  # Non-critical — deterministic fallback always available
-            "laya": False,  # P1 — not wired yet
             "ocr": False,  # P1 — not wired yet
             "fraud_dna": False,  # P2 — not wired yet
         },
@@ -170,6 +254,15 @@ async def analyze_message(request: AnalyzeRequest):
         modules_failed.append("threat_intel")
         evidence.errors.append(f"threat_intel: {str(e)}")
 
+    # Stage 5b: Laya fast typed-decision triage (Phase 3)
+    try:
+        from backend.modules.laya import run_laya_triage
+        evidence = await run_laya_triage(evidence)
+        modules_executed.append("laya")
+    except Exception as e:
+        modules_failed.append("laya")
+        evidence.errors.append(f"laya: {str(e)}")
+
     # Stage 6: Evidence fusion + risk scoring
     try:
         from backend.modules.fusion import fuse_evidence
@@ -227,6 +320,7 @@ async def analyze_message(request: AnalyzeRequest):
         threat_intel=evidence.threat_intel,
         explanation=evidence.explanation,
         response=evidence.response,
+        laya=evidence.laya if evidence.laya.available else None,
         fraud_dna=evidence.fraud_dna if evidence.fraud_dna.available else None,
         fraud_category=evidence.fraud_category,
         language=evidence.language,
@@ -266,6 +360,7 @@ async def update_user_state(incident_id: str, request: UpdateUserStateRequest):
         threat_intel=evidence.threat_intel,
         explanation=evidence.explanation,
         response=evidence.response,
+        laya=evidence.laya if evidence.laya.available else None,
         fraud_dna=evidence.fraud_dna if evidence.fraud_dna.available else None,
         fraud_category=evidence.fraud_category,
         language=evidence.language,
