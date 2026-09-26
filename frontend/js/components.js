@@ -230,6 +230,48 @@ const Components = {
     },
 
     /**
+     * Render Fraud DNA syndicate campaign alert card.
+     */
+    fraudDna(dna) {
+        if (!dna || !dna.campaign_id) return '';
+        const t = (k, def) => (window.I18N ? window.I18N.t(k, def) : def);
+
+        const relatedHtml = dna.related_incidents && dna.related_incidents.length
+            ? `<div style="margin-top: 0.4rem; font-size: 0.8125rem; color: var(--color-text-secondary);">${dna.related_incidents.length} related incidents: <code>${dna.related_incidents.slice(0, 3).map(id => this.escapeHtml(id)).join(', ')}</code></div>`
+            : `<div style="margin-top: 0.4rem; font-size: 0.8125rem; color: var(--color-text-secondary);">${t('firstOccurrence', 'First tracked occurrence for this threat signature.')}</div>`;
+
+        return `
+            <div class="card fraud-dna-card" style="border-left: 4px solid #f59e0b; margin-top: 1rem; padding: 1rem; background: rgba(245, 158, 11, 0.06); border-radius: var(--radius-sm, 6px);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+                    <div style="font-weight: 600; color: #f59e0b; display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem;">
+                        <span>${t('syndicateAlert', '🧬 Fraud DNA Syndicate Campaign Alert')}</span>
+                    </div>
+                    <span style="background: rgba(245, 158, 11, 0.2); color: #d97706; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-family: monospace; font-weight: bold;">${this.escapeHtml(dna.campaign_id)}</span>
+                </div>
+                <div style="font-size: 0.8125rem; color: var(--color-text-secondary);">
+                    ${t('infrastructureFingerprint', 'Infrastructure Fingerprint')}: <code>${this.escapeHtml(dna.fingerprint || 'N/A')}</code>
+                </div>
+                ${relatedHtml}
+            </div>
+        `;
+    },
+
+    /**
+     * Render Police Complaint Export Button.
+     */
+    exportButton(incidentId) {
+        if (!incidentId) return '';
+        const t = (k, def) => (window.I18N ? window.I18N.t(k, def) : def);
+        return `
+            <div style="margin-top: 1.25rem; text-align: center;">
+                <a href="/api/incidents/${encodeURIComponent(incidentId)}/export?format=html" target="_blank" class="btn" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.25rem; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 0.875rem; background: #1e3a8a; color: #93c5fd; border: 1px solid #3b82f6;">
+                    <span>${t('exportBtn', '📄 Download 1930 / Cyber Police Complaint Dossier')}</span>
+                </a>
+            </div>
+        `;
+    },
+
+    /**
      * Render the adaptive response.
      */
     response(resp) {

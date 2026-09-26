@@ -29,6 +29,11 @@
     const themeToggle = document.getElementById('theme-toggle');
     const themeLabel = document.getElementById('theme-label');
 
+    // Language & Screenshot OCR tools
+    const langSelect = document.getElementById('lang-select');
+    const screenshotInput = document.getElementById('screenshot-upload');
+    const uploadStatus = document.getElementById('upload-status');
+
     // Font size controls
     const btnFontDec = document.getElementById('btn-font-dec');
     const btnFontReset = document.getElementById('btn-font-reset');
@@ -311,6 +316,16 @@
 
     // ─── Load Sample Messages ───
     async function loadSamples() {
+        if (window.I18N && window.I18N.currentLang && window.I18N.currentLang !== 'en') {
+            sampleMessages = I18N.getSamples();
+            if (samplesList && sampleMessages.length) {
+                samplesList.innerHTML = sampleMessages
+                    .map(s => `<button type="button" class="sample-item" data-id="${Components.escapeHtml(s.id)}">${Components.escapeHtml(s.label)}</button>`)
+                    .join('');
+            }
+            return;
+        }
+
         try {
             const resp = await fetch('/fixtures/accuracy_matrix_cases.json');
             if (resp.ok) {
@@ -336,6 +351,68 @@
                 .map(s => `<button type="button" class="sample-item" data-id="${Components.escapeHtml(s.id)}">${Components.escapeHtml(s.label)}</button>`)
                 .join('');
         }
+    }
+
+    // ─── Language Selector (i18n) ───
+    if (langSelect && window.I18N) {
+        langSelect.value = I18N.currentLang;
+        langSelect.addEventListener('change', (e) => {
+            I18N.setLanguage(e.target.value);
+            loadSamples();
+            showToast(`Language switched to ${e.target.options[e.target.selectedIndex].text}`);
+        });
+    }
+
+    // ─── Screenshot OCR Upload Handler ───
+    if (screenshotInput) {
+        screenshotInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (uploadStatus) {
+                uploadStatus.hidden = false;
+                uploadStatus.style.display = 'block';
+                uploadStatus.textContent = 'Processing screenshot via OCR...';
+            }
+
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const resp = await fetch('/api/upload/screenshot', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!resp.ok) {
+                    const err = await resp.json().catch(() => ({}));
+                    throw new Error(err.detail || 'Upload failed');
+                }
+
+                const data = await resp.json();
+                if (data.extracted_text) {
+                    messageInput.value = data.extracted_text;
+                    updateCharCounter();
+                    if (uploadStatus) {
+                        uploadStatus.textContent = `✓ OCR extracted ${data.extracted_text.length} characters from ${data.filename}`;
+                        setTimeout(() => { if (uploadStatus) uploadStatus.style.display = 'none'; }, 4000);
+                    }
+                    showToast('Screenshot text extracted successfully');
+                } else {
+                    if (uploadStatus) {
+                        uploadStatus.textContent = '⚠ No legible text could be extracted from image.';
+                    }
+                    showToast('No text detected in screenshot');
+                }
+            } catch (err) {
+                if (uploadStatus) {
+                    uploadStatus.textContent = `Upload error: ${err.message}`;
+                }
+                showToast(`OCR error: ${err.message}`);
+            } finally {
+                screenshotInput.value = '';
+            }
+        });
     }
 
     if (sampleBtn && samplesDropdown) {
@@ -382,11 +459,13 @@
         `;
 
         try {
+            const currentLang = window.I18N ? window.I18N.currentLang : 'en';
             const result = await API.analyze(
                 message,
                 inputType.value,
                 userState.value,
-                urls
+                urls,
+                currentLang
             );
 
             currentResult = result;
@@ -394,6 +473,23 @@
             loading.hidden = true;
             loading.style.display = 'none';
             renderResults(result);
+
+            // Asynchronously fetch OSINT enrichment without blocking main analysis display
+            if (result.incident_id) {
+                API.getIncidentOsint(result.incident_id).then(osintData => {
+                    if (osintData && osintData.status !== 'disabled' && osintData.evidence && osintData.evidence.length > 0) {
+                        currentResult.evidence = (currentResult.evidence || []).concat(osintData.evidence);
+                        if (evidenceCount) evidenceCount.textContent = currentResult.evidence.length;
+                        if (evidenceList) {
+                            evidenceList.innerHTML = currentResult.evidence
+                                .sort((a, b) => (b.confidence || 0) - (a.confidence || 0))
+                                .map(item => Components.evidenceItem(item))
+                                .join('');
+                        }
+                    }
+                }).catch(() => {});
+            }
+
             showToast('Threat analysis completed');
         } catch (err) {
             loading.hidden = true;
@@ -479,6 +575,12 @@
 
         // Adaptive Response Guidance
         responseContent.innerHTML = Components.response(data.response);
+        if (data.fraud_dna) {
+            responseContent.innerHTML += Components.fraudDna(data.fraud_dna);
+        }
+        if (data.incident_id) {
+            responseContent.innerHTML += Components.exportButton(data.incident_id);
+        }
 
         // Update State Simulation Buttons
         const currentState = data.response?.user_state || 'received';
@@ -516,6 +618,12 @@
 
                 // Re-render response section
                 responseContent.innerHTML = Components.response(updated.response);
+                if (updated.fraud_dna) {
+                    responseContent.innerHTML += Components.fraudDna(updated.fraud_dna);
+                }
+                if (updated.incident_id) {
+                    responseContent.innerHTML += Components.exportButton(updated.incident_id);
+                }
                 stateButtons.querySelectorAll('.btn').forEach(b => {
                     b.classList.toggle('active', b.dataset.state === newState);
                 });
@@ -528,6 +636,9 @@
     }
 
     // ─── Initial Startup ───
+    if (window.I18N) {
+        I18N.applyTranslations();
+    }
     initTheme();
     updateCharCounter();
     checkHealth();

@@ -315,6 +315,23 @@ a:hover {
     border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
+.gov-lang-select {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    outline: none;
+}
+
+.gov-lang-select option {
+    background: #0b2545;
+    color: #ffffff;
+}
+
 .btn-text-size {
     background: none;
     border: none;
