@@ -26,9 +26,13 @@ import httpx
 from backend.config import get_settings
 from backend.models.evidence import (
     EvidenceItem,
+    EvidenceReliability,
+    EvidenceSeverity,
+    EvidenceStatus,
     EvidenceType,
     IncidentEvidence,
     LayaResult,
+    RiskDirection,
 )
 
 logger = logging.getLogger("cyber_guardian.laya")
@@ -281,6 +285,20 @@ async def run_laya_triage(evidence: IncidentEvidence) -> IncidentEvidence:
             latency_ms=elapsed_ms,
         )
 
+        # Determine epistemic status and risk direction for model signal
+        if fraud_val >= 0.65:
+            laya_status = EvidenceStatus.SUSPICIOUS
+            laya_severity = EvidenceSeverity.HIGH if fraud_val >= 0.80 else EvidenceSeverity.MEDIUM
+            laya_direction = RiskDirection.INCREASES_RISK
+        elif fraud_val >= 0.35:
+            laya_status = EvidenceStatus.POSSIBLE
+            laya_severity = EvidenceSeverity.LOW
+            laya_direction = RiskDirection.NEUTRAL
+        else:
+            laya_status = EvidenceStatus.OBSERVED
+            laya_severity = EvidenceSeverity.INFORMATIONAL
+            laya_direction = RiskDirection.NEUTRAL
+
         # Attach Laya typed decision to evidence list with provenance
         evidence.evidence.append(
             EvidenceItem(
@@ -291,6 +309,13 @@ async def run_laya_triage(evidence: IncidentEvidence) -> IncidentEvidence:
                     f"category: {cat_val}, credential risk: {cred_val:.0%}, payment risk: {pay_val:.0%}"
                 ),
                 confidence=fraud_val,
+                status=laya_status,
+                reliability=EvidenceReliability.MODEL_SIGNAL,
+                severity=laya_severity,
+                risk_direction=laya_direction,
+                observed_value=f"Laya output: fraud={fraud_val:.2f}, category={cat_val}, latency={elapsed_ms}ms",
+                interpretation=f"Non-autoregressive model estimates {fraud_val:.0%} statistical likelihood of {cat_val} pattern",
+                correlation_group="ml_decision",
                 raw_data={
                     "laya_typed_decisions": decisions,
                     "latency_ms": elapsed_ms,

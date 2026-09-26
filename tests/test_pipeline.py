@@ -386,8 +386,13 @@ def test_laya_typed_decisions():
     assert evidence.laya.brand_impersonation is not None
     assert evidence.laya.credential_request is not None and evidence.laya.credential_request > 0.40
     assert evidence.laya.latency_ms is not None
-    # Provenance item added
-    assert any(item.type == EvidenceType.LAYA_SIGNAL and item.source == "laya" for item in evidence.evidence)
+    # Provenance item added with correct model_signal epistemic reliability
+    laya_items = [item for item in evidence.evidence if item.type == EvidenceType.LAYA_SIGNAL]
+    assert len(laya_items) == 1
+    assert laya_items[0].reliability == EvidenceReliability.MODEL_SIGNAL
+    assert laya_items[0].status in (EvidenceStatus.SUSPICIOUS, EvidenceStatus.POSSIBLE)
+    assert laya_items[0].status != EvidenceStatus.CONFIRMED  # Crucial invariant: ML cannot declare confirmed status
+    assert laya_items[0].correlation_group == "ml_decision"
 
 
 def test_laya_benign_decision():
@@ -401,6 +406,47 @@ def test_laya_benign_decision():
     assert evidence.laya.available is True
     assert evidence.laya.fraud < 0.45
     assert evidence.laya.deep_analysis_required < 0.40
+
+
+def test_laya_cannot_override_confirmed_threat_intel():
+    """Verify that a benign or low-confidence Laya signal cannot exonerate a confirmed threat intel hit."""
+    from backend.modules.laya import run_laya_triage
+    benign_msg = "Your account statement is ready. Visit http://malicious-phish.xyz"
+    evidence = IncidentEvidence(input_type=InputType.SMS, message=benign_msg)
+    evidence = asyncio.run(run_laya_triage(evidence))
+
+    # Add confirmed threat intel hit
+    evidence.evidence.append(EvidenceItem(
+        type=EvidenceType.THREAT_INTEL_HIT,
+        source="phishtank",
+        description="PhishTank confirmed phishing",
+        status=EvidenceStatus.CONFIRMED,
+        risk_direction=RiskDirection.INCREASES_RISK,
+        severity=EvidenceSeverity.CRITICAL,
+    ))
+    evidence = fuse_evidence(evidence)
+
+    assert evidence.risk.level == RiskLevel.CRITICAL
+    assert evidence.risk.category == UserCategory.CONFIRMED_HIGH_RISK
+    assert evidence.risk.score >= 0.95
+
+
+def test_laya_cannot_override_official_brand_domain():
+    """Verify that a high-fraud Laya false positive cannot turn verified official bank domain into high risk."""
+    from backend.modules.laya import run_laya_triage
+    msg = "Dear Customer Your SBI account has been BLOCKED due to incomplete KYC verification. Click here: https://onlinesbi.sbi"
+    evidence = IncidentEvidence(
+        input_type=InputType.SMS,
+        message=msg,
+        urls=[URLSignal(url="https://onlinesbi.sbi", domain="onlinesbi.sbi")],
+    )
+    evidence = asyncio.run(run_laya_triage(evidence))
+    evidence = fuse_evidence(evidence)
+
+    # Official domain dampens heuristic/ML false positive
+    assert evidence.risk.score <= 0.20
+    assert evidence.risk.level == RiskLevel.LOW
+    assert evidence.risk.category == UserCategory.LOW_CONCERN
 
 
 def test_laya_graceful_fallback():
