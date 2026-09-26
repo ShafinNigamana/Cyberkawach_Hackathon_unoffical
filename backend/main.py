@@ -14,7 +14,7 @@ from threading import Lock
 from fastapi import Depends, FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from backend.config import get_settings
@@ -30,6 +30,7 @@ from backend.utils.file_security import validate_file_security
 from backend.utils.rate_limiter import check_rate_limit
 from backend.utils.request_limits import RequestSizeLimitMiddleware
 from backend.utils.sanitize import (
+    escape_for_display,
     sanitize_message,
     sanitize_url,
     validate_incident_id,
@@ -554,3 +555,109 @@ async def upload_screenshot(
         content_type=file.content_type,
         extracted_text=extracted_text or None,
     )
+
+
+@app.get("/api/incidents/{incident_id}/export")
+async def export_incident(
+    incident_id: str,
+    format: str = "json",
+    raw_request: Request = None,
+):
+    """
+    Export full forensic incident dossier for Law Enforcement / National Cyber Crime Helpline (1930).
+    Format options: 'json' or 'html' (printable official cyber police complaint format).
+    """
+    if raw_request:
+        check_rate_limit(raw_request)
+
+    if not validate_incident_id(incident_id):
+        raise HTTPException(status_code=400, detail="Invalid incident ID format")
+
+    if incident_id not in _incidents:
+        raise HTTPException(status_code=404, detail="Incident not found")
+
+    incident = _incidents[incident_id]
+
+    import hashlib
+    raw_hash = hashlib.sha256((incident.message or "").encode("utf-8")).hexdigest()
+
+    evidence_summary = [
+        {
+            "source": item.source,
+            "description": item.description,
+            "confidence": f"{item.confidence:.0%}" if item.confidence is not None else "100%",
+            "type": item.type.value if hasattr(item.type, "value") else str(item.type),
+        }
+        for item in incident.evidence
+    ]
+
+    export_data = {
+        "incident_id": incident.incident_id,
+        "timestamp_utc": incident.created_at.isoformat(),
+        "sha256_message_hash": raw_hash,
+        "risk_level": incident.risk.level.value,
+        "risk_score": incident.risk.score,
+        "fraud_category": incident.fraud_category or "generic",
+        "evidence_dossier": evidence_summary,
+        "extracted_urls": [u.url for u in incident.urls],
+        "extracted_domains": [u.domain for u in incident.urls if u.domain],
+        "campaign_id": incident.fraud_dna.campaign_id if incident.fraud_dna.available else None,
+        "related_incidents": incident.fraud_dna.related_incidents if incident.fraud_dna.available else [],
+        "helpline_1930_advisory": (
+            "If financial loss occurred within the last 24 hours (Golden Hour), "
+            "immediately call 1930 or submit details on https://cybercrime.gov.in."
+        ),
+    }
+
+    if format.lower() == "html":
+        ioc_rows = "".join(f"<tr><td>Domain/URL</td><td>{escape_for_display(u.url)}</td></tr>" for u in incident.urls) if incident.urls else "<tr><td colspan='2'>No web URLs extracted</td></tr>"
+        evidence_rows = "".join(f"<tr><td>{escape_for_display(item['source'])}</td><td>{escape_for_display(item['description'])}</td><td>{item['confidence']}</td></tr>" for item in evidence_summary)
+
+        html_content = f"""<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Cyber Crime Forensic Incident Dossier - {escape_for_display(incident.incident_id)}</title>
+    <style>
+        body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; color: #222; max-width: 800px; margin: 30px auto; padding: 25px; border: 1px solid #ddd; border-radius: 8px; }}
+        h1 {{ color: #b91c1c; border-bottom: 2px solid #b91c1c; padding-bottom: 8px; font-size: 20px; }}
+        h2 {{ font-size: 15px; color: #374151; margin-top: 18px; }}
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 12px; }}
+        th {{ background-color: #f3f4f6; }}
+        .badge {{ display: inline-block; padding: 4px 8px; border-radius: 4px; font-weight: bold; background: #fee2e2; color: #991b1b; }}
+        .evidence-box {{ background: #f9fafb; padding: 12px; border-left: 4px solid #3b82f6; margin-top: 8px; font-size: 13px; font-family: monospace; white-space: pre-wrap; }}
+        .print-btn {{ margin-bottom: 15px; padding: 8px 16px; background: #2563eb; color: white; border: none; border-radius: 4px; cursor: pointer; }}
+        @media print {{ .print-btn {{ display: none; }} }}
+    </style>
+</head>
+<body>
+    <button class="print-btn" onclick="window.print()">Print / Save as PDF</button>
+    <h1>CYBER FRAUD FORENSIC INCIDENT DOSSIER</h1>
+    <p><strong>Complaint Reference / Incident ID:</strong> {escape_for_display(incident.incident_id)}</p>
+    <p><strong>Timestamp (UTC):</strong> {escape_for_display(incident.created_at.isoformat())}</p>
+    <p><strong>Threat Classification:</strong> <span class="badge">{escape_for_display(incident.risk.level.value.upper())} ({incident.risk.score:.0%})</span> | Category: {escape_for_display(incident.fraud_category or 'Unspecified')}</p>
+    <p><strong>SHA-256 Content Hash:</strong> <code>{raw_hash}</code></p>
+    
+    <h2>1. Untrusted Evidentiary Message</h2>
+    <div class="evidence-box">{escape_for_display(incident.message)}</div>
+
+    <h2>2. Extracted Indicators of Compromise (IOCs)</h2>
+    <table>
+        <tr><th>Type</th><th>Observed Value</th></tr>
+        {ioc_rows}
+    </table>
+
+    <h2>3. Forensic Evidence Dossier</h2>
+    <table>
+        <tr><th>Source Module</th><th>Finding & Forensic Description</th><th>Confidence</th></tr>
+        {evidence_rows}
+    </table>
+
+    <h2>4. National Cyber Crime Reporting Advisory</h2>
+    <p>For financial fraud: Call <strong>1930</strong> (National Cyber Crime Reporting Helpline) within the golden hour, or file a complaint at <strong>https://cybercrime.gov.in</strong> quoting this technical dossier.</p>
+</body>
+</html>"""
+        return HTMLResponse(content=html_content, status_code=200)
+
+    return JSONResponse(content=export_data, status_code=200)
