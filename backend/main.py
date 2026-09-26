@@ -283,7 +283,7 @@ async def health_check():
             "fusion": True,
             "gemini": True,  # Non-critical — deterministic fallback always available
             "ocr": False,  # P1 — not wired yet
-            "fraud_dna": False,  # P2 — not wired yet
+            "fraud_dna": True,  # Phase 2 — wired up
         },
         api_keys_configured=settings.api_availability(),
     )
@@ -418,6 +418,15 @@ async def analyze_message(request: AnalyzeRequest, raw_request: Request):
     except Exception as e:
         modules_failed.append("response")
         evidence.errors.append(f"response: {safe_error_message(e)}")
+
+    # Stage 9: Fraud DNA & Campaign Syndicate Correlation
+    try:
+        from backend.modules.fraud_dna import compute_fraud_dna
+        evidence.fraud_dna = compute_fraud_dna(evidence)
+        modules_executed.append("fraud_dna")
+    except Exception as e:
+        modules_failed.append("fraud_dna")
+        evidence.errors.append(f"fraud_dna: {safe_error_message(e)}")
 
     # Finalize
     elapsed_ms = (time.time() - start_time) * 1000
