@@ -174,6 +174,14 @@
         riskCategory.textContent = risk.categoryLabel;
         riskMeta.textContent = `${data.modules_executed?.length || 0} modules executed · ${data.processing_time_ms?.toFixed(0) || '?'}ms`;
 
+        // Sufficiency badge
+        const suff = data.risk?.evidence_sufficiency || 'SUFFICIENT';
+        const suffBadge = document.getElementById('sufficiency-badge');
+        if (suffBadge) {
+            suffBadge.className = `sufficiency-badge sufficiency-badge--${suff.toLowerCase()}`;
+            suffBadge.textContent = suff === 'INSUFFICIENT' ? '⚠ INSUFFICIENT EVIDENCE' : '✓ SUFFICIENT EVIDENCE';
+        }
+
         // Explanation
         if (data.explanation) {
             explanationSource.textContent = data.explanation.is_fallback ? 'Deterministic' : 'Gemini';
@@ -217,9 +225,9 @@
         });
 
         // Attack path
-        if (data.explanation?.attack_path?.length) {
+        if (data.explanation?.attack_path?.length || data.explanation?.structured_attack_path?.length) {
             attackPathPanel.hidden = false;
-            attackPathContent.innerHTML = Components.attackPath(data.explanation.attack_path);
+            attackPathContent.innerHTML = Components.attackPath(data.explanation.attack_path, data.explanation.structured_attack_path);
         } else {
             attackPathPanel.hidden = true;
         }
