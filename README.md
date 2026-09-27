@@ -215,8 +215,8 @@ CyberKawach/
 │   │   ├── safe_browsing.py     # Google Safe Browsing v4 client
 │   │   ├── phishtank.py         # PhishTank verified database adapter
 │   │   ├── phishstats.py        # PhishStats intelligence adapter
-│   │   ├── urlhaus.py           # URLhaus malware adapter
-│   │   └── abuseipdb.py         # AbuseIPDB reputation adapter
+│   │   ├── osint_enrichment.py  # OSINT domain & network enrichment
+│   │   └── ocr.py               # Document & screenshot OCR adapter
 │   └── utils/
 │       ├── rate_limiter.py      # Sliding-window rate limiter
 │       ├── pii_redactor.py      # Aadhaar, PAN, OTP, phone maskers

@@ -1,7 +1,7 @@
 """
 Threat intelligence orchestrator — queries all configured P0 sources.
 
-TI-01: Orchestrates Safe Browsing + PhishTank (P0).
+TI-01: Orchestrates Safe Browsing + PhishTank + PhishStats (P0).
 Each result is stored as an individual ThreatIntelResult with source attribution.
 """
 

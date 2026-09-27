@@ -264,7 +264,7 @@ export default function ResultsDashboard({
               Want to inspect forensic evidence, threat feeds, or the attack path?
             </h4>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-              {(result.evidence || []).length} forensic signals extracted across Safe Browsing, PhishTank, and epistemic reasoning.
+              {(result.evidence || []).length} forensic signals extracted across Safe Browsing, PhishTank, PhishStats, and epistemic reasoning.
             </p>
           </div>
 
