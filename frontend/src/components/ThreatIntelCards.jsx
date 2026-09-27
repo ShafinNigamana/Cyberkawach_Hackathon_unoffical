@@ -37,24 +37,28 @@ function evaluateProviderState(item, provider) {
   // If provider was not queried (no URL extracted or unqueried)
   if (!item) {
     return {
-      status: 'NOT CONFIGURED',
-      badgeClass: 'bg-slate-100 text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700',
+      status: 'STANDBY (NO URL)',
+      badgeClass: 'bg-slate-100 text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700',
       icon: MinusCircle,
       iconColor: 'text-slate-400 dark:text-slate-500',
       cardClass: 'border-slate-200 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900/40',
-      result: 'No extracted URL to evaluate or feed unqueried.',
+      result: 'No URL in message to inspect. Feed is online and ready.',
       confidence: 'Neutral',
       reliability: provider.reliability,
       isMatch: false,
-      note: 'Neutral state: Provider was not queried for this input.',
+      note: 'Feed online & configured. Threat lookups run automatically whenever URLs are present.',
     };
   }
 
+  const statusStr = (item.intel_status || item.status || '').toUpperCase();
+  const detailsStr = item.details || item.result || item.threat_type || '';
+
   // Explicit unconfigured / missing API key
   if (
-    item.intel_status === 'SOURCE_UNAVAILABLE' ||
-    (item.error && item.error.toLowerCase().includes('not configured')) ||
-    item.status === 'not_configured'
+    statusStr === 'SOURCE_UNAVAILABLE' ||
+    statusStr === 'NOT_CONFIGURED' ||
+    statusStr === 'NOT CONFIGURED' ||
+    (item.error && item.error.toLowerCase().includes('not configured'))
   ) {
     return {
       status: 'NOT CONFIGURED',
@@ -72,7 +76,7 @@ function evaluateProviderState(item, provider) {
 
   // Rate-limiting check
   if (
-    item.intel_status === 'RATE_LIMITED' ||
+    statusStr === 'RATE_LIMITED' ||
     (item.error && item.error.toLowerCase().includes('rate limit'))
   ) {
     return {
@@ -91,8 +95,8 @@ function evaluateProviderState(item, provider) {
 
   // Feed errors / timeouts
   if (
-    item.intel_status === 'SOURCE_ERROR' ||
-    item.intel_status === 'FEED_ERROR' ||
+    statusStr === 'SOURCE_ERROR' ||
+    statusStr === 'FEED_ERROR' ||
     (item.error && (item.error.toLowerCase().includes('timeout') || item.error.toLowerCase().includes('error')))
   ) {
     return {
@@ -112,8 +116,10 @@ function evaluateProviderState(item, provider) {
   // Positive Threat Match (KNOWN MALICIOUS)
   if (
     item.match === true ||
-    item.intel_status === 'KNOWN MALICIOUS' ||
-    item.intel_status === 'KNOWN_MALICIOUS' ||
+    statusStr === 'KNOWN MALICIOUS' ||
+    statusStr === 'KNOWN_MALICIOUS' ||
+    statusStr === 'MATCH (MALICIOUS)' ||
+    statusStr === 'MATCH' ||
     item.is_phish === true
   ) {
     return {
@@ -122,7 +128,7 @@ function evaluateProviderState(item, provider) {
       icon: ShieldAlert,
       iconColor: 'text-red-600 dark:text-red-400',
       cardClass: 'border-red-300 bg-red-50/70 dark:border-red-800/80 dark:bg-red-950/25',
-      result: item.details || item.threat_type || 'Observed in threat repository as active malicious target.',
+      result: detailsStr || 'Observed in threat repository as active malicious target.',
       confidence: '95% (High)',
       reliability: provider.reliability,
       isMatch: true,
@@ -133,9 +139,10 @@ function evaluateProviderState(item, provider) {
   // Clean / No Match
   if (
     item.match === false ||
-    item.intel_status === 'NO KNOWN MATCH' ||
-    item.intel_status === 'NO_KNOWN_MATCH' ||
-    item.status === 'clean'
+    statusStr === 'NO KNOWN MATCH' ||
+    statusStr === 'NO_KNOWN_MATCH' ||
+    statusStr === 'NO MATCH' ||
+    statusStr === 'CLEAN'
   ) {
     return {
       status: 'NO MATCH',
@@ -143,7 +150,7 @@ function evaluateProviderState(item, provider) {
       icon: CheckCircle,
       iconColor: 'text-slate-600 dark:text-slate-400',
       cardClass: 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900',
-      result: item.details || 'Feed queried: URL has no known listing in database.',
+      result: detailsStr || 'Feed queried: URL has no known listing in database.',
       confidence: 'Verified Absence',
       reliability: provider.reliability,
       isMatch: false,
@@ -153,12 +160,12 @@ function evaluateProviderState(item, provider) {
 
   // Neutral fallback
   return {
-    status: 'NOT CONFIGURED',
+    status: 'STANDBY (NO URL)',
     badgeClass: 'bg-slate-100 text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700',
     icon: MinusCircle,
     iconColor: 'text-slate-400 dark:text-slate-500',
     cardClass: 'border-slate-200 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900/40',
-    result: item.error || 'Provider not queried or key unconfigured.',
+    result: detailsStr || 'Feed online and ready.',
     confidence: 'Neutral',
     reliability: provider.reliability,
     isMatch: false,
@@ -196,7 +203,10 @@ export default function ThreatIntelCards({ threatIntel }) {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
         {AUTHORITATIVE_PROVIDERS.map((provider) => {
           const matchItem = rawList.find(
-            (item) => item?.source === provider.key || provider.altKeys.includes(item?.source)
+            (item) => {
+              const src = (item?.source || item?.provider || '').toLowerCase();
+              return src === provider.key || provider.altKeys.includes(src);
+            }
           );
           const stateInfo = evaluateProviderState(matchItem, provider);
           const Icon = stateInfo.icon;

@@ -592,8 +592,14 @@ class Neo4jRepository:
             threat_intel_list.append({
                 "observation_id": obs_id,
                 "provider": str(ti.source),
+                "source": str(ti.source),
+                "lookup_url": str(ti.lookup_url or ""),
+                "match": bool(ti.match),
                 "status": str(ti.intel_status.value if hasattr(ti.intel_status, "value") else ti.intel_status),
+                "intel_status": str(ti.intel_status.value if hasattr(ti.intel_status, "value") else ti.intel_status),
                 "result": str(ti.details or ti.error or ("MATCH" if ti.match else "NO MATCH")),
+                "details": str(ti.details or ""),
+                "error": str(ti.error or "") if ti.error else "",
                 "confidence": 0.95 if ti.match else 0.50,
                 "observed_at": now_iso,
             })
@@ -794,7 +800,15 @@ class Neo4jRepository:
                 inc["urls"] = [str(u) for u in record["urls"] if u]
                 inc["domains"] = [str(d) for d in record["domains"] if d]
                 inc["brands"] = [str(b) for b in record["brands"] if b]
-                inc["threat_intel"] = [dict(ti) for ti in record["threat_intel"] if ti]
+                inc["threat_intel"] = []
+                for ti in record["threat_intel"]:
+                    if ti:
+                        d = dict(ti)
+                        if "provider" in d and "source" not in d:
+                            d["source"] = d["provider"]
+                        if "result" in d and "details" not in d:
+                            d["details"] = d["result"]
+                        inc["threat_intel"].append(d)
                 return inc
         except Exception as e:
             logger.warning("get_incident failed: %s", type(e).__name__)
