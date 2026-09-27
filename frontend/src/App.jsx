@@ -1,0 +1,233 @@
+import React, { useState, useEffect } from 'react';
+import Header from './components/Header';
+import HomeChoice from './components/HomeChoice';
+import FlowMessage from './components/FlowMessage';
+import FlowUrl from './components/FlowUrl';
+import FlowScreenshot from './components/FlowScreenshot';
+import LoadingPipeline from './components/LoadingPipeline';
+import ResultsDashboard from './components/ResultsDashboard';
+import MethodologyModal from './components/MethodologyModal';
+import Footer from './components/Footer';
+import { analyzeMessage, updateUserState, fetchHealth } from './services/api';
+import { TRANSLATIONS } from './i18n/translations';
+
+export default function App() {
+  const [lang, setLang] = useState(() => localStorage.getItem('cf_lang') || 'en');
+  const [fontSize, setFontSize] = useState(() => localStorage.getItem('cf_fontsize') || 'normal');
+  const [isDark, setIsDark] = useState(() => localStorage.getItem('cf_theme') === 'dark');
+  const [methodologyOpen, setMethodologyOpen] = useState(false);
+  const [healthData, setHealthData] = useState(null);
+
+  // Current task flow: 'home' | 'message' | 'url' | 'screenshot' | 'result'
+  const [currentFlow, setCurrentFlow] = useState('home');
+
+  // Active form state passed between flows
+  const [formData, setFormData] = useState({
+    message: '',
+    urls: '',
+    input_type: 'sms',
+    user_state: 'received',
+  });
+
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isUpdatingState, setIsUpdatingState] = useState(false);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState(null);
+
+  // Sync language with localStorage
+  const handleLangChange = (newLang) => {
+    setLang(newLang);
+    localStorage.setItem('cf_lang', newLang);
+  };
+
+  // Sync font size
+  const handleFontSizeChange = (size) => {
+    setFontSize(size);
+    localStorage.setItem('cf_fontsize', size);
+    const scale = size === 'small' ? '0.9' : size === 'large' ? '1.1' : '1';
+    document.documentElement.style.setProperty('--font-scale', scale);
+  };
+
+  // Sync theme
+  const handleThemeToggle = () => {
+    const nextDark = !isDark;
+    setIsDark(nextDark);
+    localStorage.setItem('cf_theme', nextDark ? 'dark' : 'light');
+    if (nextDark) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.documentElement.classList.remove('dark');
+    }
+  };
+
+  // Initial theme and health sync on mount
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+      document.documentElement.classList.remove('dark');
+    }
+
+    const scale = fontSize === 'small' ? '0.9' : fontSize === 'large' ? '1.1' : '1';
+    document.documentElement.style.setProperty('--font-scale', scale);
+
+    fetchHealth()
+      .then(setHealthData)
+      .catch(() => {});
+  }, []);
+
+  // Quick preset scenario trigger from Home or other components
+  const handleSelectPreset = (preset) => {
+    setFormData({
+      message: preset.message || '',
+      urls: preset.urls || '',
+      input_type: preset.type || 'sms',
+      user_state: preset.state || 'received',
+    });
+    setError(null);
+    setCurrentFlow('message');
+  };
+
+  // Flow submission handler connecting to the real backend
+  const handleFlowSubmit = async (submissionData) => {
+    setIsAnalyzing(true);
+    setError(null);
+    setResult(null);
+
+    setFormData((prev) => ({
+      ...prev,
+      ...submissionData,
+    }));
+
+    try {
+      const data = await analyzeMessage({
+        message: submissionData.message,
+        urls: submissionData.urls,
+        user_state: submissionData.user_state,
+        language: lang,
+        input_type: submissionData.input_type || 'sms',
+      });
+      setResult(data);
+      setCurrentFlow('result');
+    } catch (err) {
+      setError(err.message || 'An error occurred during forensic triage. Please check server status.');
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  // Adaptive response state change handler
+  const handleStateChange = async (newState) => {
+    if (!result?.incident_id) return;
+    setIsUpdatingState(true);
+    try {
+      const updated = await updateUserState(result.incident_id, newState);
+      setResult(updated);
+      setFormData((prev) => ({ ...prev, user_state: newState }));
+    } catch (err) {
+      // Fallback
+    } finally {
+      setIsUpdatingState(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex flex-col font-sans transition-colors duration-150">
+      {/* Official Institutional Header with Flow Navigation Ribbon */}
+      <Header
+        lang={lang}
+        onLangChange={handleLangChange}
+        fontSize={fontSize}
+        onFontSizeChange={handleFontSizeChange}
+        isDark={isDark}
+        onThemeToggle={handleThemeToggle}
+        onOpenMethodology={() => setMethodologyOpen(true)}
+        healthData={healthData}
+        currentFlow={currentFlow}
+        onSelectFlow={(flow) => {
+          setError(null);
+          setCurrentFlow(flow);
+        }}
+      />
+
+      {/* Main Content View Container */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6" id="main-content">
+        {/* Error Notification */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-900 dark:bg-red-950/60 dark:border-red-800 dark:text-red-200 rounded-xl text-xs sm:text-sm flex items-center justify-between shadow-xs">
+            <span>{error}</span>
+            <button
+              onClick={() => setError(null)}
+              className="text-red-700 dark:text-red-400 font-bold hover:underline ml-3"
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
+
+        {/* Real Multi-Stage Analysis Progress View */}
+        {isAnalyzing ? (
+          <LoadingPipeline />
+        ) : currentFlow === 'result' && result ? (
+          /* Shared Incident / Result View */
+          <ResultsDashboard
+            result={result}
+            currentUserState={formData.user_state}
+            onStateChange={handleStateChange}
+            isUpdatingState={isUpdatingState}
+            onCheckAnother={() => setCurrentFlow('home')}
+            lang={lang}
+          />
+        ) : currentFlow === 'message' ? (
+          /* Task Flow B: Check Message / SMS */
+          <FlowMessage
+            onBack={() => setCurrentFlow('home')}
+            onSubmit={handleFlowSubmit}
+            isAnalyzing={isAnalyzing}
+            initialMessage={formData.message}
+            initialUrls={formData.urls}
+            initialState={formData.user_state}
+            initialChannel={formData.input_type}
+          />
+        ) : currentFlow === 'url' ? (
+          /* Task Flow C: Check URL / Website */
+          <FlowUrl
+            onBack={() => setCurrentFlow('home')}
+            onSubmit={handleFlowSubmit}
+            isAnalyzing={isAnalyzing}
+            initialUrl={typeof formData.urls === 'string' ? formData.urls.split('\n')[0] : ''}
+          />
+        ) : currentFlow === 'screenshot' ? (
+          /* Task Flow D: Check Screenshot / Photo */
+          <FlowScreenshot
+            onBack={() => setCurrentFlow('home')}
+            onSubmit={handleFlowSubmit}
+            isAnalyzing={isAnalyzing}
+          />
+        ) : (
+          /* Task Flow A: Minimal Citizen Home Starting Point */
+          <HomeChoice
+            onSelectFlow={(flow) => {
+              setError(null);
+              setCurrentFlow(flow);
+            }}
+            onSelectPreset={handleSelectPreset}
+          />
+        )}
+      </main>
+
+      {/* Institutional Footer */}
+      <Footer onOpenMethodology={() => setMethodologyOpen(true)} />
+
+      {/* Technical Methodology & Audit Modal */}
+      <MethodologyModal
+        isOpen={methodologyOpen}
+        onClose={() => setMethodologyOpen(false)}
+      />
+    </div>
+  );
+}

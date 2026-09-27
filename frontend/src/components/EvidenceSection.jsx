@@ -1,0 +1,283 @@
+import React, { useState } from 'react';
+import { 
+  FileCheck, 
+  Search, 
+  ChevronDown, 
+  ChevronUp, 
+  Globe2, 
+  Loader2,
+  AlertTriangle,
+  ChevronsUpDown,
+  Maximize2,
+  Minimize2
+} from 'lucide-react';
+import { fetchIncidentOsint } from '../services/api';
+
+// Helper to determine source label and unified epistemic status (EXACTLY ONE status badge)
+function getProvenanceDetails(source, type, rawStatus) {
+  const s = (source || '').toLowerCase();
+  const t = (type || '').toLowerCase();
+  const statusUpper = (rawStatus || '').toUpperCase();
+
+  let sourceLabel = source || 'Forensic Module';
+  let isInferred = false;
+
+  if (s.includes('rule') || t.includes('rule')) {
+    sourceLabel = 'Rule Engine';
+  } else if (s.includes('laya') || t.includes('laya')) {
+    sourceLabel = 'Fast Decision (Laya)';
+    isInferred = true;
+  } else if (s.includes('threat') || s.includes('safe_browsing') || s.includes('phishtank') || s.includes('phishstats')) {
+    sourceLabel = 'Threat Intel Feed';
+  } else if (s.includes('url') || t.includes('url')) {
+    sourceLabel = 'URL Analyzer';
+  } else if (s.includes('brand') || t.includes('brand')) {
+    sourceLabel = 'Brand Check';
+  } else if (s.includes('osint') || t.includes('osint')) {
+    sourceLabel = 'OSINT Infrastructure';
+  } else if (s.includes('ml') || t.includes('ml')) {
+    sourceLabel = 'ML Baseline';
+    isInferred = true;
+  }
+
+  // EXACTLY ONE unified epistemic badge (no duplicates)
+  let statusBadge = {
+    label: 'OBSERVED FACT',
+    badgeClass: 'bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800',
+  };
+
+  if (statusUpper === 'CONFIRMED') {
+    statusBadge = {
+      label: 'CONFIRMED MATCH',
+      badgeClass: 'bg-red-100 text-red-800 border-red-300 dark:bg-red-950/80 dark:text-red-200 dark:border-red-800',
+    };
+  } else if (statusUpper === 'SUSPICIOUS') {
+    statusBadge = {
+      label: 'SUSPICIOUS PATTERN',
+      badgeClass: 'bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950/70 dark:text-amber-200 dark:border-amber-800',
+    };
+  } else if (isInferred || statusUpper === 'INFERRED') {
+    statusBadge = {
+      label: 'INFERRED HEURISTIC',
+      badgeClass: 'bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-950/60 dark:text-purple-300 dark:border-purple-800',
+    };
+  }
+
+  return { sourceLabel, statusBadge };
+}
+
+export default function EvidenceSection({ 
+  evidenceItems = [], 
+  incidentId, 
+  extractedDomain 
+}) {
+  const [osintLoading, setOsintLoading] = useState(false);
+  const [osintData, setOsintData] = useState(null);
+  const [osintError, setOsintError] = useState(null);
+
+  // Progressive Disclosure: accordion state (default collapsed)
+  const [expandedIndices, setExpandedIndices] = useState(new Set());
+
+  const handleFetchOsint = async () => {
+    if (!incidentId) return;
+    setOsintLoading(true);
+    setOsintError(null);
+    try {
+      const data = await fetchIncidentOsint(incidentId);
+      setOsintData(data);
+    } catch (err) {
+      setOsintError(err.message || 'Unable to enrich OSINT at this time.');
+    } finally {
+      setOsintLoading(false);
+    }
+  };
+
+  const allEvidence = [...evidenceItems, ...(osintData?.evidence || [])];
+
+  const toggleAccordion = (idx) => {
+    setExpandedIndices(prev => {
+      const next = new Set(prev);
+      if (next.has(idx)) {
+        next.delete(idx);
+      } else {
+        next.add(idx);
+      }
+      return next;
+    });
+  };
+
+  const toggleAllAccordions = () => {
+    if (expandedIndices.size === allEvidence.length) {
+      setExpandedIndices(new Set());
+    } else {
+      setExpandedIndices(new Set(allEvidence.map((_, i) => i)));
+    }
+  };
+
+  const isAllExpanded = allEvidence.length > 0 && expandedIndices.size === allEvidence.length;
+
+  return (
+    <section className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-card p-5 sm:p-6 shadow-sm dark:shadow-card-elevated" aria-label="Factual Evidence Section">
+      {/* Header Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 mb-4 border-b border-slate-200 dark:border-slate-800 gap-3">
+        <div className="flex items-center space-x-2.5">
+          <FileCheck className="w-5 h-5 text-amber-500 dark:text-amber-400" />
+          <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+            Forensic Evidence Items
+          </h3>
+          <span className="px-2 py-0.5 rounded-badge bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 font-mono text-xs border border-slate-200 dark:border-slate-700">
+            {allEvidence.length}
+          </span>
+        </div>
+
+        {/* Action Controls: Expand/Collapse All */}
+        <div className="flex items-center space-x-2">
+          {allEvidence.length > 0 && (
+            <button
+              type="button"
+              onClick={toggleAllAccordions}
+              className="inline-flex items-center space-x-1 px-2.5 py-1 text-xs font-medium rounded-btn bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-300 dark:border-slate-700 transition-colors cursor-pointer"
+              title={isAllExpanded ? "Collapse all evidence accordions" : "Expand all evidence accordions"}
+            >
+              {isAllExpanded ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
+              <span>{isAllExpanded ? 'Collapse All' : 'Expand All Evidence'}</span>
+            </button>
+          )}
+        </div>
+      </div>
+
+      <p className="text-xs text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">
+        Evidence contract: each item shows its source module, confidence score, and one concise finding. Click any row to reveal observed technical tokens and analytical significance.
+      </p>
+
+      {/* Asynchronous OSINT Trigger (if domain available) */}
+      {extractedDomain && !osintData && (
+        <div className="mb-4 p-3 bg-slate-50 dark:bg-slate-950 rounded-btn border border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+          <div className="flex items-center space-x-2 truncate">
+            <Globe2 className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+            <span className="text-xs text-slate-700 dark:text-slate-300 truncate">
+              Domain Target: <code className="text-blue-700 dark:text-amber-300 font-mono font-semibold">{extractedDomain}</code>
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleFetchOsint}
+            disabled={osintLoading}
+            className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-900/60 dark:hover:bg-blue-800 dark:text-blue-200 border border-blue-700 text-xs font-semibold rounded-btn transition-colors disabled:opacity-50 cursor-pointer self-start sm:self-auto flex-shrink-0"
+          >
+            {osintLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Search className="w-3.5 h-3.5" />}
+            <span>Query Live OSINT (WHOIS & CT)</span>
+          </button>
+        </div>
+      )}
+
+      {/* OSINT Error Notice */}
+      {osintError && (
+        <div className="mb-4 p-2.5 bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800/60 rounded-btn text-xs text-amber-800 dark:text-amber-300 flex items-center space-x-2">
+          <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
+          <span>{osintError}</span>
+        </div>
+      )}
+
+      {/* Collapsed Accordion Evidence Rows */}
+      <div className="space-y-2.5" role="region" aria-label="Evidence Items Accordion List">
+        {allEvidence.map((item, idx) => {
+          const { sourceLabel, statusBadge } = getProvenanceDetails(item.source, item.type, item.status);
+          const confidence = item.confidence != null ? `${Math.round(item.confidence * 100)}%` : '--';
+          const isExpanded = expandedIndices.has(idx);
+
+          return (
+            <div 
+              key={idx} 
+              className={`rounded-btn border transition-all duration-150 overflow-hidden ${
+                isExpanded 
+                  ? 'bg-slate-50/80 border-slate-300 dark:bg-slate-950/90 dark:border-slate-700 shadow-sm' 
+                  : 'bg-white hover:bg-slate-50/60 border-slate-200 dark:bg-slate-950/50 hover:dark:bg-slate-950 dark:border-slate-800'
+              }`}
+            >
+              {/* Accordion Header (Interactive Button) */}
+              <button
+                type="button"
+                onClick={() => toggleAccordion(idx)}
+                aria-expanded={isExpanded}
+                className="w-full text-left p-3 flex items-start sm:items-center justify-between gap-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500/40 cursor-pointer"
+              >
+                <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-2.5">
+                  <div className="flex items-center space-x-1.5 flex-wrap flex-shrink-0">
+                    {/* Consistent Source Tag */}
+                    <span className="px-2 py-0.5 rounded-badge bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 text-[10px] font-bold border border-slate-300 dark:border-slate-700">
+                      {sourceLabel}
+                    </span>
+
+                    {/* EXACTLY ONE Status Badge (No Duplicates) */}
+                    <span className={`px-2 py-0.5 rounded-badge text-[10px] font-bold border ${statusBadge.badgeClass}`}>
+                      {statusBadge.label}
+                    </span>
+                  </div>
+
+                  {/* One-Line Plain-Language Conclusion */}
+                  <span className="text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 line-clamp-1">
+                    {item.description}
+                  </span>
+                </div>
+
+                {/* Right: Confidence Score & Accordion Chevron */}
+                <div className="flex items-center space-x-2 flex-shrink-0">
+                  <span className="font-mono text-xs font-bold text-amber-600 dark:text-amber-400">
+                    {confidence}
+                  </span>
+                  <div className="p-1 text-slate-400">
+                    {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                  </div>
+                </div>
+              </button>
+
+              {/* Accordion Body (Revealed on Click) */}
+              {isExpanded && (
+                <div className="px-3.5 pb-3.5 pt-1 border-t border-slate-200/80 dark:border-slate-800/80 text-xs space-y-2">
+                  {/* Full Description if truncated */}
+                  <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
+                    {item.description}
+                  </p>
+
+                  {/* Observed Technical Fact (Short Tokens Only) */}
+                  {item.observed_value && (
+                    <div className="p-2.5 bg-slate-100 dark:bg-slate-900 rounded border border-slate-200 dark:border-slate-800">
+                      <div className="flex items-start space-x-1.5">
+                        <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 flex-shrink-0">
+                          Observed Token:
+                        </span>
+                        <code className="text-[11px] font-mono font-medium text-blue-700 dark:text-amber-300 break-all">
+                          {item.observed_value}
+                        </code>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Analytical Significance / Interpretation */}
+                  {item.interpretation && (
+                    <div className="text-xs text-slate-600 dark:text-slate-400 flex items-start space-x-1.5">
+                      <span className="font-semibold text-slate-800 dark:text-slate-200 flex-shrink-0">
+                        Significance:
+                      </span>
+                      <span className="leading-relaxed">
+                        {item.interpretation}
+                      </span>
+                    </div>
+                  )}
+
+                  {item.correlation_group && (
+                    <div className="text-[10px] text-slate-500 font-mono">
+                      Correlated Group: {item.correlation_group}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}

@@ -1,0 +1,77 @@
+/**
+ * Standard Indian Fraud Typology Presets
+ * Preloaded test scenarios covering common scam vectors
+ */
+
+export const PRESET_SCENARIOS = [
+  {
+    id: 'electricity',
+    title: 'Electricity Cutoff Notice',
+    iconName: 'Zap',
+    isSafe: false,
+    message: 'Dear Customer, Your electricity power supply will be disconnected tonight at 09:30 PM from the electricity office due to your previous month bill was not updated. Please immediately contact our power officer 9876543210. Thank you.',
+    type: 'sms',
+    state: 'received',
+    urls: '',
+  },
+  {
+    id: 'sbi-kyc',
+    title: 'SBI NetBanking KYC Block',
+    iconName: 'Building2',
+    isSafe: false,
+    message: 'Dear SBI Customer, Your bank account has been SUSPENDED due to pending KYC verification. To avoid permanent blockage, update your Aadhaar and PAN immediately at: https://sbi-kyc-verify-urgent.com/login or call 1800-11-2211.',
+    type: 'sms',
+    state: 'received',
+    urls: 'https://sbi-kyc-verify-urgent.com/login',
+  },
+  {
+    id: 'courier',
+    title: 'India Post Redelivery Fee',
+    iconName: 'PackageCheck',
+    isSafe: false,
+    message: 'India Post: Your parcel consignment ID PB938472918IN cannot be dispatched due to incorrect delivery address. Update your address and pay standard re-delivery fee of Rs 25 at: http://indiapost-parcel-redelivery.org/tracking to avoid return.',
+    type: 'sms',
+    state: 'received',
+    urls: 'http://indiapost-parcel-redelivery.org/tracking',
+  },
+  {
+    id: 'upi-refund',
+    title: 'UPI Collect Request Scam',
+    iconName: 'QrCode',
+    isSafe: false,
+    message: 'Dear Customer, your cashback refund of Rs. 4,999 from Google Pay / PhonePe is pending approval. Scan the QR code or approve the pending Collect Request in your UPI app and enter your UPI PIN to credit your bank account.',
+    type: 'chat',
+    state: 'received',
+    urls: '',
+  },
+  {
+    id: 'telegram-task',
+    title: 'Part-Time Task Job Scam',
+    iconName: 'Briefcase',
+    isSafe: false,
+    message: 'Earn Rs 3,000 to Rs 8,000 daily from home! Part-time online job: simply like YouTube videos, submit screenshot, and receive instant payments to your bank. No experience needed. Contact HR manager on Telegram @daily_income_team to start.',
+    type: 'chat',
+    state: 'received',
+    urls: '',
+  },
+  {
+    id: 'digital-arrest',
+    title: 'CBI Digital Arrest Summons',
+    iconName: 'Scale',
+    isSafe: false,
+    message: 'URGENT LEGAL SUMMONS - CBI & Cyber Crime Police: An illegal consignment containing contraband and forged passports linked to your Aadhaar card has been intercepted at customs. Non-bailable arrest warrant issued. Connect immediately via video call for digital arrest and verification.',
+    type: 'chat',
+    state: 'received',
+    urls: '',
+  },
+  {
+    id: 'legit-sbi',
+    title: 'Official Bank OTP (Safe Control)',
+    iconName: 'ShieldCheck',
+    isSafe: true,
+    message: '948201 is your OTP for purchase of Rs 1,250.00 at Amazon India using SBI Netbanking. Never share OTP or passwords with anyone. State Bank of India never calls asking for OTP. Visit official https://onlinesbi.sbi for secure banking.',
+    type: 'sms',
+    state: 'received',
+    urls: 'https://onlinesbi.sbi',
+  },
+];

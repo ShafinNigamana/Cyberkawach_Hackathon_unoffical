@@ -170,13 +170,22 @@ if fixtures_path.exists():
 if frontend_path.exists():
     css_path = frontend_path / "css"
     js_path = frontend_path / "js"
+    dist_path = frontend_path / "dist"
+
     if css_path.exists():
         app.mount("/css", StaticFiles(directory=str(css_path)), name="css")
     if js_path.exists():
         app.mount("/js", StaticFiles(directory=str(js_path)), name="js")
 
+    if dist_path.exists():
+        dist_assets = dist_path / "assets"
+        if dist_assets.exists():
+            app.mount("/assets", StaticFiles(directory=str(dist_assets)), name="assets")
+
     @app.get("/")
     async def serve_index():
+        if dist_path.exists() and (dist_path / "index.html").exists():
+            return FileResponse(str(dist_path / "index.html"))
         return FileResponse(str(frontend_path / "index.html"))
 
     @app.get("/verification.html")

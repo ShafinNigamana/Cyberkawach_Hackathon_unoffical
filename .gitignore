@@ -19,6 +19,7 @@ build/
 Thumbs.db
 .DS_Store
 
-# Logs
-*.log
-logs/
+# Node / Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
