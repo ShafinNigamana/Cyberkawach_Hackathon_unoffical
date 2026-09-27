@@ -134,6 +134,28 @@ def test_urlhaus_live_or_mock_result():
     asyncio.run(_run())
 
 
+def test_openphish_live_or_mock_result():
+    async def _run():
+        from backend.services.threat_intel_providers import OpenPhishProvider
+        provider = OpenPhishProvider()
+        assert provider.is_available
+        # Test clean URL
+        res_clean = await provider.check_url("https://www.google.com")
+        assert res_clean.intel_status in (ThreatIntelStatus.NO_KNOWN_MATCH, ThreatIntelStatus.SOURCE_UNAVAILABLE)
+
+        # Test mocked malicious hit
+        with patch("httpx.AsyncClient.get") as mock_get:
+            mock_resp = MagicMock()
+            mock_resp.status_code = 200
+            mock_resp.json.return_value = {"found": True}
+            mock_get.return_value = mock_resp
+
+            res = await provider.check_url("http://active-phish-portal.cc")
+            assert res.intel_status == ThreatIntelStatus.KNOWN_MALICIOUS
+            assert "OpenPhish" in res.details
+    asyncio.run(_run())
+
+
 # ─── 4. Safe Website Behavior & DOM Analyzer Tests ───
 
 def test_inspect_website_ssrf_blocked():
