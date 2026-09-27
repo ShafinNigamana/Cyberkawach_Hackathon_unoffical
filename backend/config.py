@@ -31,6 +31,8 @@ class Settings(BaseSettings):
 
     # ─── Threat Intel APIs (P2 optional) ───
     abuseipdb_api_key: Optional[str] = None
+    virustotal_api_key: Optional[str] = None
+    urlhaus_api_key: Optional[str] = None
 
     # ─── Application ───
     app_env: str = "development"
@@ -76,7 +78,8 @@ class Settings(BaseSettings):
             "osint": bool(self.osint_enabled),
             # P2 optional threat-intel
             "abuseipdb": bool(self.abuseipdb_api_key and self.abuseipdb_api_key.strip()),
-            "urlhaus": True,  # No key needed
+            "urlhaus": True,  # Public API available
+            "virustotal": bool(self.virustotal_api_key and self.virustotal_api_key.strip()),
             "google_translate": bool(self.google_translate_api_key and self.google_translate_api_key.strip()),
         }
 

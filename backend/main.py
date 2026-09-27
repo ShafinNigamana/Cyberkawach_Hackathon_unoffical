@@ -344,7 +344,28 @@ async def analyze_message(request: AnalyzeRequest, raw_request: Request):
     # Stage 1: Ingestion & IOC extraction
     try:
         from backend.modules.ingestion import extract_iocs
+        from backend.services.indicators import extract_indicators
         evidence = extract_iocs(evidence, cleaned_urls)
+        extracted_ind = extract_indicators(evidence.message)
+        for mismatch in extracted_ind.anchor_mismatches:
+            evidence.evidence.append(EvidenceItem(
+                type=EvidenceType.URL_ANALYSIS,
+                source="indicator_extractor",
+                source_type="content",
+                evidence_tier="OBSERVED",
+                indicator=mismatch.get("display_text"),
+                finding=f"Deceptive hyperlink detected: text displays '{mismatch.get('display_text')}' but links to '{mismatch.get('actual_destination')}'",
+                description="HTML anchor mismatch: visible link text misrepresents destination URL.",
+                observed_value=f"Display: {mismatch.get('display_text')} -> Dest: {mismatch.get('actual_destination')}",
+                interpretation="Deceptive anchor mismatch intentionally tricks victims into trusting the destination URL.",
+                status=EvidenceStatus.CONFIRMED,
+                reliability=EvidenceReliability.DETERMINISTIC_FACT,
+                risk_direction=RiskDirection.INCREASES_RISK,
+                severity=EvidenceSeverity.HIGH,
+                confidence=0.95,
+                correlation_group="deceptive_link",
+                raw_data=mismatch,
+            ))
         modules_executed.append("ingestion")
     except Exception as e:
         modules_failed.append("ingestion")
@@ -368,14 +389,36 @@ async def analyze_message(request: AnalyzeRequest, raw_request: Request):
         modules_failed.append("ml_baseline")
         evidence.errors.append(f"ml_baseline: {safe_error_message(e)}")
 
-    # Stage 3: URL & domain analysis
+    # Stage 3: URL & domain analysis (Live DNS, TLS, RDAP)
     try:
         from backend.modules.url_analyzer import analyze_urls
+        from backend.services.domain_intel import collect_domain_evidence
         evidence = await analyze_urls(evidence)
+        seen_domains = set()
+        for u in evidence.urls:
+            d = (u.domain or "").lower().strip()
+            if d and d not in seen_domains and "." in d:
+                seen_domains.add(d)
+                domain_items = collect_domain_evidence(d)
+                for item in domain_items:
+                    evidence.evidence.append(item)
         modules_executed.append("url_analyzer")
     except Exception as e:
         modules_failed.append("url_analyzer")
         evidence.errors.append(f"url_analyzer: {safe_error_message(e)}")
+
+    # Stage 3b: Safe DOM & Website Behavior Analysis
+    try:
+        from backend.services.website_analyzer import inspect_website
+        for u in evidence.urls[:3]:
+            if u.url:
+                _, site_items = await inspect_website(u.url)
+                for item in site_items:
+                    evidence.evidence.append(item)
+        modules_executed.append("website_analyzer")
+    except Exception as e:
+        modules_failed.append("website_analyzer")
+        evidence.errors.append(f"website_analyzer: {safe_error_message(e)}")
 
     # Stage 4: Brand impersonation check
     try:
@@ -385,6 +428,38 @@ async def analyze_message(request: AnalyzeRequest, raw_request: Request):
     except Exception as e:
         modules_failed.append("brand_check")
         evidence.errors.append(f"brand_check: {safe_error_message(e)}")
+
+    # Stage 4b: Sender & Channel Analysis
+    try:
+        from backend.services.sender_analyzer import analyze_sms_sender, analyze_email_sender
+        import re
+        sms_match = re.search(r'\b([A-Za-z]{2}[-\s]?[A-Za-z0-9]{6})\b', evidence.message)
+        phone_match = re.search(r'(?:(?:\+?91[\-\s]?)?[6-9]\d{9})\b', evidence.message)
+        if sms_match:
+            _, sms_items = analyze_sms_sender(sms_match.group(1), evidence.message)
+            for item in sms_items:
+                evidence.evidence.append(item)
+        elif phone_match:
+            _, sms_items = analyze_sms_sender(phone_match.group(0), evidence.message)
+            for item in sms_items:
+                evidence.evidence.append(item)
+
+        if "from:" in evidence.message.lower():
+            from_m = re.search(r'from:\s*([^\r\n]+)', evidence.message, re.IGNORECASE)
+            reply_m = re.search(r'reply-to:\s*([^\r\n]+)', evidence.message, re.IGNORECASE)
+            auth_m = re.search(r'authentication-results:\s*([^\r\n]+)', evidence.message, re.IGNORECASE)
+            if from_m:
+                _, email_items = analyze_email_sender(
+                    from_header=from_m.group(1),
+                    reply_to_header=reply_m.group(1) if reply_m else "",
+                    auth_results=auth_m.group(1) if auth_m else "",
+                )
+                for item in email_items:
+                    evidence.evidence.append(item)
+        modules_executed.append("sender_analyzer")
+    except Exception as e:
+        modules_failed.append("sender_analyzer")
+        evidence.errors.append(f"sender_analyzer: {safe_error_message(e)}")
 
     # Stage 5: Threat intelligence
     try:
@@ -458,6 +533,13 @@ async def analyze_message(request: AnalyzeRequest, raw_request: Request):
     except Exception as e:
         modules_failed.append("fraud_dna")
         evidence.errors.append(f"fraud_dna: {safe_error_message(e)}")
+
+    # Stage 10: Persistent SQLite Evidence Store
+    try:
+        from backend.services.evidence_store import save_investigation
+        save_investigation(evidence)
+    except Exception as e:
+        logger.debug("Failed to persist investigation %s: %s", evidence.incident_id, safe_error_message(e))
 
     # Finalize
     elapsed_ms = (time.time() - start_time) * 1000
