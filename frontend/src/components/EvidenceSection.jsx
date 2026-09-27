@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { 
-  FileCheck, 
-  Search, 
-  ChevronDown, 
-  ChevronUp, 
-  Globe2, 
+import {
+  FileCheck,
+  Search,
+  ChevronDown,
+  ChevronUp,
+  Globe2,
   Loader2,
   AlertTriangle,
   ChevronsUpDown,
@@ -27,6 +27,9 @@ function getProvenanceDetails(source, type, rawStatus) {
   } else if (s.includes('laya') || t.includes('laya')) {
     sourceLabel = 'Fast Decision (Laya)';
     isInferred = true;
+  } else if (s.includes('ml_classifier') || s.includes('ml') || t.includes('ml')) {
+    sourceLabel = 'ML Classifier (Scikit-Learn)';
+    isInferred = true;
   } else if (s.includes('threat') || s.includes('safe_browsing') || s.includes('phishtank') || s.includes('phishstats')) {
     sourceLabel = 'Threat Intel Feed';
   } else if (s.includes('url') || t.includes('url')) {
@@ -35,9 +38,6 @@ function getProvenanceDetails(source, type, rawStatus) {
     sourceLabel = 'Brand Check';
   } else if (s.includes('osint') || t.includes('osint')) {
     sourceLabel = 'OSINT Infrastructure';
-  } else if (s.includes('ml') || t.includes('ml')) {
-    sourceLabel = 'ML Baseline';
-    isInferred = true;
   }
 
   // EXACTLY ONE unified epistemic badge (no duplicates)
@@ -66,10 +66,10 @@ function getProvenanceDetails(source, type, rawStatus) {
   return { sourceLabel, statusBadge };
 }
 
-export default function EvidenceSection({ 
-  evidenceItems = [], 
-  incidentId, 
-  extractedDomain 
+export default function EvidenceSection({
+  evidenceItems = [],
+  incidentId,
+  extractedDomain
 }) {
   const [osintLoading, setOsintLoading] = useState(false);
   const [osintData, setOsintData] = useState(null);
@@ -188,13 +188,12 @@ export default function EvidenceSection({
           const isExpanded = expandedIndices.has(idx);
 
           return (
-            <div 
-              key={idx} 
-              className={`rounded-btn border transition-all duration-150 overflow-hidden ${
-                isExpanded 
-                  ? 'bg-slate-50/80 border-slate-300 dark:bg-slate-950/90 dark:border-slate-700 shadow-sm' 
+            <div
+              key={idx}
+              className={`rounded-btn border transition-all duration-150 overflow-hidden ${isExpanded
+                  ? 'bg-slate-50/80 border-slate-300 dark:bg-slate-950/90 dark:border-slate-700 shadow-sm'
                   : 'bg-white hover:bg-slate-50/60 border-slate-200 dark:bg-slate-950/50 hover:dark:bg-slate-950 dark:border-slate-800'
-              }`}
+                }`}
             >
               {/* Accordion Header (Interactive Button) */}
               <button

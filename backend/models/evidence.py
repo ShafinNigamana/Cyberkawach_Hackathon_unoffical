@@ -159,6 +159,19 @@ class LayaResult(BaseModel):
     latency_ms: Optional[float] = None
 
 
+class MLClassifierResult(BaseModel):
+    """
+    Dedicated Scikit-Learn TF-IDF + Logistic Regression ML Classifier (PRD Section 8).
+    Runs alongside Laya as a dedicated statistical classification layer.
+    """
+    classification: str = "unknown"  # "phishing", "suspicious", "legitimate"
+    confidence: float = 0.0
+    model_version: str = "v1.2-sklearn-tfidf"
+    top_features: list[str] = Field(default_factory=list)
+    available: bool = False
+    latency_ms: Optional[float] = None
+
+
 class ThreatIntelResult(BaseModel):
     """Single threat-intelligence source result."""
     source: str  # "safe_browsing", "phishtank", "phishstats"
@@ -286,6 +299,7 @@ class IncidentEvidence(BaseModel):
 
     # Analysis
     laya: LayaResult = Field(default_factory=LayaResult)
+    ml_classifier: MLClassifierResult = Field(default_factory=MLClassifierResult)
     threat_intel: list[ThreatIntelResult] = Field(default_factory=list)
     rule_matches: list[str] = Field(default_factory=list)
     fraud_category: Optional[str] = None  # "banking", "courier", "government", "lottery", etc.

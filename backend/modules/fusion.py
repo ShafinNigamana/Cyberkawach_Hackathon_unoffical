@@ -39,6 +39,7 @@ _WEIGHTS = {
     EvidenceType.IOC_EXTRACTED: 0.05,
     EvidenceType.THREAT_INTEL_MISS: 0.0,  # Neutral — absence of match never reduces risk score
     EvidenceType.LAYA_SIGNAL: 0.15,
+    EvidenceType.ML_SIGNAL: 0.12,
     EvidenceType.REDIRECT_CHAIN: 0.08,
     EvidenceType.DOMAIN_AGE: 0.10,
     EvidenceType.CAMPAIGN_LINK: 0.10,
