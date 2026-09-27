@@ -404,6 +404,15 @@ async def analyze_message(request: AnalyzeRequest, raw_request: Request):
         modules_failed.append("laya")
         evidence.errors.append(f"laya: {safe_error_message(e)}")
 
+    # Stage 5c: Dedicated Scikit-Learn ML Classifier triage (PRD Section 8)
+    try:
+        from backend.modules.ml_classifier import run_ml_classification
+        evidence = await run_ml_classification(evidence)
+        modules_executed.append("ml_classifier")
+    except Exception as e:
+        modules_failed.append("ml_classifier")
+        evidence.errors.append(f"ml_classifier: {safe_error_message(e)}")
+
     # Stage 6: Evidence fusion + risk scoring
     try:
         from backend.modules.fusion import fuse_evidence
@@ -471,6 +480,9 @@ async def analyze_message(request: AnalyzeRequest, raw_request: Request):
         explanation=evidence.explanation,
         response=evidence.response,
         laya=evidence.laya if evidence.laya.available else None,
+        ml_classifier=evidence.ml_classifier if evidence.ml_classifier.available else None,
+        classification=evidence.ml_classifier.classification if evidence.ml_classifier.available else None,
+        model_confidence=evidence.ml_classifier.confidence if evidence.ml_classifier.available else None,
         fraud_dna=evidence.fraud_dna if evidence.fraud_dna.available else None,
         fraud_category=evidence.fraud_category,
         language=evidence.language,
@@ -538,6 +550,9 @@ async def update_user_state(
         explanation=evidence.explanation,
         response=evidence.response,
         laya=evidence.laya if evidence.laya.available else None,
+        ml_classifier=evidence.ml_classifier if evidence.ml_classifier.available else None,
+        classification=evidence.ml_classifier.classification if evidence.ml_classifier.available else None,
+        model_confidence=evidence.ml_classifier.confidence if evidence.ml_classifier.available else None,
         fraud_dna=evidence.fraud_dna if evidence.fraud_dna.available else None,
         fraud_category=evidence.fraud_category,
         language=evidence.language,
