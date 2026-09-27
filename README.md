@@ -1,250 +1,386 @@
 # Cyber Fraud Guardian
 
-> **Track S2: Citizen Fraud-Message Guardian**  
-> *Cyber Kavach Challenge 2026 — BSides Ahmedabad*
+> **Cyber Kavach Challenge 2026** — *Track S2: Citizen Fraud-Message Guardian*  
+> **Repository**: [https://github.com/psy9-hackathon/team-bits](https://github.com/psy9-hackathon/team-bits)
 
-A high-assurance, evidence-driven cyber fraud triage and reasoning system engineered to protect citizens from deceptive SMS, WhatsApp, email, and social engineering attacks. 
+Cyber Fraud Guardian is a high-assurance, evidence-driven cyber fraud triage and reasoning system engineered to protect citizens from deceptive SMS, WhatsApp, email, social engineering, and payment fraud attacks.
 
-Rather than relying on ungrounded LLM guesses or opaque black-box classifiers, **Cyber Fraud Guardian** enforces **strict epistemic modesty**, **two-tier risk fusion**, **traceable causal attack paths**, **four-state threat intelligence**, and **state-proportional citizen response protocols** (including India's 1930 National Cyber Crime Golden Hour response).
-
----
-
-## Key Innovations
-
-### 1. Grounded Epistemic Reasoning & Modesty
-- **Observation vs. Inference Separation**: Distinguishes direct factual IOC observations (`observed_value`) from security deductions (`interpretation`).
-- **Epistemic Status Hierarchy**: Classifies every signal into one of 6 rigorous epistemic states: `CONFIRMED`, `OBSERVED`, `SUSPICIOUS`, `POSSIBLE`, `UNKNOWN`, or `UNAVAILABLE`, backed by a numerical `reliability` score ($0.0 \dots 1.0$).
-- **Evidentiary Sufficiency**: Explicitly declares whether collected evidence is `SUFFICIENT`, `PARTIAL`, or `INSUFFICIENT` before calculating risk.
-- **Negative Epistemic Bounds ("What the Guardian Cannot Conclude")**: Explicitly defines the limits of analysis (e.g., cannot confirm if server is active, cannot verify identity behind burner numbers, cannot confirm victim account status).
-- **Traceable Causal Attack Paths**: Reconstructs attacker progression from `Lure` $\rightarrow$ `Redirection` $\rightarrow$ `Exploitation` $\rightarrow$ `Monetization/Consequence` with strict `[Evidence N]` inline citations.
-
-### 2. Two-Tier Risk Fusion Engine
-- **Tier 1 — Deterministic Safety Overrides**:
-  - **Official Domain Dampening ($\le 0.15$)**: Preserves a **strict zero false-positive rate** on verified government, banking, utility, and courier infrastructure (e.g., `*.sbi`, `*.gov.in`, `hdfcbank.com`).
-  - **High-Hazard Overrides ($\ge 0.85$)**: Instantly escalates verified blacklist matches (Safe Browsing, PhishTank, PhishStats), raw IPv4/IPv6 literals, or active typosquatting impersonations to `HIGH` or `CRITICAL`.
-- **Tier 2 — Calibrated Multi-Signal Fusion**:
-  - Computes weighted linear combinations across signal dimensions (Rules, Patterns, ML, Brand, URL, Safe Browsing, PhishTank, PhishStats, AbuseIPDB, URLhaus).
-  - Multi-signal correlation dampening prevents compounding noise from inflating benign messages.
-
-### 3. Fault-Tolerant 4-State Threat Intelligence
-- **Safe Browsing, PhishTank & PhishStats**: Multi-feed intelligence with in-memory TTL caching and non-negative scoring.
-- **Google Safe Browsing v4**: Real-time lookup for malware and deceptive web IOCs.
-- **4-State Fault Boundary**: Explicitly maps every intelligence check to `KNOWN_MALICIOUS`, `NO_KNOWN_MATCH`, `RATE_LIMITED`, or `SOURCE_UNAVAILABLE`. Never treats an API timeout or rate-limit as proof that a domain is safe!
-
-### 4. Adaptive State-Machine Response Protocol
-- **Citizen Journey Mapping**: Tailors defensive guidance to victim vulnerability:
-  - `RECEIVED`: Calm educational debunking, verification channels, unsolicited collect request warnings.
-  - `CLICKED`: Session isolation, browser cache clearing, device vulnerability scans.
-  - `ENTERED_CREDENTIALS`: Immediate password rotation, biometric re-locking, 2FA revocation.
-  - `PAID`: **Golden Hour Emergency Protocol** activating India's **1930 Cyber Crime Helpline**, banking freezing steps, and National Cyber Crime Reporting Portal (`cybercrime.gov.in`) reporting packs.
-
-### 5. Enterprise Security Hardening
-- **Anti-SSRF CIDR Parser**: Blocks loopback (`127.0.0.0/8`), private networks (`10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`), and AWS/GCP cloud metadata endpoints (`169.254.169.254`).
-- **Zero-PII Masking**: Automatically sanitizes Aadhaar numbers, PAN cards, OTPs, and phone numbers before logging or LLM transmission.
-- **Prompt Injection Defense**: Filters adversarial override phrases (`ignore previous instructions`, `system prompt`, delimiter breakouts).
-- **In-Memory Sliding-Window Rate Limiting**: Defends endpoints against DoS and brute-force token depletion.
+Rather than relying on ungrounded LLM guesses or opaque black-box classifiers, Cyber Fraud Guardian enforces **strict epistemic modesty**, **two-tier risk fusion**, **traceable causal attack paths**, **multi-source threat intelligence**, **dynamic OSINT enrichment**, **graph database syndicate persistence**, and **state-proportional citizen response protocols** (including India's 1930 National Cyber Crime Golden Hour response).
 
 ---
 
-## 20-Case Real-World Indian Accuracy Matrix
+## 1. Problem Statement
 
-The guardian is verified against 20 high-fidelity scenarios covering all major Indian cyber fraud archetypes:
+### What problem is being solved?
+Indian citizens are increasingly targeted by sophisticated cyber fraud schemes, including:
+- **Digital Arrest Extortion**: Impersonation of CBI, ED, state police, and judicial bodies via video call summons.
+- **Utility & Service Disconnection**: Fake electricity bill alerts threatening midnight power disconnection with burner numbers.
+- **Courier & Parcel Delivery Malvertising**: Fake India Post / courier delivery fee requests distributing credential-harvesting APKs.
+- **Banking Typosquatting & Pan/Aadhaar e-KYC**: Lookalike domains mimicking SBI, HDFC, ICICI, or government portals.
+- **Predatory Instant Loan Apps**: Collateral-free loan offers requiring excessive device permissions and harassment.
+- **Deceptive Hyperlinks & Anchor Mismatches**: Legitimate-looking visible text masking malicious phishing destinations.
 
-| Category | Typical Pattern / Modus Operandi | Risk Tier | Sufficiency |
-|---|---|:---:|:---:|
-| **Legitimate Banking** | Official SBI netbanking alert (`onlinesbi.sbi`) | `LOW` (0.15) | `PARTIAL` |
-| **Legitimate OTP** | HDFC transaction OTP with strict warning (`hdfcbank.com`) | `LOW` (0.27) | `PARTIAL` |
-| **Legitimate Courier** | India Post speed post consignment tracking (`indiapost.gov.in`) | `LOW` (0.15) | `PARTIAL` |
-| **Legitimate Utility** | BESCOM Karnataka electricity payment receipt (`bescom.karnataka.gov.in`) | `LOW` (0.18) | `PARTIAL` |
-| **Legitimate Payment** | PhonePe/Paytm merchant credit notification | `LOW` (0.23) | `PARTIAL` |
-| **Banking Phishing** | IP-literal SBI netbanking verification URL | `CRITICAL` (0.94) | `PARTIAL` |
-| **Banking Typosquatting**| HDFC KYC update with Unicode lookalike domain | `CRITICAL` (0.88) | `SUFFICIENT` |
-| **Banking URL Shortener**| ICICI credit card points expiry via Bitly redirection | `CRITICAL` (0.89) | `PARTIAL` |
-| **Electricity Cutoff** | Late night power disconnection threat with burner phone contact | `MEDIUM` (0.45) | `PARTIAL` |
-| **Courier Address Fee** | Fake India Post package re-delivery delivery fee APK scam | `CRITICAL` (0.88) | `SUFFICIENT` |
-| **Lottery / Prize** | KBC 25 Lakh lottery letter with WhatsApp admin link | `MEDIUM` (0.45) | `PARTIAL` |
-| **Work From Home / Task**| Telegram YouTube video liking part-time daily salary scam | `MEDIUM` (0.33) | `PARTIAL` |
-| **UPI Collect Request** | "Scan QR / Approve Collect Request to receive refund" scam | `MEDIUM` (0.37) | `PARTIAL` |
-| **Digital Arrest / Extortion** | CBI/Cyber Police summons demanding Skype video arrest | `MEDIUM` (0.51) | `PARTIAL` |
-| **Predatory Instant Loan** | Pre-approved ₹5,00,000 collateral-free loan APK download | `HIGH` (0.66) | `PARTIAL` |
-| **Income Tax Refund** | IT Department tax refund link with pending KYC bait | `CRITICAL` (0.88) | `SUFFICIENT` |
-| **Telecom SIM Block** | Urgent e-KYC requirement to avoid 24hr SIM deactivation | `MEDIUM` (0.48) | `PARTIAL` |
-| **Ambiguous Chat** | Casual hello / conversational inquiry with no malicious IOCs | `UNKNOWN` (0.00) | `INSUFFICIENT` |
-| **Brand Promo with Domain**| Official Zomato weekend cashback alert (`zomato.com`) | `LOW` (0.15) | `PARTIAL` |
-| **Compromised Payment** | Citizen paid ₹25,000 to fraudster account | `MEDIUM` (0.42) | `PARTIAL` |
+### Who faces this problem?
+Everyday citizens, seniors, non-technical users, small business owners, and first responders who receive high volumes of deceptive messages across SMS, messaging apps, and email.
 
-**Verification Scoreboard**:
-- **Total Cases Evaluated**: 20 / 20
-- **False Positives**: **0** (Target: 0)
-- **False Negatives**: **0** (Target: 0)
-- **Causal Attack Path Coverage**: **100%**
+### Why does it matter?
+Conventional classifiers give single opaque scores without explanation, while ungrounded LLMs hallucinate confirmations or provide false safety guarantees. Victims need immediate, transparent, evidence-based guidance and actionable recovery steps during the critical "Golden Hour."
+
+### Scope of the Solution
+Provides automated, privacy-preserving ingestion, deterministic indicator extraction, real-time threat intelligence verification, Scikit-Learn baseline classification, Laya typed decision rules, dynamic OSINT enrichment, graph-backed campaign correlation, and adaptive emergency advisory workflows.
 
 ---
 
-## Architecture Diagram
+## 2. Solution Overview
 
-```
-                        CITIZEN INPUT (SMS / Email / WhatsApp / URL)
-                                            │
-                                  [ Input Sanitization ]
-                             (SSRF Check, PII Masking, Defang)
-                                            │
-               ┌────────────────────────────┼────────────────────────────┐
-               │                            │                            │
-      [ Rule / Pattern Engine ]     [ Ingestion & IOC ]          [ ML Baseline ]
-        (5 Indian Typologies,        (URLs, Domains, IPs,        (TF-IDF + Logistic
-        Urgency, Contact Regex)       Phone, UPI VPA)              Regression Model)
-               │                            │                            │
-               │                   [ Threat Intelligence ]               │
-               │        (Google SafeB + PhishTank + PhishStats)          │
-               │                            │                            │
-               └────────────────────────────┼────────────────────────────┘
-                                            │
-                                 [ Two-Tier Risk Fusion ]
-                             Tier 1: Deterministic Overrides
-                            (Gov/Bank Dampening vs Blacklist)
-                             Tier 2: Weighted Signal Sum +
-                              Evidentiary Sufficiency Gate
-                                            │
-                                  [ Grounded Explainer ]
-                             Gemini Flash Grounded Contract
-                             (Fallback to Template Engine)
-                             - Direct Observations vs Inferences
-                             - Negative Epistemic Bounds
-                             - Traceable Causal Attack Path
-                                            │
-                               [ Adaptive State Machine ]
-                             State-proportional actionable steps
-                            (Received → Clicked → Details → Paid)
-                                            │
-                                [ Citizen Trust UI ]
-                             Dashboard, Badges, Citations,
-                             Verification Suite (/verification.html)
+Cyber Fraud Guardian processes suspect messages through a multi-stage defensive pipeline:
+1. **Ingestion & Sanitization**: Strips adversarial prompt injection attempts, masks sensitive personal identifiers (Aadhaar, PAN, OTPs, phone numbers), and defangs active URLs.
+2. **Deterministic & Statistical Triage**:
+   - **Laya Typed-Decision Rules**: Extracts urgency markers, Indian shortcodes, UPI VPAs, and brand claims.
+   - **Scikit-Learn Classifier**: TF-IDF n-gram vectorizer paired with a trained classifier for sub-millisecond statistical confidence.
+   - **Dynamic OSINT & Indicators**: Live DNS resolution, TLS certificate age/issuer checks, RDAP registrar query, anchor-text mismatch detection, and safe website DOM inspection.
+3. **Multi-Source Threat Intelligence**:
+   - Google Safe Browsing v4 Threat List API
+   - PhishStats real-time phishing feed
+   - PhishTank community-verified phishing database
+   - URLhaus & OpenPhish feeds
+4. **Two-Tier Risk Fusion**:
+   - *Tier 1 Overrides*: Enforces absolute safety bounds (e.g. government/banking official domain dampening $\le 0.15$; confirmed malicious feed matches $\ge 0.85$).
+   - *Tier 2 Fusion*: Multi-signal weighted linear combination bounded by an Evidentiary Sufficiency Gate (`SUFFICIENT`, `PARTIAL`, `INSUFFICIENT`).
+5. **Grounded Epistemic Explanation**:
+   - Gemini Flash-powered structured explainer enforcing strict inline evidence citations (`[Evidence N]`), clear separation between direct observations and security deductions, and explicit negative bounds (*"What the Guardian Cannot Conclude"*).
+   - Deterministic offline template engine for complete air-gapped fallback.
+6. **Adaptive Response & Graph Persistence**:
+   - Tailored state machine guidance (`RECEIVED`, `CLICKED`, `ENTERED_CREDENTIALS`, `PAID` with India 1930 Helpline Golden Hour steps).
+   - Neo4j AuraDB graph persistence for syndicate identification, incident history, and IDOR-safe citizen review.
+
+---
+
+## 3. Architecture & System Workflow
+
+### Architecture Diagram
+
+```mermaid
+flowchart TD
+    User([Citizen Input / Voice / Screenshot]) --> Ingest[Ingestion & Sanitization]
+    Ingest --> PII[Zero-PII Masking & Anti-SSRF]
+    
+    subgraph Triage Engine
+        PII --> Laya[Laya Typed Rules Engine]
+        PII --> ML[Scikit-Learn TF-IDF Classifier]
+        PII --> OSINT[Dynamic OSINT & DOM Analyzer]
+        PII --> TI[Multi-Source Threat Intel]
+    end
+    
+    subgraph Threat Feeds
+        TI --> GSB[(Google Safe Browsing)]
+        TI --> PS[(PhishStats Live API)]
+        TI --> PT[(PhishTank Database)]
+        TI --> UH[(URLhaus & OpenPhish)]
+    end
+    
+    Laya --> Fusion[Two-Tier Risk Fusion Engine]
+    ML --> Fusion
+    OSINT --> Fusion
+    TI --> Fusion
+    
+    Fusion --> Explainer[Grounded Epistemic Explainer]
+    Explainer --> Gemini[Gemini Flash / Deterministic Fallback]
+    
+    Explainer --> Response[Adaptive Response State Machine]
+    Response --> Graph[(Neo4j AuraDB / SQLite Store)]
+    Response --> UI[Citizen Trust Dashboard / React UI]
 ```
 
+### End-to-End Processing Workflow
+1. **Input Submission**: Citizen inputs text, URL, email headers, or speaks via real-time multilingual voice recognition.
+2. **Pre-processing**: Normalizes text, sanitizes input, extracts IOCs (URLs, domains, IPs, UPI handles, sender shortcodes).
+3. **Parallel Verification**:
+   - Google Safe Browsing, PhishStats, and PhishTank query extracted URLs simultaneously.
+   - OSINT modules query DNS, TLS, and RDAP records in real time.
+   - ML classifier scores text patterns against trained fraud archetypes.
+4. **Evidence Synthesis**: Synthesizes all signals into an append-only `IncidentEvidence` object with individual reliability ratings.
+5. **Two-Tier Fusion**: Evaluates deterministic safety overrides and computes final calibrated risk tier (`LOW`, `MEDIUM`, `HIGH`, `CRITICAL`).
+6. **Explanation & Advisory**: Emits structured reasons, attack stages (`Lure` $\rightarrow$ `Redirection` $\rightarrow$ `Exploitation` $\rightarrow$ `Monetization`), and state-dependent recovery steps.
+7. **Graph Persistence**: Securely stores the incident node and relationships (`OWNS`, `CONTAINS_URL`, `HAS_DOMAIN`, `CLAIMS_BRAND`, `HAS_THREAT_INTEL`) in Neo4j AuraDB.
+
 ---
 
-## Quick Start
+## 4. Key Features
 
-### 1. Installation
+- **Epistemic Modesty**: Signals are categorized into 6 epistemic states: `CONFIRMED`, `OBSERVED`, `SUSPICIOUS`, `POSSIBLE`, `UNKNOWN`, and `UNAVAILABLE`.
+- **4-State Threat Feed Resilience**: Explicitly reports `KNOWN MALICIOUS`, `NO KNOWN MATCH`, `RATE LIMITED`, or `STANDBY (NO URL)`. Never assumes absence of a record equates to proof of safety.
+- **Two-Tier Risk Overrides**: Protects legitimate banking and government communications (`*.gov.in`, `*.nic.in`, `*.sbi`) from false alarms while guaranteeing immediate escalation on confirmed threat intelligence hits.
+- **Dynamic OSINT Verification**: Inspects domain age, TLS issuer trustworthiness, live DNS resolution, and deceptive HTML anchor discrepancies.
+- **Dedicated ML Classifier**: Scikit-Learn TF-IDF pipeline providing fast statistical confidence scores alongside deterministic Laya rules.
+- **Multilingual Support & Voice Input**:
+  - Browser-native Web Speech API voice typing across 6 Indian locales (`en-IN`, `hi-IN`, `gu-IN`, `ta-IN`, `te-IN`, `bn-IN`).
+  - Google Cloud Translation integration with offline dictionary fallbacks.
+- **Citizen Journey Response**: Tailored action checklists for unclicked lures vs. clicked links vs. entered credentials vs. completed unauthorized payments.
+- **Neo4j Aura Graph Database**: Correlates campaigns across disparate reports, tracks fraud syndicates, and maps shared infrastructure.
+- **Citizen Account & IDOR Security**: Password hashing, session authentication, and ownership checks protecting incident histories.
 
+---
+
+## 5. Technology Stack
+
+| Layer | Technologies |
+|---|---|
+| **Frontend** | React 18, Vite 6, Tailwind CSS, Lucide Icons, Browser Web Speech API |
+| **Backend API** | Python 3.10+, FastAPI, Pydantic v2, Uvicorn, HTTPX (Async HTTP) |
+| **Machine Learning** | Scikit-Learn (TF-IDF Vectorizer + Logistic Regression), NumPy |
+| **AI / Reasoning** | Google Gemini Flash API (`gemini-2.0-flash-lite`), Rule-based deterministic fallback |
+| **Datastores** | Neo4j AuraDB (Cloud Graph Database), SQLite (local evidence store) |
+| **Threat Intelligence** | Google Safe Browsing v4, PhishStats REST API, PhishTank, URLhaus |
+| **Security Controls** | SSRF CIDR validators, PII redactors, Sliding-window rate limiters, Security headers |
+| **Testing** | Pytest, AnyIO, FastAPI TestClient |
+
+---
+
+## 6. AI/ML Methodology
+
+### Scikit-Learn Statistical Classifier
+- **Model**: Logistic Regression with word and character n-gram TF-IDF vectorization (n-gram range 1 to 2).
+- **Purpose**: Rapid statistical triage of incoming messages to detect lexical cues of urgency, financial incentives, and credential solicitation.
+- **Input**: Sanitized citizen message text.
+- **Output**: Categorical prediction (`phishing`, `legitimate`, `suspicious`) with calibrated float confidence score ($0.0 \dots 1.0$).
+- **Pipeline**: Automated text normalization $\rightarrow$ TF-IDF feature extraction $\rightarrow$ probability estimation.
+
+### Laya Deterministic Rule Engine
+- **Purpose**: High-precision detection of Indian-specific fraud vectors (telecom headers, 5-digit shortcodes, APK download links, fake electricity billing keywords).
+- **Input**: Extracted IOCs, message text, and metadata.
+- **Output**: Typed evidence items with confidence scores and specific regulatory references (TRAI, RBI, NPCI).
+
+### Gemini Flash Epistemic Explainer
+- **Model**: `gemini-2.0-flash-lite` (or configured Gemini model).
+- **Purpose**: Generates citizen-comprehensible causal explanations strictly grounded in observed evidence items.
+- **Contract Constraints**:
+  - Must cite exact evidence items (`[Evidence 1]`, `[Evidence 2]`).
+  - Strict prohibition against inventing unobserved technical facts (e.g. cannot claim a server is offline unless verified).
+  - Explicit requirement to output *What Cannot Be Concluded*.
+  - Automatic fallback to pre-compiled deterministic templates if the external LLM API is unavailable, unconfigured, or rate-limited.
+
+---
+
+## 7. Security & Privacy Controls
+
+- **Zero-PII Masking**: Indian Aadhaar numbers (`\d{4}\s\d{4}\s\d{4}`), PAN cards (`[A-Z]{5}[0-9]{4}[A-Z]`), OTP tokens, and personal phone numbers are redacted prior to logging or upstream API transmission.
+- **Anti-SSRF Protection**: Resolves all domains before fetching; blocks loopback (`127.0.0.0/8`), private RFC1918 subnets (`10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`), and cloud metadata IP addresses (`169.254.169.254`).
+- **Secret Scrubbing**: API keys, database passwords, and auth tokens are stripped from error messages, logs, and stack traces.
+- **Rate Limiting**: Configurable sliding-window rate limiter on all public endpoints to prevent resource exhaustion.
+- **IDOR Defense**: All incident queries and graph traversals verify authenticated ownership prior to data retrieval.
+- **Strict Content Security**: Configures `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, and parameterized Cypher/SQL queries.
+
+---
+
+## 8. Installation & Setup
+
+### Prerequisites
+- Python 3.10, 3.11, or 3.12
+- Node.js 18+ and npm
+- Git
+
+### 1. Clone Repository
 ```bash
-# Clone the repository
-git clone https://github.com/ShafinNigamana/Cyberkawach_Hackathon_unoffical.git
-cd Cyberkawach_Hackathon_unoffical
+git clone https://github.com/psy9-hackathon/team-bits.git
+cd team-bits
+```
 
-# Create virtual environment
+### 2. Backend Setup
+```bash
+# Create and activate virtual environment
 python -m venv venv
-venv\Scripts\activate        # On Windows
-# source venv/bin/activate   # On Linux/macOS
+
+# Windows:
+venv\Scripts\activate
+# Linux/macOS:
+source venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
 ```
 
-### 2. Configuration
-
-Create `.env` file in the project root:
-
-```env
-# Optional LLM integration (system will use deterministic fallback if omitted)
-GEMINI_API_KEY=your_gemini_api_key_here
-
-# Optional threat intel APIs
-SAFE_BROWSING_API_KEY=your_safe_browsing_api_key_here
-ABUSEIPDB_API_KEY=
-URLHAUS_API_KEY=
-
-# Application settings
-APP_ENV=development
-LOG_LEVEL=INFO
-RATE_LIMIT_PER_MINUTE=30
+### 3. Frontend Setup
+```bash
+cd frontend
+npm install
+cd ..
 ```
 
-### 3. Run the Application
-
+### 4. Environment Configuration
+Copy the provided `.env.example` to `.env`:
 ```bash
-# Start FastAPI backend (serves static UI automatically)
+cp .env.example .env
+```
+*(On Windows Command Prompt: `copy .env.example .env`)*
+
+Configure your environment variables as described in the section below. Note: **All external API keys are optional** — modules gracefully degrade if keys are omitted.
+
+---
+
+## 9. Environment Variables
+
+| Variable | Required? | Default | Description |
+|---|:---:|:---:|---|
+| `GEMINI_API_KEY` | Optional | `None` | Google Gemini API key for dynamic grounded explanations. |
+| `GEMINI_MODEL` | Optional | `gemini-2.0-flash-lite` | Gemini model version to utilize. |
+| `SAFE_BROWSING_API_KEY` | Optional | `None` | Google Safe Browsing v4 Lookup API key. |
+| `PHISHTANK_API_KEY` | Optional | `None` | PhishTank API key for verified phishing URL queries. |
+| `PHISHSTATS_API_KEY` | Optional | `None` | PhishStats community API key (`psk_...`). |
+| `GOOGLE_TRANSLATE_API_KEY` | Optional | `None` | Google Cloud Translation API key for dynamic multi-language text. |
+| `NEO4J_ENABLED` | Optional | `false` | Set to `true` to persist incidents into Neo4j graph datastore. |
+| `NEO4J_URI` | Optional | `neo4j+s://...` | Neo4j AuraDB instance URI. |
+| `NEO4J_USERNAME` | Optional | `neo4j` | Neo4j database username. |
+| `NEO4J_PASSWORD` | Optional | `None` | Neo4j database password. |
+| `APP_ENV` | Optional | `development` | Application environment (`development` or `production`). |
+| `APP_PORT` | Optional | `8000` | Port for the FastAPI backend server. |
+| `APP_HOST` | Optional | `0.0.0.0` | Host interface for FastAPI server. |
+| `RATE_LIMIT_PER_MINUTE` | Optional | `30` | Request rate limit per minute per client IP. |
+| `CORS_ORIGINS` | Optional | `http://localhost:3000,...` | Allowed CORS origins for API requests. |
+
+---
+
+## 10. Running the Application
+
+### Start Backend API Server
+From the project root:
+```bash
 python -m uvicorn backend.main:app --reload --port 8000
 ```
+- API Documentation (Swagger UI): [http://localhost:8000/docs](http://localhost:8000/docs)
+- Health Check: [http://localhost:8000/api/health](http://localhost:8000/api/health)
 
-- **Main Citizen UI**: Open [http://localhost:8000/](http://localhost:8000/)
-- **Live Verification Suite**: Open [http://localhost:8000/verification.html](http://localhost:8000/verification.html)
-- **Interactive OpenAPI Docs**: Open [http://localhost:8000/docs](http://localhost:8000/docs)
+### Start Frontend Application
+In a separate terminal:
+```bash
+cd frontend
+npm run dev
+```
+- Application Dashboard: [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## Testing & Quality Gates
+## 11. API Documentation
 
-Run the comprehensive test suites:
+### Primary Endpoints
+
+#### 1. Analyze Message / URL
+- **Endpoint**: `POST /api/analyze`
+- **Auth**: Optional (Associates incident with authenticated user if session header is present)
+- **Request Body**:
+```json
+{
+  "message": "Dear customer, your SBI NetBanking account will be blocked today. Update KYC immediately: http://malware.testing.google.test/testing/malware/",
+  "input_type": "text",
+  "user_state": "received",
+  "language": "en"
+}
+```
+- **Response**:
+```json
+{
+  "incident_id": "INC-2026-A1B2C3D4",
+  "input_type": "text",
+  "message_preview": "Dear customer, your SBI NetBanking account will be blocked...",
+  "risk": {
+    "level": "CRITICAL",
+    "score": 0.95,
+    "confidence": 0.95,
+    "evidence_sufficiency": "SUFFICIENT"
+  },
+  "evidence": [
+    {
+      "type": "THREAT_INTEL_HIT",
+      "source": "safe_browsing",
+      "status": "CONFIRMED",
+      "description": "Safe Browsing: URL confirmed malicious — Threat types: MALWARE",
+      "reliability": "EXTERNAL_DB"
+    }
+  ],
+  "threat_intel": [
+    {
+      "source": "safe_browsing",
+      "match": true,
+      "intel_status": "KNOWN_MALICIOUS",
+      "details": "Threat types: MALWARE"
+    }
+  ],
+  "response": {
+    "user_state": "received",
+    "immediate_actions": ["Do not click the link", "Forward message to 1909"],
+    "urgency": "critical"
+  }
+}
+```
+
+#### 2. Update Adaptive State
+- **Endpoint**: `POST /api/analyze/state`
+- **Request Body**:
+```json
+{
+  "incident_id": "INC-2026-A1B2C3D4",
+  "new_state": "clicked"
+}
+```
+
+#### 3. Citizen Registration & Authentication
+- **Register**: `POST /api/auth/register` (email, password, display_name, phone)
+- **Login**: `POST /api/auth/login` (email, password) $\rightarrow$ returns `session_token`
+- **User Profile**: `GET /api/auth/me` (requires `Authorization: Bearer <session_token>`)
+- **Logout**: `POST /api/auth/logout`
+
+#### 4. Incident Graph Exploration (IDOR-Protected)
+- **Endpoint**: `GET /api/incidents/{incident_id}/graph`
+- **Response**: Nodes and edges linking Incident $\rightarrow$ URLs, Domains, Brands, Threat Feeds, and Campaigns.
+
+#### 5. Dynamic Translation
+- **Endpoint**: `POST /api/translate`
+- **Request Body**: `{"text": "Hello", "target_lang": "hi"}` $\rightarrow$ returns `{"translated_text": "नमस्ते"}`
+
+---
+
+## 12. Testing & Verification
+
+Run the automated test suite from the repository root:
 
 ```bash
-# 1. Run the 20-Case Accuracy Regression Matrix
+# Run all automated pytest suites
+python -m pytest
+
+# Run specific security hardening tests
+python -m pytest tests/test_security.py
+
+# Run ML classifier tests
+python -m pytest tests/test_ml_classifier.py
+
+# Run accuracy regression matrix
 python scripts/run_accuracy_matrix.py
-
-# 2. Run the Full 88-Test Automated Pytest Suite
-python -m pytest tests/
-
-# 3. Run the Live Web Verification Suite
-python tests/test_web_suite.py
 ```
+
+### Verified Test Categories
+- **Threat Intelligence Integrations**: Verifies multi-feed isolation, error fallbacks, and non-negative caching.
+- **Two-Tier Fusion Logic**: Asserts zero false positives on government and banking domains.
+- **Security Hardening**: Tests SSRF blocking, zero-PII redaction, and prompt injection filters.
+- **ML Pipeline**: Validates Scikit-Learn TF-IDF vectorization and deterministic engine stability.
+- **Datastore Sync**: Asserts Neo4j node and relationship integrity.
 
 ---
 
-## Repository Layout
+## 13. Limitations & Future Scope
 
-```
-CyberKawach/
-├── backend/
-│   ├── main.py                  # FastAPI application & route endpoints
-│   ├── config.py                # Environment configuration & settings
-│   ├── models/
-│   │   ├── evidence.py          # Evidence Contract & Epistemic schemas
-│   │   └── api.py               # Request / Response Pydantic models
-│   ├── modules/
-│   │   ├── ingestion.py         # Defanging, IOC extraction, normalization
-│   │   ├── rules.py             # Pattern engine for Indian fraud categories
-│   │   ├── ml_baseline.py       # TF-IDF + Logistic Regression triage
-│   │   ├── url_analyzer.py      # Brand spoofing, IP literal, typosquatting
-│   │   ├── threat_intel.py      # 4-state intelligence coordinator
-│   │   ├── fusion.py            # Two-tier fusion engine with overrides
-│   │   ├── gemini.py            # Grounded epistemic explanation engine
-│   │   ├── fallback_explanation.py # Deterministic template engine
-│   │   └── response.py          # State-proportional response machine
-│   ├── services/
-│   │   ├── safe_browsing.py     # Google Safe Browsing v4 client
-│   │   ├── phishtank.py         # PhishTank verified database adapter
-│   │   ├── phishstats.py        # PhishStats intelligence adapter
-│   │   ├── osint_enrichment.py  # OSINT domain & network enrichment
-│   │   └── ocr.py               # Document & screenshot OCR adapter
-│   └── utils/
-│       ├── rate_limiter.py      # Sliding-window rate limiter
-│       ├── pii_redactor.py      # Aadhaar, PAN, OTP, phone maskers
-│       ├── ssrf_validator.py    # Private IP and metadata address defense
-│       └── file_security.py     # Safe file upload and magic byte validator
-├── frontend/
-│   ├── index.html               # High-trust citizen triage interface
-│   ├── verification.html        # Interactive live test & verification dashboard
-│   ├── css/main.css             # Vanilla CSS design tokens & animations
-│   └── js/
-│       ├── app.js               # Application coordinator & event flow
-│       ├── api.js               # Async API client
-│       └── components.js        # Epistemic badges, cards & attack path UI
-├── fixtures/
-│   └── accuracy_matrix_cases.json # 20 Indian fraud benchmark cases
-├── scripts/
-│   └── run_accuracy_matrix.py   # CLI runner for accuracy regression matrix
-└── tests/
-    ├── conftest.py              # Pytest configuration & rate limit isolation
-    ├── test_accuracy_matrix.py  # 24 regression tests on fraud typologies
-    ├── test_pipeline.py         # 39 end-to-end pipeline & module tests
-    ├── test_security.py         # 25 OWASP Top 10 security hardening tests
-    └── test_web_suite.py        # Live HTTP asset and security verification
-```
+### Known Limitations
+- **Offline Intelligence**: When internet connectivity is absent and external threat intelligence APIs cannot be reached, the system operates in fallback mode relying on local heuristic rules and cached offline indicators.
+- **Novel Typologies**: Emerging zero-day attack narratives that do not contain established fraud indicators or suspicious domains require human expert reporting.
+- **Encrypted Messaging**: Analysis depends on citizen-submitted content; end-to-end encrypted messaging channels cannot be inspected without user forwarding.
+
+### Future Scope
+- **Device-Edge OCR**: Direct client-side WebAssembly OCR for offline screenshot inspection.
+- **Collaborative Community Reporting**: Citizen-verified threat tagging feed integrated with state cyber cells.
+- **Automated Carrier Registry Sync**: Real-time integration with TRAI DLT header registries for instant sender ID verification.
 
 ---
 
-## License & Compliance
+## 14. License
 
-Developed for the **Cyber Kavach Hackathon 2026** under the **BSides Ahmedabad** Track S2 initiative.
-Adheres to Ponytail engineering principles: Zero bloated dependencies, standard library preference, strict type safety, and zero external telemetry leakage.
+This project is developed for the **Cyber Kavach Challenge 2026**.  
+Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for details.
