@@ -232,9 +232,9 @@ export default function ResultsDashboard({
 
           {/* SECTION 4: SHOW ME THE EVIDENCE (Collapsible Accordions) */}
           <EvidenceSection
-            evidenceList={result.evidence || []}
+            evidenceItems={result.evidence || []}
             incidentId={incidentId}
-            onOsintEnriched={() => {}}
+            extractedDomain={result.urls?.[0]?.domain || null}
           />
 
           {/* SECTION 5: SHOW ME THE ATTACK PATH */}

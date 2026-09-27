@@ -19,6 +19,7 @@ from backend.models.evidence import (
     InputType,
     LayaResult,
     MessageContext,
+    MLClassifierResult,
     RiskAssessment,
     SenderContext,
     ThreatIntelResult,
@@ -191,6 +192,12 @@ class UpdateUserStateRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     user_state: UserState
+    language: Optional[str] = Field(
+        default=None,
+        max_length=10,
+        pattern=r"^[a-zA-Z]{2}(-[a-zA-Z0-9]{2,4})?$",
+        description="Optional language code",
+    )
     response_language: Optional[str] = Field(
         default=None,
         max_length=10,
@@ -262,6 +269,13 @@ class AnalyzeResponse(BaseModel):
 
     # Laya fast decision output (Phase 3)
     laya: Optional[LayaResult] = None
+
+    # Dedicated Scikit-Learn ML Classifier output (PRD Section 8)
+    ml_classifier: Optional[MLClassifierResult] = None
+
+    # ML Classifier output (PRD Section 8 & Section 33)
+    classification: Optional[str] = None
+    model_confidence: Optional[float] = None
 
     # Campaign (when available)
     fraud_dna: Optional[FraudDNA] = None

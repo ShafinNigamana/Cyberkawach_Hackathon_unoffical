@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { 
-  FileCheck, 
-  Search, 
-  ChevronDown, 
-  ChevronUp, 
-  Globe2, 
+import {
+  FileCheck,
+  Search,
+  ChevronDown,
+  ChevronUp,
+  Globe2,
   Loader2,
   AlertTriangle,
   ChevronsUpDown,
@@ -13,63 +13,75 @@ import {
 } from 'lucide-react';
 import { fetchIncidentOsint } from '../services/api';
 
-// Helper to determine source label and unified epistemic status (EXACTLY ONE status badge)
-function getProvenanceDetails(source, type, rawStatus) {
+// Helper to determine source label and unified epistemic status
+function getProvenanceDetails(source, type, rawStatus, tier) {
   const s = (source || '').toLowerCase();
   const t = (type || '').toLowerCase();
+  const tierUpper = (tier || '').toUpperCase();
   const statusUpper = (rawStatus || '').toUpperCase();
 
   let sourceLabel = source || 'Forensic Module';
-  let isInferred = false;
 
-  if (s.includes('rule') || t.includes('rule')) {
+  if (s.includes('dns') || t.includes('dns')) {
+    sourceLabel = 'DNS Records';
+  } else if (s.includes('tls') || t.includes('tls')) {
+    sourceLabel = 'TLS Certificate';
+  } else if (s.includes('website') || t.includes('website') || s.includes('sandbox')) {
+    sourceLabel = 'Live Website Scanner';
+  } else if (s.includes('sender') || t.includes('sender')) {
+    sourceLabel = 'Sender Identity';
+  } else if (s.includes('urlhaus')) {
+    sourceLabel = 'URLhaus Feed';
+  } else if (s.includes('openphish')) {
+    sourceLabel = 'OpenPhish Feed';
+  } else if (s.includes('virustotal')) {
+    sourceLabel = 'VirusTotal Feed';
+  } else if (s.includes('rule') || t.includes('rule')) {
     sourceLabel = 'Rule Engine';
   } else if (s.includes('laya') || t.includes('laya')) {
     sourceLabel = 'Fast Decision (Laya)';
-    isInferred = true;
+  } else if (s.includes('ml_classifier') || s.includes('ml') || t.includes('ml')) {
+    sourceLabel = 'ML Classifier (Scikit-Learn)';
   } else if (s.includes('threat') || s.includes('safe_browsing') || s.includes('phishtank') || s.includes('phishstats')) {
     sourceLabel = 'Threat Intel Feed';
   } else if (s.includes('url') || t.includes('url')) {
     sourceLabel = 'URL Analyzer';
   } else if (s.includes('brand') || t.includes('brand')) {
     sourceLabel = 'Brand Check';
-  } else if (s.includes('osint') || t.includes('osint')) {
-    sourceLabel = 'OSINT Infrastructure';
-  } else if (s.includes('ml') || t.includes('ml')) {
-    sourceLabel = 'ML Baseline';
-    isInferred = true;
+  } else if (s.includes('osint') || t.includes('osint') || s.includes('whois') || s.includes('rdap')) {
+    sourceLabel = 'RDAP / WHOIS';
   }
 
-  // EXACTLY ONE unified epistemic badge (no duplicates)
-  let statusBadge = {
-    label: 'OBSERVED FACT',
+  // Tier badge
+  let tierBadge = {
+    label: tierUpper || 'OBSERVED',
     badgeClass: 'bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800',
   };
 
-  if (statusUpper === 'CONFIRMED') {
-    statusBadge = {
-      label: 'CONFIRMED MATCH',
+  if (tierUpper === 'DIRECT' || statusUpper === 'CONFIRMED') {
+    tierBadge = {
+      label: tierUpper === 'DIRECT' ? 'DIRECT THREAT' : 'CONFIRMED FACT',
       badgeClass: 'bg-red-100 text-red-800 border-red-300 dark:bg-red-950/80 dark:text-red-200 dark:border-red-800',
     };
-  } else if (statusUpper === 'SUSPICIOUS') {
-    statusBadge = {
-      label: 'SUSPICIOUS PATTERN',
+  } else if (tierUpper === 'DERIVED' || statusUpper === 'SUSPICIOUS') {
+    tierBadge = {
+      label: tierUpper === 'DERIVED' ? 'DERIVED INTEL' : 'SUSPICIOUS SIGNAL',
       badgeClass: 'bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950/70 dark:text-amber-200 dark:border-amber-800',
     };
-  } else if (isInferred || statusUpper === 'INFERRED') {
-    statusBadge = {
-      label: 'INFERRED HEURISTIC',
+  } else if (tierUpper === 'WEAK_SIGNAL') {
+    tierBadge = {
+      label: 'HEURISTIC SIGNAL',
       badgeClass: 'bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-950/60 dark:text-purple-300 dark:border-purple-800',
     };
   }
 
-  return { sourceLabel, statusBadge };
+  return { sourceLabel, statusBadge: tierBadge };
 }
 
-export default function EvidenceSection({ 
-  evidenceItems = [], 
-  incidentId, 
-  extractedDomain 
+export default function EvidenceSection({
+  evidenceItems = [],
+  incidentId,
+  extractedDomain
 }) {
   const [osintLoading, setOsintLoading] = useState(false);
   const [osintData, setOsintData] = useState(null);
@@ -183,18 +195,17 @@ export default function EvidenceSection({
       {/* Collapsed Accordion Evidence Rows */}
       <div className="space-y-2.5" role="region" aria-label="Evidence Items Accordion List">
         {allEvidence.map((item, idx) => {
-          const { sourceLabel, statusBadge } = getProvenanceDetails(item.source, item.type, item.status);
+          const { sourceLabel, statusBadge } = getProvenanceDetails(item.source, item.type, item.status, item.evidence_tier);
           const confidence = item.confidence != null ? `${Math.round(item.confidence * 100)}%` : '--';
           const isExpanded = expandedIndices.has(idx);
 
           return (
-            <div 
-              key={idx} 
-              className={`rounded-btn border transition-all duration-150 overflow-hidden ${
-                isExpanded 
-                  ? 'bg-slate-50/80 border-slate-300 dark:bg-slate-950/90 dark:border-slate-700 shadow-sm' 
+            <div
+              key={idx}
+              className={`rounded-btn border transition-all duration-150 overflow-hidden ${isExpanded
+                  ? 'bg-slate-50/80 border-slate-300 dark:bg-slate-950/90 dark:border-slate-700 shadow-sm'
                   : 'bg-white hover:bg-slate-50/60 border-slate-200 dark:bg-slate-950/50 hover:dark:bg-slate-950 dark:border-slate-800'
-              }`}
+                }`}
             >
               {/* Accordion Header (Interactive Button) */}
               <button
@@ -210,15 +221,26 @@ export default function EvidenceSection({
                       {sourceLabel}
                     </span>
 
-                    {/* EXACTLY ONE Status Badge (No Duplicates) */}
+                    {/* Unified Tier/Status Badge */}
                     <span className={`px-2 py-0.5 rounded-badge text-[10px] font-bold border ${statusBadge.badgeClass}`}>
                       {statusBadge.label}
                     </span>
+
+                    {/* LIVE vs CACHED Badge */}
+                    {item.is_cached ? (
+                      <span className="px-1.5 py-0.2 rounded text-[9px] font-mono bg-slate-100 text-slate-500 border border-slate-300 dark:bg-slate-800 dark:text-slate-400">
+                        CACHED
+                      </span>
+                    ) : (
+                      <span className="px-1.5 py-0.2 rounded text-[9px] font-mono bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/60 dark:text-blue-300">
+                        LIVE
+                      </span>
+                    )}
                   </div>
 
                   {/* One-Line Plain-Language Conclusion */}
                   <span className="text-xs sm:text-sm font-medium text-slate-800 dark:text-slate-200 line-clamp-1">
-                    {item.description}
+                    {item.finding || item.description}
                   </span>
                 </div>
 
