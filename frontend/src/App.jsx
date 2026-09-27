@@ -7,12 +7,14 @@ import FlowScreenshot from './components/FlowScreenshot';
 import LoadingPipeline from './components/LoadingPipeline';
 import ResultsDashboard from './components/ResultsDashboard';
 import MethodologyModal from './components/MethodologyModal';
+import LanguageSelectionModal from './components/LanguageSelectionModal';
 import Footer from './components/Footer';
 import { analyzeMessage, updateUserState, fetchHealth } from './services/api';
 import { TRANSLATIONS } from './i18n/translations';
 
 export default function App() {
   const [lang, setLang] = useState(() => localStorage.getItem('cf_lang') || 'en');
+  const [languageModalOpen, setLanguageModalOpen] = useState(false);
   const [fontSize, setFontSize] = useState(() => localStorage.getItem('cf_fontsize') || 'normal');
   const [isDark, setIsDark] = useState(() => localStorage.getItem('cf_theme') === 'dark');
   const [methodologyOpen, setMethodologyOpen] = useState(false);
@@ -34,10 +36,21 @@ export default function App() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
 
-  // Sync language with localStorage
-  const handleLangChange = (newLang) => {
+  // Sync language with localStorage and update active incident if present
+  const handleLangChange = async (newLang) => {
     setLang(newLang);
     localStorage.setItem('cf_lang', newLang);
+    if (result?.incident_id) {
+      setIsUpdatingState(true);
+      try {
+        const updated = await updateUserState(result.incident_id, formData.user_state, newLang);
+        setResult(updated);
+      } catch (err) {
+        console.error("Language update error:", err);
+      } finally {
+        setIsUpdatingState(false);
+      }
+    }
   };
 
   // Sync font size
@@ -125,7 +138,7 @@ export default function App() {
     if (!result?.incident_id) return;
     setIsUpdatingState(true);
     try {
-      const updated = await updateUserState(result.incident_id, newState);
+      const updated = await updateUserState(result.incident_id, newState, lang);
       setResult(updated);
       setFormData((prev) => ({ ...prev, user_state: newState }));
     } catch (err) {
@@ -137,6 +150,17 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex flex-col font-sans transition-colors duration-150">
+      {/* First-visit and On-demand Language Selection Modal */}
+      <LanguageSelectionModal
+        isOpen={languageModalOpen}
+        onClose={() => setLanguageModalOpen(false)}
+        onSelectLanguage={(selected) => {
+          handleLangChange(selected);
+          setLanguageModalOpen(false);
+        }}
+        currentLang={lang}
+      />
+
       {/* Official Institutional Header with Flow Navigation Ribbon */}
       <Header
         lang={lang}
@@ -146,6 +170,7 @@ export default function App() {
         isDark={isDark}
         onThemeToggle={handleThemeToggle}
         onOpenMethodology={() => setMethodologyOpen(true)}
+        onOpenLanguageModal={() => setLanguageModalOpen(true)}
         healthData={healthData}
         currentFlow={currentFlow}
         onSelectFlow={(flow) => {
@@ -171,7 +196,7 @@ export default function App() {
 
         {/* Real Multi-Stage Analysis Progress View */}
         {isAnalyzing ? (
-          <LoadingPipeline />
+          <LoadingPipeline lang={lang} />
         ) : currentFlow === 'result' && result ? (
           /* Shared Incident / Result View */
           <ResultsDashboard
@@ -192,6 +217,7 @@ export default function App() {
             initialUrls={formData.urls}
             initialState={formData.user_state}
             initialChannel={formData.input_type}
+            lang={lang}
           />
         ) : currentFlow === 'url' ? (
           /* Task Flow C: Check URL / Website */
@@ -200,6 +226,7 @@ export default function App() {
             onSubmit={handleFlowSubmit}
             isAnalyzing={isAnalyzing}
             initialUrl={typeof formData.urls === 'string' ? formData.urls.split('\n')[0] : ''}
+            lang={lang}
           />
         ) : currentFlow === 'screenshot' ? (
           /* Task Flow D: Check Screenshot / Photo */
@@ -207,6 +234,7 @@ export default function App() {
             onBack={() => setCurrentFlow('home')}
             onSubmit={handleFlowSubmit}
             isAnalyzing={isAnalyzing}
+            lang={lang}
           />
         ) : (
           /* Task Flow A: Minimal Citizen Home Starting Point */
@@ -216,17 +244,19 @@ export default function App() {
               setCurrentFlow(flow);
             }}
             onSelectPreset={handleSelectPreset}
+            lang={lang}
           />
         )}
       </main>
 
       {/* Institutional Footer */}
-      <Footer onOpenMethodology={() => setMethodologyOpen(true)} />
+      <Footer onOpenMethodology={() => setMethodologyOpen(true)} lang={lang} />
 
       {/* Technical Methodology & Audit Modal */}
       <MethodologyModal
         isOpen={methodologyOpen}
         onClose={() => setMethodologyOpen(false)}
+        lang={lang}
       />
     </div>
   );

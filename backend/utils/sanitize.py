@@ -170,13 +170,37 @@ def validate_incident_id(incident_id: str) -> bool:
     return bool(_INCIDENT_ID_PATTERN.match(incident_id.strip()))
 
 
+SUPPORTED_LANGUAGES = {"en", "hi", "gu", "ta", "te", "bn"}
+
+
 def validate_language(lang: str) -> str:
-    """Validate and sanitize language code, defaulting to 'en' if invalid."""
+    """Validate and sanitize language code against supported allowlist, defaulting to 'en' if invalid."""
     if not lang or not isinstance(lang, str):
         return "en"
     clean = lang.strip().lower()
-    if _LANGUAGE_PATTERN.match(clean):
-        return clean
+    base_lang = clean.split("-")[0]
+    if base_lang in SUPPORTED_LANGUAGES:
+        return base_lang
+    return "en"
+
+
+def detect_input_language(text: str) -> str:
+    """
+    Detect input text language based on Unicode script block.
+    Distinguishes input_language from citizen's selected response_language.
+    """
+    if not text:
+        return "en"
+    if re.search(r'[\u0900-\u097F]', text):
+        return "hi"  # Devanagari
+    if re.search(r'[\u0A80-\u0AFF]', text):
+        return "gu"  # Gujarati
+    if re.search(r'[\u0B80-\u0BFF]', text):
+        return "ta"  # Tamil
+    if re.search(r'[\u0C00-\u0C7F]', text):
+        return "te"  # Telugu
+    if re.search(r'[\u0980-\u09FF]', text):
+        return "bn"  # Bengali
     return "en"
 
 

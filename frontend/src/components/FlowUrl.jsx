@@ -14,6 +14,7 @@ import {
   Layers,
   CheckCircle2
 } from 'lucide-react';
+import { t } from '../i18n/translations';
 
 const URL_PRESETS = [
   { id: 'sbi-phish', label: 'SBI KYC Phish', url: 'http://sbi-kyc-verify-urgent.com/login', type: 'phish' },
@@ -22,7 +23,7 @@ const URL_PRESETS = [
   { id: 'sbi-safe', label: 'Official Bank (Safe Control)', url: 'https://onlinesbi.sbi', type: 'safe' },
 ];
 
-export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = '' }) {
+export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = '', lang = 'en' }) {
   const [url, setUrl] = useState(initialUrl);
   const [userState, setUserState] = useState('received');
   const [validationError, setValidationError] = useState(null);
@@ -47,13 +48,13 @@ export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = ''
   const handleFormSubmit = (e) => {
     if (e) e.preventDefault();
     if (!url || !url.trim()) {
-      setValidationError('Please enter or paste a URL / website link to analyze.');
+      setValidationError(t(lang, 'urlPlaceholder', 'Please enter or paste a URL / website link to analyze.'));
       return;
     }
 
     const trimmed = url.trim();
     if (!trimmed.includes('.') || trimmed.length < 4) {
-      setValidationError('Please enter a valid web address or domain (e.g., sbi-kyc-login.com).');
+      setValidationError(t(lang, 'urlPlaceholder', 'Please enter a valid web address or domain (e.g., sbi-kyc-login.com).'));
       return;
     }
 
@@ -76,11 +77,11 @@ export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = ''
           className="inline-flex items-center space-x-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Back to Task Selection</span>
+          <span>{t(lang, 'backToSelection', 'Back to Task Selection')}</span>
         </button>
 
         <span className="text-xs font-mono font-medium text-slate-500 dark:text-slate-400">
-          Flow: Check URL / Website
+          {t(lang, 'flowUrlBreadcrumb', 'Flow: Check URL / Website')}
         </span>
       </div>
 
@@ -91,11 +92,11 @@ export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = ''
             <Globe className="w-4 h-4" />
           </div>
           <h2 className="text-xl font-extrabold text-slate-900 dark:text-white">
-            Inspect Suspicious URL or Website
+            {t(lang, 'flowUrlTitle', 'Inspect Suspicious URL or Website')}
           </h2>
         </div>
         <p className="text-xs text-slate-600 dark:text-slate-400 pl-10">
-          Analyze suspicious domains, shortened links, or fraudulent payment portals.
+          {t(lang, 'flowUrlDesc', 'Analyze suspicious domains, shortened links, or fraudulent payment portals.')}
         </p>
       </div>
 
@@ -104,11 +105,10 @@ export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = ''
         <ShieldCheck className="w-5 h-5 text-emerald-600 dark:text-emerald-500 flex-shrink-0 mt-0.5" />
         <div className="text-xs space-y-1">
           <h4 className="font-bold text-slate-900 dark:text-white">
-            Safe Sandbox Isolation Guarantee
+            {t(lang, 'sandboxGuarantee', 'Safe Sandbox Isolation Guarantee')}
           </h4>
           <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
-            This URL will be queried strictly using passive threat intelligence (Google Safe Browsing, PhishTank, PhishStats), domain structure entropy, and official brand impersonation matching. 
-            <strong className="text-slate-900 dark:text-slate-200"> It is NEVER opened in your local browser or connected to your device.</strong>
+            {t(lang, 'sandboxGuaranteeText', 'This URL will be queried strictly using passive threat intelligence (Google Safe Browsing, PhishTank, PhishStats), domain structure entropy, and official brand impersonation matching. It is NEVER opened in your local browser or connected to your device.')}
           </p>
         </div>
       </div>
@@ -116,7 +116,7 @@ export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = ''
       {/* ─── Example URL Shortcuts ─── */}
       <div className="space-y-2">
         <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
-          Or Select a Sample Link to Test:
+          {t(lang, 'selectSampleLink', 'Or Select a Sample Link to Test:')}
         </span>
         <div className="flex flex-wrap gap-1.5">
           {URL_PRESETS.map((preset) => (
@@ -141,7 +141,7 @@ export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = ''
         <div>
           <div className="flex items-center justify-between mb-1.5">
             <label htmlFor="flow-url-input" className="text-xs font-bold text-slate-900 dark:text-slate-200">
-              Target Website URL or Domain <span className="text-red-600 font-bold">*</span>
+              {t(lang, 'targetUrlLabel', 'Target Website URL or Domain')} <span className="text-red-600 font-bold">*</span>
             </label>
             <div className="flex items-center space-x-2">
               <button
@@ -151,7 +151,7 @@ export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = ''
                 title="Paste from clipboard"
               >
                 <ClipboardPaste className="w-3 h-3 text-slate-600 dark:text-slate-400" />
-                <span>Paste</span>
+                <span>{t(lang, 'paste', 'Paste')}</span>
               </button>
               <button
                 type="button"
@@ -160,7 +160,7 @@ export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = ''
                 title="Clear input"
               >
                 <Eraser className="w-3 h-3 text-slate-500" />
-                <span>Clear</span>
+                <span>{t(lang, 'clear', 'Clear')}</span>
               </button>
             </div>
           </div>
@@ -177,7 +177,7 @@ export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = ''
                 setUrl(e.target.value);
                 if (validationError) setValidationError(null);
               }}
-              placeholder="e.g. sbi-kyc-verify-urgent.com or http://power-bill-payment.top"
+              placeholder={t(lang, 'urlPlaceholder', 'e.g. sbi-kyc-verify-urgent.com or http://power-bill-payment.top')}
               className={`w-full bg-slate-50 text-slate-900 placeholder-slate-400 border rounded-lg pl-9 pr-3 py-2.5 text-xs sm:text-sm font-mono focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-slate-900 dark:bg-slate-950 dark:text-slate-100 dark:placeholder-slate-500 transition-all ${
                 validationError ? 'border-red-500 ring-1 ring-red-500' : 'border-slate-300 dark:border-slate-700'
               }`}
@@ -195,7 +195,7 @@ export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = ''
         {/* Citizen Situation State */}
         <div>
           <label htmlFor="url-user-state" className="block text-xs font-bold text-slate-900 dark:text-slate-300 mb-1">
-            Did you interact with this link? <span className="text-red-600 font-bold">*</span>
+            {t(lang, 'interactQuestion', 'Did you interact with this link?')} <span className="text-red-600 font-bold">*</span>
           </label>
           <select
             id="url-user-state"
@@ -209,10 +209,10 @@ export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = ''
                 : 'bg-slate-50 text-slate-900 border-slate-300 dark:bg-slate-950 dark:text-slate-200 dark:border-slate-700'
             }`}
           >
-            <option value="received">1. I have NOT clicked it yet (Only received the link)</option>
-            <option value="clicked">2. I clicked the link and opened the website</option>
-            <option value="entered_credentials">3. I entered NetBanking password, OTP, or card numbers</option>
-            <option value="paid">4. I transferred money / authorized payment via UPI/Bank (EMERGENCY)</option>
+            <option value="received">{t(lang, 'urlSitReceived', '1. I have NOT clicked it yet (Only received the link)')}</option>
+            <option value="clicked">{t(lang, 'urlSitClicked', '2. I clicked the link and opened the website')}</option>
+            <option value="entered_credentials">{t(lang, 'urlSitEntered', '3. I entered NetBanking password, OTP, or card numbers')}</option>
+            <option value="paid">{t(lang, 'urlSitPaid', '4. I transferred money / authorized payment via UPI/Bank (EMERGENCY)')}</option>
           </select>
         </div>
 
@@ -227,18 +227,18 @@ export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = ''
             {isAnalyzing ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin text-white dark:text-slate-900" />
-                <span>Scanning Threat Intelligence Feeds...</span>
+                <span>{t(lang, 'scanningThreatFeeds', 'Scanning Threat Intelligence Feeds...')}</span>
               </>
             ) : (
               <>
                 <Search className="w-4 h-4 text-white dark:text-slate-900" strokeWidth={2.4} />
-                <span>Inspect Link Safety</span>
+                <span>{t(lang, 'inspectLinkSafety', 'Inspect Link Safety')}</span>
               </>
             )}
           </button>
 
           <span className="text-[11px] text-slate-500 dark:text-slate-400">
-            Queries SafeBrowsing, PhishTank & PhishStats with zero device footprint.
+            {t(lang, 'urlSafeSandboxNotice', 'Queries SafeBrowsing, PhishTank & PhishStats with zero device footprint.')}
           </span>
         </div>
       </form>

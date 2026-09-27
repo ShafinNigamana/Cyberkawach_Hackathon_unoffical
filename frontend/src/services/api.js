@@ -11,6 +11,7 @@ export async function analyzeMessage({ message, urls = [], user_state = 'receive
     urls: Array.isArray(urls) ? urls : urls.split('\n').map(u => u.trim()).filter(Boolean),
     user_state,
     language,
+    response_language: language,
     input_type,
   };
 
@@ -31,14 +32,20 @@ export async function analyzeMessage({ message, urls = [], user_state = 'receive
   return response.json();
 }
 
-export async function updateUserState(incidentId, userState) {
+export async function updateUserState(incidentId, userState, responseLanguage = null) {
+  const payload = { user_state: userState };
+  if (responseLanguage) {
+    payload.response_language = responseLanguage;
+    payload.language = responseLanguage;
+  }
+
   const response = await fetch(`${API_BASE}/api/incidents/${encodeURIComponent(incidentId)}/state`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'X-Requested-With': 'XMLHttpRequest',
     },
-    body: JSON.stringify({ user_state: userState }),
+    body: JSON.stringify(payload),
   });
 
   if (!response.ok) {
@@ -95,6 +102,58 @@ export async function fetchVerificationStatus() {
   return response.json();
 }
 
-export function getExportUrl(incidentId, format = 'html') {
-  return `${API_BASE}/api/incidents/${encodeURIComponent(incidentId)}/export?format=${format}`;
+export function getExportUrl(incidentId, format = 'html', lang = 'en') {
+  return `${API_BASE}/api/incidents/${encodeURIComponent(incidentId)}/export?format=${format}&lang=${lang}`;
+}
+
+export async function translateText(text, targetLang, sourceLang = 'en') {
+  if (!text || !text.trim() || targetLang === sourceLang) {
+    return text;
+  }
+  try {
+    const response = await fetch(`${API_BASE}/api/translate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+      body: JSON.stringify({
+        text,
+        target_lang: targetLang,
+        source_lang: sourceLang,
+      }),
+    });
+    if (!response.ok) return text;
+    const data = await response.json();
+    return data.translated_text || text;
+  } catch (err) {
+    console.warn('Translation proxy error:', err);
+    return text;
+  }
+}
+
+export async function translateTexts(texts, targetLang, sourceLang = 'en') {
+  if (!texts || !texts.length || targetLang === sourceLang) {
+    return texts;
+  }
+  try {
+    const response = await fetch(`${API_BASE}/api/translate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+      body: JSON.stringify({
+        texts,
+        target_lang: targetLang,
+        source_lang: sourceLang,
+      }),
+    });
+    if (!response.ok) return texts;
+    const data = await response.json();
+    return data.translated_texts || texts;
+  } catch (err) {
+    console.warn('Batch translation proxy error:', err);
+    return texts;
+  }
 }

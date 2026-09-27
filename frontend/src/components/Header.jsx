@@ -16,6 +16,7 @@ import { TRANSLATIONS } from '../i18n/translations';
 export default function Header({ 
   lang, 
   onLangChange, 
+  onOpenLanguageModal = () => {},
   fontSize, 
   onFontSizeChange, 
   isDark, 
@@ -87,8 +88,19 @@ export default function Header({
           {/* Right: Text-Only Utility Controls (No colored pill badges) */}
           <div className="flex items-center space-x-3 text-xs">
             {/* Language Dropdown */}
-            <div className="flex items-center space-x-1">
-              <Globe className="w-3.5 h-3.5 text-slate-500" />
+            <div className="flex items-center space-x-1.5">
+              <button
+                type="button"
+                onClick={onOpenLanguageModal}
+                className="flex items-center space-x-1 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 font-semibold cursor-pointer py-0.5"
+                title="Select Language / भाषा चुनें"
+              >
+                <Globe className="w-3.5 h-3.5 text-cyan-500" />
+                <span className="text-[11px] underline decoration-cyan-500/50 underline-offset-2">
+                  {lang === 'hi' ? 'हिन्दी' : lang === 'gu' ? 'ગુજરાતી' : lang === 'ta' ? 'தமிழ்' : lang === 'te' ? 'తెలుగు' : lang === 'bn' ? 'বাংলা' : 'English'}
+                </span>
+              </button>
+
               <select 
                 value={lang} 
                 onChange={(e) => onLangChange(e.target.value)}
@@ -99,6 +111,8 @@ export default function Header({
                 <option value="hi" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">हिंदी (Hindi)</option>
                 <option value="gu" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">ગુજરાતી (Gujarati)</option>
                 <option value="ta" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">தமிழ் (Tamil)</option>
+                <option value="te" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">తెలుగు (Telugu)</option>
+                <option value="bn" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">বাংলা (Bengali)</option>
               </select>
             </div>
 
@@ -130,7 +144,7 @@ export default function Header({
               aria-label="Toggle theme"
             >
               {isDark ? <Sun className="w-3.5 h-3.5 text-slate-400" /> : <Moon className="w-3.5 h-3.5 text-slate-600" />}
-              <span>{isDark ? 'Light' : 'Dark'}</span>
+              <span>{isDark ? (t.light || 'Light') : (t.dark || 'Dark')}</span>
             </button>
 
             <span className="text-slate-300 dark:text-slate-700">|</span>
@@ -142,7 +156,7 @@ export default function Header({
               className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white text-xs font-medium hover:underline underline-offset-2 transition-colors cursor-pointer"
               title="View Technical Methodology & Security Audits"
             >
-              <span>Methodology</span>
+              <span>{t.methodology || 'Methodology'}</span>
             </button>
           </div>
         </div>
@@ -163,10 +177,10 @@ export default function Header({
 
             <div className="flex flex-col">
               <h1 className="text-lg sm:text-xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
-                Cyber Fraud Guardian
+                {t.portalTitle || 'Cyber Fraud Guardian'}
               </h1>
               <p className="text-xs text-slate-500 dark:text-slate-400 leading-tight">
-                National Citizen Cyber Threat Triage Portal
+                {t.portalTagline || 'National Citizen Cyber Threat Triage Portal'}
               </p>
             </div>
           </div>
@@ -184,7 +198,7 @@ export default function Header({
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
-              <span>System Operational</span>
+              <span>{t.systemOperational || 'System Operational'}</span>
               <span className="hidden sm:inline text-slate-400 dark:text-slate-500 font-normal">
                 ({activeModulesCount} Modules)
               </span>
@@ -260,7 +274,7 @@ export default function Header({
             }`}
           >
             <Home className="w-3.5 h-3.5" />
-            <span>Home</span>
+            <span>{t.navHome || 'Home'}</span>
           </button>
 
           <button
@@ -271,7 +285,7 @@ export default function Header({
             }`}
           >
             <MessageSquare className="w-3.5 h-3.5" />
-            <span>Check Message / SMS</span>
+            <span>{t.navMessage || 'Check Message / SMS'}</span>
           </button>
 
           <button
@@ -282,7 +296,7 @@ export default function Header({
             }`}
           >
             <Globe className="w-3.5 h-3.5" />
-            <span>Check URL / Link</span>
+            <span>{t.navUrl || 'Check URL / Link'}</span>
           </button>
 
           <button
@@ -293,7 +307,7 @@ export default function Header({
             }`}
           >
             <Camera className="w-3.5 h-3.5" />
-            <span>Check Screenshot / Photo</span>
+            <span>{t.navScreenshot || 'Check Screenshot / Photo'}</span>
           </button>
         </div>
       </nav>

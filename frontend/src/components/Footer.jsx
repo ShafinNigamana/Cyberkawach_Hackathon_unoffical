@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Shield, ChevronDown, ChevronUp, ExternalLink, Lock, CheckCircle2 } from 'lucide-react';
+import { t } from '../i18n/translations';
 
-export default function Footer({ onOpenMethodology }) {
+export default function Footer({ onOpenMethodology, lang = 'en' }) {
   const [mobilePortalOpen, setMobilePortalOpen] = useState(false);
   const [mobileGuaranteesOpen, setMobileGuaranteesOpen] = useState(false);
 
@@ -16,22 +17,24 @@ export default function Footer({ onOpenMethodology }) {
                 <Shield className="w-4 h-4 text-amber-400" />
               </div>
               <div>
-                <h4 className="text-sm font-bold text-slate-900 dark:text-white">Cyber Fraud Guardian</h4>
+                <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                  {t(lang, 'portalTitle', 'Cyber Fraud Guardian')}
+                </h4>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                  Indian Cyber Crime Coordination Centre (I4C) Partner Initiative • Track S2
+                  {t(lang, 'footerSubtitle', 'Indian Cyber Crime Coordination Centre (I4C) Partner Initiative • Track S2')}
                 </p>
               </div>
             </div>
 
             <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
-              An evidence-driven, epistemically grounded cyber threat classification and triage framework built for the Cyber Kavach Challenge 2026, BSides Ahmedabad.
+              {t(lang, 'footerDesc', 'An evidence-driven, epistemically grounded cyber threat classification and triage framework built for the Cyber Kavach Challenge 2026, BSides Ahmedabad.')}
             </p>
 
             <button
               onClick={onOpenMethodology}
               className="inline-flex items-center space-x-1 text-blue-700 dark:text-amber-400 hover:text-blue-900 dark:hover:text-amber-300 text-xs font-bold underline underline-offset-2 cursor-pointer"
             >
-              <span>View Technical Methodology & Audits</span>
+              <span>{t(lang, 'footerMethodology', 'View Technical Methodology & Audits')}</span>
               <ExternalLink className="w-3 h-3" />
             </button>
           </div>
@@ -43,7 +46,7 @@ export default function Footer({ onOpenMethodology }) {
               onClick={() => setMobilePortalOpen(!mobilePortalOpen)}
             >
               <h5 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-                Official National Portals
+                {t(lang, 'footerOfficialPortals', 'Official National Portals')}
               </h5>
               <span className="md:hidden">
                 {mobilePortalOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -87,7 +90,7 @@ export default function Footer({ onOpenMethodology }) {
               onClick={() => setMobileGuaranteesOpen(!mobileGuaranteesOpen)}
             >
               <h5 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-                Citizen Privacy Guarantees
+                {t(lang, 'footerGuarantees', 'Citizen Privacy Guarantees')}
               </h5>
               <span className="md:hidden">
                 {mobileGuaranteesOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -99,13 +102,13 @@ export default function Footer({ onOpenMethodology }) {
                 <div className="flex items-start space-x-2">
                   <Lock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" />
                   <span className="text-[11px] text-slate-700 dark:text-slate-300">
-                    <strong className="text-slate-900 dark:text-white">Zero Data Retention:</strong> Messages are held in ephemeral memory and discarded after analysis.
+                    <strong className="text-slate-900 dark:text-white">{t(lang, 'badgeZeroRetentionTitle', 'Zero Data Retention:')}</strong> {t(lang, 'footerZeroRetention', 'Messages are held in ephemeral memory and discarded after analysis.')}
                   </span>
                 </div>
                 <div className="flex items-start space-x-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 mt-0.5 flex-shrink-0" />
                   <span className="text-[11px] text-slate-700 dark:text-slate-300">
-                    <strong className="text-slate-900 dark:text-white">In-Memory Token Redaction:</strong> Aadhaar & OTP numbers are expunged prior to evaluation.
+                    <strong className="text-slate-900 dark:text-white">{t(lang, 'zeroPii', 'In-Memory Token Redaction:')}</strong> {t(lang, 'footerTokenRedaction', 'Aadhaar & OTP numbers are expunged prior to evaluation.')}
                   </span>
                 </div>
               </div>

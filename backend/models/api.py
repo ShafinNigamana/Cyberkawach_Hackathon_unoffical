@@ -57,7 +57,13 @@ class AnalyzeRequest(BaseModel):
         default="en",
         max_length=10,
         pattern=r"^[a-zA-Z]{2}(-[a-zA-Z0-9]{2,4})?$",
-        description="ISO language code (e.g. 'en', 'hi', 'hi-en')",
+        description="ISO language code (e.g. 'en', 'hi', 'gu', 'ta')",
+    )
+    response_language: Optional[str] = Field(
+        default=None,
+        max_length=10,
+        pattern=r"^[a-zA-Z]{2}(-[a-zA-Z0-9]{2,4})?$",
+        description="Explicit user-preferred response language ('en', 'hi', 'gu', 'ta')",
     )
 
 
@@ -69,6 +75,41 @@ class UpdateUserStateRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     user_state: UserState
+    response_language: Optional[str] = Field(
+        default=None,
+        max_length=10,
+        pattern=r"^[a-zA-Z]{2}(-[a-zA-Z0-9]{2,4})?$",
+        description="Optional updated response language",
+    )
+    language: Optional[str] = Field(
+        default=None,
+        max_length=10,
+        pattern=r"^[a-zA-Z]{2}(-[a-zA-Z0-9]{2,4})?$",
+        description="Optional alias for response_language",
+    )
+
+
+class TranslateRequest(BaseModel):
+    """
+    POST /api/translate — Translate text dynamically via Google Cloud Translation API.
+    """
+    model_config = ConfigDict(extra="forbid")
+
+    text: Optional[str] = Field(default=None, max_length=10000, description="Single text string to translate")
+    texts: Optional[list[str]] = Field(default=None, max_length=100, description="List of text strings to translate")
+    target_lang: str = Field(..., max_length=10, description="Target ISO language code (e.g. 'hi', 'gu', 'ta', 'te', 'bn', 'en')")
+    source_lang: Optional[str] = Field(default="en", max_length=10, description="Source language code (defaults to 'en')")
+
+
+class TranslateResponse(BaseModel):
+    """
+    Response model for POST /api/translate.
+    """
+    translated_text: Optional[str] = None
+    translated_texts: list[str] = Field(default_factory=list)
+    source_lang: str = "en"
+    target_lang: str
+    cached: bool = False
 
 
 # ─── Response Models ───
@@ -112,6 +153,8 @@ class AnalyzeResponse(BaseModel):
     # Metadata
     fraud_category: Optional[str] = None
     language: str = "en"
+    response_language: str = "en"
+    input_language: Optional[str] = None
     processing_time_ms: Optional[float] = None
     modules_executed: list[str] = Field(default_factory=list)
     modules_failed: list[str] = Field(default_factory=list)
