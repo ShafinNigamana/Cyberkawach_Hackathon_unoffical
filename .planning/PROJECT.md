@@ -53,7 +53,7 @@ INPUT: text / SMS / email / chat, URL (screenshot via OCR in P1)
 - [ ] **DET-02**: Rule-based fraud/category detection + optional TF-IDF/Logistic Regression baseline (REQ-02)
 - [ ] **URL-01**: URL & domain analyzer — punycode, TLD, lexical, redirects (REQ-03)
 - [ ] **BRD-01**: Brand impersonation check — registry + similarity (REQ-04)
-- [ ] **TI-01**: 2 threat-intel adapters — Google Safe Browsing + PhishTank (REQ-05)
+- [x] **TI-01**: 3 threat-intel adapters — Google Safe Browsing + PhishTank + PhishStats (REQ-05)
 - [ ] **FUS-01**: Evidence fusion + risk score with provenance (REQ-06)
 - [ ] **EXP-01**: Explanation layer — Gemini grounded explanation with deterministic/template fallback (REQ-07)
 - [ ] **RSP-01**: Adaptive response state machine — received/clicked/entered creds/paid (REQ-08)
@@ -99,7 +99,7 @@ INPUT: text / SMS / email / chat, URL (screenshot via OCR in P1)
 ## Constraints
 
 - **Timeline**: 26–27 September 2026, ~24-hour build window. Hard stop at 60–70% to freeze features.
-- **Budget**: Zero. Free API tiers only (Safe Browsing non-commercial, PhishTank). URLhaus and AbuseIPDB are P2 stretch integrations.
+- **Budget**: Zero. Free API tiers only (Safe Browsing non-commercial, PhishTank, PhishStats). URLhaus and AbuseIPDB are P2 stretch integrations.
 - **Security**: All work sandboxed/synthetic. No live system probing. DPDP-compliant. PII redacted before cloud calls.
 - **Hackathon rules**: Responsible disclosure. Scam content treated as untrusted data at every layer.
 - **Tech stack**: Python backend, vanilla HTML/CSS/JS frontend, Gemini Flash-Lite/Flash for LLM.
@@ -124,7 +124,7 @@ INPUT: text / SMS / email / chat, URL (screenshot via OCR in P1)
 | NetworkX over Neo4j for campaign graph | Zero-dependency, works locally, no infra risk | — Pending |
 | Evidence Contract as internal API | Every module reads/writes the same object — decouples components | — Pending |
 | Gemini non-critical with deterministic fallback | If Gemini fails/times out/hits quota, deterministic template explanation from verified evidence. Demo never fails because Gemini is unavailable. | — Pending |
-| P0 threat-intel frozen to Safe Browsing + PhishTank | URLhaus and AbuseIPDB deferred to P2 to reduce P0 integration risk | — Pending |
+| P0 threat-intel finalized to Safe Browsing + PhishTank + PhishStats | URLhaus and AbuseIPDB deferred to P2 to reduce P0 integration risk | — Done |
 | ML baseline separate from rule engine | TF-IDF/LogReg is optional ML, not part of deterministic rule matching | — Pending |
 | Free APIs only, paid as fallback | No budget; hackathon constraint | — Pending |
 | Conservative UI aesthetic (fintech/gov) | Judge-legible, citizen-trust, WCAG AA | — Pending |

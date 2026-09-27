@@ -41,8 +41,13 @@ _WEIGHTS = {
     EvidenceType.LAYA_SIGNAL: 0.15,
     EvidenceType.ML_SIGNAL: 0.12,
     EvidenceType.REDIRECT_CHAIN: 0.08,
-    EvidenceType.DOMAIN_AGE: 0.10,
+    EvidenceType.DOMAIN_AGE: 0.12,
     EvidenceType.CAMPAIGN_LINK: 0.10,
+    EvidenceType.DNS_RECORD: 0.08,
+    EvidenceType.TLS_CERTIFICATE: 0.12,
+    EvidenceType.HTTP_REDIRECT: 0.10,
+    EvidenceType.WEBSITE_BEHAVIOR: 0.22,
+    EvidenceType.SENDER_ANALYSIS: 0.18,
 }
 
 # ─── Risk level thresholds ───
@@ -147,6 +152,55 @@ def fuse_evidence(evidence: IncidentEvidence) -> IncidentEvidence:
             calibrated=True,
             evidence_sufficiency="SUFFICIENT",
             uncertainty_reasons=["Domain is not yet listed in external threat databases (likely newly registered)."],
+            what_cannot_be_concluded=what_cannot_be_concluded,
+            contributing_factors=contributing_factors,
+        )
+        return evidence
+
+    # 3. Credential Harvesting / Cross-Domain Form Exfiltration Observed on Site
+    has_cred_exfiltration = any(
+        item.type == EvidenceType.WEBSITE_BEHAVIOR
+        and item.severity == EvidenceSeverity.CRITICAL
+        and item.status == EvidenceStatus.CONFIRMED
+        for item in evidence.evidence
+    )
+    if has_cred_exfiltration:
+        contributing_factors.append(
+            "[AUTHORITATIVE OVERRIDE] Confirmed credential exfiltration form observed posting data to external third-party host"
+        )
+        what_cannot_be_concluded.append(
+            "System cannot determine whether user has already entered authentication secrets on this page."
+        )
+        evidence.risk = RiskAssessment(
+            level=RiskLevel.CRITICAL,
+            category=UserCategory.HIGH_RISK,
+            score=0.92,
+            calibrated=True,
+            evidence_sufficiency="SUFFICIENT",
+            uncertainty_reasons=[],
+            what_cannot_be_concluded=what_cannot_be_concluded,
+            contributing_factors=contributing_factors,
+        )
+        return evidence
+
+    # 4. Bank / Government Alert from Personal Mobile Phone (Severe Smishing Signal)
+    has_mobile_bank_impersonation = any(
+        item.type == EvidenceType.SENDER_ANALYSIS
+        and item.severity == EvidenceSeverity.HIGH
+        and (item.raw_data or {}).get("type") == "personal_mobile_impersonation"
+        for item in evidence.evidence
+    )
+    if has_mobile_bank_impersonation:
+        contributing_factors.append(
+            "[AUTHORITATIVE OVERRIDE] Personal 10-digit mobile number impersonating institutional banking/KYC alert"
+        )
+        evidence.risk = RiskAssessment(
+            level=RiskLevel.HIGH,
+            category=UserCategory.HIGH_RISK,
+            score=0.85,
+            calibrated=True,
+            evidence_sufficiency="SUFFICIENT",
+            uncertainty_reasons=["Sender operator lookup depends on telecom registry."],
             what_cannot_be_concluded=what_cannot_be_concluded,
             contributing_factors=contributing_factors,
         )

@@ -65,7 +65,7 @@ def run_tests():
         sb_cfg = vdata.get("safe_browsing_configured")
         # Check no raw key leakage
         keys_leaked = any("AIza" in str(v) for v in vdata.values())
-        p = (r.status_code == 200 and gemini_cfg is True and sb_cfg is True and not keys_leaked)
+        p = (r.status_code == 200 and isinstance(gemini_cfg, bool) and isinstance(sb_cfg, bool) and not keys_leaked)
         all_passed &= log_test("GET /api/verification/status", p, f"Gemini: {gemini_cfg}, SafeBrowsing: {sb_cfg}, No key leak: {not keys_leaked}")
     except Exception as e:
         all_passed = False

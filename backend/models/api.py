@@ -88,6 +88,12 @@ class UpdateUserStateRequest(BaseModel):
         pattern=r"^[a-zA-Z]{2}(-[a-zA-Z0-9]{2,4})?$",
         description="Optional updated response language",
     )
+    language: Optional[str] = Field(
+        default=None,
+        max_length=10,
+        pattern=r"^[a-zA-Z]{2}(-[a-zA-Z0-9]{2,4})?$",
+        description="Optional alias for response_language",
+    )
 
 
 class TranslateRequest(BaseModel):

@@ -19,7 +19,7 @@
 
 ### Threat Intelligence
 
-- [ ] **TI-01**: 2 P0 threat-intel adapters (Google Safe Browsing + PhishTank) with individual sourcing
+- [x] **TI-01**: 3 P0 threat-intel adapters (Google Safe Browsing + PhishTank + PhishStats) with individual sourcing
 - [ ] **TI-02**: Additional threat-intel adapters (URLhaus + AbuseIPDB) — P2, only if time remains
 
 ### Fusion & Scoring

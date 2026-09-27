@@ -33,7 +33,7 @@
 - Rule-based fraud detection + optional TF-IDF/Logistic Regression ML baseline (DET-02)
 - URL & domain analyzer (URL-01)
 - Brand impersonation check (BRD-01)
-- 2 threat-intel adapters: Google Safe Browsing + PhishTank (TI-01)
+- 3 threat-intel adapters: Google Safe Browsing + PhishTank + PhishStats (TI-01)
 - Evidence fusion + risk score (FUS-01)
 - Explanation layer — Gemini with deterministic/template fallback (EXP-01)
 - Adaptive response state machine (RSP-01)
@@ -41,7 +41,7 @@
 
 **Requirements:** DET-01, DET-02, URL-01, BRD-01, TI-01, FUS-01, EXP-01, RSP-01, UI-01
 
-**Exit criteria:** Upload a scam message → see extracted indicators → see rule engine + URL analysis results → see threat-intel (Safe Browsing + PhishTank) as individual sourced items → see fused risk score → see explanation (Gemini or deterministic fallback) citing evidence → see adaptive response for different user states. Disable Gemini API key and confirm deterministic fallback explanation still works.
+**Exit criteria:** Upload a scam message → see extracted indicators → see rule engine + URL analysis results → see threat-intel (Safe Browsing + PhishTank + PhishStats) as individual sourced items → see fused risk score → see explanation (Gemini or deterministic fallback) citing evidence → see adaptive response for different user states. Disable Gemini API key and confirm deterministic fallback explanation still works.
 
 **Checkpoint:** Deliberately break each external API and confirm the app still degrades gracefully.
 

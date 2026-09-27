@@ -73,6 +73,11 @@ class EvidenceType(str, Enum):
     IOC_EXTRACTED = "ioc_extracted"
     PATTERN_MATCH = "pattern_match"
     DOMAIN_AGE = "domain_age"
+    DNS_RECORD = "dns_record"
+    TLS_CERTIFICATE = "tls_certificate"
+    HTTP_REDIRECT = "http_redirect"
+    WEBSITE_BEHAVIOR = "website_behavior"
+    SENDER_ANALYSIS = "sender_analysis"
     REDIRECT_CHAIN = "redirect_chain"
     CAMPAIGN_LINK = "campaign_link"
 
@@ -197,23 +202,30 @@ class RiskAssessment(BaseModel):
 
 class EvidenceItem(BaseModel):
     """
-    Single piece of evidence — rendered as its own labeled item in the UI
-    with a source, status, reliability, and correlation grouping.
-    Never collapsed into one opaque verdict.
+    Standardized Evidence Item with strict provenance and tiering (PRD Section 9 & 10).
+    Answers: WHAT was found, HOW it was found, WHERE it came from, and WHEN it was observed.
+    Never collapsed into an opaque verdict.
     """
+    id: str = Field(default_factory=lambda: f"EVD-{uuid.uuid4().hex[:8].upper()}")
+    indicator: Optional[str] = None  # What was analyzed (domain, URL, phone, sender, text)
     type: EvidenceType
-    source: str  # Which module produced this evidence
+    source: str  # Which module/provider produced this evidence
+    source_type: str = "rule"  # "api" | "rdap" | "dns" | "tls" | "sandbox" | "content" | "ocr" | "rule"
+    evidence_tier: str = "OBSERVED"  # "DIRECT" | "OBSERVED" | "DERIVED" | "WEAK_SIGNAL"
     description: str
+    finding: Optional[str] = None  # Human-readable finding statement
     observed_value: Optional[str] = None  # Factual measured or extracted data
     interpretation: Optional[str] = None   # What the observation signifies
-    status: EvidenceStatus = EvidenceStatus.OBSERVED  # Epistemic status
+    status: EvidenceStatus = EvidenceStatus.OBSERVED  # Epistemic status (CONFIRMED, OBSERVED, UNAVAILABLE, etc.)
     confidence: Optional[float] = Field(default=None, ge=0.0, le=1.0)
     reliability: EvidenceReliability = EvidenceReliability.DETERMINISTIC_FACT
     risk_direction: RiskDirection = RiskDirection.INCREASES_RISK
     severity: EvidenceSeverity = EvidenceSeverity.MEDIUM
     correlation_group: Optional[str] = None  # Prevents double-counting correlated signals
     timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    raw_data: Optional[dict] = None  # Preserved for provenance
+    raw_reference: Optional[str] = None  # Reference link or raw identifier
+    is_cached: bool = False  # Distinguishes LIVE vs CACHED
+    raw_data: Optional[dict] = None  # Preserved raw technical payload for auditability
 
 
 class AttackStep(BaseModel):
