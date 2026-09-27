@@ -18,14 +18,122 @@ from backend.models.evidence import (
     GeminiExplanation,
     InputType,
     LayaResult,
+    MessageContext,
     RiskAssessment,
+    SenderContext,
     ThreatIntelResult,
     URLSignal,
     UserState,
 )
 
 
-# ─── Request Models ───
+# ─── Auth Request & Response Models ───
+
+class RegisterRequest(BaseModel):
+    """POST /api/auth/register — citizen registration."""
+    model_config = ConfigDict(extra="forbid")
+
+    email: str = Field(..., min_length=3, max_length=254, description="User email address")
+    password: str = Field(..., min_length=8, max_length=128, description="User password (min 8 chars)")
+    phone: Optional[str] = Field(default=None, max_length=20, description="Optional phone number")
+    display_name: Optional[str] = Field(default=None, max_length=100, description="Optional display name")
+    preferred_language: Optional[str] = Field(default="en", max_length=10, description="Preferred language code")
+
+
+class LoginRequest(BaseModel):
+    """POST /api/auth/login — authenticate citizen."""
+    model_config = ConfigDict(extra="forbid")
+
+    email: str = Field(..., min_length=3, max_length=254, description="User email address")
+    password: str = Field(..., min_length=1, max_length=128, description="User password")
+
+
+class UserResponse(BaseModel):
+    """Citizen user profile (no secrets or password hashes)."""
+    user_id: str
+    email: str
+    display_name: str
+    phone_masked: Optional[str] = None
+    preferred_language: str = "en"
+    is_active: bool = True
+    created_at: str
+    last_login_at: Optional[str] = None
+
+
+class AuthResponse(BaseModel):
+    """Authentication token and user details response."""
+    status: str = "success"
+    session_token: str
+    user: UserResponse
+
+
+class UserPreferencesRequest(BaseModel):
+    """PUT /api/auth/preferences — update user accessibility & language preferences."""
+    model_config = ConfigDict(extra="forbid")
+
+    language: Optional[str] = Field(default=None, max_length=10)
+    font_size: Optional[str] = Field(default=None, max_length=20)
+    accessibility_mode: Optional[bool] = None
+    notification_preferences: Optional[str] = Field(default=None, max_length=100)
+    theme: Optional[str] = Field(default=None, max_length=20)
+
+
+class UserPreferencesResponse(BaseModel):
+    """Citizen user preferences response."""
+    status: str = "success"
+    preferences: dict = Field(default_factory=dict)
+
+
+# ─── Incident History & Graph Response Models ───
+
+class IncidentHistoryItem(BaseModel):
+    """Compact incident summary for 'My Checks' list view."""
+    incident_id: str
+    created_at: str
+    input_type: str
+    title: str
+    message_preview: str
+    risk_level: str
+    risk_score: float
+    fraud_category: str
+    current_user_state: str = "received"
+    campaign_id: Optional[str] = None
+
+
+class IncidentHistoryResponse(BaseModel):
+    """GET /api/incidents — list of citizen's past incidents."""
+    incidents: list[IncidentHistoryItem] = Field(default_factory=list)
+    total: int = 0
+
+
+class GraphNode(BaseModel):
+    """Graph node for frontend relationship visualization."""
+    id: str
+    label: str
+    type: Optional[str] = None
+    title: Optional[str] = None
+    properties: dict = Field(default_factory=dict)
+
+
+class GraphEdge(BaseModel):
+    """Graph relationship edge for frontend visualization."""
+    source: str
+    target: str
+    relationship: str
+    properties: dict = Field(default_factory=dict)
+
+
+class IncidentGraphResponse(BaseModel):
+    """GET /api/incidents/{incident_id}/graph — full contextual relationship graph."""
+    incident_id: str
+    nodes: list[GraphNode] = Field(default_factory=list)
+    edges: list[GraphEdge] = Field(default_factory=list)
+    node_count: int = 0
+    edge_count: int = 0
+    summary: Optional[str] = None
+
+
+# ─── Primary Analysis Request Models ───
 
 class AnalyzeRequest(BaseModel):
     """
@@ -64,6 +172,14 @@ class AnalyzeRequest(BaseModel):
         max_length=10,
         pattern=r"^[a-zA-Z]{2}(-[a-zA-Z0-9]{2,4})?$",
         description="Explicit user-preferred response language ('en', 'hi', 'gu', 'ta')",
+    )
+    sender: Optional[SenderContext] = Field(
+        default=None,
+        description="Optional sender context (phone, email, claimed organization, channel)",
+    )
+    message_context: Optional[MessageContext] = Field(
+        default=None,
+        description="Optional message metadata (channel, timestamp, reply-to)",
     )
 
 

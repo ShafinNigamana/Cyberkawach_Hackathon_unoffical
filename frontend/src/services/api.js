@@ -15,12 +15,18 @@ export async function analyzeMessage({ message, urls = [], user_state = 'receive
     input_type,
   };
 
+  const token = localStorage.getItem('cf_auth_token');
+  const headers = {
+    'Content-Type': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest',
+  };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
   const response = await fetch(`${API_BASE}/api/analyze`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Requested-With': 'XMLHttpRequest',
-    },
+    headers,
     body: JSON.stringify(payload),
   });
 
@@ -157,3 +163,120 @@ export async function translateTexts(texts, targetLang, sourceLang = 'en') {
     return texts;
   }
 }
+
+// ─── Citizen Authentication & Neo4j History Helpers ───
+
+export function getAuthToken() {
+  return localStorage.getItem('cf_auth_token');
+}
+
+export function setAuthToken(token) {
+  if (token) {
+    localStorage.setItem('cf_auth_token', token);
+  } else {
+    localStorage.removeItem('cf_auth_token');
+  }
+}
+
+export async function registerCitizen({ email, password, display_name, phone, preferred_language = 'en' }) {
+  const response = await fetch(`${API_BASE}/api/auth/register`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
+    },
+    body: JSON.stringify({ email, password, display_name, phone, preferred_language }),
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({ detail: 'Registration failed' }));
+    throw new Error(err.detail || err.error || 'Failed to register citizen account');
+  }
+  const data = await response.json();
+  if (data.session_token) {
+    setAuthToken(data.session_token);
+  }
+  return data;
+}
+
+export async function loginCitizen({ email, password }) {
+  const response = await fetch(`${API_BASE}/api/auth/login`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
+    },
+    body: JSON.stringify({ email, password }),
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({ detail: 'Invalid email or password' }));
+    throw new Error(err.detail || err.error || 'Failed to login');
+  }
+  const data = await response.json();
+  if (data.session_token) {
+    setAuthToken(data.session_token);
+  }
+  return data;
+}
+
+export async function logoutCitizen() {
+  const token = getAuthToken();
+  if (token) {
+    try {
+      await fetch(`${API_BASE}/api/auth/logout`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+      });
+    } catch (e) {
+      console.warn('Logout error:', e);
+    }
+  }
+  setAuthToken(null);
+}
+
+export async function fetchCurrentUser() {
+  const token = getAuthToken();
+  if (!token) return null;
+  try {
+    const response = await fetch(`${API_BASE}/api/auth/me`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'X-Requested-With': 'XMLHttpRequest',
+      },
+    });
+    if (!response.ok) {
+      if (response.status === 401) {
+        setAuthToken(null);
+      }
+      return null;
+    }
+    return response.json();
+  } catch (e) {
+    return null;
+  }
+}
+
+export async function fetchMyChecks() {
+  const token = getAuthToken();
+  if (!token) return { incidents: [], total: 0 };
+  const response = await fetch(`${API_BASE}/api/incidents`, {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'X-Requested-With': 'XMLHttpRequest',
+    },
+  });
+  if (!response.ok) return { incidents: [], total: 0 };
+  return response.json();
+}
+
+export async function fetchIncidentGraph(incidentId) {
+  const token = getAuthToken();
+  const headers = { 'X-Requested-With': 'XMLHttpRequest' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  const response = await fetch(`${API_BASE}/api/incidents/${encodeURIComponent(incidentId)}/graph`, { headers });
+  if (!response.ok) throw new Error('Failed to load relationship graph');
+  return response.json();
+}
+

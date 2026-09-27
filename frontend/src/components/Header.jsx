@@ -8,7 +8,10 @@ import {
   ChevronDown,
   MessageSquare, 
   Camera, 
-  Home
+  Home,
+  User,
+  LogIn,
+  Lock
 } from 'lucide-react';
 import EmergencyBanner from './EmergencyBanner';
 import { TRANSLATIONS } from '../i18n/translations';
@@ -24,7 +27,9 @@ export default function Header({
   onOpenMethodology,
   healthData,
   currentFlow = 'home',
-  onSelectFlow = () => {}
+  onSelectFlow = () => {},
+  currentUser = null,
+  onOpenAuthModal = () => {}
 }) {
   const [statusExpanded, setStatusExpanded] = useState(false);
   const statusRef = useRef(null);
@@ -158,6 +163,34 @@ export default function Header({
             >
               <span>{t.methodology || 'Methodology'}</span>
             </button>
+
+            <span className="text-slate-300 dark:text-slate-700">|</span>
+
+            {/* Citizen Auth / My Checks Button */}
+            {!currentUser ? (
+              <button
+                type="button"
+                onClick={() => onOpenAuthModal('Please sign in or register to access the National Threat Triage Engine.')}
+                className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-cyan-700 hover:bg-cyan-800 text-white text-xs font-bold transition-all shadow-xs cursor-pointer select-none"
+                title="Sign In or Register Citizen Account"
+              >
+                <LogIn className="w-3.5 h-3.5" />
+                <span>Citizen Sign In</span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => onOpenAuthModal(null, 'history')}
+                className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-slate-200/80 hover:bg-slate-300/80 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold border border-slate-300 dark:border-slate-700 transition-all cursor-pointer select-none"
+                title="Citizen Profile & My Checks"
+              >
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="max-w-[110px] truncate">{currentUser.display_name?.split(' ')[0] || currentUser.email.split('@')[0]}</span>
+                <span className="text-[10px] text-cyan-700 dark:text-cyan-400 font-bold bg-cyan-100/70 dark:bg-cyan-950/70 px-1.5 py-0.5 rounded border border-cyan-200 dark:border-cyan-800">
+                  Checks
+                </span>
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -279,35 +312,56 @@ export default function Header({
 
           <button
             type="button"
-            onClick={() => onSelectFlow('message')}
+            onClick={() => {
+              if (!currentUser) {
+                onOpenAuthModal('Please sign in or register to access the Message Triage Scanner.');
+                return;
+              }
+              onSelectFlow('message');
+            }}
             className={`px-3.5 py-1.5 rounded-md font-medium transition-colors flex items-center space-x-1.5 whitespace-nowrap cursor-pointer ${
               currentFlow === 'message' ? 'bg-slate-800 text-white font-bold' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
             }`}
           >
             <MessageSquare className="w-3.5 h-3.5" />
             <span>{t.navMessage || 'Check Message / SMS'}</span>
+            {!currentUser && <Lock className="w-2.5 h-2.5 opacity-60 ml-0.5" />}
           </button>
 
           <button
             type="button"
-            onClick={() => onSelectFlow('url')}
+            onClick={() => {
+              if (!currentUser) {
+                onOpenAuthModal('Please sign in or register to access the URL Safety Inspector.');
+                return;
+              }
+              onSelectFlow('url');
+            }}
             className={`px-3.5 py-1.5 rounded-md font-medium transition-colors flex items-center space-x-1.5 whitespace-nowrap cursor-pointer ${
               currentFlow === 'url' ? 'bg-slate-800 text-white font-bold' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
             }`}
           >
             <Globe className="w-3.5 h-3.5" />
             <span>{t.navUrl || 'Check URL / Link'}</span>
+            {!currentUser && <Lock className="w-2.5 h-2.5 opacity-60 ml-0.5" />}
           </button>
 
           <button
             type="button"
-            onClick={() => onSelectFlow('screenshot')}
+            onClick={() => {
+              if (!currentUser) {
+                onOpenAuthModal('Please sign in or register to access the Screenshot OCR Inspector.');
+                return;
+              }
+              onSelectFlow('screenshot');
+            }}
             className={`px-3.5 py-1.5 rounded-md font-medium transition-colors flex items-center space-x-1.5 whitespace-nowrap cursor-pointer ${
               currentFlow === 'screenshot' ? 'bg-slate-800 text-white font-bold' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
             }`}
           >
             <Camera className="w-3.5 h-3.5" />
             <span>{t.navScreenshot || 'Check Screenshot / Photo'}</span>
+            {!currentUser && <Lock className="w-2.5 h-2.5 opacity-60 ml-0.5" />}
           </button>
         </div>
       </nav>

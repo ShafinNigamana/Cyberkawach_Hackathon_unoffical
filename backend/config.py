@@ -53,6 +53,13 @@ class Settings(BaseSettings):
     # ─── Google Cloud Translation API (optional) ───
     google_translate_api_key: Optional[str] = None
 
+    # ─── Neo4j Aura Graph Database (optional / campaign layer) ───
+    neo4j_enabled: bool = False
+    neo4j_uri: Optional[str] = None
+    neo4j_username: Optional[str] = None
+    neo4j_password: Optional[str] = None
+    neo4j_database: Optional[str] = None
+
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8", "extra": "ignore"}
 
     @property
@@ -78,6 +85,8 @@ class Settings(BaseSettings):
             "abuseipdb": bool(self.abuseipdb_api_key and self.abuseipdb_api_key.strip()),
             "urlhaus": True,  # No key needed
             "google_translate": bool(self.google_translate_api_key and self.google_translate_api_key.strip()),
+            # Neo4j Aura
+            "neo4j": bool(self.neo4j_enabled and self.neo4j_uri and self.neo4j_username and self.neo4j_password),
         }
 
 

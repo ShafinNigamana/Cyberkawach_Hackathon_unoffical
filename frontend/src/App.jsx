@@ -8,8 +8,9 @@ import LoadingPipeline from './components/LoadingPipeline';
 import ResultsDashboard from './components/ResultsDashboard';
 import MethodologyModal from './components/MethodologyModal';
 import LanguageSelectionModal from './components/LanguageSelectionModal';
+import AuthModal from './components/AuthModal';
 import Footer from './components/Footer';
-import { analyzeMessage, updateUserState, fetchHealth } from './services/api';
+import { analyzeMessage, updateUserState, fetchHealth, fetchCurrentUser } from './services/api';
 import { TRANSLATIONS } from './i18n/translations';
 
 export default function App() {
@@ -18,6 +19,12 @@ export default function App() {
   const [fontSize, setFontSize] = useState(() => localStorage.getItem('cf_fontsize') || 'normal');
   const [isDark, setIsDark] = useState(() => localStorage.getItem('cf_theme') === 'dark');
   const [methodologyOpen, setMethodologyOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authModalPrompt, setAuthModalPrompt] = useState(null);
+  const [authModalTab, setAuthModalTab] = useState('login');
+  const [pendingFlow, setPendingFlow] = useState(null);
+  const [pendingPreset, setPendingPreset] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
   const [healthData, setHealthData] = useState(null);
 
   // Current task flow: 'home' | 'message' | 'url' | 'screenshot' | 'result'
@@ -91,10 +98,67 @@ export default function App() {
     fetchHealth()
       .then(setHealthData)
       .catch(() => {});
+
+    fetchCurrentUser()
+      .then(setCurrentUser)
+      .catch(() => {});
   }, []);
+
+  const handleSelectHistoryIncident = async (incidentId) => {
+    setIsAnalyzing(true);
+    setError(null);
+    try {
+      const token = localStorage.getItem('cf_auth_token');
+      const headers = { 'X-Requested-With': 'XMLHttpRequest' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+      const res = await fetch(`/api/incidents/${encodeURIComponent(incidentId)}`, { headers });
+      if (res.ok) {
+        const data = await res.json();
+        setResult(data);
+        setCurrentFlow('result');
+      } else {
+        setError('Failed to reopen past incident');
+      }
+    } catch (e) {
+      setError('Error retrieving incident');
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const openAuth = (prompt = null, tab = 'login', nextFlow = null) => {
+    setAuthModalPrompt(prompt);
+    setAuthModalTab(tab);
+    if (nextFlow) setPendingFlow(nextFlow);
+    setAuthModalOpen(true);
+  };
+
+  const handleAuthSuccess = (user) => {
+    setCurrentUser(user);
+    if (pendingPreset) {
+      const p = pendingPreset;
+      setPendingPreset(null);
+      setFormData({
+        message: p.message || '',
+        urls: p.urls || '',
+        input_type: p.type || 'sms',
+        user_state: p.state || 'received',
+      });
+      setError(null);
+      setCurrentFlow('message');
+    } else if (pendingFlow) {
+      setCurrentFlow(pendingFlow);
+      setPendingFlow(null);
+    }
+  };
 
   // Quick preset scenario trigger from Home or other components
   const handleSelectPreset = (preset) => {
+    if (!currentUser) {
+      setPendingPreset(preset);
+      openAuth('Please sign in or register to test this benchmark fraud scenario.', 'login', 'message');
+      return;
+    }
     setFormData({
       message: preset.message || '',
       urls: preset.urls || '',
@@ -107,6 +171,11 @@ export default function App() {
 
   // Flow submission handler connecting to the real backend
   const handleFlowSubmit = async (submissionData) => {
+    if (!currentUser) {
+      openAuth('Citizen authentication required to submit messages for forensic analysis.');
+      return;
+    }
+
     setIsAnalyzing(true);
     setError(null);
     setResult(null);
@@ -174,9 +243,15 @@ export default function App() {
         healthData={healthData}
         currentFlow={currentFlow}
         onSelectFlow={(flow) => {
+          if (!currentUser && flow !== 'home') {
+            openAuth(`Please sign in or register to access the ${flow} triage engine.`, 'login', flow);
+            return;
+          }
           setError(null);
           setCurrentFlow(flow);
         }}
+        currentUser={currentUser}
+        onOpenAuthModal={(prompt, tab) => openAuth(prompt, tab)}
       />
 
       {/* Main Content View Container */}
@@ -187,7 +262,7 @@ export default function App() {
             <span>{error}</span>
             <button
               onClick={() => setError(null)}
-              className="text-red-700 dark:text-red-400 font-bold hover:underline ml-3"
+              className="text-red-700 dark:text-red-400 font-bold hover:underline ml-3 cursor-pointer"
             >
               Dismiss
             </button>
@@ -240,11 +315,17 @@ export default function App() {
           /* Task Flow A: Minimal Citizen Home Starting Point */
           <HomeChoice
             onSelectFlow={(flow) => {
+              if (!currentUser) {
+                openAuth(`Please sign in or register to access the ${flow} triage engine.`, 'login', flow);
+                return;
+              }
               setError(null);
               setCurrentFlow(flow);
             }}
             onSelectPreset={handleSelectPreset}
             lang={lang}
+            currentUser={currentUser}
+            onOpenAuthModal={(prompt, tab) => openAuth(prompt, tab)}
           />
         )}
       </main>
@@ -257,6 +338,23 @@ export default function App() {
         isOpen={methodologyOpen}
         onClose={() => setMethodologyOpen(false)}
         lang={lang}
+      />
+
+      {/* Citizen Authentication & My Checks Modal */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => {
+          setAuthModalOpen(false);
+          setAuthModalPrompt(null);
+          setPendingFlow(null);
+          setPendingPreset(null);
+        }}
+        currentUser={currentUser}
+        onUserChange={setCurrentUser}
+        onSelectIncident={handleSelectHistoryIncident}
+        initialPrompt={authModalPrompt}
+        initialTab={authModalTab}
+        onAuthSuccess={handleAuthSuccess}
       />
     </div>
   );

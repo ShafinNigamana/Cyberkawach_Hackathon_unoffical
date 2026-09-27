@@ -34,6 +34,9 @@ async def check_safe_browsing(urls: list[str]) -> list[ThreatIntelResult]:
     settings = get_settings()
     results = []
 
+    if isinstance(urls, str):
+        urls = [urls]
+
     if not settings.safe_browsing_api_key:
         for url in urls:
             results.append(ThreatIntelResult(

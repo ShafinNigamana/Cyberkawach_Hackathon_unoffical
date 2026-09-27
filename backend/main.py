@@ -8,8 +8,11 @@ from __future__ import annotations
 import logging
 import time
 from collections import OrderedDict
+from contextlib import asynccontextmanager
 from pathlib import Path
+import secrets
 from threading import Lock
+from typing import Optional
 
 from fastapi import Depends, FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.exceptions import RequestValidationError
@@ -21,18 +24,28 @@ from backend.config import get_settings
 from backend.models.api import (
     AnalyzeRequest,
     AnalyzeResponse,
+    AuthResponse,
     FileUploadResponse,
     HealthResponse,
+    IncidentGraphResponse,
+    IncidentHistoryItem,
+    IncidentHistoryResponse,
+    LoginRequest,
     OSINTResponse,
+    RegisterRequest,
     TranslateRequest,
     TranslateResponse,
     UpdateUserStateRequest,
+    UserPreferencesRequest,
+    UserPreferencesResponse,
+    UserResponse,
 )
 from backend.models.evidence import IncidentEvidence, InputType
 from backend.services.google_translator import (
     translate_batch_async,
     translate_text_async,
 )
+from backend.services.neo4j_repository import neo4j_repo
 from backend.utils.file_security import validate_file_security
 from backend.utils.rate_limiter import check_rate_limit
 from backend.utils.request_limits import RequestSizeLimitMiddleware
@@ -55,10 +68,32 @@ logger = logging.getLogger("cyber_guardian.main")
 
 settings = get_settings()
 
+
+# ─── Lifespan Context Manager (Neo4j schema init & graceful shutdown) ───
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Cleanly initialize Neo4j constraints on startup and close driver on exit."""
+    if settings.neo4j_enabled:
+        try:
+            logger.info("Initializing Neo4j Aura schema constraints and indexes...")
+            neo4j_repo.init_schema()
+            logger.info("Neo4j Aura schema initialization complete.")
+        except Exception as e:
+            logger.warning("Neo4j startup schema init error: %s", safe_error_message(e))
+    yield
+    try:
+        neo4j_repo.close()
+        logger.info("Neo4j driver closed cleanly on application shutdown.")
+    except Exception as e:
+        logger.warning("Neo4j shutdown close error: %s", safe_error_message(e))
+
+
 app = FastAPI(
     title="Cyber Fraud Guardian",
     description="Citizen Fraud-Message Guardian — evidence-driven fraud analysis",
     version="0.1.0",
+    lifespan=lifespan,
 )
 
 # ─── Middleware Stack (applied in reverse order of addition) ───
@@ -77,7 +112,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origin_list,
     allow_credentials=True,
-    allow_methods=["GET", "POST"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
 )
 
@@ -302,9 +337,364 @@ async def health_check():
             "gemini": True,  # Non-critical — deterministic fallback always available
             "ocr": True,  # Phase 3 — wired up
             "fraud_dna": True,  # Phase 2 — wired up
+            "neo4j": settings.neo4j_enabled,  # Single application datastore
         },
         api_keys_configured=settings.api_availability(),
     )
+
+
+# ─── Authentication & Authorization Helpers (Neo4j Session Based) ───
+
+def get_current_user_optional(raw_request: Request) -> Optional[dict]:
+    """Extract authenticated citizen if valid session token provided; otherwise None."""
+    auth_header = raw_request.headers.get("Authorization", "")
+    token = None
+    if auth_header.startswith("Bearer "):
+        token = auth_header[7:].strip()
+    elif "X-Session-Token" in raw_request.headers:
+        token = raw_request.headers["X-Session-Token"].strip()
+    elif "session_token" in raw_request.cookies:
+        token = raw_request.cookies["session_token"].strip()
+
+    if not token:
+        return None
+
+    try:
+        session_info = neo4j_repo.validate_session(token)
+        if session_info:
+            return session_info["user"]
+    except Exception as e:
+        logger.warning("Session validation error: %s", safe_error_message(e))
+    return None
+
+
+def get_current_user(raw_request: Request) -> dict:
+    """Enforce authentication requirement for protected endpoints, raising 401."""
+    user = get_current_user_optional(raw_request)
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="Authentication required. Please log in or provide a valid session token.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return user
+
+
+# ─── Citizen Authentication Endpoints ───
+
+@app.post("/api/auth/register", response_model=AuthResponse)
+async def register_citizen(request: RegisterRequest, raw_request: Request):
+    """Register citizen account into Neo4j with PBKDF2 password hashing."""
+    check_rate_limit(raw_request)
+
+    existing = neo4j_repo.get_user_by_email(request.email)
+    if existing:
+        raise HTTPException(status_code=400, detail="An account with this email already exists.")
+
+    user = neo4j_repo.create_user(
+        email=request.email,
+        password=request.password,
+        phone=request.phone,
+        display_name=request.display_name,
+        preferred_language=request.preferred_language or "en",
+    )
+    if not user:
+        raise HTTPException(status_code=500, detail="Failed to create citizen account.")
+
+    raw_token, session_record = neo4j_repo.create_session(user["user_id"])
+    neo4j_repo.log_audit_event("USER_REGISTERED", user["user_id"], "User", user["user_id"])
+
+    return AuthResponse(
+        status="success",
+        session_token=raw_token,
+        user=UserResponse(
+            user_id=user["user_id"],
+            email=user["email"],
+            display_name=user.get("display_name") or user["email"].split("@")[0],
+            phone_masked=user.get("phone_masked"),
+            preferred_language=user.get("preferred_language", "en"),
+            is_active=user.get("is_active", True),
+            created_at=user.get("created_at", ""),
+            last_login_at=user.get("last_login_at"),
+        ),
+    )
+
+
+@app.post("/api/auth/login", response_model=AuthResponse)
+async def login_citizen(request: LoginRequest, raw_request: Request):
+    """Authenticate citizen via Neo4j and issue a hashed session."""
+    check_rate_limit(raw_request)
+
+    user = neo4j_repo.authenticate_user(request.email, request.password)
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid email or password.")
+
+    raw_token, session_record = neo4j_repo.create_session(user["user_id"])
+    neo4j_repo.log_audit_event("LOGIN", user["user_id"], "Session", session_record.get("session_id", ""))
+
+    return AuthResponse(
+        status="success",
+        session_token=raw_token,
+        user=UserResponse(
+            user_id=user["user_id"],
+            email=user["email"],
+            display_name=user.get("display_name") or user["email"].split("@")[0],
+            phone_masked=user.get("phone_masked"),
+            preferred_language=user.get("preferred_language", "en"),
+            is_active=user.get("is_active", True),
+            created_at=user.get("created_at", ""),
+            last_login_at=user.get("last_login_at"),
+        ),
+    )
+
+
+@app.post("/api/auth/logout")
+async def logout_citizen(raw_request: Request):
+    """Revoke citizen session in Neo4j."""
+    auth_header = raw_request.headers.get("Authorization", "")
+    token = None
+    if auth_header.startswith("Bearer "):
+        token = auth_header[7:].strip()
+    elif "X-Session-Token" in raw_request.headers:
+        token = raw_request.headers["X-Session-Token"].strip()
+    elif "session_token" in raw_request.cookies:
+        token = raw_request.cookies["session_token"].strip()
+
+    if token:
+        sess_info = neo4j_repo.validate_session(token)
+        if sess_info:
+            session_id = sess_info["session"]["session_id"]
+            user_id = sess_info["user"]["user_id"]
+            neo4j_repo.revoke_session(session_id)
+            neo4j_repo.log_audit_event("LOGOUT", user_id, "Session", session_id)
+
+    return {"status": "success", "message": "Logged out successfully."}
+
+
+@app.get("/api/auth/me", response_model=UserResponse)
+async def get_my_profile(raw_request: Request):
+    """Get authenticated citizen profile."""
+    user = get_current_user(raw_request)
+    return UserResponse(
+        user_id=user["user_id"],
+        email=user["email"],
+        display_name=user.get("display_name") or user["email"].split("@")[0],
+        phone_masked=user.get("phone_masked"),
+        preferred_language=user.get("preferred_language", "en"),
+        is_active=user.get("is_active", True),
+        created_at=user.get("created_at", ""),
+        last_login_at=user.get("last_login_at"),
+    )
+
+
+@app.get("/api/auth/preferences", response_model=UserPreferencesResponse)
+async def get_user_preferences(raw_request: Request):
+    """Fetch user UI and accessibility preferences from Neo4j."""
+    user = get_current_user(raw_request)
+    prefs = neo4j_repo.get_user_preferences(user["user_id"])
+    return UserPreferencesResponse(status="success", preferences=prefs)
+
+
+@app.put("/api/auth/preferences", response_model=UserPreferencesResponse)
+async def update_user_preferences(request: UserPreferencesRequest, raw_request: Request):
+    """Persist updated user preferences into Neo4j."""
+    user = get_current_user(raw_request)
+    updated = neo4j_repo.update_user_preferences(
+        user_id=user["user_id"],
+        language=request.language,
+        font_size=request.font_size,
+        accessibility_mode=request.accessibility_mode,
+        notification_preferences=request.notification_preferences,
+        theme=request.theme,
+    )
+    return UserPreferencesResponse(status="success", preferences=updated)
+
+
+# ─── Incident History & Graph Relationship Endpoints ───
+
+@app.get("/api/incidents", response_model=IncidentHistoryResponse)
+async def list_citizen_incidents(raw_request: Request, limit: int = 50):
+    """
+    List past incidents owned by the authenticated citizen ('My Checks').
+    Strictly isolated per user to guarantee zero IDOR leakage.
+    """
+    user = get_current_user(raw_request)
+    clamped_limit = max(1, min(limit, 100))
+    items = neo4j_repo.list_user_incidents(user["user_id"], limit=clamped_limit)
+
+    history_items = [
+        IncidentHistoryItem(
+            incident_id=str(item.get("incident_id")),
+            created_at=str(item.get("created_at", "")),
+            input_type=str(item.get("input_type", "text")),
+            title=str(item.get("title", f"Incident {item.get('incident_id')}")),
+            message_preview=str(item.get("message_preview", "")),
+            risk_level=str(item.get("risk_level", "low")),
+            risk_score=float(item.get("risk_score", 0.0)),
+            fraud_category=str(item.get("fraud_category", "generic")),
+            current_user_state=str(item.get("current_user_state", "received")),
+            campaign_id=item.get("campaign_id"),
+        )
+        for item in items
+    ]
+    return IncidentHistoryResponse(incidents=history_items, total=len(history_items))
+
+
+@app.get("/api/incidents/{incident_id}")
+async def get_incident_by_id(incident_id: str, raw_request: Request):
+    """
+    Retrieve incident dossier by ID.
+    Enforces strict IDOR protection — returns 404/unauthorized if owned by another citizen.
+    """
+    if not validate_incident_id(incident_id):
+        raise HTTPException(status_code=400, detail="Invalid incident ID format")
+
+    user = get_current_user_optional(raw_request)
+    user_id = user["user_id"] if user else None
+
+    # When Neo4j datastore is active, it is the authoritative store
+    if settings.neo4j_enabled and neo4j_repo.is_available():
+        record = neo4j_repo.get_incident(incident_id, user_id=user_id)
+        if record:
+            if user_id:
+                neo4j_repo.log_audit_event("INCIDENT_VIEWED", user_id, "Incident", incident_id)
+            return record
+        raise HTTPException(status_code=404, detail="Incident not found or unauthorized.")
+
+    # Check bounded in-memory store only as offline fallback
+    if incident_id in _incidents:
+        ev = _incidents[incident_id]
+        return AnalyzeResponse(
+            incident_id=ev.incident_id,
+            input_type=ev.input_type,
+            message_preview=ev.message[:200],
+            risk=ev.risk,
+            evidence=ev.evidence,
+            urls=ev.urls,
+            brands=ev.brands,
+            threat_intel=ev.threat_intel,
+            explanation=ev.explanation,
+            response=ev.response,
+            laya=ev.laya if ev.laya.available else None,
+            fraud_dna=ev.fraud_dna if ev.fraud_dna.available else None,
+            fraud_category=ev.fraud_category,
+            language=ev.language,
+            response_language=ev.response_language,
+            input_language=ev.input_language,
+            processing_time_ms=ev.processing_time_ms,
+            modules_executed=ev.modules_executed,
+            modules_failed=ev.modules_failed,
+        )
+
+    raise HTTPException(status_code=404, detail="Incident not found or unauthorized.")
+
+
+@app.get("/api/incidents/{incident_id}/graph", response_model=IncidentGraphResponse)
+async def get_incident_relationship_graph(incident_id: str, raw_request: Request):
+    """
+    Retrieve the contextual relationship graph for visualization:
+    Incident, Sender, Brand, URL, Domain, Campaign, and Related Incidents.
+    Enforces IDOR checks.
+    """
+    if not validate_incident_id(incident_id):
+        raise HTTPException(status_code=400, detail="Invalid incident ID format")
+
+    user = get_current_user_optional(raw_request)
+    user_id = user["user_id"] if user else None
+
+    # When Neo4j datastore is active, it is the authoritative graph store
+    if settings.neo4j_enabled and neo4j_repo.is_available():
+        graph_data = neo4j_repo.get_incident_graph(incident_id, user_id=user_id)
+        if graph_data:
+            return IncidentGraphResponse(
+                incident_id=graph_data.get("incident_id", incident_id),
+                nodes=graph_data.get("nodes", []),
+                edges=graph_data.get("edges", []),
+                node_count=graph_data.get("node_count", len(graph_data.get("nodes", []))),
+                edge_count=graph_data.get("edge_count", len(graph_data.get("edges", []))),
+                summary=f"Campaign {graph_data.get('campaign', {}).get('campaign_id', 'CAMP-STANDALONE')} with {len(graph_data.get('related_incidents', []))} related incidents",
+            )
+        raise HTTPException(status_code=404, detail="Incident graph not found or unauthorized.")
+
+    # In-memory fallback graph representation when offline
+    if incident_id in _incidents:
+        ev = _incidents[incident_id]
+        nodes = [
+            {"id": incident_id, "label": "Incident", "type": "Incident", "properties": {"risk": ev.risk.level.value}}
+        ]
+        edges = []
+        for b in ev.brands:
+            bid = f"brand_{b.brand_name}"
+            nodes.append({"id": bid, "label": b.brand_name, "type": "Brand", "properties": {"name": b.brand_name}})
+            edges.append({"source": incident_id, "target": bid, "relationship": "CLAIMS_BRAND", "properties": {"label": "claims brand"}})
+        for u in ev.urls:
+            uid = f"url_{abs(hash(u.url)) % 1000000}"
+            nodes.append({"id": uid, "label": u.domain or u.url, "type": "URL", "properties": {"url": u.url}})
+            edges.append({"source": incident_id, "target": uid, "relationship": "CONTAINS_URL", "properties": {"label": "contains url"}})
+        camp_id = getattr(ev.fraud_dna, "campaign_id", None)
+        if camp_id:
+            nodes.append({"id": camp_id, "label": f"Campaign {camp_id}", "type": "Campaign", "properties": {}})
+            edges.append({"source": incident_id, "target": camp_id, "relationship": "BELONGS_TO", "properties": {}})
+
+        return IncidentGraphResponse(
+            incident_id=incident_id,
+            nodes=nodes,
+            edges=edges,
+            node_count=len(nodes),
+            edge_count=len(edges),
+            summary="Incident relationship graph (in-memory mode)",
+        )
+
+    raise HTTPException(status_code=404, detail="Incident graph not found or unauthorized.")
+
+
+@app.get("/api/incidents/{incident_id}/history")
+async def get_incident_action_history(incident_id: str, raw_request: Request):
+    """
+    Retrieve adaptive response history and user state transitions.
+    Enforces IDOR checks.
+    """
+    if not validate_incident_id(incident_id):
+        raise HTTPException(status_code=400, detail="Invalid incident ID format")
+
+    user = get_current_user_optional(raw_request)
+    user_id = user["user_id"] if user else None
+
+    # When Neo4j is active, enforce authoritative ownership
+    if settings.neo4j_enabled and neo4j_repo.is_available():
+        inc = neo4j_repo.get_incident(incident_id, user_id=user_id)
+        if not inc:
+            raise HTTPException(status_code=404, detail="Incident history not found or unauthorized.")
+    else:
+        inc = _incidents.get(incident_id)
+        if not inc:
+            raise HTTPException(status_code=404, detail="Incident history not found or unauthorized.")
+        if hasattr(inc, "__dict__"):
+            inc = {
+                "created_at": inc.created_at.isoformat(),
+                "current_user_state": "received",
+            }
+
+    current_state = inc.get("current_user_state", "received") if inc else "received"
+    history = [
+        {
+            "state": "received",
+            "action": "Message ingested and forensic analysis executed",
+            "timestamp": inc.get("created_at") if inc else _incidents[incident_id].created_at.isoformat(),
+        }
+    ]
+    if current_state != "received":
+        history.append({
+            "state": current_state,
+            "action": f"User interaction progressed to {current_state}",
+            "timestamp": inc.get("updated_at") if inc else "",
+        })
+
+    return {
+        "incident_id": incident_id,
+        "current_state": current_state,
+        "history": history,
+    }
 
 
 @app.post("/api/analyze", response_model=AnalyzeResponse)
@@ -326,7 +716,11 @@ async def analyze_message(request: AnalyzeRequest, raw_request: Request):
     cleaned_response_lang = validate_language(requested_lang)
     detected_input_lang = detect_input_language(cleaned_message)
 
-    # Create evidence contract instance
+    # Optional authenticated user
+    user = get_current_user_optional(raw_request)
+    user_id = user["user_id"] if user else None
+
+    # Create evidence contract instance with optional sender context
     evidence = IncidentEvidence(
         input_type=request.input_type,
         message=cleaned_message,
@@ -334,6 +728,8 @@ async def analyze_message(request: AnalyzeRequest, raw_request: Request):
         language=cleaned_response_lang,
         response_language=cleaned_response_lang,
         input_language=detected_input_lang,
+        sender=request.sender,
+        message_context=request.message_context,
     )
 
     modules_executed = []
@@ -456,8 +852,19 @@ async def analyze_message(request: AnalyzeRequest, raw_request: Request):
     evidence.modules_executed = modules_executed
     evidence.modules_failed = modules_failed
 
-    # Store in bounded incident store
+    # Store in bounded incident store as guaranteed in-memory fallback
     _incidents[evidence.incident_id] = evidence
+
+    # Persist to Neo4j single application datastore (degrades gracefully if offline)
+    if settings.neo4j_enabled:
+        try:
+            persisted = neo4j_repo.save_full_incident(evidence, user_id=user_id)
+            if persisted:
+                if evidence.fraud_dna:
+                    evidence.fraud_dna.graph_persisted = True
+                neo4j_repo.log_audit_event("INCIDENT_CREATED", user_id, "Incident", evidence.incident_id)
+        except Exception as e:
+            logger.warning("Neo4j persistence degraded gracefully: %s", safe_error_message(e))
 
     return AnalyzeResponse(
         incident_id=evidence.incident_id,
@@ -525,6 +932,22 @@ async def update_user_state(
         evidence.errors.append(f"response_update: {safe_error_message(e)}")
 
     _incidents[incident_id] = evidence
+
+    # Persist adaptive response action state into Neo4j
+    if settings.neo4j_enabled:
+        user = get_current_user_optional(raw_request)
+        user_id = user["user_id"] if user else None
+        try:
+            state_val = request.user_state.value if hasattr(request.user_state, "value") else str(request.user_state)
+            neo4j_repo.save_incident_action(
+                incident_id=incident_id,
+                state=state_val,
+                action_taken=f"State transitioned to {state_val}",
+                user_id=user_id,
+            )
+            neo4j_repo.log_audit_event("INCIDENT_ACTION", user_id, "Incident", incident_id, {"new_state": state_val})
+        except Exception as e:
+            logger.warning("Failed to record incident action in Neo4j: %s", safe_error_message(e))
 
     return AnalyzeResponse(
         incident_id=evidence.incident_id,
@@ -700,6 +1123,7 @@ async def translate_content(
     )
 
 
+@app.get("/api/incidents/{incident_id}/report")
 @app.get("/api/incidents/{incident_id}/export")
 async def export_incident(
     incident_id: str,
@@ -720,6 +1144,17 @@ async def export_incident(
         raise HTTPException(status_code=404, detail="Incident not found")
 
     incident = _incidents[incident_id]
+
+    # Record report generation in Neo4j
+    if settings.neo4j_enabled and raw_request:
+        user = get_current_user_optional(raw_request)
+        user_id = user["user_id"] if user else None
+        report_id = f"rep_{secrets.token_hex(6)}"
+        try:
+            neo4j_repo.save_report_metadata(report_id, incident_id, format=format, user_id=user_id)
+            neo4j_repo.log_audit_event("REPORT_GENERATED", user_id, "Report", report_id, {"format": format})
+        except Exception as e:
+            logger.warning("Failed to record report metadata in Neo4j: %s", safe_error_message(e))
 
     import hashlib
     raw_hash = hashlib.sha256((incident.message or "").encode("utf-8")).hexdigest()

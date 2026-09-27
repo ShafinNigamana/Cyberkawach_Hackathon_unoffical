@@ -242,12 +242,34 @@ class AdaptiveResponse(BaseModel):
     urgency: str = "normal"  # "normal", "urgent", "critical"
 
 
+class SenderContext(BaseModel):
+    """Optional sender information (email, phone, claimed org, etc.)."""
+    display_name: Optional[str] = None
+    email_address: Optional[str] = None
+    phone_number: Optional[str] = None
+    sender_id: Optional[str] = None
+    username: Optional[str] = None
+    claimed_organization: Optional[str] = None
+    sender_domain: Optional[str] = None
+    reply_to: Optional[str] = None
+
+
+class MessageContext(BaseModel):
+    """Optional message envelope metadata."""
+    channel: Optional[str] = None
+    subject: Optional[str] = None
+    timestamp: Optional[str] = None
+    attachments: list[str] = Field(default_factory=list)
+    original_source: Optional[str] = None
+
+
 class FraudDNA(BaseModel):
     """Fraud DNA fingerprint for campaign correlation (P2)."""
     fingerprint: Optional[str] = None
     campaign_id: Optional[str] = None
     related_incidents: list[str] = Field(default_factory=list)
     available: bool = False  # False until Fraud DNA module is wired up
+    graph_persisted: bool = False  # True when synced to Neo4j graph
 
 
 # ─── Main Evidence Contract ───
@@ -278,6 +300,10 @@ class IncidentEvidence(BaseModel):
     input_language: Optional[str] = None
     message: str = ""
     original_input: Optional[str] = None  # Preserved before normalization
+
+    # Sender & Context (Optional)
+    sender: Optional[SenderContext] = None
+    message_context: Optional[MessageContext] = None
 
     # Extraction
     urls: list[URLSignal] = Field(default_factory=list)

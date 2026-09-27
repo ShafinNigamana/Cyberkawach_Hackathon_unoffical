@@ -31,17 +31,24 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         # 4. Strict Transport Security (HSTS)
         response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
 
-        # 5. Content Security Policy (CSP)
-        response.headers["Content-Security-Policy"] = (
-            "default-src 'self'; "
-            "script-src 'self' 'unsafe-inline'; "
-            "style-src 'self' 'unsafe-inline'; "
-            "img-src 'self' data: https:; "
-            "connect-src 'self'; "
-            "frame-ancestors 'none'; "
-            "base-uri 'self'; "
-            "form-action 'self';"
-        )
+        # 5. Content Security Policy (CSP) — tailored for docs vs application
+        path = request.url.path
+        if path.startswith(("/docs", "/redoc", "/openapi.json")):
+            response.headers["Content-Security-Policy"] = (
+                "default-src 'self' https: data: blob: 'unsafe-inline' 'unsafe-eval'; "
+                "frame-ancestors 'none';"
+            )
+        else:
+            response.headers["Content-Security-Policy"] = (
+                "default-src 'self'; "
+                "script-src 'self' 'unsafe-inline'; "
+                "style-src 'self' 'unsafe-inline'; "
+                "img-src 'self' data: https:; "
+                "connect-src 'self'; "
+                "frame-ancestors 'none'; "
+                "base-uri 'self'; "
+                "form-action 'self';"
+            )
 
         # 6. Referrer Policy
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"

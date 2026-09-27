@@ -25,7 +25,7 @@ from backend.utils.security_logging import safe_error_message
 logger = logging.getLogger(__name__)
 
 _PHISHSTATS_BASE_URL = "https://api.phishstats.info/api/phishing"
-_DEFAULT_TIMEOUT = 6.0
+_DEFAULT_TIMEOUT = 15.0
 _DEFAULT_TTL_SECONDS = 3600  # 1 hour
 
 # In-memory TTL cache for lookups: url -> (timestamp, ThreatIntelResult)
@@ -104,12 +104,15 @@ def _normalize_phishstats_record(record: dict[str, Any], lookup_url: str) -> Thr
     )
 
 
-async def check_phishstats(urls: list[str]) -> list[ThreatIntelResult]:
+async def check_phishstats(urls: list[str] | str) -> list[ThreatIntelResult]:
     """
     Query PhishStats API for a batch of URLs.
     Never throws an exception — always returns ThreatIntelResult with explicit status.
     Protects against secret leakage in headers, logs, and error messages.
     """
+    if isinstance(urls, str):
+        urls = [urls]
+
     settings = get_settings()
     results: list[ThreatIntelResult] = []
 
@@ -135,9 +138,7 @@ async def check_phishstats(urls: list[str]) -> list[ThreatIntelResult]:
                 continue
 
             # 2. Check if API key is not configured and anonymous lookup is disabled
-            # Note: PhishStats allows limited queries, but if key is strictly required by config:
             if not api_key:
-                # Return source unavailable without leaking
                 res = ThreatIntelResult(
                     source="phishstats",
                     match=None,
@@ -149,11 +150,9 @@ async def check_phishstats(urls: list[str]) -> list[ThreatIntelResult]:
                 results.append(res)
                 continue
 
-            # 3. Query API with safe filter
-            encoded_val = quote(clean_url, safe="")
-            query_url = f"{_PHISHSTATS_BASE_URL}?_where=(url,eq,{encoded_val})"
-
+            # 3. Query API with safe filter and limit size to 1 for fast retrieval
             try:
+                query_url = f"{_PHISHSTATS_BASE_URL}?_where=(url,eq,{clean_url})&_size=1"
                 resp = await client.get(query_url, headers=headers)
 
                 if resp.status_code == 429:
@@ -165,7 +164,7 @@ async def check_phishstats(urls: list[str]) -> list[ThreatIntelResult]:
                         intel_status=ThreatIntelStatus.SOURCE_ERROR,
                         error="Rate limit reached (HTTP 429)",
                     )
-                elif resp.status_code == 401 or resp.status_code == 403:
+                elif resp.status_code in (401, 403):
                     logger.warning("PhishStats authentication failed (HTTP %s)", resp.status_code)
                     res = ThreatIntelResult(
                         source="phishstats",
@@ -184,6 +183,16 @@ async def check_phishstats(urls: list[str]) -> list[ThreatIntelResult]:
                     )
                 else:
                     data = resp.json()
+                    # If exact lookup has no results, try trailing slash fallback
+                    if (not isinstance(data, list) or len(data) == 0):
+                        alt_url = clean_url + "/" if not clean_url.endswith("/") else clean_url.rstrip("/")
+                        alt_query_url = f"{_PHISHSTATS_BASE_URL}?_where=(url,eq,{alt_url})&_size=1"
+                        alt_resp = await client.get(alt_query_url, headers=headers)
+                        if alt_resp.status_code == 200:
+                            alt_data = alt_resp.json()
+                            if isinstance(alt_data, list) and len(alt_data) > 0:
+                                data = alt_data
+
                     if isinstance(data, list) and len(data) > 0:
                         first_record = data[0]
                         if isinstance(first_record, dict):
