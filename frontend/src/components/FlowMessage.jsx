@@ -213,7 +213,7 @@ export default function FlowMessage({
       </div>
 
       {/* ─── Dedicated Message Form ─── */}
-      <form onSubmit={handleFormSubmit} noValidate className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs space-y-4">
+      <form onSubmit={handleFormSubmit} noValidate className="bg-white/85 dark:bg-[#0B1222]/85 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-6 shadow-sm space-y-5">
         {/* Textarea Header with Tools */}
         <div>
           <div className="flex items-center justify-between mb-1.5">
@@ -385,21 +385,21 @@ export default function FlowMessage({
         </div>
 
         {/* Primary Action Row with Monochrome Button & Zero PII note */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
           <button
             type="submit"
             id="analyze-btn"
             disabled={isAnalyzing}
-            className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-7 py-2.5 bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:hover:bg-white dark:text-slate-900 font-bold rounded-lg text-sm shadow-sm transition-all duration-150 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-8 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold rounded-xl text-sm shadow-md shadow-cyan-600/25 transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             {isAnalyzing ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin text-white dark:text-slate-900" />
+                <Loader2 className="w-4 h-4 animate-spin text-white" />
                 <span>{t(lang, 'runningTriage', 'Running Forensic Triage...')}</span>
               </>
             ) : (
               <>
-                <Search className="w-4 h-4 text-white dark:text-slate-900" strokeWidth={2.4} />
+                <Search className="w-4 h-4 text-white" strokeWidth={2.4} />
                 <span>{t(lang, 'investigateMsg', 'Investigate Message')}</span>
               </>
             )}

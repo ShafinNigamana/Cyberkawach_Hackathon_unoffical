@@ -182,7 +182,7 @@ export default function ThreatIntelCards({ threatIntel }) {
       : [];
 
   return (
-    <section className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-card p-5 sm:p-6 shadow-sm dark:shadow-card-elevated">
+    <section className="bg-white/85 dark:bg-[#0B1222]/85 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 mb-4 border-b border-slate-200 dark:border-slate-800 gap-2">
         <div className="flex items-center space-x-2">
           <Radio className="w-4 h-4 text-slate-700 dark:text-slate-300" />

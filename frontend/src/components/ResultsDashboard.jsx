@@ -105,11 +105,11 @@ export default function ResultsDashboard({
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6" id="results-dashboard" aria-live="polite">
       {/* ─── Top Control Bar: Back Navigation, Reference ID, & Quick vs Full Evidence Toggle ─── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/80 dark:border-slate-800/80">
         <button
           type="button"
           onClick={onCheckAnother}
-          className="inline-flex items-center space-x-1.5 text-xs font-semibold text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors cursor-pointer self-start"
+          className="inline-flex items-center space-x-1.5 text-xs font-semibold text-slate-700 hover:text-cyan-600 dark:text-slate-300 dark:hover:text-cyan-400 transition-colors cursor-pointer self-start"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Check Another Message / Link</span>
@@ -117,26 +117,26 @@ export default function ResultsDashboard({
 
         <div className="flex items-center space-x-3 self-end sm:self-auto flex-wrap">
           {/* Reference ID Pill */}
-          <div className="flex items-center space-x-1.5 px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs">
+          <div className="flex items-center space-x-1.5 px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs shadow-2xs">
             <span className="text-[10px] font-mono text-slate-500 uppercase">Case ID:</span>
             <span className="font-mono font-bold text-slate-900 dark:text-slate-100">{incidentId}</span>
             <button
               onClick={handleCopyRef}
-              className="ml-1 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
+              className="ml-1 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors cursor-pointer"
               title="Copy Incident ID"
             >
-              {copiedRef ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+              {copiedRef ? <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
             </button>
           </div>
 
           {/* Quick View vs Full Evidence Segmented Switch */}
-          <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-0.5 rounded-lg border border-slate-200 dark:border-slate-700" role="group" aria-label="Inspection Depth">
+          <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs" role="group" aria-label="Inspection Depth">
             <button
               type="button"
               onClick={() => setViewMode('quick')}
-              className={`px-3 py-1 rounded-md text-xs font-bold transition-all cursor-pointer ${
+              className={`px-3.5 py-1.2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                 viewMode === 'quick'
-                  ? 'bg-white text-slate-900 shadow-xs dark:bg-slate-900 dark:text-white'
+                  ? 'bg-white text-slate-900 shadow-sm dark:bg-slate-900 dark:text-cyan-400'
                   : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
               }`}
             >
@@ -145,9 +145,9 @@ export default function ResultsDashboard({
             <button
               type="button"
               onClick={() => setViewMode('full')}
-              className={`px-3 py-1 rounded-md text-xs font-bold transition-all cursor-pointer flex items-center space-x-1 ${
+              className={`px-3.5 py-1.2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center space-x-1 ${
                 viewMode === 'full'
-                  ? 'bg-white text-slate-900 shadow-xs dark:bg-slate-900 dark:text-white'
+                  ? 'bg-white text-slate-900 shadow-sm dark:bg-slate-900 dark:text-cyan-400'
                   : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
               }`}
             >
@@ -161,29 +161,35 @@ export default function ResultsDashboard({
       </div>
 
       {/* ─── SECTION 1: WHAT IS HAPPENING? ─── */}
-      <section className={`p-6 rounded-xl border transition-colors shadow-xs ${
+      <section className={`p-6 sm:p-7 rounded-2xl border transition-all duration-300 shadow-md backdrop-blur-md relative overflow-hidden ${
         isHighRisk
-          ? 'bg-red-50/80 border-red-200 dark:bg-red-950/20 dark:border-red-900/60'
+          ? 'bg-gradient-to-br from-red-500/10 via-rose-500/5 to-slate-900/40 border-red-500/30 dark:border-red-500/40 shadow-red-500/5'
           : isSafe
-          ? 'bg-emerald-50/60 border-emerald-200 dark:bg-emerald-950/20 dark:border-emerald-900/60'
-          : 'bg-slate-50 border-slate-200 dark:bg-slate-900 dark:border-slate-800'
+          ? 'bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-slate-900/40 border-emerald-500/30 dark:border-emerald-500/40 shadow-emerald-500/5'
+          : 'bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-slate-900/40 border-amber-500/30 dark:border-amber-500/40 shadow-amber-500/5'
       }`}>
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
-          <div className="space-y-2 flex-1">
-            <div className="flex items-center space-x-2 flex-wrap">
-              {/* Risk Level Badge: Red is the only strong attention color */}
-              <span className={`px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase ${
+        {/* Ambient colored background flare */}
+        <div className={`absolute -top-24 -right-24 w-60 h-60 rounded-full blur-3xl pointer-events-none opacity-40 ${
+          isHighRisk ? 'bg-red-500' : isSafe ? 'bg-emerald-500' : 'bg-amber-500'
+        }`} />
+
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+          <div className="space-y-3 flex-1">
+            <div className="flex items-center space-x-2.5 flex-wrap gap-y-2">
+              {/* Risk Level Badge with Glowing Indicator */}
+              <span className={`inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase shadow-xs ${
                 isHighRisk
-                  ? 'bg-red-600 text-white'
+                  ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-red-500/30'
                   : isSafe
-                  ? 'bg-emerald-600 text-white'
-                  : 'bg-slate-700 text-white'
+                  ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-emerald-500/30'
+                  : 'bg-gradient-to-r from-amber-600 to-orange-600 text-white shadow-amber-500/30'
               }`}>
-                {riskLevel} RISK • {riskScore}/100
+                <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                <span>{riskLevel} RISK • {riskScore}/100</span>
               </span>
 
-              <span className="text-xs font-medium text-slate-600 dark:text-slate-400">
-                Category: <strong>{categoryLabel}</strong>
+              <span className="text-xs font-medium text-slate-600 dark:text-slate-300">
+                Category: <strong className="text-slate-900 dark:text-white font-bold">{categoryLabel}</strong>
               </span>
             </div>
 
@@ -193,18 +199,59 @@ export default function ResultsDashboard({
             </h3>
 
             {/* Most Important Detected Issue */}
-            <p className="text-xs text-slate-700 dark:text-slate-300 flex items-start space-x-1.5 pt-1">
-              <span className="font-semibold text-slate-900 dark:text-white flex-shrink-0">Key Finding:</span>
+            <div className="p-3 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 flex items-start space-x-2 text-xs text-slate-700 dark:text-slate-300">
+              <span className="font-bold text-slate-900 dark:text-white flex-shrink-0">Key Finding:</span>
               <span>{primaryEvidence}</span>
-            </p>
+            </div>
           </div>
 
-          {/* Quick Score Circle & Report Trigger */}
-          <div className="flex flex-col sm:flex-row items-center gap-3 self-start md:self-auto flex-shrink-0">
+          {/* Quick Score Circular Ring & Report Action */}
+          <div className="flex sm:flex-col items-center justify-between sm:justify-center gap-4 self-start md:self-center flex-shrink-0">
+            {/* Circular Gauge */}
+            <div className="relative w-22 h-22 flex items-center justify-center">
+              <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 88 88">
+                {/* Background Ring */}
+                <circle
+                  cx="44"
+                  cy="44"
+                  r="36"
+                  className="stroke-slate-200 dark:stroke-slate-800"
+                  strokeWidth="7"
+                  fill="transparent"
+                />
+                {/* Foreground Progress Ring */}
+                <circle
+                  cx="44"
+                  cy="44"
+                  r="36"
+                  className={`transition-all duration-1000 ease-out ${
+                    isHighRisk
+                      ? 'stroke-red-500'
+                      : isSafe
+                      ? 'stroke-emerald-500'
+                      : 'stroke-amber-500'
+                  }`}
+                  strokeWidth="7"
+                  strokeDasharray={2 * Math.PI * 36}
+                  strokeDashoffset={(2 * Math.PI * 36) - ((riskScore / 100) * (2 * Math.PI * 36))}
+                  strokeLinecap="round"
+                  fill="transparent"
+                />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                <span className="text-xl font-black text-slate-900 dark:text-white leading-none">
+                  {riskScore}
+                </span>
+                <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mt-0.5">
+                  / 100
+                </span>
+              </div>
+            </div>
+
             <button
               type="button"
               onClick={() => setReportModalOpen(true)}
-              className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:hover:bg-white dark:text-slate-900 text-xs font-bold shadow-xs transition-all active:scale-[0.99] cursor-pointer"
+              className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 text-xs font-bold shadow-md transition-all active:scale-[0.98] cursor-pointer"
             >
               <FileText className="w-3.5 h-3.5" />
               <span>Generate Report</span>

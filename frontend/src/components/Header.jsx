@@ -196,23 +196,23 @@ export default function Header({
       </div>
 
       {/* ─── 4. Brand Row: Shield + Product Name + Tagline (Left), Single Expandable Status Pill (Right) ─── */}
-      <div className="bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white py-3 px-4 sm:px-6 transition-colors relative">
+      <div className="bg-white/85 dark:bg-[#0A0F1D]/85 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 text-slate-900 dark:text-white py-3 px-4 sm:px-6 transition-all relative z-30">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           {/* Left: Shield + Product Name + Tagline */}
           <div 
-            className="flex items-center space-x-3 cursor-pointer select-none" 
+            className="group flex items-center space-x-3 cursor-pointer select-none" 
             onClick={() => onSelectFlow('home')}
             title="Go to Cyber Fraud Guardian Home"
           >
-            <div className="w-9 h-9 rounded-lg bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 flex items-center justify-center shadow-xs flex-shrink-0">
-              <Shield className="w-5 h-5" strokeWidth={2} />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 via-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-md shadow-cyan-500/25 flex-shrink-0 group-hover:scale-105 group-hover:shadow-cyan-500/40 transition-all duration-300 border border-white/20">
+              <Shield className="w-5 h-5 drop-shadow-xs" strokeWidth={2.2} />
             </div>
 
             <div className="flex flex-col">
-              <h1 className="text-lg sm:text-xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
+              <h1 className="text-lg sm:text-xl font-black tracking-tight bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-white dark:via-cyan-100 dark:to-slate-200 bg-clip-text text-transparent leading-tight">
                 {t.portalTitle || 'Cyber Fraud Guardian'}
               </h1>
-              <p className="text-xs text-slate-500 dark:text-slate-400 leading-tight">
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium leading-tight">
                 {t.portalTagline || 'National Citizen Cyber Threat Triage Portal'}
               </p>
             </div>
@@ -223,13 +223,13 @@ export default function Header({
             <button
               type="button"
               onClick={() => setStatusExpanded(!statusExpanded)}
-              className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full border border-slate-300 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-semibold transition-all cursor-pointer shadow-2xs"
+              className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-emerald-500/30 dark:border-emerald-500/30 bg-emerald-50/80 hover:bg-emerald-100/80 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/50 text-emerald-800 dark:text-emerald-300 text-xs font-semibold transition-all cursor-pointer shadow-xs backdrop-blur-xs hover:border-emerald-400"
               aria-expanded={statusExpanded}
               aria-label="Toggle system status and privacy details"
             >
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 shadow-xs shadow-emerald-400"></span>
               </span>
               <span>{t.systemOperational || 'System Operational'}</span>
               <span className="hidden sm:inline text-slate-400 dark:text-slate-500 font-normal">
@@ -297,13 +297,15 @@ export default function Header({
       </div>
 
       {/* ─── 5. Nav Tabs: Dedicated Row Beneath Brand, Nothing Else Sharing That Row ─── */}
-      <nav className="bg-slate-900 text-white dark:bg-slate-900/95 border-b border-slate-800 px-4 sm:px-6" aria-label="Task Navigation">
-        <div className="max-w-7xl mx-auto flex items-center space-x-1 overflow-x-auto text-xs py-1.5">
+      <nav className="bg-slate-900/95 dark:bg-[#080E1C]/95 backdrop-blur-md border-b border-slate-800/80 px-4 sm:px-6 shadow-sm" aria-label="Task Navigation">
+        <div className="max-w-7xl mx-auto flex items-center space-x-1.5 overflow-x-auto text-xs py-2 scrollbar-none">
           <button
             type="button"
             onClick={() => onSelectFlow('home')}
-            className={`px-3.5 py-1.5 rounded-md font-medium transition-colors flex items-center space-x-1.5 whitespace-nowrap cursor-pointer ${
-              currentFlow === 'home' ? 'bg-slate-800 text-white font-bold' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+            className={`px-3.5 py-1.5 rounded-lg font-medium transition-all duration-200 flex items-center space-x-1.5 whitespace-nowrap cursor-pointer ${
+              currentFlow === 'home'
+                ? 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/40 text-cyan-300 font-bold shadow-xs shadow-cyan-500/10'
+                : 'text-slate-300 hover:text-white hover:bg-slate-800/60 border border-transparent'
             }`}
           >
             <Home className="w-3.5 h-3.5" />
@@ -319,8 +321,10 @@ export default function Header({
               }
               onSelectFlow('message');
             }}
-            className={`px-3.5 py-1.5 rounded-md font-medium transition-colors flex items-center space-x-1.5 whitespace-nowrap cursor-pointer ${
-              currentFlow === 'message' ? 'bg-slate-800 text-white font-bold' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+            className={`px-3.5 py-1.5 rounded-lg font-medium transition-all duration-200 flex items-center space-x-1.5 whitespace-nowrap cursor-pointer ${
+              currentFlow === 'message'
+                ? 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/40 text-cyan-300 font-bold shadow-xs shadow-cyan-500/10'
+                : 'text-slate-300 hover:text-white hover:bg-slate-800/60 border border-transparent'
             }`}
           >
             <MessageSquare className="w-3.5 h-3.5" />
@@ -337,8 +341,10 @@ export default function Header({
               }
               onSelectFlow('url');
             }}
-            className={`px-3.5 py-1.5 rounded-md font-medium transition-colors flex items-center space-x-1.5 whitespace-nowrap cursor-pointer ${
-              currentFlow === 'url' ? 'bg-slate-800 text-white font-bold' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+            className={`px-3.5 py-1.5 rounded-lg font-medium transition-all duration-200 flex items-center space-x-1.5 whitespace-nowrap cursor-pointer ${
+              currentFlow === 'url'
+                ? 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/40 text-cyan-300 font-bold shadow-xs shadow-cyan-500/10'
+                : 'text-slate-300 hover:text-white hover:bg-slate-800/60 border border-transparent'
             }`}
           >
             <Globe className="w-3.5 h-3.5" />
@@ -355,8 +361,10 @@ export default function Header({
               }
               onSelectFlow('screenshot');
             }}
-            className={`px-3.5 py-1.5 rounded-md font-medium transition-colors flex items-center space-x-1.5 whitespace-nowrap cursor-pointer ${
-              currentFlow === 'screenshot' ? 'bg-slate-800 text-white font-bold' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+            className={`px-3.5 py-1.5 rounded-lg font-medium transition-all duration-200 flex items-center space-x-1.5 whitespace-nowrap cursor-pointer ${
+              currentFlow === 'screenshot'
+                ? 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/40 text-cyan-300 font-bold shadow-xs shadow-cyan-500/10'
+                : 'text-slate-300 hover:text-white hover:bg-slate-800/60 border border-transparent'
             }`}
           >
             <Camera className="w-3.5 h-3.5" />

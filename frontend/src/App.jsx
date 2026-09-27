@@ -218,7 +218,11 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex flex-col font-sans transition-colors duration-150">
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-[#070B14] dark:text-slate-100 flex flex-col font-sans transition-colors duration-200 relative overflow-hidden bg-cyber-grid">
+      {/* Ambient Cyber Lighting Orbs */}
+      <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[800px] h-[450px] bg-gradient-to-b from-cyan-500/10 via-blue-500/5 to-transparent blur-3xl rounded-full dark:from-cyan-500/15 dark:via-blue-600/10" aria-hidden="true" />
+      <div className="pointer-events-none absolute top-1/3 -right-40 w-[500px] h-[500px] bg-gradient-to-br from-indigo-500/5 to-transparent blur-3xl rounded-full dark:from-indigo-500/10" aria-hidden="true" />
+      <div className="pointer-events-none absolute bottom-20 -left-40 w-[500px] h-[500px] bg-gradient-to-tr from-emerald-500/5 to-transparent blur-3xl rounded-full dark:from-emerald-500/10" aria-hidden="true" />
       {/* First-visit and On-demand Language Selection Modal */}
       <LanguageSelectionModal
         isOpen={languageModalOpen}
