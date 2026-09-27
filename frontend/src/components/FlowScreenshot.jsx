@@ -15,8 +15,9 @@ import {
   ScanText
 } from 'lucide-react';
 import { uploadScreenshot } from '../services/api';
+import { t } from '../i18n/translations';
 
-export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing }) {
+export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing, lang = 'en' }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [isOcrProcessing, setIsOcrProcessing] = useState(false);
@@ -126,11 +127,11 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing }) {
           className="inline-flex items-center space-x-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors cursor-pointer"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Back to Task Selection</span>
+          <span>{t(lang, 'backToSelection', 'Back to Task Selection')}</span>
         </button>
 
         <span className="text-xs font-mono font-medium text-slate-500 dark:text-slate-400">
-          Flow: Check Screenshot / Photo
+          {t(lang, 'flowScreenshotBreadcrumb', 'Flow: Check Screenshot / Photo')}
         </span>
       </div>
 
@@ -141,11 +142,11 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing }) {
             <Camera className="w-4 h-4" />
           </div>
           <h2 className="text-xl font-extrabold text-slate-900 dark:text-white">
-            Inspect Screenshot or Photo
+            {t(lang, 'flowScreenshotTitle', 'Inspect Screenshot or Photo')}
           </h2>
         </div>
         <p className="text-xs text-slate-600 dark:text-slate-400 pl-10">
-          Upload or drag-and-drop a screenshot of a suspicious message, payment request, or chat notification.
+          {t(lang, 'flowScreenshotDesc', 'Upload or drag-and-drop a screenshot of a suspicious message, payment request, or chat notification.')}
         </p>
       </div>
 
@@ -185,10 +186,10 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing }) {
 
           <div className="space-y-1">
             <p className="text-sm font-bold text-slate-900 dark:text-white">
-              Click to select image or drag & drop screenshot here
+              {t(lang, 'dropzoneTitle', 'Click to select image or drag & drop screenshot here')}
             </p>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Supports PNG, JPG, JPEG, WEBP up to 10MB. Works on mobile camera & gallery.
+              {t(lang, 'dropzoneSubtitle', 'Supports PNG, JPG, JPEG, WEBP up to 10MB. Works on mobile camera & gallery.')}
             </p>
           </div>
 
@@ -197,7 +198,7 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing }) {
             className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:hover:bg-white dark:text-slate-900 text-xs font-semibold shadow-xs"
           >
             <Camera className="w-3.5 h-3.5" />
-            <span>Browse Image File</span>
+            <span>{t(lang, 'browseImage', 'Browse Image File')}</span>
           </button>
         </div>
       ) : (
@@ -226,7 +227,7 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing }) {
                 className="inline-flex items-center space-x-1 px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-medium transition-colors cursor-pointer"
               >
                 <ScanText className="w-3.5 h-3.5" />
-                <span>Re-Scan OCR</span>
+                <span>{t(lang, 'reScanOcr', 'Re-Scan OCR')}</span>
               </button>
               <button
                 type="button"
@@ -248,7 +249,7 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing }) {
                 alt="Uploaded Screenshot Preview"
                 className="max-h-48 object-contain rounded"
               />
-              <span className="text-[10px] text-slate-400 mt-1">Uploaded preview</span>
+              <span className="text-[10px] text-slate-400 mt-1">{t(lang, 'uploadedPreview', 'Uploaded preview')}</span>
             </div>
 
             {/* Extracted Text & URLs */}
@@ -257,30 +258,30 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing }) {
                 <div className="h-44 border border-dashed border-slate-300 dark:border-slate-700 rounded-lg flex flex-col items-center justify-center p-4 text-center space-y-2 bg-slate-50 dark:bg-slate-950/40">
                   <Loader2 className="w-6 h-6 text-slate-900 dark:text-slate-100 animate-spin" />
                   <p className="text-xs font-bold text-slate-900 dark:text-white">
-                    Scanning image via Optical Character Recognition (OCR)...
+                    {t(lang, 'scanningOcr', 'Scanning image via Optical Character Recognition (OCR)...')}
                   </p>
                   <p className="text-[11px] text-slate-500">
-                    Extracting Hindi, English, and regional script content
+                    {t(lang, 'scanningOcrSub', 'Extracting Hindi, English, and regional script content')}
                   </p>
                 </div>
               ) : (
                 <>
                   <div>
                     <label className="block text-xs font-bold text-slate-900 dark:text-slate-200 mb-1">
-                      Extracted Message Content (Editable):
+                      {t(lang, 'extractedMsgContent', 'Extracted Message Content (Editable):')}
                     </label>
                     <textarea
                       rows={3}
                       value={extractedText}
                       onChange={(e) => setExtractedText(e.target.value)}
-                      placeholder="OCR extracted text will appear here. You can refine or add text..."
+                      placeholder={t(lang, 'extractedMsgPlaceholder', 'OCR extracted text will appear here. You can refine or add text...')}
                       className="w-full bg-slate-50 text-slate-900 border border-slate-300 rounded-lg p-2.5 text-xs font-sans focus:outline-none focus:ring-2 focus:ring-slate-900 dark:bg-slate-950 dark:text-slate-100 dark:border-slate-700 leading-relaxed"
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs font-bold text-slate-900 dark:text-slate-200 mb-1">
-                      Extracted Web Addresses / Links:
+                      {t(lang, 'extractedUrls', 'Extracted Web Addresses / Links:')}
                     </label>
                     <input
                       type="text"
@@ -298,7 +299,7 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing }) {
           {/* Citizen Situation Selection */}
           <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
             <label htmlFor="screenshot-user-state" className="block text-xs font-bold text-slate-900 dark:text-slate-300 mb-1">
-              What is your current interaction state? <span className="text-red-600 font-bold">*</span>
+              {t(lang, 'currentStateQuestion', 'What is your current interaction state?')} <span className="text-red-600 font-bold">*</span>
             </label>
             <select
               id="screenshot-user-state"
@@ -312,10 +313,10 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing }) {
                   : 'bg-slate-50 text-slate-900 border-slate-300 dark:bg-slate-950 dark:text-slate-200 dark:border-slate-700'
               }`}
             >
-              <option value="received">1. I only have this screenshot (No further action taken)</option>
-              <option value="clicked">2. I clicked a link shown in the screenshot</option>
-              <option value="entered_credentials">3. I submitted passwords or OTP</option>
-              <option value="paid">4. I transferred money / authorized payment (EMERGENCY)</option>
+              <option value="received">{t(lang, 'scrSitReceived', '1. I only have this screenshot (No further action taken)')}</option>
+              <option value="clicked">{t(lang, 'scrSitClicked', '2. I clicked a link shown in the screenshot')}</option>
+              <option value="entered_credentials">{t(lang, 'scrSitEntered', '3. I submitted passwords or OTP')}</option>
+              <option value="paid">{t(lang, 'scrSitPaid', '4. I transferred money / authorized payment (EMERGENCY)')}</option>
             </select>
           </div>
 
@@ -330,18 +331,18 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing }) {
               {isAnalyzing ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin text-white dark:text-slate-900" />
-                  <span>Processing Forensic Analysis...</span>
+                  <span>{t(lang, 'processingForensic', 'Processing Forensic Analysis...')}</span>
                 </>
               ) : (
                 <>
                   <Search className="w-4 h-4 text-white dark:text-slate-900" strokeWidth={2.4} />
-                  <span>Analyze Extracted Content</span>
+                  <span>{t(lang, 'analyzeExtracted', 'Analyze Extracted Content')}</span>
                 </>
               )}
             </button>
 
             <span className="text-[11px] text-slate-500 dark:text-slate-400">
-              Zero Retention: Uploaded screenshot is held ephemerally in RAM and purged after OCR.
+              {t(lang, 'scrZeroRetention', 'Zero Retention: Uploaded screenshot is held ephemerally in RAM and purged after OCR.')}
             </span>
           </div>
         </div>

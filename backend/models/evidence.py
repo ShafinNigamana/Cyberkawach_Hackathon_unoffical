@@ -274,6 +274,8 @@ class IncidentEvidence(BaseModel):
     # Input
     input_type: InputType = InputType.TEXT
     language: str = "en"
+    response_language: Optional[str] = None
+    input_language: Optional[str] = None
     message: str = ""
     original_input: Optional[str] = None  # Preserved before normalization
 

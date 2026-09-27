@@ -116,7 +116,6 @@ def _build_evidence_prompt(evidence: IncidentEvidence) -> str:
                 f"(confidence: {brand.confidence:.0%})"
             )
 
-    # Threat intel
     ti_summary = []
     for ti in evidence.threat_intel:
         status_str = ti.intel_status.value if hasattr(ti, "intel_status") else ("MATCH" if ti.match else "no match")
@@ -124,6 +123,26 @@ def _build_evidence_prompt(evidence: IncidentEvidence) -> str:
     if ti_summary:
         evidence_summary.append("\nThreat Intelligence Feeds:")
         evidence_summary.extend(ti_summary)
+
+    # Language requirement
+    lang_code = evidence.response_language or evidence.language or "en"
+    lang_names = {
+        "en": "English",
+        "hi": "Hindi (हिन्दी)",
+        "gu": "Gujarati (ગુજરાતી)",
+        "ta": "Tamil (தமிழ்)",
+        "te": "Telugu (తెలుగు)",
+        "bn": "Bengali (বাংলা)",
+    }
+    target_lang = lang_names.get(lang_code, "English")
+
+    evidence_summary.append(
+        f"\n--- MANDATORY OUTPUT LANGUAGE ---\n"
+        f"Generate all natural language explanation fields (summary, reasons, attack_path, user_action, uncertainty) strictly in {target_lang}.\n"
+        f"CRITICAL EVIDENCE PRESERVATION RULE:\n"
+        f"Do NOT translate technical indicator values (URLs, domains, IP addresses, email addresses, phone numbers, IOC strings, incident IDs, or provider names like PhishStats, PhishTank, SafeBrowsing). Keep all technical values exactly as observed in their original format.\n"
+        f"--- END LANGUAGE INSTRUCTION ---"
+    )
 
     # The message (truncated, PII redacted, prompt injection filtered, treated as untrusted)
     raw_preview = evidence.message[:500]

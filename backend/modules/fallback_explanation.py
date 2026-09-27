@@ -111,39 +111,170 @@ _DEFAULT_ATTACK_PATH = [
     "Subsequent actions risk exposure of personal credentials or unauthorized transfers",
 ]
 
-# ─── User action templates by risk level ───
+_CATEGORY_NAMES = {
+    "en": {
+        "banking": "banking",
+        "electricity": "electricity disconnection",
+        "courier": "parcel delivery",
+        "digital_arrest": "digital arrest law enforcement",
+        "lottery_prize": "lottery prize",
+        "job_offer": "fake job offer",
+        "investment": "investment scheme",
+        "tech_support": "tech support",
+        "unknown": "suspicious communication",
+    },
+    "hi": {
+        "banking": "बैंक/केवाईसी",
+        "electricity": "बिजली बिल डिस्कनेक्शन",
+        "courier": "पार्सल/कूरियर डिलीवरी",
+        "digital_arrest": "डिजिटल अरेस्ट/पुलिस वसूली",
+        "lottery_prize": "लॉटरी/इनाम",
+        "job_offer": "फर्जी नौकरी",
+        "investment": "निवेश घोटाला",
+        "tech_support": "तकनीकी सहायता",
+        "unknown": "संदिग्ध संदेश",
+    },
+    "gu": {
+        "banking": "બેંકિંગ/KYC",
+        "electricity": "વીજળી બિલ કટઓફ",
+        "courier": "કુરિયર/પાર્સલ ડિલિવરી",
+        "digital_arrest": "ડિજિટલ ધરપકડ",
+        "lottery_prize": "લોટરી/ઇનામ",
+        "job_offer": "નોકરી છેતરપિંડી",
+        "investment": "રોકાણ કૌભાંડ",
+        "tech_support": "ટેકનિકલ સપોર્ટ",
+        "unknown": "શંકાસ્પદ સંદેશ",
+    },
+    "ta": {
+        "banking": "வங்கி/KYC",
+        "electricity": "மின் கட்டண துண்டிப்பு",
+        "courier": "கூரியர்/பார்சல்",
+        "digital_arrest": "டிஜிட்டல் கைது",
+        "lottery_prize": "பரிசு/லாட்டரி",
+        "job_offer": "போலி வேலை வாய்ப்பு",
+        "investment": "முதலீட்டு மோசடி",
+        "tech_support": "தொழில்நுட்ப ஆதரவு",
+        "unknown": "சந்தேகத்திற்குரிய செய்தி",
+    },
+}
 
 _USER_ACTIONS = {
     RiskLevel.CRITICAL: [
-        "Do NOT click any links in this message",
-        "Do NOT reply or call any numbers mentioned",
-        "If you shared any credentials, change your passwords immediately",
-        "Contact your bank's official helpline to report and block transactions",
-        "File a complaint at cybercrime.gov.in or call 1930 (National Cyber Crime Helpline)",
-        "Save this message as evidence — do not delete it",
+        "Do NOT click any links or download attachments from this message",
+        "Do NOT call any phone numbers listed in the message",
+        "If you entered credentials, IMMEDIATELY change passwords on affected accounts",
+        "If you made a payment, call 1930 immediately to freeze transactions (Golden Hour)",
+        "Report the incident at cybercrime.gov.in and to your local police",
+        "Preserve this message as evidence — do not delete it",
     ],
     RiskLevel.HIGH: [
-        "Do NOT click any links or call numbers in this message",
-        "Verify the claim by contacting the organization through their official website",
-        "If you already clicked a link, do not enter any information",
-        "Report this message to cybercrime.gov.in or call 1930",
-        "Block the sender",
+        "Do NOT click any links in this message",
+        "Verify the sender independently through official websites or known contact numbers",
+        "If you clicked a link, do NOT enter OTPs, passwords, or personal details",
+        "Report to cybercrime.gov.in or call helpline 1930",
+        "Block the sender's number or email",
     ],
     RiskLevel.MEDIUM: [
-        "Exercise caution — verify the sender's identity independently",
-        "Do not click links — visit the official website directly if action is needed",
-        "Report suspicious messages to your telecom provider",
-        "If unsure, contact the organization through verified official channels",
+        "Exercise caution — verify the sender's identity through official channels",
+        "Do NOT click links unless you have independently verified the source",
+        "Forward suspicious SMS to 1909 (TRAI DND service)",
     ],
     RiskLevel.LOW: [
-        "The message has limited suspicious indicators",
-        "Verify the sender if the message requests any personal information or action",
-        "When in doubt, do not click links — visit official websites directly",
+        "Low threat detected — standard caution recommended",
+        "Verify the sender if sensitive information was requested",
     ],
     RiskLevel.UNKNOWN: [
-        "Insufficient evidence to determine the nature of this message",
-        "Exercise standard caution with unsolicited messages",
-        "Do not share personal or financial information with unknown senders",
+        "Insufficient evidence to determine risk — treat with caution",
+        "Do NOT share sensitive personal or financial information",
+    ],
+}
+
+_USER_ACTIONS_HI = {
+    RiskLevel.CRITICAL: [
+        "इस संदेश में दिए किसी भी लिंक पर क्लिक न करें",
+        "उल्लिखित किसी भी नंबर पर कॉल या संदेश का उत्तर न दें",
+        "यदि आपने कोई विवरण साझा किया है, तो तत्काल अपने पासवर्ड बदलें",
+        "अनधिकृत लेन-देन रोकने हेतु तत्काल 1930 पर कॉल करें अथवा अपने बैंक से संपर्क करें",
+        "cybercrime.gov.in पर तत्काल आधिकारिक शिकायत दर्ज करें",
+        "इस संदेश को साक्ष्य के रूप में सुरक्षित रखें — इसे डिलीट न करें",
+    ],
+    RiskLevel.HIGH: [
+        "संदेश में दिए लिंक पर क्लिक न करें और न ही दिए गए नंबरों पर कॉल करें",
+        "संबंधित संस्था की आधिकारिक वेबसाइट के माध्यम से सीधे सत्यता जांचें",
+        "यदि आपने लिंक खोल लिया है, तो कोई गोपनीय जानकारी या ओटीपी दर्ज न करें",
+        "cybercrime.gov.in पर रिपोर्ट करें अथवा 1930 पर कॉल करें",
+        "संदेश भेजने वाले को तुरंत ब्लॉक करें",
+    ],
+    RiskLevel.MEDIUM: [
+        "सावधानी बरतें — संदेश भेजने वाले की पहचान की स्वतंत्र रूप से पुष्टि करें",
+        "लिंक पर क्लिक न करें — आवश्यकता होने पर केवल आधिकारिक वेबसाइट पर जाएं",
+        "संदिग्ध संदेश को 1909 पर स्पैम रिपोर्ट करें",
+    ],
+    RiskLevel.LOW: [
+        "इस संदेश में धोखाधड़ी के बहुत कम संकेत हैं",
+        "यदि कोई व्यक्तिगत विवरण मांगा गया हो, तो आधिकारिक स्रोतों से पुष्टि करें",
+    ],
+    RiskLevel.UNKNOWN: [
+        "संदेश की प्रकृति निर्धारित करने के लिए साक्ष्य अपर्याप्त हैं",
+        "अज्ञात प्रेषकों से प्राप्त संदेशों में मानक सावधानी बरतें",
+    ],
+}
+
+_USER_ACTIONS_GU = {
+    RiskLevel.CRITICAL: [
+        "આ સંદેશામાં આવેલી કોઈપણ લિંક પર ક્લિક કરશો નહીં",
+        "દર્શાવેલ કોઈપણ નંબર પર કૉલ કરશો નહીં અથવા જવાબ આપશો નહીં",
+        "જો તમે માહિતી દાખલ કરી હોય, તો તાત્કાલિક તમારા પાસવર્ડ બદલો",
+        "નાણાકીય છેતરપિંડી રોકવા માટે તાત્કાલિક ૧૯૩૦ પર કૉલ કરો અથવા બેંકનો સંપર્ક કરો",
+        "cybercrime.gov.in પર ફરિયાદ નોંધાવો",
+        "આ સંદેશને પુરાવા તરીકે સાચવી રાખો — ડિલીટ કરશો નહીં",
+    ],
+    RiskLevel.HIGH: [
+        "કોઈપણ લિંક પર ક્લિક કરશો નહીં અથવા કૉલ કરશો નહીં",
+        "સંસ્થાની સત્તાવાર વેબસાઇટ દ્વારા સીધી ખાતરી કરો",
+        "જો લિંક ખોલી હોય, તો કોઈ ગુપ્ત માહિતી અથવા OTP દાખલ કરશો નહીં",
+        "૧૯૩૦ પર કૉલ કરો અથવા cybercrime.gov.in પર રિપોર્ટ કરો",
+        "મોકલનારને તરત જ બ્લૉક કરો",
+    ],
+    RiskLevel.MEDIUM: [
+        "સાવચેતી રાખો — મોકલનારની ઓળખ ચકાસો",
+        "સત્તાવાર વેબસાઇટની સીધી મુલાકાત લો",
+    ],
+    RiskLevel.LOW: [
+        "આ સંદેશમાં છેતરપિંડીના બહુ ઓછા સંકેતો છે",
+        "જો કોઈ માહિતી માંગી હોય તો સત્તાવાર ચેનલ પરથી ચકાસો",
+    ],
+    RiskLevel.UNKNOWN: [
+        "ચોક્કસ મૂલ્યાંકન માટે પુરાવા અપૂરતા છે",
+        "અજાણ્યા સંદેશાઓથી સાવચેત રહો",
+    ],
+}
+
+_USER_ACTIONS_TA = {
+    RiskLevel.CRITICAL: [
+        "இந்த செய்தியில் உள்ள எந்த இணைப்பையும் கிளிக் செய்ய வேண்டாம்",
+        "குறிப்பிடப்பட்ட எந்த எண்ணிற்கும் அழைக்கவோ பதிலளிக்கவோ வேண்டாம்",
+        "ரகசிய விவரங்களை உள்ளிட்டிருந்தால், உடனடியாக கடவுச்சொற்களை மாற்றவும்",
+        "பண இழப்பைத் தடுக்க உடனே 1930 ஐ அழைக்கவும் அல்லது வங்கியைத் தொடர்பு கொள்ளவும்",
+        "cybercrime.gov.in இல் உடனடியாக புகாரளிக்கவும்",
+        "இந்த செய்தியை ஆதாரமாக சேமிக்கவும் — நீக்க வேண்டாம்",
+    ],
+    RiskLevel.HIGH: [
+        "இணைப்புகளை கிளிக் செய்யவோ எண்களுக்கு அழைக்கவோ வேண்டாம்",
+        "அதிகாரப்பூர்வ இணையதளம் மூலம் நிறுவனத்தை நேரடியாக சரிபார்க்கவும்",
+        "இணைப்பைத் திறந்திருந்தால், எந்த ரகசிய தகவலையும் OTP ஐயும் உள்ளிட வேண்டாம்",
+        "1930 அல்லது cybercrime.gov.in இல் புகாரளிக்கவும்",
+        "அனுப்பியவரை உடனே பிளாக் செய்யவும்",
+    ],
+    RiskLevel.MEDIUM: [
+        "எச்சரிக்கையுடன் இருக்கவும் — அனுப்பியவரின் நம்பகத்தன்மையை சரிபார்க்கவும்",
+        "தேவைப்பட்டால் அதிகாரப்பூர்வ இணையதளத்தை மட்டும் அணுகவும்",
+    ],
+    RiskLevel.LOW: [
+        "இந்த செய்தியில் குறைந்த அளவிலான அச்சுறுத்தலே உள்ளது",
+    ],
+    RiskLevel.UNKNOWN: [
+        "முடிவெடுக்க போதுமான ஆதாரங்கள் இல்லை. எச்சரிக்கையுடன் இருக்கவும்",
     ],
 }
 
@@ -339,16 +470,28 @@ def generate_fallback_explanation(evidence: IncidentEvidence) -> IncidentEvidenc
     category = evidence.fraud_category or "unknown"
 
     # ─── Build summary from template + evidence ───
-    lang = (evidence.language or "en").lower()
-    if lang.startswith("hi"):
+    lang = (evidence.response_language or evidence.language or "en").lower().split("-")[0]
+    cat_map = _CATEGORY_NAMES.get(lang, _CATEGORY_NAMES["en"])
+    localized_category = cat_map.get(category, category)
+
+    if lang == "hi":
         template = _SUMMARY_TEMPLATES_HI.get(risk.level, _SUMMARY_TEMPLATES_HI[RiskLevel.UNKNOWN])
-    elif lang.startswith("gu"):
+        user_action = _USER_ACTIONS_HI.get(risk.level, _USER_ACTIONS_HI[RiskLevel.UNKNOWN])
+        no_reasons_msg = "उपलब्ध साक्ष्यों में कोई गंभीर धोखाधड़ी संकेत नहीं मिले।"
+    elif lang == "gu":
         template = _SUMMARY_TEMPLATES_GU.get(risk.level, _SUMMARY_TEMPLATES_GU[RiskLevel.UNKNOWN])
-    elif lang.startswith("ta"):
+        user_action = _USER_ACTIONS_GU.get(risk.level, _USER_ACTIONS_GU[RiskLevel.UNKNOWN])
+        no_reasons_msg = "ઉપલબ્ધ પુરાવાઓમાં છેતરપિંડીના કોઈ ગંભીર સંકેતો મળ્યા નથી."
+    elif lang == "ta":
         template = _SUMMARY_TEMPLATES_TA.get(risk.level, _SUMMARY_TEMPLATES_TA[RiskLevel.UNKNOWN])
+        user_action = _USER_ACTIONS_TA.get(risk.level, _USER_ACTIONS_TA[RiskLevel.UNKNOWN])
+        no_reasons_msg = "கிடைக்கப்பெற்ற ஆதாரங்களில் எவ்வித தீவிர அச்சுறுத்தலும் கண்டறியப்படவில்லை."
     else:
         template = _SUMMARY_TEMPLATES.get(risk.level, _SUMMARY_TEMPLATES[RiskLevel.UNKNOWN])
-    summary = template.format(category=category)
+        user_action = _USER_ACTIONS.get(risk.level, _USER_ACTIONS[RiskLevel.UNKNOWN])
+        no_reasons_msg = "No strong fraud indicators detected in the available evidence."
+
+    summary = template.format(category=localized_category)
 
     # ─── Build reasons from evidence items ───
     reasons = []
@@ -358,13 +501,10 @@ def generate_fallback_explanation(evidence: IncidentEvidence) -> IncidentEvidenc
             reasons.append(f"[{item.source}] {item.description}")
 
     if not reasons:
-        reasons = ["No strong fraud indicators detected in the available evidence."]
+        reasons = [no_reasons_msg]
 
     # ─── Attack path (Traceable Causal Graph) ───
     attack_path, structured_attack_path = _build_traceable_fallback_attack_path(evidence)
-
-    # ─── User actions ───
-    user_action = _USER_ACTIONS.get(risk.level, _USER_ACTIONS[RiskLevel.UNKNOWN])
 
     # ─── Uncertainty ───
     uncertainty_parts = list(evidence.risk.uncertainty_reasons)

@@ -50,7 +50,10 @@ class Settings(BaseSettings):
     max_message_length: int = 10000
     max_urls_per_message: int = 20
 
-    model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
+    # ─── Google Cloud Translation API (optional) ───
+    google_translate_api_key: Optional[str] = None
+
+    model_config = {"env_file": ".env", "env_file_encoding": "utf-8", "extra": "ignore"}
 
     @property
     def cors_origin_list(self) -> list[str]:
@@ -74,6 +77,7 @@ class Settings(BaseSettings):
             # P2 optional threat-intel
             "abuseipdb": bool(self.abuseipdb_api_key and self.abuseipdb_api_key.strip()),
             "urlhaus": True,  # No key needed
+            "google_translate": bool(self.google_translate_api_key and self.google_translate_api_key.strip()),
         }
 
 
