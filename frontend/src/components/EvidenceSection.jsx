@@ -32,6 +32,8 @@ function getProvenanceDetails(source, type, rawStatus, tier) {
     sourceLabel = 'Sender Identity';
   } else if (s.includes('urlhaus')) {
     sourceLabel = 'URLhaus Feed';
+  } else if (s.includes('openphish')) {
+    sourceLabel = 'OpenPhish Feed';
   } else if (s.includes('virustotal')) {
     sourceLabel = 'VirusTotal Feed';
   } else if (s.includes('rule') || t.includes('rule')) {

@@ -197,6 +197,67 @@ class URLhausProvider(ThreatIntelProvider):
             )
 
 
+# ─── Concrete Provider: OpenPhish ───
+
+class OpenPhishProvider(ThreatIntelProvider):
+    """
+    OpenPhish live threat feed (https://openphish.eu/api/check?url=<URL>).
+    Public real-time phishing detection API.
+    """
+
+    @property
+    def name(self) -> str:
+        return "openphish"
+
+    @property
+    def is_available(self) -> bool:
+        return True
+
+    async def check_url(self, url: str) -> ThreatIntelResult:
+        api_url = "https://openphish.eu/api/check"
+        try:
+            async with httpx.AsyncClient(timeout=_DEFAULT_TIMEOUT) as client:
+                resp = await client.get(
+                    api_url,
+                    params={"url": url},
+                    headers={"User-Agent": "CyberKawach-Intel/1.0", "Accept": "application/json"},
+                )
+                if resp.status_code != 200:
+                    return ThreatIntelResult(
+                        source=self.name,
+                        lookup_url=url,
+                        error=f"HTTP {resp.status_code}",
+                        intel_status=ThreatIntelStatus.SOURCE_ERROR,
+                    )
+
+                data = resp.json()
+                is_found = bool(data.get("found", False))
+
+                if is_found:
+                    return ThreatIntelResult(
+                        source=self.name,
+                        match=True,
+                        details="Active phishing URL identified in OpenPhish intelligence database",
+                        lookup_url=url,
+                        intel_status=ThreatIntelStatus.KNOWN_MALICIOUS,
+                    )
+                else:
+                    return ThreatIntelResult(
+                        source=self.name,
+                        match=False,
+                        details="No matching phishing record in OpenPhish database",
+                        lookup_url=url,
+                        intel_status=ThreatIntelStatus.NO_KNOWN_MATCH,
+                    )
+        except Exception as e:
+            return ThreatIntelResult(
+                source=self.name,
+                lookup_url=url,
+                error=safe_error_message(e),
+                intel_status=ThreatIntelStatus.SOURCE_UNAVAILABLE,
+            )
+
+
 # ─── Concrete Provider: PhishStats ───
 
 class PhishStatsProvider(ThreatIntelProvider):
@@ -222,10 +283,13 @@ class PhishStatsProvider(ThreatIntelProvider):
         )
 
 
-# ─── Concrete Provider: PhishTank ───
+# ─── Concrete Provider: PhishTank (with OpenPhish fallback) ───
 
 class PhishTankProvider(ThreatIntelProvider):
-    """PhishTank community database provider."""
+    """
+    PhishTank community database provider with automatic OpenPhish fallback
+    when PhishTank API is unavailable or unconfigured.
+    """
 
     @property
     def name(self) -> str:
@@ -238,13 +302,23 @@ class PhishTankProvider(ThreatIntelProvider):
     async def check_url(self, url: str) -> ThreatIntelResult:
         results = await check_phishtank([url])
         if results and isinstance(results[0], ThreatIntelResult):
+            # If PhishTank API is down or not configured, gracefully query OpenPhish
+            if results[0].intel_status in (ThreatIntelStatus.SOURCE_UNAVAILABLE, ThreatIntelStatus.SOURCE_ERROR):
+                openphish = OpenPhishProvider()
+                op_res = await openphish.check_url(url)
+                if op_res.intel_status != ThreatIntelStatus.SOURCE_UNAVAILABLE:
+                    return ThreatIntelResult(
+                        source=self.name,
+                        match=op_res.match,
+                        details=f"[PhishTank fallback -> OpenPhish] {op_res.details or ''}",
+                        lookup_url=url,
+                        intel_status=op_res.intel_status,
+                    )
             return results[0]
-        return ThreatIntelResult(
-            source=self.name,
-            lookup_url=url,
-            error="No response returned from PhishTank",
-            intel_status=ThreatIntelStatus.SOURCE_UNAVAILABLE,
-        )
+
+        # Direct fallback
+        openphish = OpenPhishProvider()
+        return await openphish.check_url(url)
 
 
 # ─── Concrete Provider: Google Safe Browsing ───
@@ -368,6 +442,7 @@ class ThreatIntelManager:
     def __init__(self):
         self.providers: list[ThreatIntelProvider] = [
             URLhausProvider(),
+            OpenPhishProvider(),
             PhishStatsProvider(),
             PhishTankProvider(),
             SafeBrowsingProvider(),
