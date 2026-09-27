@@ -169,7 +169,7 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing, lang = '
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           onClick={() => fileInputRef.current?.click()}
-          className="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-slate-500 dark:hover:border-slate-500 rounded-xl p-8 text-center bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-850/60 transition-all cursor-pointer space-y-3"
+          className="clean-card border-2 border-dashed border-slate-300/80 dark:border-slate-700/80 hover:border-slate-400 dark:hover:border-slate-500 rounded-2xl p-8 text-center transition-all cursor-pointer space-y-3"
         >
           <input
             type="file"
@@ -195,7 +195,7 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing, lang = '
 
           <button
             type="button"
-            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:hover:bg-white dark:text-slate-900 text-xs font-semibold shadow-xs"
+            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-950 text-xs font-semibold shadow-xs"
           >
             <Camera className="w-3.5 h-3.5" />
             <span>{t(lang, 'browseImage', 'Browse Image File')}</span>
@@ -203,10 +203,10 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing, lang = '
         </div>
       ) : (
         /* Image Preview & OCR State Box */
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 space-y-4 shadow-xs">
+        <div className="clean-card rounded-2xl p-5 space-y-4 shadow-xs">
           <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
             <div className="flex items-center space-x-2.5">
-              <div className="p-1.5 bg-slate-100 dark:bg-slate-800 rounded">
+              <div className="p-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg">
                 <ImageIcon className="w-4 h-4 text-slate-700 dark:text-slate-300" />
               </div>
               <div>

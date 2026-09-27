@@ -13,7 +13,7 @@ export default function Footer({ onOpenMethodology, lang = 'en' }) {
           {/* Col 1: Identity & Partnership */}
           <div className="space-y-3">
             <div className="flex items-center space-x-3">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-600 to-blue-600 text-white flex items-center justify-center flex-shrink-0 shadow-md shadow-cyan-600/25">
+              <div className="w-9 h-9 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-950 flex items-center justify-center flex-shrink-0 shadow-sm">
                 <Shield className="w-4.5 h-4.5" strokeWidth={2.2} />
               </div>
               <div>
@@ -32,7 +32,7 @@ export default function Footer({ onOpenMethodology, lang = 'en' }) {
 
             <button
               onClick={onOpenMethodology}
-              className="inline-flex items-center space-x-1 text-blue-700 dark:text-amber-400 hover:text-blue-900 dark:hover:text-amber-300 text-xs font-bold underline underline-offset-2 cursor-pointer"
+              className="inline-flex items-center space-x-1 text-slate-900 dark:text-slate-100 hover:text-slate-700 dark:hover:text-white text-xs font-bold underline underline-offset-2 cursor-pointer"
             >
               <span>{t(lang, 'footerMethodology', 'View Technical Methodology & Audits')}</span>
               <ExternalLink className="w-3 h-3" />

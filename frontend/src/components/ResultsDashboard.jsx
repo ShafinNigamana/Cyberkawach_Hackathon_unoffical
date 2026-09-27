@@ -109,7 +109,7 @@ export default function ResultsDashboard({
         <button
           type="button"
           onClick={onCheckAnother}
-          className="inline-flex items-center space-x-1.5 text-xs font-semibold text-slate-700 hover:text-cyan-600 dark:text-slate-300 dark:hover:text-cyan-400 transition-colors cursor-pointer self-start"
+          className="inline-flex items-center space-x-1.5 text-xs font-semibold text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white transition-colors cursor-pointer self-start"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Check Another Message / Link</span>
@@ -130,13 +130,13 @@ export default function ResultsDashboard({
           </div>
 
           {/* Quick View vs Full Evidence Segmented Switch */}
-          <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs" role="group" aria-label="Inspection Depth">
+          <div className="flex items-center bg-slate-100 dark:bg-slate-800/90 p-1 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs" role="group" aria-label="Inspection Depth">
             <button
               type="button"
               onClick={() => setViewMode('quick')}
-              className={`px-3.5 py-1.2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                 viewMode === 'quick'
-                  ? 'bg-white text-slate-900 shadow-sm dark:bg-slate-900 dark:text-cyan-400'
+                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950 shadow-sm'
                   : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
               }`}
             >
@@ -145,14 +145,18 @@ export default function ResultsDashboard({
             <button
               type="button"
               onClick={() => setViewMode('full')}
-              className={`px-3.5 py-1.2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center space-x-1 ${
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center space-x-1 ${
                 viewMode === 'full'
-                  ? 'bg-white text-slate-900 shadow-sm dark:bg-slate-900 dark:text-cyan-400'
+                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950 shadow-sm'
                   : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
               }`}
             >
               <span>Full Evidence</span>
-              <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-slate-200 dark:bg-slate-700">
+              <span className={`ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-mono ${
+                viewMode === 'full'
+                  ? 'bg-slate-800 text-slate-200 dark:bg-slate-200 dark:text-slate-800'
+                  : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400'
+              }`}>
                 {(result.evidence || []).length}
               </span>
             </button>
@@ -161,30 +165,25 @@ export default function ResultsDashboard({
       </div>
 
       {/* ─── SECTION 1: WHAT IS HAPPENING? ─── */}
-      <section className={`p-6 sm:p-7 rounded-2xl border transition-all duration-300 shadow-md backdrop-blur-md relative overflow-hidden ${
+      <section className={`p-6 sm:p-7 rounded-2xl border transition-all duration-300 shadow-sm relative overflow-hidden ${
         isHighRisk
-          ? 'bg-gradient-to-br from-red-500/10 via-rose-500/5 to-slate-900/40 border-red-500/30 dark:border-red-500/40 shadow-red-500/5'
+          ? 'bg-red-50/40 border-red-200 dark:bg-red-950/20 dark:border-red-900/60'
           : isSafe
-          ? 'bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-slate-900/40 border-emerald-500/30 dark:border-emerald-500/40 shadow-emerald-500/5'
-          : 'bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-slate-900/40 border-amber-500/30 dark:border-amber-500/40 shadow-amber-500/5'
+          ? 'bg-emerald-50/40 border-emerald-200 dark:bg-emerald-950/20 dark:border-emerald-900/60'
+          : 'bg-amber-50/40 border-amber-200 dark:bg-amber-950/20 dark:border-amber-900/60'
       }`}>
-        {/* Ambient colored background flare */}
-        <div className={`absolute -top-24 -right-24 w-60 h-60 rounded-full blur-3xl pointer-events-none opacity-40 ${
-          isHighRisk ? 'bg-red-500' : isSafe ? 'bg-emerald-500' : 'bg-amber-500'
-        }`} />
-
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
           <div className="space-y-3 flex-1">
             <div className="flex items-center space-x-2.5 flex-wrap gap-y-2">
-              {/* Risk Level Badge with Glowing Indicator */}
-              <span className={`inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-black tracking-wider uppercase shadow-xs ${
+              {/* Risk Level Badge */}
+              <span className={`inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-extrabold tracking-wider uppercase ${
                 isHighRisk
-                  ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-red-500/30'
+                  ? 'bg-red-600 text-white dark:bg-red-500 dark:text-white'
                   : isSafe
-                  ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-emerald-500/30'
-                  : 'bg-gradient-to-r from-amber-600 to-orange-600 text-white shadow-amber-500/30'
+                  ? 'bg-emerald-600 text-white dark:bg-emerald-500 dark:text-white'
+                  : 'bg-amber-600 text-white dark:bg-amber-500 dark:text-white'
               }`}>
-                <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                <span className="w-1.5 h-1.5 rounded-full bg-white" />
                 <span>{riskLevel} RISK • {riskScore}/100</span>
               </span>
 
@@ -199,7 +198,7 @@ export default function ResultsDashboard({
             </h3>
 
             {/* Most Important Detected Issue */}
-            <div className="p-3 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800/80 flex items-start space-x-2 text-xs text-slate-700 dark:text-slate-300">
+            <div className="p-3 rounded-xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800/80 flex items-start space-x-2 text-xs text-slate-700 dark:text-slate-300">
               <span className="font-bold text-slate-900 dark:text-white flex-shrink-0">Key Finding:</span>
               <span>{primaryEvidence}</span>
             </div>
@@ -226,10 +225,10 @@ export default function ResultsDashboard({
                   r="36"
                   className={`transition-all duration-1000 ease-out ${
                     isHighRisk
-                      ? 'stroke-red-500'
+                      ? 'stroke-red-600 dark:stroke-red-500'
                       : isSafe
-                      ? 'stroke-emerald-500'
-                      : 'stroke-amber-500'
+                      ? 'stroke-emerald-600 dark:stroke-emerald-500'
+                      : 'stroke-amber-600 dark:stroke-amber-500'
                   }`}
                   strokeWidth="7"
                   strokeDasharray={2 * Math.PI * 36}
@@ -251,7 +250,7 @@ export default function ResultsDashboard({
             <button
               type="button"
               onClick={() => setReportModalOpen(true)}
-              className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 text-xs font-bold shadow-md transition-all active:scale-[0.98] cursor-pointer"
+              className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-950 text-xs font-bold shadow-sm transition-all active:scale-[0.98] cursor-pointer"
             >
               <FileText className="w-3.5 h-3.5" />
               <span>Generate Report</span>
@@ -305,7 +304,7 @@ export default function ResultsDashboard({
         </div>
       ) : (
         /* In Quick View: Provide an obvious, friendly banner to inspect deeper evidence */
-        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div>
             <h4 className="text-xs font-bold text-slate-900 dark:text-white">
               Want to inspect forensic evidence, threat feeds, or the attack path?
@@ -327,7 +326,7 @@ export default function ResultsDashboard({
       )}
 
       {/* ─── SECTION 8: REPORT THIS INCIDENT (Formal Reporting Flow) ─── */}
-      <section className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 space-y-3">
+      <section className="clean-card rounded-2xl p-5 space-y-3 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h4 className="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-1.5">
@@ -342,7 +341,7 @@ export default function ResultsDashboard({
           <button
             type="button"
             onClick={() => setReportModalOpen(true)}
-            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:hover:bg-white dark:text-slate-900 text-xs font-bold shadow-xs transition-all active:scale-[0.99] cursor-pointer flex-shrink-0"
+            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-950 text-xs font-bold shadow-sm transition-all active:scale-[0.99] cursor-pointer flex-shrink-0"
           >
             <FileText className="w-4 h-4" />
             <span>Generate Incident Report</span>

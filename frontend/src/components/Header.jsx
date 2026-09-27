@@ -196,7 +196,7 @@ export default function Header({
       </div>
 
       {/* ─── 4. Brand Row: Shield + Product Name + Tagline (Left), Single Expandable Status Pill (Right) ─── */}
-      <div className="bg-white/85 dark:bg-[#0A0F1D]/85 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 text-slate-900 dark:text-white py-3 px-4 sm:px-6 transition-all relative z-30">
+      <div className="bg-white/80 dark:bg-[#0B0F19]/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 text-slate-900 dark:text-white py-3.5 px-4 sm:px-6 transition-all relative z-30">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           {/* Left: Shield + Product Name + Tagline */}
           <div 
@@ -204,15 +204,15 @@ export default function Header({
             onClick={() => onSelectFlow('home')}
             title="Go to Cyber Fraud Guardian Home"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 via-blue-600 to-indigo-600 text-white flex items-center justify-center shadow-md shadow-cyan-500/25 flex-shrink-0 group-hover:scale-105 group-hover:shadow-cyan-500/40 transition-all duration-300 border border-white/20">
-              <Shield className="w-5 h-5 drop-shadow-xs" strokeWidth={2.2} />
+            <div className="w-9 h-9 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-950 flex items-center justify-center shadow-xs flex-shrink-0 group-hover:scale-105 transition-transform duration-200">
+              <Shield className="w-5 h-5" strokeWidth={2.2} />
             </div>
 
             <div className="flex flex-col">
-              <h1 className="text-lg sm:text-xl font-black tracking-tight bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-white dark:via-cyan-100 dark:to-slate-200 bg-clip-text text-transparent leading-tight">
+              <h1 className="text-base sm:text-lg font-bold tracking-tight text-slate-900 dark:text-white leading-tight">
                 {t.portalTitle || 'Cyber Fraud Guardian'}
               </h1>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium leading-tight">
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-normal leading-tight">
                 {t.portalTagline || 'National Citizen Cyber Threat Triage Portal'}
               </p>
             </div>
@@ -223,37 +223,37 @@ export default function Header({
             <button
               type="button"
               onClick={() => setStatusExpanded(!statusExpanded)}
-              className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-emerald-500/30 dark:border-emerald-500/30 bg-emerald-50/80 hover:bg-emerald-100/80 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/50 text-emerald-800 dark:text-emerald-300 text-xs font-semibold transition-all cursor-pointer shadow-xs backdrop-blur-xs hover:border-emerald-400"
+              className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/60 text-slate-700 dark:text-slate-300 text-xs font-medium hover:border-slate-300 dark:hover:border-slate-700 transition-colors shadow-2xs cursor-pointer"
               aria-expanded={statusExpanded}
               aria-label="Toggle system status and privacy details"
             >
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 shadow-xs shadow-emerald-400"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
               <span>{t.systemOperational || 'System Operational'}</span>
               <span className="hidden sm:inline text-slate-400 dark:text-slate-500 font-normal">
                 ({activeModulesCount} Modules)
               </span>
-              <ChevronDown className={`w-3.5 h-3.5 text-slate-500 transition-transform duration-200 ${statusExpanded ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${statusExpanded ? 'rotate-180' : ''}`} />
             </button>
 
             {/* Expandable Dropdown Popover */}
             {statusExpanded && (
               <div 
-                className="absolute right-0 mt-2 w-72 sm:w-80 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl p-3.5 z-40 text-xs space-y-3"
+                className="absolute right-0 mt-2 w-72 sm:w-80 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl p-4 z-40 text-xs space-y-3"
                 role="region"
                 aria-label="System Architecture Status"
               >
                 <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
                   <span className="font-bold text-slate-900 dark:text-white">System Health & Controls</span>
-                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
                     Track S2 • v0.1.0
                   </span>
                 </div>
 
-                <div className="space-y-2">
-                  <div className="flex items-start space-x-2">
+                <div className="space-y-2.5">
+                  <div className="flex items-start space-x-2.5">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 mt-1 flex-shrink-0" />
                     <div>
                       <strong className="text-slate-900 dark:text-white block font-medium">11 Modules Active</strong>
@@ -261,7 +261,7 @@ export default function Header({
                     </div>
                   </div>
 
-                  <div className="flex items-start space-x-2">
+                  <div className="flex items-start space-x-2.5">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 mt-1 flex-shrink-0" />
                     <div>
                       <strong className="text-slate-900 dark:text-white block font-medium">0-PII Retention Active</strong>
@@ -269,7 +269,7 @@ export default function Header({
                     </div>
                   </div>
 
-                  <div className="flex items-start space-x-2">
+                  <div className="flex items-start space-x-2.5">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 mt-1 flex-shrink-0" />
                     <div>
                       <strong className="text-slate-900 dark:text-white block font-medium">Ephemeral Volatile Cache</strong>
@@ -278,7 +278,7 @@ export default function Header({
                   </div>
                 </div>
 
-                <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px]">
+                <div className="pt-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px]">
                   <span className="text-slate-500 dark:text-slate-400">I4C Partner Initiative</span>
                   <a 
                     href="/verification.html" 
@@ -296,16 +296,16 @@ export default function Header({
         </div>
       </div>
 
-      {/* ─── 5. Nav Tabs: Dedicated Row Beneath Brand, Nothing Else Sharing That Row ─── */}
-      <nav className="bg-slate-900/95 dark:bg-[#080E1C]/95 backdrop-blur-md border-b border-slate-800/80 px-4 sm:px-6 shadow-sm" aria-label="Task Navigation">
-        <div className="max-w-7xl mx-auto flex items-center space-x-1.5 overflow-x-auto text-xs py-2 scrollbar-none">
+      {/* ─── 5. Nav Tabs: Clean Segmented Pill Navigation ─── */}
+      <nav className="bg-white/60 dark:bg-[#0B0F19]/60 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-800/60 px-4 sm:px-6 py-2" aria-label="Task Navigation">
+        <div className="max-w-7xl mx-auto flex items-center space-x-1 overflow-x-auto text-xs scrollbar-none">
           <button
             type="button"
             onClick={() => onSelectFlow('home')}
-            className={`px-3.5 py-1.5 rounded-lg font-medium transition-all duration-200 flex items-center space-x-1.5 whitespace-nowrap cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg text-xs transition-all duration-150 flex items-center space-x-1.5 whitespace-nowrap cursor-pointer ${
               currentFlow === 'home'
-                ? 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/40 text-cyan-300 font-bold shadow-xs shadow-cyan-500/10'
-                : 'text-slate-300 hover:text-white hover:bg-slate-800/60 border border-transparent'
+                ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 font-medium'
             }`}
           >
             <Home className="w-3.5 h-3.5" />
@@ -321,15 +321,15 @@ export default function Header({
               }
               onSelectFlow('message');
             }}
-            className={`px-3.5 py-1.5 rounded-lg font-medium transition-all duration-200 flex items-center space-x-1.5 whitespace-nowrap cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg text-xs transition-all duration-150 flex items-center space-x-1.5 whitespace-nowrap cursor-pointer ${
               currentFlow === 'message'
-                ? 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/40 text-cyan-300 font-bold shadow-xs shadow-cyan-500/10'
-                : 'text-slate-300 hover:text-white hover:bg-slate-800/60 border border-transparent'
+                ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 font-medium'
             }`}
           >
             <MessageSquare className="w-3.5 h-3.5" />
             <span>{t.navMessage || 'Check Message / SMS'}</span>
-            {!currentUser && <Lock className="w-2.5 h-2.5 opacity-60 ml-0.5" />}
+            {!currentUser && <Lock className="w-2.5 h-2.5 opacity-50 ml-0.5" />}
           </button>
 
           <button
@@ -341,15 +341,15 @@ export default function Header({
               }
               onSelectFlow('url');
             }}
-            className={`px-3.5 py-1.5 rounded-lg font-medium transition-all duration-200 flex items-center space-x-1.5 whitespace-nowrap cursor-pointer ${
+            className={`px-3 py-1.5 rounded-lg text-xs transition-all duration-150 flex items-center space-x-1.5 whitespace-nowrap cursor-pointer ${
               currentFlow === 'url'
-                ? 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/40 text-cyan-300 font-bold shadow-xs shadow-cyan-500/10'
-                : 'text-slate-300 hover:text-white hover:bg-slate-800/60 border border-transparent'
+                ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 font-medium'
             }`}
           >
             <Globe className="w-3.5 h-3.5" />
             <span>{t.navUrl || 'Check URL / Link'}</span>
-            {!currentUser && <Lock className="w-2.5 h-2.5 opacity-60 ml-0.5" />}
+            {!currentUser && <Lock className="w-2.5 h-2.5 opacity-50 ml-0.5" />}
           </button>
 
           <button
@@ -361,15 +361,15 @@ export default function Header({
               }
               onSelectFlow('screenshot');
             }}
-            className={`px-3.5 py-1.5 rounded-lg font-medium transition-all duration-200 flex items-center space-x-1.5 whitespace-nowrap cursor-pointer ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs transition-all duration-150 flex items-center space-x-1.5 whitespace-nowrap cursor-pointer ${
               currentFlow === 'screenshot'
-                ? 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/40 text-cyan-300 font-bold shadow-xs shadow-cyan-500/10'
-                : 'text-slate-300 hover:text-white hover:bg-slate-800/60 border border-transparent'
+                ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-semibold shadow-xs'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 font-medium'
             }`}
           >
             <Camera className="w-3.5 h-3.5" />
             <span>{t.navScreenshot || 'Check Screenshot / Photo'}</span>
-            {!currentUser && <Lock className="w-2.5 h-2.5 opacity-60 ml-0.5" />}
+            {!currentUser && <Lock className="w-2.5 h-2.5 opacity-50 ml-0.5" />}
           </button>
         </div>
       </nav>

@@ -137,10 +137,10 @@ export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = ''
       </div>
 
       {/* ─── Focused URL Analysis Form ─── */}
-      <form onSubmit={handleFormSubmit} noValidate className="bg-white/85 dark:bg-[#0B1222]/85 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-6 shadow-sm space-y-5">
+      <form onSubmit={handleFormSubmit} noValidate className="clean-card rounded-2xl p-6 space-y-5 shadow-sm">
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label htmlFor="flow-url-input" className="text-xs font-bold text-slate-900 dark:text-slate-200">
+            <label htmlFor="flow-url-input" className="text-xs font-bold text-slate-900 dark:text-slate-100">
               {t(lang, 'targetUrlLabel', 'Target Website URL or Domain')} <span className="text-red-500 font-bold">*</span>
             </label>
             <div className="flex items-center space-x-2">
@@ -150,7 +150,7 @@ export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = ''
                 className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-medium transition-colors cursor-pointer"
                 title="Paste from clipboard"
               >
-                <ClipboardPaste className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
+                <ClipboardPaste className="w-3.5 h-3.5 text-slate-600 dark:text-slate-400" />
                 <span>{t(lang, 'paste', 'Paste')}</span>
               </button>
               <button
@@ -167,7 +167,7 @@ export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = ''
 
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-              <Globe className="w-4 h-4 text-cyan-500" />
+              <Globe className="w-4 h-4 text-slate-500 dark:text-slate-400" />
             </div>
             <input
               type="text"
@@ -178,8 +178,8 @@ export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = ''
                 if (validationError) setValidationError(null);
               }}
               placeholder={t(lang, 'urlPlaceholder', 'e.g. sbi-kyc-verify-urgent.com or http://power-bill-payment.top')}
-              className={`w-full bg-slate-50/80 text-slate-900 placeholder-slate-400 border rounded-xl pl-10 pr-3 py-3 text-xs sm:text-sm font-mono focus:outline-none focus:ring-2 focus:ring-cyan-500/40 focus:border-cyan-500 dark:bg-slate-950/80 dark:text-slate-100 dark:placeholder-slate-500 transition-all ${
-                validationError ? 'border-red-500 ring-1 ring-red-500' : 'border-slate-300 dark:border-slate-700'
+              className={`w-full bg-slate-50/80 text-slate-900 placeholder-slate-400 border rounded-xl pl-10 pr-3 py-3 text-xs sm:text-sm font-mono focus:outline-none focus:ring-2 focus:ring-slate-900/10 dark:focus:ring-white/20 focus:border-slate-400 dark:focus:border-slate-500 dark:bg-slate-950/80 dark:text-slate-100 dark:placeholder-slate-500 transition-all ${
+                validationError ? 'border-red-500 ring-1 ring-red-500' : 'border-slate-200 dark:border-slate-800'
               }`}
             />
           </div>
@@ -194,19 +194,19 @@ export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = ''
 
         {/* Citizen Situation State */}
         <div>
-          <label htmlFor="url-user-state" className="block text-xs font-bold text-slate-900 dark:text-slate-300 mb-1.5">
+          <label htmlFor="url-user-state" className="block text-xs font-bold text-slate-900 dark:text-slate-200 mb-1.5">
             {t(lang, 'interactQuestion', 'Did you interact with this link?')} <span className="text-red-500 font-bold">*</span>
           </label>
           <select
             id="url-user-state"
             value={userState}
             onChange={(e) => setUserState(e.target.value)}
-            className={`w-full border rounded-xl px-3 py-2.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/40 cursor-pointer font-medium transition-all ${
+            className={`w-full border rounded-xl px-3 py-2.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/10 dark:focus:ring-white/20 cursor-pointer font-medium transition-all ${
               userState === 'paid' 
                 ? 'border-red-600 text-red-900 bg-red-50 dark:border-red-600 dark:text-red-300 dark:bg-red-950/30' 
                 : userState === 'entered_credentials'
                 ? 'border-amber-600 text-amber-950 bg-amber-50 dark:border-amber-600 dark:text-amber-300 dark:bg-amber-950/30'
-                : 'bg-slate-50/80 text-slate-900 border-slate-300 dark:bg-slate-950/80 dark:text-slate-200 dark:border-slate-700'
+                : 'bg-slate-50/80 text-slate-900 border-slate-200 dark:bg-slate-950/80 dark:text-slate-200 dark:border-slate-800'
             }`}
           >
             <option value="received">{t(lang, 'urlSitReceived', '1. I have NOT clicked it yet (Only received the link)')}</option>
@@ -222,16 +222,16 @@ export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = ''
             type="submit"
             id="analyze-url-btn"
             disabled={isAnalyzing}
-            className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-8 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold rounded-xl text-sm shadow-md shadow-cyan-600/25 transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-8 py-3 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-950 font-bold rounded-xl text-sm shadow-sm transition-all duration-150 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             {isAnalyzing ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin text-white" />
+                <Loader2 className="w-4 h-4 animate-spin text-current" />
                 <span>{t(lang, 'scanningThreatFeeds', 'Scanning Threat Intelligence Feeds...')}</span>
               </>
             ) : (
               <>
-                <Search className="w-4 h-4 text-white" strokeWidth={2.4} />
+                <Search className="w-4 h-4 text-current" strokeWidth={2.4} />
                 <span>{t(lang, 'inspectLinkSafety', 'Inspect Link Safety')}</span>
               </>
             )}

@@ -213,30 +213,30 @@ export default function FlowMessage({
       </div>
 
       {/* ─── Dedicated Message Form ─── */}
-      <form onSubmit={handleFormSubmit} noValidate className="bg-white/85 dark:bg-[#0B1222]/85 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-2xl p-6 shadow-sm space-y-5">
+      <form onSubmit={handleFormSubmit} noValidate className="clean-card rounded-2xl p-6 shadow-sm space-y-5">
         {/* Textarea Header with Tools */}
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <label htmlFor="flow-message-input" className="text-xs font-bold text-slate-900 dark:text-slate-200">
+            <label htmlFor="flow-message-input" className="text-xs font-bold text-slate-900 dark:text-slate-100">
               {t(lang, 'messageContent', 'Message Content')} <span className="text-red-600 font-bold">*</span>
             </label>
             <div className="flex items-center space-x-2">
               <button
                 type="button"
                 onClick={handlePaste}
-                className="inline-flex items-center space-x-1 px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-medium transition-colors cursor-pointer"
+                className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-medium transition-colors cursor-pointer"
                 title="Paste from clipboard"
               >
-                <ClipboardPaste className="w-3 h-3 text-slate-600 dark:text-slate-400" />
+                <ClipboardPaste className="w-3.5 h-3.5 text-slate-600 dark:text-slate-400" />
                 <span>{t(lang, 'paste', 'Paste')}</span>
               </button>
               <button
                 type="button"
                 onClick={handleClear}
-                className="inline-flex items-center space-x-1 px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-medium transition-colors cursor-pointer"
+                className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-medium transition-colors cursor-pointer"
                 title="Clear input"
               >
-                <Eraser className="w-3 h-3 text-slate-500" />
+                <Eraser className="w-3.5 h-3.5 text-slate-400" />
                 <span>{t(lang, 'clear', 'Clear')}</span>
               </button>
               <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400 pl-1">
@@ -256,8 +256,8 @@ export default function FlowMessage({
                 if (validationError) setValidationError(null);
               }}
               placeholder={t(lang, 'msgPlaceholder', 'Paste suspicious SMS, WhatsApp message, email, or select an example above...')}
-              className={`w-full bg-slate-50 text-slate-900 placeholder-slate-400 border rounded-lg p-3 pb-9 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-slate-900 dark:bg-slate-950 dark:text-slate-100 dark:placeholder-slate-500 transition-all font-sans leading-relaxed resize-y ${
-                validationError ? 'border-red-500 ring-1 ring-red-500' : 'border-slate-300 dark:border-slate-700'
+              className={`w-full bg-slate-50/80 text-slate-900 placeholder-slate-400 border rounded-xl p-3 pb-9 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900/10 dark:focus:ring-white/20 focus:border-slate-400 dark:focus:border-slate-500 dark:bg-slate-950/80 dark:text-slate-100 dark:placeholder-slate-500 transition-all font-sans leading-relaxed resize-y ${
+                validationError ? 'border-red-500 ring-1 ring-red-500' : 'border-slate-200 dark:border-slate-800'
               }`}
             />
 
@@ -390,16 +390,16 @@ export default function FlowMessage({
             type="submit"
             id="analyze-btn"
             disabled={isAnalyzing}
-            className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-8 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold rounded-xl text-sm shadow-md shadow-cyan-600/25 transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-8 py-3 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-950 font-bold rounded-xl text-sm shadow-sm transition-all duration-150 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             {isAnalyzing ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin text-white" />
+                <Loader2 className="w-4 h-4 animate-spin text-current" />
                 <span>{t(lang, 'runningTriage', 'Running Forensic Triage...')}</span>
               </>
             ) : (
               <>
-                <Search className="w-4 h-4 text-white" strokeWidth={2.4} />
+                <Search className="w-4 h-4 text-current" strokeWidth={2.4} />
                 <span>{t(lang, 'investigateMsg', 'Investigate Message')}</span>
               </>
             )}
