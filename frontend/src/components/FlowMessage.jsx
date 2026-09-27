@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { 
   ArrowLeft, 
   MessageSquare, 
@@ -11,10 +11,13 @@ import {
   ChevronUp, 
   Link as LinkIcon, 
   ShieldCheck,
-  FlaskConical
+  FlaskConical,
+  Mic,
+  MicOff
 } from 'lucide-react';
 import { PRESET_SCENARIOS } from '../data/presets';
 import { t } from '../i18n/translations';
+import { useVoiceInput } from '../hooks/useVoiceInput';
 
 export default function FlowMessage({ 
   onBack, 
@@ -32,6 +35,83 @@ export default function FlowMessage({
   const [userState, setUserState] = useState(initialState);
   const [showUrlField, setShowUrlField] = useState(Boolean(initialUrls));
   const [validationError, setValidationError] = useState(null);
+
+  /**
+   * Voice-to-text state — two refs, zero race conditions:
+   *
+   *   committedRef  — everything that is "locked in":
+   *                   • pre-existing typed / pasted text (captured at the moment recording starts)
+   *                   • each finalised speech phrase appended as it arrives
+   *
+   *   interimRef    — the current in-flight partial phrase being streamed live.
+   *                   Replaced on every interim event, cleared when a final arrives.
+   *
+   * Display formula (always):  textarea = committedRef + ' ' + interimRef
+   */
+  const committedRef = useRef('');
+  const interimRef   = useRef('');
+
+  const flushToTextarea = useCallback(() => {
+    const base   = committedRef.current;
+    const live   = interimRef.current;
+    const joined = base && live ? base + ' ' + live
+                 : base         ? base
+                 :                live;
+    setMessage(joined);
+  }, []);
+
+  const handleTranscript = useCallback((text, isFinal) => {
+    if (isFinal) {
+      // Lock the phrase into committed text, clear the interim slot
+      committedRef.current = committedRef.current
+        ? committedRef.current + ' ' + text
+        : text;
+      interimRef.current = '';
+    } else {
+      // Live-stream: just update the interim slot (overwrite the previous partial)
+      interimRef.current = text;
+    }
+    flushToTextarea();
+    setValidationError(null);
+  }, [flushToTextarea]);
+
+  const { isListening, status: voiceStatus, isSupported: voiceSupported, toggle: toggleVoiceRaw } =
+    useVoiceInput({ onTranscript: handleTranscript, lang });
+
+  /**
+   * Wrap toggle so that when recording STARTS we snapshot whatever is currently
+   * in the textarea into committedRef. This means any pre-existing typed / pasted
+   * text is preserved as the base and voice content appends after it.
+   */
+  const toggleVoice = useCallback(() => {
+    if (!isListening) {
+      // Snapshot current textarea content as the committed base
+      setMessage((current) => {
+        committedRef.current = current;
+        interimRef.current   = '';
+        return current; // no visual change, just capture
+      });
+    } else {
+      // Stopping: freeze whatever is displayed (interim becomes committed)
+      setMessage((current) => {
+        committedRef.current = current;
+        interimRef.current   = '';
+        return current;
+      });
+    }
+    toggleVoiceRaw();
+  }, [isListening, toggleVoiceRaw]);
+
+  // Derive the status hint shown below the textarea
+  const voiceHint = (() => {
+    if (!voiceSupported)                      return t(lang, 'voiceUnsupported', 'Voice input not supported in this browser.');
+    if (voiceStatus === 'listening')          return t(lang, 'voiceListening', 'Listening — Tap to stop');
+    if (voiceStatus === 'error_permission')   return t(lang, 'voiceDenied', 'Microphone access denied.');
+    if (voiceStatus === 'error_no_speech')    return t(lang, 'voiceNoSpeech', 'No speech detected. Tap mic to retry.');
+    if (voiceStatus === 'error_network')      return t(lang, 'voiceNoSpeech', 'No speech detected. Check connection.');
+    if (voiceStatus === 'error_generic')      return t(lang, 'voiceNoSpeech', 'Recognition error. Tap mic to retry.');
+    return null; // idle — show nothing
+  })();
 
   const getPresetTitle = (preset) => {
     const key = `preset_${preset.id.replace(/-/g, '_')}`;
@@ -165,19 +245,67 @@ export default function FlowMessage({
             </div>
           </div>
 
-          <textarea
-            id="flow-message-input"
-            rows={4}
-            value={message}
-            onChange={(e) => {
-              setMessage(e.target.value);
-              if (validationError) setValidationError(null);
-            }}
-            placeholder={t(lang, 'msgPlaceholder', 'Paste suspicious SMS, WhatsApp message, email, or select an example above...')}
-            className={`w-full bg-slate-50 text-slate-900 placeholder-slate-400 border rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-slate-900 dark:bg-slate-950 dark:text-slate-100 dark:placeholder-slate-500 transition-all font-sans leading-relaxed resize-y ${
-              validationError ? 'border-red-500 ring-1 ring-red-500' : 'border-slate-300 dark:border-slate-700'
-            }`}
-          />
+          {/* Textarea wrapped in a relative container for mic button positioning */}
+          <div className="relative">
+            <textarea
+              id="flow-message-input"
+              rows={4}
+              value={message}
+              onChange={(e) => {
+                setMessage(e.target.value);
+                if (validationError) setValidationError(null);
+              }}
+              placeholder={t(lang, 'msgPlaceholder', 'Paste suspicious SMS, WhatsApp message, email, or select an example above...')}
+              className={`w-full bg-slate-50 text-slate-900 placeholder-slate-400 border rounded-lg p-3 pb-9 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-slate-900 dark:bg-slate-950 dark:text-slate-100 dark:placeholder-slate-500 transition-all font-sans leading-relaxed resize-y ${
+                validationError ? 'border-red-500 ring-1 ring-red-500' : 'border-slate-300 dark:border-slate-700'
+              }`}
+            />
+
+            {/* ─── Microphone button — bottom-left of textarea, icon-only ─── */}
+            {voiceSupported ? (
+              <button
+                type="button"
+                onClick={toggleVoice}
+                disabled={!voiceSupported}
+                aria-label={isListening
+                  ? t(lang, 'voiceListening', 'Listening — Tap to stop')
+                  : t(lang, 'voiceInputLabel', 'Speak your message')}
+                title={isListening
+                  ? t(lang, 'voiceListening', 'Listening — Tap to stop')
+                  : t(lang, 'voiceInputLabel', 'Speak your message')}
+                className={`absolute bottom-2 left-2 p-1.5 rounded transition-all duration-150 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-1 ${
+                  isListening
+                    ? 'bg-red-50 hover:bg-red-100 text-red-700 border border-red-300 dark:bg-red-950/40 dark:hover:bg-red-950/60 dark:text-red-400 dark:border-red-700 focus:ring-red-400 animate-pulse'
+                    : 'bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-300 dark:border-slate-700 focus:ring-slate-400'
+                }`}
+              >
+                {isListening
+                  ? <MicOff className="w-5 h-5" />
+                  : <Mic className="w-5 h-5" />}
+              </button>
+            ) : (
+              /* Unsupported browser — greyed-out icon only */
+              <span
+                className="absolute bottom-2 left-2 p-1.5 rounded text-slate-400 dark:text-slate-600 border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 cursor-not-allowed"
+                title={t(lang, 'voiceUnsupported', 'Voice input not supported in this browser.')}
+              >
+                <Mic className="w-5 h-5" />
+              </span>
+            )}
+          </div>
+
+          {/* Voice status hint — only shown when not idle */}
+          {voiceHint && (
+            <p className={`mt-1 text-[11px] font-medium flex items-center space-x-1 ${
+              voiceStatus === 'listening'
+                ? 'text-red-600 dark:text-red-400'
+                : voiceStatus === 'error_permission'
+                ? 'text-amber-600 dark:text-amber-400'
+                : 'text-slate-500 dark:text-slate-400'
+            }`}>
+              <span>{voiceHint}</span>
+            </p>
+          )}
 
           {validationError && (
             <p className="mt-1 text-xs text-red-600 dark:text-red-400 font-semibold flex items-center space-x-1">
