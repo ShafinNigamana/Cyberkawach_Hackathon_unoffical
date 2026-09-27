@@ -34,6 +34,9 @@ _SUSPICIOUS_TLDS = frozenset({
     '.top', '.xyz', '.click', '.link', '.online', '.site',
     '.club', '.live', '.store', '.shop', '.buzz', '.icu',
     '.rest', '.fit', '.surf', '.monster', '.work',
+    '.lol', '.win', '.bid', '.cam', '.stream', '.space',
+    '.quest', '.cfd', '.fun', '.uno', '.sbs', '.autos',
+    '.cyou', '.guru', '.vip', '.zone', '.hair', '.beauty',
 })
 
 # ─── Trusted TLDs (legitimate domains frequently impersonated) ───

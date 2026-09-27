@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   X, 
   Printer, 
@@ -10,18 +10,58 @@ import {
 } from 'lucide-react';
 import { getExportUrl } from '../services/api';
 
-export default function ReportModal({ incident, onClose, onCopyRef, copiedRef }) {
-  if (!incident) return null;
+export default function ReportModal({ 
+  isOpen = true, 
+  incident, 
+  result, 
+  incidentId, 
+  onClose, 
+  onCopyRef, 
+  copiedRef 
+}) {
+  const [internalCopied, setInternalCopied] = useState(false);
 
-  const exportJsonUrl = getExportUrl(incident.incident_id, 'json');
-  const exportHtmlUrl = getExportUrl(incident.incident_id, 'html');
+  if (isOpen === false) return null;
 
-  const riskScorePct = Math.round((incident.risk?.score || 0) * 100);
-  const riskLevel = (incident.risk?.level || 'UNKNOWN').toUpperCase();
+  const currentIncident = incident || result;
+  if (!currentIncident) return null;
+
+  const effectiveId = incidentId || currentIncident.incident_id || 'INC-2026-PENDING';
+  const exportJsonUrl = getExportUrl(effectiveId, 'json');
+  const exportHtmlUrl = getExportUrl(effectiveId, 'html');
+
+  const riskScorePct = Math.round((currentIncident.risk?.score || 0) * 100);
+  const riskLevel = (currentIncident.risk?.level || 'UNKNOWN').toUpperCase();
+
+  const handleCopy = (refId) => {
+    if (onCopyRef) {
+      onCopyRef(refId);
+    } else {
+      navigator.clipboard?.writeText?.(refId);
+      setInternalCopied(true);
+      setTimeout(() => setInternalCopied(false), 2000);
+    }
+  };
+
+  const isCopied = copiedRef ?? internalCopied;
 
   const handlePrint = () => {
-    // Open printable HTML dossier in new tab or trigger window print
-    window.open(exportHtmlUrl, '_blank');
+    window.print();
+  };
+
+  const handleDownloadJson = (e) => {
+    e.preventDefault();
+    try {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentIncident, null, 2));
+      const a = document.createElement('a');
+      a.setAttribute("href", dataStr);
+      a.setAttribute("download", `CyberKawach_${effectiveId}_dossier.json`);
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch {
+      window.open(exportJsonUrl, '_blank');
+    }
   };
 
   return (
@@ -49,26 +89,25 @@ export default function ReportModal({ incident, onClose, onCopyRef, copiedRef })
           <div className="flex items-center space-x-2">
             <button
               onClick={handlePrint}
-              className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-btn text-xs font-semibold shadow transition-colors"
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-btn text-xs font-semibold shadow transition-colors cursor-pointer"
               title="Print official dossier or save to PDF"
             >
               <Printer className="w-3.5 h-3.5" />
               <span>Print / Save PDF</span>
             </button>
 
-            <a
-              href={exportJsonUrl}
-              download={`${incident.incident_id}_dossier.json`}
-              className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-btn text-xs font-medium transition-colors"
+            <button
+              onClick={handleDownloadJson}
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-btn text-xs font-medium transition-colors cursor-pointer"
               title="Download structured JSON forensic export"
             >
               <Download className="w-3.5 h-3.5 text-slate-400" />
               <span>JSON</span>
-            </a>
+            </button>
 
             <button
               onClick={onClose}
-              className="p-1.5 rounded-btn hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
+              className="p-1.5 rounded-btn hover:bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
               aria-label="Close Preview"
             >
               <X className="w-5 h-5" />
@@ -100,13 +139,13 @@ export default function ReportModal({ incident, onClose, onCopyRef, copiedRef })
             <div>
               <span className="text-slate-400 block text-[10px]">INCIDENT REFERENCE ID:</span>
               <div className="flex items-center space-x-2 mt-0.5">
-                <strong className="text-amber-400 text-sm">{incident.incident_id}</strong>
+                <strong className="text-amber-400 text-sm">{effectiveId}</strong>
                 <button
-                  onClick={() => onCopyRef(incident.incident_id)}
-                  className="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-white"
+                  onClick={() => handleCopy(effectiveId)}
+                  className="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-white cursor-pointer"
                   title="Copy Reference ID"
                 >
-                  {copiedRef ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                  {isCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                 </button>
               </div>
             </div>
@@ -122,7 +161,7 @@ export default function ReportModal({ incident, onClose, onCopyRef, copiedRef })
                   {riskLevel} ({riskScorePct}/100)
                 </span>
                 <span className="text-slate-400 text-xs ml-2">
-                  Category: {incident.fraud_category || 'General Scam'}
+                  Category: {currentIncident.fraud_category || 'General Scam'}
                 </span>
               </div>
             </div>
@@ -134,12 +173,12 @@ export default function ReportModal({ incident, onClose, onCopyRef, copiedRef })
               1. Untrusted Evidentiary Communication
             </h4>
             <div className="p-3 bg-slate-950 border border-slate-800 rounded-btn font-mono text-[11px] text-slate-300 whitespace-pre-wrap break-words leading-relaxed">
-              {incident.message_preview || incident.message || 'No text content available'}
+              {currentIncident.message_preview || currentIncident.message || 'No text content available'}
             </div>
           </div>
 
           {/* Section 2: Indicators of Compromise (IOCs) */}
-          {incident.urls && incident.urls.length > 0 && (
+          {currentIncident.urls && currentIncident.urls.length > 0 && (
             <div>
               <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wide mb-1.5">
                 2. Extracted Indicators of Compromise (IOCs)
@@ -154,7 +193,7 @@ export default function ReportModal({ incident, onClose, onCopyRef, copiedRef })
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-800/80 font-mono">
-                    {incident.urls.map((u, i) => (
+                    {currentIncident.urls.map((u, i) => (
                       <tr key={i} className="hover:bg-slate-900/40">
                         <td className="p-2.5 text-slate-400">Web URL</td>
                         <td className="p-2.5 text-slate-200 break-all">{u.url}</td>
@@ -168,7 +207,7 @@ export default function ReportModal({ incident, onClose, onCopyRef, copiedRef })
           )}
 
           {/* Section 3: Evidence Summary Table */}
-          {incident.evidence && incident.evidence.length > 0 && (
+          {currentIncident.evidence && currentIncident.evidence.length > 0 && (
             <div>
               <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wide mb-1.5">
                 3. Forensic Evidence Dossier
@@ -183,7 +222,7 @@ export default function ReportModal({ incident, onClose, onCopyRef, copiedRef })
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-800/80">
-                    {incident.evidence.map((item, i) => (
+                    {currentIncident.evidence.map((item, i) => (
                       <tr key={i} className="hover:bg-slate-900/40">
                         <td className="p-2.5 font-mono text-slate-400 whitespace-nowrap">{item.source}</td>
                         <td className="p-2.5 text-slate-200">{item.description}</td>

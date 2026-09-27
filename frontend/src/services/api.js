@@ -6,13 +6,14 @@
 const API_BASE = '';
 
 export async function analyzeMessage({ message, urls = [], user_state = 'received', language = 'en', input_type = 'sms' }) {
+  const normalizedInputType = (input_type === 'image' || input_type === 'photo') ? 'screenshot' : input_type;
   const payload = {
     message: message.trim(),
     urls: Array.isArray(urls) ? urls : urls.split('\n').map(u => u.trim()).filter(Boolean),
     user_state,
     language,
     response_language: language,
-    input_type,
+    input_type: normalizedInputType,
   };
 
   const token = localStorage.getItem('cf_auth_token');
@@ -109,7 +110,7 @@ export async function fetchVerificationStatus() {
 }
 
 export function getExportUrl(incidentId, format = 'html', lang = 'en') {
-  return `${API_BASE}/api/incidents/${encodeURIComponent(incidentId)}/export?format=${format}&lang=${lang}`;
+  return `${API_BASE}/api/incidents/${encodeURIComponent(incidentId || '')}/export?format=${encodeURIComponent(format)}&lang=${encodeURIComponent(lang)}`;
 }
 
 export async function translateText(text, targetLang, sourceLang = 'en') {
@@ -279,4 +280,6 @@ export async function fetchIncidentGraph(incidentId) {
   if (!response.ok) throw new Error('Failed to load relationship graph');
   return response.json();
 }
+
+
 

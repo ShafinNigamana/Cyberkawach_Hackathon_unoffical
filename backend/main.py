@@ -721,8 +721,13 @@ async def analyze_message(request: AnalyzeRequest, raw_request: Request):
     user_id = user["user_id"] if user else None
 
     # Create evidence contract instance with optional sender context
+    normalized_input_type = (
+        InputType.SCREENSHOT
+        if request.input_type in (InputType.IMAGE, InputType.PHOTO, InputType.SCREENSHOT)
+        else request.input_type
+    )
     evidence = IncidentEvidence(
-        input_type=request.input_type,
+        input_type=normalized_input_type,
         message=cleaned_message,
         original_input=cleaned_message,
         language=cleaned_response_lang,

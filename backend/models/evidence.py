@@ -51,6 +51,8 @@ class InputType(str, Enum):
     EMAIL = "email"
     CHAT = "chat"
     SCREENSHOT = "screenshot"
+    IMAGE = "image"
+    PHOTO = "photo"
 
 
 class UserState(str, Enum):

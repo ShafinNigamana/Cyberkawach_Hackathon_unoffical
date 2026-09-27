@@ -112,7 +112,7 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing, lang = '
     onSubmit({
       message: extractedText.trim(),
       urls: extractedUrls,
-      input_type: 'image',
+      input_type: 'screenshot',
       user_state: userState,
     });
   };

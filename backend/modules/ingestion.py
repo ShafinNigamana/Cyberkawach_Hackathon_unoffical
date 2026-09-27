@@ -26,7 +26,8 @@ _URL_PATTERN = re.compile(
     r'(?<!\w)(?:www\.)[^\s<>"\'}\])+]+|'  # www. prefixed
     r'(?<!\w)(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)'  # bare domain
     r'(?:com|org|net|in|co\.in|gov\.in|io|xyz|tk|ml|ga|cf|gq|top|'
-    r'info|biz|online|site|club|live|shop|store|app|dev|page|link|click)'
+    r'info|biz|online|site|club|live|shop|store|app|dev|page|link|click|'
+    r'lol|win|fun|sbs|cfd|autos|space|quest|zone|vip|cam)'
     r'(?:/[^\s<>"\'}\])*]*)?',
     re.IGNORECASE,
 )
