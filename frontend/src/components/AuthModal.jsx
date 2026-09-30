@@ -289,7 +289,7 @@ export default function AuthModal({
                 onClick={() => { setTab('login'); setError(null); setSuccessMsg(null); }}
                 className={`flex-1 py-3 text-center transition-all border-b-2 cursor-pointer flex items-center justify-center space-x-1.5 ${
                   tab === 'login' 
-                    ? 'border-cyan-600 text-cyan-700 dark:text-cyan-400 font-bold bg-white dark:bg-slate-900 rounded-t-lg' 
+                    ? 'border-slate-900 text-slate-900 dark:border-white dark:text-white font-bold bg-white dark:bg-slate-900 rounded-t-lg' 
                     : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
                 }`}
               >
@@ -301,7 +301,7 @@ export default function AuthModal({
                 onClick={() => { setTab('register'); setError(null); setSuccessMsg(null); }}
                 className={`flex-1 py-3 text-center transition-all border-b-2 cursor-pointer flex items-center justify-center space-x-1.5 ${
                   tab === 'register' 
-                    ? 'border-cyan-600 text-cyan-700 dark:text-cyan-400 font-bold bg-white dark:bg-slate-900 rounded-t-lg' 
+                    ? 'border-slate-900 text-slate-900 dark:border-white dark:text-white font-bold bg-white dark:bg-slate-900 rounded-t-lg' 
                     : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
                 }`}
               >
@@ -316,7 +316,7 @@ export default function AuthModal({
                 onClick={() => { setTab('history'); loadHistory(); }}
                 className={`flex-1 py-3 text-center transition-all border-b-2 cursor-pointer flex items-center justify-center space-x-1.5 ${
                   tab === 'history' 
-                    ? 'border-cyan-600 text-cyan-700 dark:text-cyan-400 font-bold bg-white dark:bg-slate-900 rounded-t-lg' 
+                    ? 'border-slate-900 text-slate-900 dark:border-white dark:text-white font-bold bg-white dark:bg-slate-900 rounded-t-lg' 
                     : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
                 }`}
               >
@@ -443,11 +443,11 @@ export default function AuthModal({
               <button
                 type="submit"
                 disabled={!canSubmitLogin}
-                className="w-full py-2.5 px-4 bg-cyan-700 hover:bg-cyan-800 active:bg-cyan-900 text-white text-sm font-bold rounded-xl transition-all shadow-md flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                className="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-950 text-sm font-bold rounded-xl transition-all shadow-sm flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
                 {loading ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin text-current" />
                     <span>Authenticating Citizen...</span>
                   </>
                 ) : (
@@ -706,11 +706,11 @@ export default function AuthModal({
               <button
                 type="submit"
                 disabled={!canSubmitRegister}
-                className="w-full py-2.5 px-4 bg-emerald-700 hover:bg-emerald-800 active:bg-emerald-900 text-white text-sm font-bold rounded-xl transition-all shadow-md flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                className="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-950 text-sm font-bold rounded-xl transition-all shadow-sm flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               >
                 {loading ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin text-current" />
                     <span>Creating Account in Neo4j Aura...</span>
                   </>
                 ) : (

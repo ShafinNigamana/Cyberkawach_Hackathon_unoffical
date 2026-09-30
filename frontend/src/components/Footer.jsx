@@ -7,14 +7,14 @@ export default function Footer({ onOpenMethodology, lang = 'en' }) {
   const [mobileGuaranteesOpen, setMobileGuaranteesOpen] = useState(false);
 
   return (
-    <footer className="w-full bg-slate-100 border-t border-slate-200 text-slate-600 dark:bg-slate-950 dark:border-slate-800 dark:text-slate-400 text-xs mt-12 py-8 px-4 sm:px-6 select-none transition-colors" role="contentinfo">
+    <footer className="w-full bg-slate-100/90 dark:bg-night-950/95 backdrop-blur-md border-t border-slate-200/90 dark:border-night-border text-slate-600 dark:text-slate-400 text-xs mt-12 py-10 px-4 sm:px-6 select-none transition-colors relative z-20" role="contentinfo">
       <div className="max-w-7xl mx-auto space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pb-8 border-b border-slate-200 dark:border-slate-800/80">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pb-8 border-b border-slate-200 dark:border-night-border/80">
           {/* Col 1: Identity & Partnership */}
           <div className="space-y-3">
-            <div className="flex items-center space-x-2.5">
-              <div className="w-8 h-8 rounded-lg bg-blue-900 dark:bg-blue-950 border border-amber-500/80 flex items-center justify-center flex-shrink-0 shadow-xs">
-                <Shield className="w-4 h-4 text-amber-400" />
+            <div className="flex items-center space-x-3">
+              <div className="w-9 h-9 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-950 flex items-center justify-center flex-shrink-0 shadow-sm">
+                <Shield className="w-4.5 h-4.5" strokeWidth={2.2} />
               </div>
               <div>
                 <h4 className="text-sm font-bold text-slate-900 dark:text-white">
@@ -32,7 +32,7 @@ export default function Footer({ onOpenMethodology, lang = 'en' }) {
 
             <button
               onClick={onOpenMethodology}
-              className="inline-flex items-center space-x-1 text-blue-700 dark:text-amber-400 hover:text-blue-900 dark:hover:text-amber-300 text-xs font-bold underline underline-offset-2 cursor-pointer"
+              className="inline-flex items-center space-x-1 text-slate-900 dark:text-slate-100 hover:text-slate-700 dark:hover:text-white text-xs font-bold underline underline-offset-2 cursor-pointer"
             >
               <span>{t(lang, 'footerMethodology', 'View Technical Methodology & Audits')}</span>
               <ExternalLink className="w-3 h-3" />

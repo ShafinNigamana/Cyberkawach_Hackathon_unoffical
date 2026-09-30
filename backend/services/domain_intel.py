@@ -24,6 +24,13 @@ import dns.resolver
 import httpx
 import whois
 
+try:
+    from cryptography import x509
+    from cryptography.x509.oid import NameOID, ExtensionOID
+    _HAS_CRYPTOGRAPHY = True
+except ImportError:
+    _HAS_CRYPTOGRAPHY = False
+
 from backend.models.evidence import (
     EvidenceItem,
     EvidenceReliability,
@@ -206,8 +213,22 @@ def inspect_tls_certificate(domain: str, port: int = 443) -> dict[str, Any] | No
         logger.debug("Failed to resolve %s for TLS: %s", target, safe_error_message(e))
         return None
 
-    cert = None
-    target_l = target.lower()
+    # Check standard CA trust first
+    is_trusted_ca = False
+    try:
+        verify_ctx = ssl.create_default_context()
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as vsock:
+            vsock.settimeout(_DEFAULT_TLS_TIMEOUT)
+            vsock.connect((target_ip, port))
+            with verify_ctx.wrap_socket(vsock, server_hostname=target) as vssock:
+                is_trusted_ca = True
+    except ssl.SSLCertVerificationError:
+        is_trusted_ca = False
+    except Exception:
+        pass
+
+    cert_bin = None
+    cert_dict = {}
 
     # 1. Attempt standard verified connection to get full peer cert dictionary
     try:
@@ -215,12 +236,13 @@ def inspect_tls_certificate(domain: str, port: int = 443) -> dict[str, Any] | No
         ctx_v.check_hostname = False
         with socket.create_connection((target_ip, port), timeout=_DEFAULT_TLS_TIMEOUT) as sock:
             with ctx_v.wrap_socket(sock, server_hostname=target) as ssock:
-                cert = ssock.getpeercert()
+                cert_dict = ssock.getpeercert() or {}
+                cert_bin = ssock.getpeercert(binary_form=True)
     except Exception:
         pass
 
-    # 2. Fallback to unverified connection and decode binary DER certificate
-    if not cert:
+    # 2. Fallback to unverified connection to retrieve binary DER certificate
+    if not cert_bin:
         try:
             ctx_u = ssl.create_default_context()
             ctx_u.check_hostname = False
@@ -228,74 +250,114 @@ def inspect_tls_certificate(domain: str, port: int = 443) -> dict[str, Any] | No
             with socket.create_connection((target_ip, port), timeout=_DEFAULT_TLS_TIMEOUT) as sock:
                 with ctx_u.wrap_socket(sock, server_hostname=target) as ssock:
                     cert_bin = ssock.getpeercert(binary_form=True)
-                    if cert_bin:
-                        pem = ssl.DER_cert_to_PEM_cert(cert_bin)
-                        import tempfile
-                        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.pem') as tf:
-                            tf.write(pem)
-                            tf_path = tf.name
-                        try:
-                            cert = ssl._ssl._test_decode_cert(tf_path)
-                        finally:
-                            try:
-                                os.remove(tf_path)
-                            except Exception:
-                                pass
+                    if not cert_dict:
+                        cert_dict = ssock.getpeercert() or {}
         except Exception:
             pass
 
-    if not cert:
+    if not cert_bin and not cert_dict:
         return None
 
     try:
-        issuer_str = "Unknown"
-        subject_str = "Unknown"
+        issuer_str = "Unknown Issuer"
+        subject_str = "Unknown Subject"
         not_before = None
         not_after = None
         sans: list[str] = []
+        is_self_signed = False
 
-        issuer_parts = cert.get("issuer", ())
-        issuer_dict = {item[0][0]: item[0][1] for item in issuer_parts if item and item[0]}
-        issuer_str = issuer_dict.get("organizationName") or issuer_dict.get("commonName") or "Unknown Issuer"
-
-        subject_parts = cert.get("subject", ())
-        subject_dict = {item[0][0]: item[0][1] for item in subject_parts if item and item[0]}
-        subject_str = subject_dict.get("commonName") or "Unknown Subject"
-
-        not_before_str = cert.get("notBefore")
-        not_after_str = cert.get("notAfter")
-        if not_before_str:
+        if _HAS_CRYPTOGRAPHY and cert_bin:
             try:
-                not_before = datetime.strptime(not_before_str, "%b %d %H:%M:%S %Y %Z").replace(tzinfo=timezone.utc)
-            except Exception:
-                pass
-        if not_after_str:
-            try:
-                not_after = datetime.strptime(not_after_str, "%b %d %H:%M:%S %Y %Z").replace(tzinfo=timezone.utc)
-            except Exception:
-                pass
+                x_cert = x509.load_der_x509_certificate(cert_bin)
+                # Issuer
+                i_orgs = x_cert.issuer.get_attributes_for_oid(NameOID.ORGANIZATION_NAME)
+                i_cns = x_cert.issuer.get_attributes_for_oid(NameOID.COMMON_NAME)
+                if i_orgs and i_orgs[0].value:
+                    issuer_str = str(i_orgs[0].value)
+                elif i_cns and i_cns[0].value:
+                    issuer_str = str(i_cns[0].value)
 
-        for san_type, san_val in cert.get("subjectAltName", ()):
-            if san_type.lower() == "dns":
-                sans.append(san_val.lower().strip())
+                # Subject
+                s_cns = x_cert.subject.get_attributes_for_oid(NameOID.COMMON_NAME)
+                if s_cns and s_cns[0].value:
+                    subject_str = str(s_cns[0].value)
 
+                # Validity dates
+                try:
+                    not_before = x_cert.not_valid_before_utc
+                    not_after = x_cert.not_valid_after_utc
+                except AttributeError:
+                    not_before = x_cert.not_valid_before.replace(tzinfo=timezone.utc)
+                    not_after = x_cert.not_valid_after.replace(tzinfo=timezone.utc)
+
+                # SANs
+                try:
+                    san_ext = x_cert.extensions.get_extension_for_oid(ExtensionOID.SUBJECT_ALTERNATIVE_NAME)
+                    sans = [s.lower().strip() for s in san_ext.value.get_values_for_type(x509.DNSName)]
+                except Exception:
+                    sans = []
+
+                # Self-signed
+                is_self_signed = (x_cert.issuer == x_cert.subject)
+            except Exception as ex:
+                logger.debug("x509 DER parse notice: %s", safe_error_message(ex))
+
+        # Fallback to ssl dict if cryptography failed or unavailable
+        if issuer_str == "Unknown Issuer" and cert_dict:
+            issuer_parts = cert_dict.get("issuer", ())
+            idict = {item[0][0]: item[0][1] for item in issuer_parts if item and item[0]}
+            issuer_str = idict.get("organizationName") or idict.get("commonName") or "Unknown Issuer"
+
+            subject_parts = cert_dict.get("subject", ())
+            sdict = {item[0][0]: item[0][1] for item in subject_parts if item and item[0]}
+            subject_str = sdict.get("commonName") or "Unknown Subject"
+
+            if not not_before and cert_dict.get("notBefore"):
+                try:
+                    not_before = datetime.strptime(cert_dict["notBefore"], "%b %d %H:%M:%S %Y %Z").replace(tzinfo=timezone.utc)
+                except Exception:
+                    pass
+            if not not_after and cert_dict.get("notAfter"):
+                try:
+                    not_after = datetime.strptime(cert_dict["notAfter"], "%b %d %H:%M:%S %Y %Z").replace(tzinfo=timezone.utc)
+                except Exception:
+                    pass
+
+            if not sans:
+                for san_type, san_val in cert_dict.get("subjectAltName", ()):
+                    if san_type.lower() == "dns":
+                        sans.append(san_val.lower().strip())
+
+            is_self_signed = issuer_str == subject_str and issuer_str != "Unknown Issuer"
+
+        # Check coverage
         covered = False
-        all_names = [n.lower() for n in sans]
-        if subject_str and subject_str != "Unknown Subject":
-            all_names.append(subject_str.lower())
+        target_l = target.lower()
+        candidate_names = [n.lower() for n in sans]
+        if subject_str and subject_str.lower() != "unknown subject":
+            candidate_names.append(subject_str.lower())
 
-        for name in all_names:
+        for name in candidate_names:
             if name == target_l:
                 covered = True
                 break
-            if name.startswith("*.") and (target_l.endswith(name[1:]) or target_l == name[2:]):
-                covered = True
-                break
+            if name.startswith("*."):
+                suffix = name[2:]
+                if target_l == suffix or (target_l.endswith("." + suffix) and target_l.count(".") == suffix.count(".") + 1):
+                    covered = True
+                    break
+
+        now = datetime.now(timezone.utc)
+        is_expired = False
+        if not_after and now > not_after:
+            is_expired = True
+        if not_before and now < not_before:
+            is_expired = True
 
         cert_age_days = None
         is_freshly_issued = False
         if not_before:
-            delta = datetime.now(timezone.utc) - not_before
+            delta = now - not_before
             cert_age_days = max(0, delta.days)
             if cert_age_days <= 3:
                 is_freshly_issued = True
@@ -310,8 +372,10 @@ def inspect_tls_certificate(domain: str, port: int = 443) -> dict[str, Any] | No
             "not_after": not_after.isoformat() if not_after else None,
             "cert_age_days": cert_age_days,
             "is_freshly_issued": is_freshly_issued,
+            "is_expired": is_expired,
             "domain_covered_by_cert": covered,
-            "is_self_signed": issuer_str == subject_str and issuer_str != "Unknown",
+            "is_self_signed": is_self_signed,
+            "is_trusted_ca": is_trusted_ca,
         }
     except Exception as e:
         logger.debug("TLS parsing failed for %s: %s", target, safe_error_message(e))
@@ -488,10 +552,30 @@ def collect_domain_evidence(domain: str) -> list[EvidenceItem]:
         issuer = tls_res.get("issuer", "Unknown")
         cert_age = tls_res.get("cert_age_days")
         is_fresh = tls_res.get("is_freshly_issued", False)
+        is_expired = tls_res.get("is_expired", False)
         covered = tls_res.get("domain_covered_by_cert", True)
         is_self_signed = tls_res.get("is_self_signed", False)
 
-        if not covered:
+        if is_expired:
+            items.append(EvidenceItem(
+                type=EvidenceType.TLS_CERTIFICATE,
+                source="tls_inspector",
+                source_type="tls",
+                evidence_tier="OBSERVED",
+                indicator=target,
+                finding=f"Expired TLS certificate detected on '{target}'",
+                description=f"Server presented an expired TLS certificate (Expired on: {tls_res.get('not_after')}).",
+                observed_value=f"Expired: {tls_res.get('not_after')}, Issuer: {issuer}",
+                interpretation="Expired certificates indicate abandoned infrastructure, compromised host, or security neglect.",
+                status=EvidenceStatus.CONFIRMED,
+                reliability=EvidenceReliability.CRYPTOGRAPHIC,
+                risk_direction=RiskDirection.INCREASES_RISK,
+                severity=EvidenceSeverity.HIGH,
+                confidence=0.90,
+                correlation_group="tls_security",
+                raw_data=tls_res,
+            ))
+        elif not covered:
             items.append(EvidenceItem(
                 type=EvidenceType.TLS_CERTIFICATE,
                 source="tls_inspector",

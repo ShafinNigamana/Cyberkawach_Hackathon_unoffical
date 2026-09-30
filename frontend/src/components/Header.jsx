@@ -6,12 +6,16 @@ import {
   Shield, 
   ExternalLink, 
   ChevronDown,
-  MessageSquare, 
-  Camera, 
-  Home,
+  Menu,
+  Activity,
+  PhoneCall,
+  AlertTriangle,
+  FlaskConical,
   User,
   LogIn,
-  Lock
+  Lock,
+  Layers,
+  Sparkles
 } from 'lucide-react';
 import EmergencyBanner from './EmergencyBanner';
 import { TRANSLATIONS } from '../i18n/translations';
@@ -27,9 +31,9 @@ export default function Header({
   onOpenMethodology,
   healthData,
   currentFlow = 'home',
-  onSelectFlow = () => {},
   currentUser = null,
-  onOpenAuthModal = () => {}
+  onOpenAuthModal = () => {},
+  onToggleMobileMenu = () => {}
 }) {
   const [statusExpanded, setStatusExpanded] = useState(false);
   const statusRef = useRef(null);
@@ -50,321 +54,210 @@ export default function Header({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const flowLabels = {
+    home: 'Executive Overview',
+    message: 'Message & SMS Phishing Triage',
+    url: 'URL & Website Threat Inspector',
+    screenshot: 'Optical Evidence & OCR Scanner',
+    result: 'Forensic Intelligence Dossier'
+  };
+
   return (
     <header className="w-full select-none" id="main-header">
-      {/* ─── 1. Fixed 3-4px Tricolor Ribbon Pinned to Very Top (Persistent on Scroll) ─── */}
+      {/* ─── 1. Fixed Sovereign Tricolor Ribbon (Pinned to Top) ─── */}
       <div 
-        className="fixed top-0 left-0 right-0 z-50 h-[3.5px] w-full flex overflow-hidden shadow-xs pointer-events-none" 
+        className="fixed top-0 left-0 right-0 z-50 h-[3px] w-full flex overflow-hidden shadow-xs pointer-events-none" 
         aria-hidden="true"
       >
         <div className="h-full flex-1 bg-[#FF9933] relative overflow-hidden">
-          <div className="absolute inset-0 bg-white/25 animate-tricolor-sweep motion-reduce:animate-none pointer-events-none" />
+          <div className="absolute inset-0 bg-white/20 animate-tricolor-sweep motion-reduce:animate-none pointer-events-none" />
         </div>
         <div className="h-full flex-1 bg-white relative overflow-hidden">
-          <div className="absolute inset-0 bg-slate-200/40 animate-tricolor-sweep motion-reduce:animate-none pointer-events-none" />
+          <div className="absolute inset-0 bg-slate-300/30 animate-tricolor-sweep motion-reduce:animate-none pointer-events-none" />
         </div>
         <div className="h-full flex-1 bg-[#138808] relative overflow-hidden">
-          <div className="absolute inset-0 bg-white/25 animate-tricolor-sweep motion-reduce:animate-none pointer-events-none" />
+          <div className="absolute inset-0 bg-white/20 animate-tricolor-sweep motion-reduce:animate-none pointer-events-none" />
         </div>
       </div>
 
-      {/* ─── 2. Critical Fraud Advisory Banner (Directly Below Tricolor Strip, Above Header/Nav) ─── */}
-      <div className="pt-[3.5px]">
+      {/* ─── 2. Golden Hour Emergency Alert Banner ─── */}
+      <div className="pt-[3px]">
         <EmergencyBanner lang={lang} />
       </div>
 
-      {/* ─── 3. Utility Bar: Text-Only, No Colored Pill Badges ─── */}
-      <div className="bg-slate-50 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs py-1.5 px-4 sm:px-6 transition-colors">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 flex-wrap">
-          {/* Left: Government of India label */}
-          <div className="flex items-center space-x-2">
-            <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" className="text-slate-700 dark:text-slate-300 flex-shrink-0" aria-hidden="true">
-              <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="1.5" />
-              <circle cx="12" cy="12" r="2" fill="currentColor" />
-              <path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07L19.07 4.93M8.46 2.54l7.08 18.92M2.54 8.46l18.92 7.08M15.54 2.54L8.46 21.46M2.54 15.54l18.92-7.08" stroke="currentColor" strokeWidth="0.8" />
-            </svg>
-            <div className="flex items-center space-x-1.5 font-medium tracking-wide">
-              <span className="font-bold text-slate-900 dark:text-white">{t.portalGovHi || 'भारत सरकार'}</span>
-              <span className="text-slate-400">|</span>
-              <span className="font-semibold text-slate-800 dark:text-slate-200">{t.portalGov || 'Government of India'}</span>
+      {/* ─── 3. Top Command Bar ─── */}
+      <div className="bg-white/85 dark:bg-night-900/85 backdrop-blur-xl border-b border-slate-200/80 dark:border-night-border/80 px-4 sm:px-6 py-3 transition-colors">
+        <div className="flex items-center justify-between gap-4">
+          {/* Left: Mobile Hamburger & Flow Breadcrumb */}
+          <div className="flex items-center space-x-3">
+            <button
+              type="button"
+              onClick={onToggleMobileMenu}
+              className="lg:hidden p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-night-800 transition-colors cursor-pointer"
+              aria-label="Open Navigation Menu"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+
+            {/* Breadcrumb path */}
+            <div className="flex items-center space-x-2 text-xs">
+              <span className="font-bold text-indigo-600 dark:text-violet-400">Cyber Kavach</span>
+              <span className="text-slate-300 dark:text-slate-600">/</span>
+              <span className="font-semibold text-slate-800 dark:text-slate-200">
+                {flowLabels[currentFlow] || 'Triage'}
+              </span>
             </div>
           </div>
 
-          {/* Right: Text-Only Utility Controls (No colored pill badges) */}
-          <div className="flex items-center space-x-3 text-xs">
-            {/* Language Dropdown */}
-            <div className="flex items-center space-x-1.5">
-              <button
-                type="button"
-                onClick={onOpenLanguageModal}
-                className="flex items-center space-x-1 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 font-semibold cursor-pointer py-0.5"
-                title="Select Language / भाषा चुनें"
-              >
-                <Globe className="w-3.5 h-3.5 text-cyan-500" />
-                <span className="text-[11px] underline decoration-cyan-500/50 underline-offset-2">
-                  {lang === 'hi' ? 'हिन्दी' : lang === 'gu' ? 'ગુજરાતી' : lang === 'ta' ? 'தமிழ்' : lang === 'te' ? 'తెలుగు' : lang === 'bn' ? 'বাংলা' : 'English'}
-                </span>
-              </button>
+          {/* Right: Institutional Utility Actions */}
+          <div className="flex items-center space-x-2 sm:space-x-3 text-xs">
+            {/* Language Selector Modal Trigger */}
+            <button
+              type="button"
+              onClick={onOpenLanguageModal}
+              className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-night-800 font-medium transition-colors cursor-pointer"
+              title="Select Language / भाषा चुनें"
+            >
+              <Globe className="w-3.5 h-3.5 text-indigo-500 dark:text-violet-400" />
+              <span className="hidden sm:inline font-semibold">
+                {lang === 'hi' ? 'हिन्दी' : lang === 'gu' ? 'ગુજરાતી' : lang === 'ta' ? 'தமிழ்' : lang === 'te' ? 'తెలుగు' : lang === 'bn' ? 'বাংলা' : 'English'}
+              </span>
+            </button>
 
-              <select 
-                value={lang} 
-                onChange={(e) => onLangChange(e.target.value)}
-                className="bg-transparent text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white text-xs font-medium focus:outline-none cursor-pointer py-0.5 border-0"
-                aria-label="Select Portal Language"
-              >
-                <option value="en" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">English</option>
-                <option value="hi" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">हिंदी (Hindi)</option>
-                <option value="gu" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">ગુજરાતી (Gujarati)</option>
-                <option value="ta" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">தமிழ் (Tamil)</option>
-                <option value="te" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">తెలుగు (Telugu)</option>
-                <option value="bn" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">বাংলা (Bengali)</option>
-              </select>
-            </div>
-
-            <span className="text-slate-300 dark:text-slate-700">|</span>
-
-            {/* Single Combined "Aa" Font-Size Dropdown */}
-            <div className="flex items-center space-x-1">
-              <span className="font-bold text-xs text-slate-500 select-none">Aa</span>
+            {/* Font Size Adjuster */}
+            <div className="hidden md:flex items-center space-x-1 px-2 py-1 rounded-lg bg-slate-100/70 dark:bg-night-800/80 border border-slate-200/80 dark:border-night-border text-slate-600 dark:text-slate-400">
+              <span className="text-[11px] font-bold select-none px-1">Aa</span>
               <select
                 value={fontSize}
                 onChange={(e) => onFontSizeChange(e.target.value)}
-                className="bg-transparent text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white text-xs font-medium focus:outline-none cursor-pointer py-0.5 border-0"
-                aria-label="Adjust font size"
+                className="bg-transparent text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer border-0 py-0.5"
+                aria-label="Adjust font scale"
               >
-                <option value="normal" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Aa Normal</option>
-                <option value="large" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Aa Large</option>
-                <option value="small" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Aa Small</option>
+                <option value="normal" className="bg-white text-slate-900 dark:bg-night-900 dark:text-slate-100">Normal</option>
+                <option value="large" className="bg-white text-slate-900 dark:bg-night-900 dark:text-slate-100">Large (+10%)</option>
+                <option value="small" className="bg-white text-slate-900 dark:bg-night-900 dark:text-slate-100">Compact (-10%)</option>
               </select>
             </div>
 
-            <span className="text-slate-300 dark:text-slate-700">|</span>
-
-            {/* Dark Mode Toggle (Text-Only + Icon) */}
+            {/* Theme Toggle Button */}
             <button
               type="button"
               onClick={onThemeToggle}
-              className="flex items-center space-x-1 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white text-xs font-medium transition-colors cursor-pointer"
+              className="p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-night-800 transition-colors flex items-center space-x-1.5 cursor-pointer"
               title={isDark ? "Switch to Light Theme" : "Switch to Dark Theme"}
               aria-label="Toggle theme"
             >
-              {isDark ? <Sun className="w-3.5 h-3.5 text-slate-400" /> : <Moon className="w-3.5 h-3.5 text-slate-600" />}
-              <span>{isDark ? (t.light || 'Light') : (t.dark || 'Dark')}</span>
+              {isDark ? (
+                <Sun className="w-4 h-4 text-amber-400" />
+              ) : (
+                <Moon className="w-4 h-4 text-slate-600" />
+              )}
+              <span className="hidden sm:inline font-medium">
+                {isDark ? 'Light' : 'Dark'}
+              </span>
             </button>
 
-            <span className="text-slate-300 dark:text-slate-700">|</span>
-
-            {/* Methodology Text Link */}
+            {/* Methodology Modal Trigger */}
             <button
               type="button"
               onClick={onOpenMethodology}
-              className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white text-xs font-medium hover:underline underline-offset-2 transition-colors cursor-pointer"
-              title="View Technical Methodology & Security Audits"
+              className="hidden lg:flex items-center space-x-1.5 px-2.5 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-night-800 font-medium transition-colors cursor-pointer"
+              title="Technical Methodology & Audit Matrix"
             >
+              <FlaskConical className="w-3.5 h-3.5 text-indigo-500 dark:text-violet-400" />
               <span>{t.methodology || 'Methodology'}</span>
             </button>
 
-            <span className="text-slate-300 dark:text-slate-700">|</span>
+            {/* Status Telemetry Pill with Popover */}
+            <div className="relative" ref={statusRef}>
+              <button
+                type="button"
+                onClick={() => setStatusExpanded(!statusExpanded)}
+                className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-night-border bg-slate-50 dark:bg-night-800/80 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:border-violet-500/50 transition-colors cursor-pointer shadow-2xs"
+                aria-expanded={statusExpanded}
+                aria-label="System status"
+              >
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span className="hidden sm:inline">{activeModulesCount}/11 Online</span>
+                <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${statusExpanded ? 'rotate-180' : ''}`} />
+              </button>
 
-            {/* Citizen Auth / My Checks Button */}
+              {/* Popover */}
+              {statusExpanded && (
+                <div 
+                  className="absolute right-0 mt-2 w-72 sm:w-80 bg-white dark:bg-night-900 border border-slate-200 dark:border-night-border rounded-2xl shadow-2xl p-4 z-50 text-xs space-y-3"
+                  role="region"
+                  aria-label="System Architecture Status"
+                >
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-night-border/80">
+                    <span className="font-bold text-slate-900 dark:text-white">Active Telemetry & Engines</span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-violet-950/80 text-indigo-700 dark:text-violet-300 font-bold border border-indigo-200 dark:border-violet-800">
+                      v1.0 • Track S2
+                    </span>
+                  </div>
+
+                  <div className="space-y-2.5">
+                    <div className="flex items-start space-x-2.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 mt-1 flex-shrink-0" />
+                      <div>
+                        <strong className="text-slate-900 dark:text-white block font-semibold">11 Engines Active</strong>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400">Rule engine, Fast Laya, Safe Browsing, PhishTank, PhishStats, and Epistemic Bounds.</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start space-x-2.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 mt-1 flex-shrink-0" />
+                      <div>
+                        <strong className="text-slate-900 dark:text-white block font-semibold">Zero-PII Memory Redaction</strong>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400">Aadhaar, PAN & OTP numbers redacted in-memory prior to evaluation.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 border-t border-slate-100 dark:border-night-border/80 flex items-center justify-between text-[11px]">
+                    <span className="text-slate-500 dark:text-slate-400">I4C Partner Initiative</span>
+                    <a 
+                      href="/verification.html" 
+                      target="_blank" 
+                      rel="noreferrer"
+                      className="text-indigo-600 dark:text-violet-400 font-bold hover:underline inline-flex items-center space-x-1"
+                    >
+                      <span>Run Audits</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Citizen Auth Button */}
             {!currentUser ? (
               <button
                 type="button"
-                onClick={() => onOpenAuthModal('Please sign in or register to access the National Threat Triage Engine.')}
-                className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-cyan-700 hover:bg-cyan-800 text-white text-xs font-bold transition-all shadow-xs cursor-pointer select-none"
-                title="Sign In or Register Citizen Account"
+                onClick={() => onOpenAuthModal('Citizen authentication required to submit messages for forensic analysis.')}
+                className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-gradient-to-r dark:from-indigo-600 dark:to-violet-600 text-white font-bold text-xs transition-all shadow-sm active:scale-95 cursor-pointer"
               >
-                <LogIn className="w-3.5 h-3.5" />
-                <span>Citizen Sign In</span>
+                <LogIn className="w-3.5 h-3.5 text-violet-300" />
+                <span className="hidden sm:inline">Sign In</span>
               </button>
             ) : (
               <button
                 type="button"
                 onClick={() => onOpenAuthModal(null, 'history')}
-                className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-slate-200/80 hover:bg-slate-300/80 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold border border-slate-300 dark:border-slate-700 transition-all cursor-pointer select-none"
-                title="Citizen Profile & My Checks"
+                className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-night-800 hover:bg-slate-200 dark:hover:bg-night-750 text-slate-800 dark:text-slate-200 font-bold text-xs border border-slate-200 dark:border-night-border transition-all cursor-pointer"
               >
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="max-w-[110px] truncate">{currentUser.display_name?.split(' ')[0] || currentUser.email.split('@')[0]}</span>
-                <span className="text-[10px] text-cyan-700 dark:text-cyan-400 font-bold bg-cyan-100/70 dark:bg-cyan-950/70 px-1.5 py-0.5 rounded border border-cyan-200 dark:border-cyan-800">
-                  Checks
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <span className="max-w-[100px] truncate">
+                  {currentUser.display_name?.split(' ')[0] || currentUser.email.split('@')[0]}
                 </span>
               </button>
             )}
           </div>
         </div>
       </div>
-
-      {/* ─── 4. Brand Row: Shield + Product Name + Tagline (Left), Single Expandable Status Pill (Right) ─── */}
-      <div className="bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white py-3 px-4 sm:px-6 transition-colors relative">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          {/* Left: Shield + Product Name + Tagline */}
-          <div 
-            className="flex items-center space-x-3 cursor-pointer select-none" 
-            onClick={() => onSelectFlow('home')}
-            title="Go to Cyber Fraud Guardian Home"
-          >
-            <div className="w-9 h-9 rounded-lg bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 flex items-center justify-center shadow-xs flex-shrink-0">
-              <Shield className="w-5 h-5" strokeWidth={2} />
-            </div>
-
-            <div className="flex flex-col">
-              <h1 className="text-lg sm:text-xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
-                {t.portalTitle || 'Cyber Fraud Guardian'}
-              </h1>
-              <p className="text-xs text-slate-500 dark:text-slate-400 leading-tight">
-                {t.portalTagline || 'National Citizen Cyber Threat Triage Portal'}
-              </p>
-            </div>
-          </div>
-
-          {/* Right: Single Expandable Status Pill (One element, not three!) */}
-          <div className="relative" ref={statusRef}>
-            <button
-              type="button"
-              onClick={() => setStatusExpanded(!statusExpanded)}
-              className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full border border-slate-300 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-semibold transition-all cursor-pointer shadow-2xs"
-              aria-expanded={statusExpanded}
-              aria-label="Toggle system status and privacy details"
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-              <span>{t.systemOperational || 'System Operational'}</span>
-              <span className="hidden sm:inline text-slate-400 dark:text-slate-500 font-normal">
-                ({activeModulesCount} Modules)
-              </span>
-              <ChevronDown className={`w-3.5 h-3.5 text-slate-500 transition-transform duration-200 ${statusExpanded ? 'rotate-180' : ''}`} />
-            </button>
-
-            {/* Expandable Dropdown Popover */}
-            {statusExpanded && (
-              <div 
-                className="absolute right-0 mt-2 w-72 sm:w-80 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl p-3.5 z-40 text-xs space-y-3"
-                role="region"
-                aria-label="System Architecture Status"
-              >
-                <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
-                  <span className="font-bold text-slate-900 dark:text-white">System Health & Controls</span>
-                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
-                    Track S2 • v0.1.0
-                  </span>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex items-start space-x-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 mt-1 flex-shrink-0" />
-                    <div>
-                      <strong className="text-slate-900 dark:text-white block font-medium">11 Modules Active</strong>
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400">Rule engine, Fast Laya, Safe Browsing, PhishTank, PhishStats & Epistemic Fusion ready.</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start space-x-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 mt-1 flex-shrink-0" />
-                    <div>
-                      <strong className="text-slate-900 dark:text-white block font-medium">0-PII Retention Active</strong>
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400">Aadhaar, PAN & OTP numbers redacted in-memory prior to evaluation.</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start space-x-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 mt-1 flex-shrink-0" />
-                    <div>
-                      <strong className="text-slate-900 dark:text-white block font-medium">Ephemeral Volatile Cache</strong>
-                      <p className="text-[11px] text-slate-500 dark:text-slate-400">Bounded LRU memory cache; zero disk persistence of user submissions.</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px]">
-                  <span className="text-slate-500 dark:text-slate-400">I4C Partner Initiative</span>
-                  <a 
-                    href="/verification.html" 
-                    target="_blank" 
-                    rel="noreferrer"
-                    className="text-slate-900 dark:text-slate-200 font-semibold hover:underline inline-flex items-center space-x-1"
-                  >
-                    <span>Run Audits</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* ─── 5. Nav Tabs: Dedicated Row Beneath Brand, Nothing Else Sharing That Row ─── */}
-      <nav className="bg-slate-900 text-white dark:bg-slate-900/95 border-b border-slate-800 px-4 sm:px-6" aria-label="Task Navigation">
-        <div className="max-w-7xl mx-auto flex items-center space-x-1 overflow-x-auto text-xs py-1.5">
-          <button
-            type="button"
-            onClick={() => onSelectFlow('home')}
-            className={`px-3.5 py-1.5 rounded-md font-medium transition-colors flex items-center space-x-1.5 whitespace-nowrap cursor-pointer ${
-              currentFlow === 'home' ? 'bg-slate-800 text-white font-bold' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
-            }`}
-          >
-            <Home className="w-3.5 h-3.5" />
-            <span>{t.navHome || 'Home'}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              if (!currentUser) {
-                onOpenAuthModal('Please sign in or register to access the Message Triage Scanner.');
-                return;
-              }
-              onSelectFlow('message');
-            }}
-            className={`px-3.5 py-1.5 rounded-md font-medium transition-colors flex items-center space-x-1.5 whitespace-nowrap cursor-pointer ${
-              currentFlow === 'message' ? 'bg-slate-800 text-white font-bold' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
-            }`}
-          >
-            <MessageSquare className="w-3.5 h-3.5" />
-            <span>{t.navMessage || 'Check Message / SMS'}</span>
-            {!currentUser && <Lock className="w-2.5 h-2.5 opacity-60 ml-0.5" />}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              if (!currentUser) {
-                onOpenAuthModal('Please sign in or register to access the URL Safety Inspector.');
-                return;
-              }
-              onSelectFlow('url');
-            }}
-            className={`px-3.5 py-1.5 rounded-md font-medium transition-colors flex items-center space-x-1.5 whitespace-nowrap cursor-pointer ${
-              currentFlow === 'url' ? 'bg-slate-800 text-white font-bold' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
-            }`}
-          >
-            <Globe className="w-3.5 h-3.5" />
-            <span>{t.navUrl || 'Check URL / Link'}</span>
-            {!currentUser && <Lock className="w-2.5 h-2.5 opacity-60 ml-0.5" />}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              if (!currentUser) {
-                onOpenAuthModal('Please sign in or register to access the Screenshot OCR Inspector.');
-                return;
-              }
-              onSelectFlow('screenshot');
-            }}
-            className={`px-3.5 py-1.5 rounded-md font-medium transition-colors flex items-center space-x-1.5 whitespace-nowrap cursor-pointer ${
-              currentFlow === 'screenshot' ? 'bg-slate-800 text-white font-bold' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
-            }`}
-          >
-            <Camera className="w-3.5 h-3.5" />
-            <span>{t.navScreenshot || 'Check Screenshot / Photo'}</span>
-            {!currentUser && <Lock className="w-2.5 h-2.5 opacity-60 ml-0.5" />}
-          </button>
-        </div>
-      </nav>
     </header>
   );
 }

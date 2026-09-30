@@ -12,7 +12,12 @@ import {
   LogIn,
   History,
   Sparkles,
-  CheckCircle2
+  CheckCircle2,
+  Cpu,
+  Layers,
+  Zap,
+  Activity,
+  ScanText
 } from 'lucide-react';
 import { PRESET_SCENARIOS } from '../data/presets';
 import { t } from '../i18n/translations';
@@ -24,7 +29,6 @@ export default function HomeChoice({
   currentUser = null,
   onOpenAuthModal = () => {}
 }) {
-  // Translate preset titles based on preset ID if present in dictionary
   const getPresetTitle = (preset) => {
     const key = `preset_${preset.id.replace(/-/g, '_')}`;
     return t(lang, key, preset.title);
@@ -47,44 +51,98 @@ export default function HomeChoice({
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-8 py-4">
-      {/* ─── Hero Heading & Single-Sentence Purpose ─── */}
-      <div className="text-center space-y-3">
-        <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold">
+    <div className="w-full max-w-5xl mx-auto space-y-8 py-4 sm:py-6">
+      {/* ─── Executive Hero Section ─── */}
+      <div className="relative text-center space-y-4 pt-4 pb-2">
+        {/* Ambient Hero Glow */}
+        <div className="pointer-events-none absolute -top-12 left-1/2 -translate-x-1/2 w-[600px] h-[280px] bg-gradient-to-b from-indigo-500/15 via-violet-500/10 to-transparent blur-3xl rounded-full dark:from-indigo-600/25 dark:via-violet-600/15" aria-hidden="true" />
+
+        {/* Sovereign Badge */}
+        <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-slate-200/90 dark:border-night-border bg-white/80 dark:bg-night-850/80 backdrop-blur-md text-slate-800 dark:text-slate-200 text-xs font-semibold shadow-sm">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           <span>{t(lang, 'homeHeroBadge', 'National Citizen Cyber Threat Triage')}</span>
+          <span className="text-slate-400 dark:text-slate-600">|</span>
+          <span className="text-[11px] font-mono text-indigo-600 dark:text-violet-400 font-bold">Track S2</span>
         </div>
 
-        <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-          {t(lang, 'homeHeroTitle', 'What do you want to check?')}
+        {/* Main Headline */}
+        <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.1]">
+          Verify Threats Before <br />
+          <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 dark:from-indigo-400 dark:via-violet-300 dark:to-purple-400 bg-clip-text text-transparent">
+            You Click or Pay
+          </span>
         </h2>
 
-        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+        {/* Supporting description */}
+        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-2xl mx-auto font-normal leading-relaxed">
           {t(lang, 'homeHeroDesc', 'Cyber Fraud Guardian safely evaluates suspicious communications using passive forensic intelligence, protecting you without opening unsafe links or retaining your data.')}
         </p>
+
+        {/* Quick Executive Telemetry Strip */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto pt-2">
+          <div className="p-2.5 rounded-xl border border-slate-200/80 dark:border-night-border bg-white/70 dark:bg-night-850/70 backdrop-blur-sm text-left">
+            <div className="flex items-center space-x-1.5 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider">
+              <Cpu className="w-3 h-3 text-indigo-500" />
+              <span>Pipeline</span>
+            </div>
+            <div className="text-sm font-extrabold text-slate-900 dark:text-white mt-0.5">
+              11 Modules
+            </div>
+          </div>
+
+          <div className="p-2.5 rounded-xl border border-slate-200/80 dark:border-night-border bg-white/70 dark:bg-night-850/70 backdrop-blur-sm text-left">
+            <div className="flex items-center space-x-1.5 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider">
+              <Lock className="w-3 h-3 text-emerald-500" />
+              <span>Privacy</span>
+            </div>
+            <div className="text-sm font-extrabold text-slate-900 dark:text-white mt-0.5">
+              0-PII In-Memory
+            </div>
+          </div>
+
+          <div className="p-2.5 rounded-xl border border-slate-200/80 dark:border-night-border bg-white/70 dark:bg-night-850/70 backdrop-blur-sm text-left">
+            <div className="flex items-center space-x-1.5 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider">
+              <PhoneCall className="w-3 h-3 text-rose-500" />
+              <span>Emergency</span>
+            </div>
+            <div className="text-sm font-extrabold text-slate-900 dark:text-white mt-0.5">
+              1930 Protocol
+            </div>
+          </div>
+
+          <div className="p-2.5 rounded-xl border border-slate-200/80 dark:border-night-border bg-white/70 dark:bg-night-850/70 backdrop-blur-sm text-left">
+            <div className="flex items-center space-x-1.5 text-slate-500 dark:text-slate-400 text-[10px] font-bold uppercase tracking-wider">
+              <ScanText className="w-3 h-3 text-purple-500" />
+              <span>Multi-modal</span>
+            </div>
+            <div className="text-sm font-extrabold text-slate-900 dark:text-white mt-0.5">
+              OCR & Voice
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* ─── Access Gate Status Banner (Gating Notice vs Authenticated Citizen Banner) ─── */}
+      {/* ─── Citizen Access Gate Status Banner ─── */}
       {!currentUser ? (
-        <div className="p-5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-cyan-500/10 to-blue-500/10 border-2 border-cyan-600/30 dark:border-cyan-400/30 flex flex-col md:flex-row items-center justify-between gap-4 shadow-sm backdrop-blur-xs">
-          <div className="flex items-start space-x-3.5">
-            <div className="w-12 h-12 rounded-xl bg-cyan-700 dark:bg-cyan-600 text-white flex items-center justify-center flex-shrink-0 shadow-md">
+        <div className="luxury-card p-5 sm:p-6 flex flex-col md:flex-row items-center justify-between gap-5">
+          <div className="flex items-start space-x-4">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600/20 to-violet-600/20 text-indigo-600 dark:text-violet-400 flex items-center justify-center flex-shrink-0 border border-indigo-500/20">
               <Lock className="w-6 h-6" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase bg-cyan-100 text-cyan-800 dark:bg-cyan-950 dark:text-cyan-300 border border-cyan-300 dark:border-cyan-800">
-                  Citizen Authentication Required
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase bg-indigo-50 text-indigo-700 dark:bg-violet-950/80 dark:text-violet-300 border border-indigo-200 dark:border-violet-800">
+                  Citizen Verification Required
                 </span>
-                <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                   Chain-of-Custody Protected
                 </span>
               </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white mt-1">
-                Sign In to Access Forensic Cyber Threat Triage
+              <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white mt-1">
+                Authenticate to Access Verified Threat Triage
               </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5 leading-relaxed">
-                In compliance with National Cyber Threat framework standards, users must log in to submit suspicious messages, analyze URLs, and access verified threat dossiers.
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
+                In compliance with National Cyber Threat framework standards, users sign in to submit suspicious messages, inspect URLs, and receive forensic reports.
               </p>
             </div>
           </div>
@@ -92,37 +150,37 @@ export default function HomeChoice({
             <button
               type="button"
               onClick={() => onOpenAuthModal('Please sign in or register to analyze suspicious communications.')}
-              className="w-full md:w-auto px-5 py-2.5 rounded-xl bg-cyan-700 hover:bg-cyan-800 active:bg-cyan-900 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center space-x-2 cursor-pointer"
+              className="w-full md:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold text-xs transition-all shadow-luxury-glow flex items-center justify-center space-x-2 cursor-pointer active:scale-95"
             >
               <LogIn className="w-4 h-4" />
-              <span>Sign In / Register Citizen</span>
+              <span>Sign In / Register</span>
             </button>
           </div>
         </div>
       ) : (
-        <div className="p-4 rounded-xl bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
-          <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 rounded-lg bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 shadow-xs">
+        <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs">
+          <div className="flex items-center space-x-3.5">
+            <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 shadow-sm">
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-300">
-                  Active Citizen Session
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-300">
+                  Verified Session
                 </span>
-                <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                <span className="text-xs font-bold text-slate-900 dark:text-white">
                   {currentUser.display_name || currentUser.email}
                 </span>
               </div>
-              <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5">
-                Full forensic pipeline unlocked (Rules, ML, Laya, Brand, Safe Browsing, PhishTank, PhishStats, Neo4j Graph).
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                Full forensic pipeline unlocked (Rules, ML, Laya, Brand, Safe Browsing, PhishTank, PhishStats).
               </p>
             </div>
           </div>
           <button
             type="button"
             onClick={() => onOpenAuthModal(null, 'history')}
-            className="px-3.5 py-1.5 rounded-lg border border-emerald-300 dark:border-emerald-700 bg-white dark:bg-slate-900 hover:bg-emerald-50 dark:hover:bg-emerald-950/60 text-xs font-semibold text-emerald-800 dark:text-emerald-300 transition-colors flex items-center space-x-1.5 cursor-pointer shadow-2xs"
+            className="px-3.5 py-2 rounded-xl border border-emerald-400/40 bg-white dark:bg-night-850 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 text-xs font-bold text-emerald-800 dark:text-emerald-300 transition-colors flex items-center space-x-1.5 cursor-pointer shadow-2xs"
           >
             <History className="w-3.5 h-3.5" />
             <span>My Past Checks</span>
@@ -130,173 +188,222 @@ export default function HomeChoice({
         </div>
       )}
 
-      {/* ─── 3 Primary Task Selection Cards ─── */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Choice 1: Message / SMS */}
+      {/* ─── 3 Primary Interactive Launchpad Cards ─── */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {/* Card 1: Message / SMS */}
         <button
           type="button"
           onClick={() => handleCardClick('message')}
-          className={`group text-left p-6 bg-white dark:bg-slate-900 rounded-xl border transition-all duration-200 flex flex-col justify-between relative overflow-hidden ${
-            !currentUser 
-              ? 'border-slate-200 dark:border-slate-800 hover:border-cyan-500/70 dark:hover:border-cyan-500/70 cursor-pointer shadow-xs' 
-              : 'border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-md cursor-pointer'
-          }`}
+          className="luxury-card text-left p-6 sm:p-7 flex flex-col justify-between group cursor-pointer"
         >
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <div className="w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-800 dark:text-slate-200 group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-slate-100 dark:group-hover:text-slate-900 transition-colors">
-                <MessageSquare className="w-6 h-6" strokeWidth={1.8} />
+              <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-600 dark:bg-violet-500/15 dark:text-violet-400 flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                <MessageSquare className="w-6 h-6" strokeWidth={2} />
               </div>
               {!currentUser && (
-                <span className="inline-flex items-center space-x-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800">
+                <span className="inline-flex items-center space-x-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-night-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-night-border">
                   <Lock className="w-2.5 h-2.5" />
-                  <span>Login Required</span>
+                  <span>Login</span>
                 </span>
               )}
             </div>
 
             <div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">
+              <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-violet-400 transition-colors">
                 {t(lang, 'choiceMessageTitle', 'Message / SMS')}
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
                 {t(lang, 'choiceMessageDesc', 'Check suspicious text messages, WhatsApp forwards, bank alerts, electricity cutoff threats, or emails.')}
               </p>
             </div>
+
+            <div className="space-y-1.5 pt-2 text-[11px] text-slate-600 dark:text-slate-400">
+              <div className="flex items-center space-x-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 text-indigo-500" />
+                <span>Voice mic input supported</span>
+              </div>
+              <div className="flex items-center space-x-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 text-indigo-500" />
+                <span>Urgency tactics & bank scams</span>
+              </div>
+            </div>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-slate-800 dark:text-slate-200">
-            <span>{currentUser ? t(lang, 'choiceMessageAction', 'Analyze text message') : 'Sign in to analyze message'}</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          <div className="mt-6 pt-4 border-t border-slate-100 dark:border-night-border flex items-center justify-between text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-violet-400 transition-colors">
+            <span>{currentUser ? t(lang, 'choiceMessageAction', 'Analyze text message') : 'Sign in to analyze'}</span>
+            <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-violet-400 group-hover:translate-x-1 transition-all" />
           </div>
         </button>
 
-        {/* Choice 2: URL / Website */}
+        {/* Card 2: URL / Website */}
         <button
           type="button"
           onClick={() => handleCardClick('url')}
-          className={`group text-left p-6 bg-white dark:bg-slate-900 rounded-xl border transition-all duration-200 flex flex-col justify-between relative overflow-hidden ${
-            !currentUser 
-              ? 'border-slate-200 dark:border-slate-800 hover:border-cyan-500/70 dark:hover:border-cyan-500/70 cursor-pointer shadow-xs' 
-              : 'border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-md cursor-pointer'
-          }`}
+          className="luxury-card text-left p-6 sm:p-7 flex flex-col justify-between group cursor-pointer"
         >
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <div className="w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-800 dark:text-slate-200 group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-slate-100 dark:group-hover:text-slate-900 transition-colors">
-                <Globe className="w-6 h-6" strokeWidth={1.8} />
+              <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 text-cyan-600 dark:bg-cyan-500/15 dark:text-cyan-400 flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                <Globe className="w-6 h-6" strokeWidth={2} />
               </div>
               {!currentUser && (
-                <span className="inline-flex items-center space-x-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800">
+                <span className="inline-flex items-center space-x-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-night-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-night-border">
                   <Lock className="w-2.5 h-2.5" />
-                  <span>Login Required</span>
+                  <span>Login</span>
                 </span>
               )}
             </div>
 
             <div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">
+              <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
                 {t(lang, 'choiceUrlTitle', 'URL / Website')}
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
                 {t(lang, 'choiceUrlDesc', 'Safely inspect a link or website without visiting it. Analyzes domain reputation, phishing feeds, and brand spoofing.')}
               </p>
             </div>
+
+            <div className="space-y-1.5 pt-2 text-[11px] text-slate-600 dark:text-slate-400">
+              <div className="flex items-center space-x-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 text-cyan-500" />
+                <span>Zero outbound visits (Safe sandbox)</span>
+              </div>
+              <div className="flex items-center space-x-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 text-cyan-500" />
+                <span>Safe Browsing & PhishTank feeds</span>
+              </div>
+            </div>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-slate-800 dark:text-slate-200">
-            <span>{currentUser ? t(lang, 'choiceUrlAction', 'Inspect link safety') : 'Sign in to inspect link'}</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          <div className="mt-6 pt-4 border-t border-slate-100 dark:border-night-border flex items-center justify-between text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
+            <span>{currentUser ? t(lang, 'choiceUrlAction', 'Inspect link safety') : 'Sign in to inspect'}</span>
+            <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 group-hover:translate-x-1 transition-all" />
           </div>
         </button>
 
-        {/* Choice 3: Screenshot / Photo */}
+        {/* Card 3: Screenshot / Photo */}
         <button
           type="button"
           onClick={() => handleCardClick('screenshot')}
-          className={`group text-left p-6 bg-white dark:bg-slate-900 rounded-xl border transition-all duration-200 flex flex-col justify-between relative overflow-hidden ${
-            !currentUser 
-              ? 'border-slate-200 dark:border-slate-800 hover:border-cyan-500/70 dark:hover:border-cyan-500/70 cursor-pointer shadow-xs' 
-              : 'border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 hover:shadow-md cursor-pointer'
-          }`}
+          className="luxury-card text-left p-6 sm:p-7 flex flex-col justify-between group cursor-pointer"
         >
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <div className="w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-800 dark:text-slate-200 group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-slate-100 dark:group-hover:text-slate-900 transition-colors">
-                <Camera className="w-6 h-6" strokeWidth={1.8} />
+              <div className="w-12 h-12 rounded-2xl bg-purple-500/10 text-purple-600 dark:bg-purple-500/15 dark:text-purple-400 flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+                <Camera className="w-6 h-6" strokeWidth={2} />
               </div>
               {!currentUser && (
-                <span className="inline-flex items-center space-x-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800">
+                <span className="inline-flex items-center space-x-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-night-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-night-border">
                   <Lock className="w-2.5 h-2.5" />
-                  <span>Login Required</span>
+                  <span>Login</span>
                 </span>
               )}
             </div>
 
             <div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">
+              <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
                 {t(lang, 'choiceScreenshotTitle', 'Screenshot / Photo')}
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
                 {t(lang, 'choiceScreenshotDesc', 'Upload a screenshot or photo. Optical character recognition (OCR) extracts text and links for deep evaluation.')}
               </p>
             </div>
+
+            <div className="space-y-1.5 pt-2 text-[11px] text-slate-600 dark:text-slate-400">
+              <div className="flex items-center space-x-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 text-purple-500" />
+                <span>Instant automated OCR extraction</span>
+              </div>
+              <div className="flex items-center space-x-1.5">
+                <CheckCircle2 className="w-3.5 h-3.5 text-purple-500" />
+                <span>Extracts embedded scam links</span>
+              </div>
+            </div>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-slate-800 dark:text-slate-200">
-            <span>{currentUser ? t(lang, 'choiceScreenshotAction', 'Upload screenshot') : 'Sign in to upload photo'}</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          <div className="mt-6 pt-4 border-t border-slate-100 dark:border-night-border flex items-center justify-between text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+            <span>{currentUser ? t(lang, 'choiceScreenshotAction', 'Upload screenshot') : 'Sign in to upload'}</span>
+            <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-purple-600 dark:group-hover:text-purple-400 group-hover:translate-x-1 transition-all" />
           </div>
         </button>
       </div>
 
-      {/* ─── Common Benchmark Typologies Quick-Test Bar ─── */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 space-y-3">
+      {/* ─── Benchmark Typologies Quick-Test Section ─── */}
+      <div className="luxury-card p-5 sm:p-6 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-          <div className="flex items-center space-x-1.5 text-xs font-bold text-slate-800 dark:text-slate-200">
-            <FlaskConical className="w-3.5 h-3.5 text-slate-600 dark:text-slate-400" />
-            <span>{t(lang, 'presetsBarTitle', 'Or Quick-Test a Benchmark Scenario:')}</span>
+          <div className="flex items-center space-x-2 text-xs font-bold text-slate-900 dark:text-white">
+            <FlaskConical className="w-4 h-4 text-indigo-500 dark:text-violet-400" />
+            <span>{t(lang, 'presetsBarTitle', 'Preloaded Benchmark Threat Scenarios:')}</span>
             {!currentUser && (
-              <span className="ml-1 text-[10px] text-amber-600 dark:text-amber-400 font-normal">
+              <span className="text-[10px] text-slate-400 font-normal">
                 (Sign In Required)
               </span>
             )}
           </div>
           <span className="text-[11px] text-slate-500 dark:text-slate-400">
-            {t(lang, 'presetsBarSub', 'Preloaded real-world fraud cases')}
+            {t(lang, 'presetsBarSub', 'Real-world Indian cybercrime typologies')}
           </span>
         </div>
 
-        <div className="flex flex-wrap gap-1.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
           {PRESET_SCENARIOS.map((preset) => (
             <button
               key={preset.id}
               type="button"
               onClick={() => handlePresetClick(preset)}
-              className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-md text-xs font-medium border border-slate-300 dark:border-slate-700 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 transition-colors cursor-pointer"
+              className="p-3 rounded-xl border border-slate-200/90 dark:border-night-border bg-slate-50/70 dark:bg-night-800/60 hover:bg-white dark:hover:bg-night-750 hover:border-violet-500/40 text-left transition-all group cursor-pointer shadow-2xs"
             >
-              {!currentUser && <Lock className="w-2.5 h-2.5 text-slate-400" />}
-              <span>{getPresetTitle(preset)}</span>
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-violet-300 transition-colors truncate">
+                  {getPresetTitle(preset)}
+                </span>
+                {!currentUser && <Lock className="w-3 h-3 text-slate-400 ml-1 flex-shrink-0" />}
+              </div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1">
+                {preset.message}
+              </p>
             </button>
           ))}
         </div>
       </div>
 
       {/* ─── Institutional Trust & Guarantee Badges ─── */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-        <div className="flex items-center space-x-2.5 p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 text-xs text-slate-600 dark:text-slate-400">
-          <Lock className="w-4 h-4 text-slate-500 dark:text-slate-400 flex-shrink-0" />
-          <span><strong>{t(lang, 'badgeZeroRetentionTitle', 'Zero Retention:')}</strong> {t(lang, 'badgeZeroRetentionDesc', 'Ephemeral in-memory analysis; zero storage.')}</span>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-2">
+        <div className="flex items-center space-x-3.5 p-4 rounded-xl border border-slate-200/80 dark:border-night-border bg-white dark:bg-night-850 text-xs text-slate-600 dark:text-slate-400 shadow-2xs">
+          <div className="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-night-800 flex items-center justify-center flex-shrink-0 text-indigo-600 dark:text-violet-400">
+            <Lock className="w-4.5 h-4.5" />
+          </div>
+          <div>
+            <strong className="text-slate-900 dark:text-white block font-bold">
+              {t(lang, 'badgeZeroRetentionTitle', 'Zero Retention')}
+            </strong>
+            <span className="text-[11px]">{t(lang, 'badgeZeroRetentionDesc', 'Ephemeral in-memory analysis; zero storage.')}</span>
+          </div>
         </div>
 
-        <div className="flex items-center space-x-2.5 p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 text-xs text-slate-600 dark:text-slate-400">
-          <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-500 flex-shrink-0" />
-          <span><strong>{t(lang, 'badgeSafeSandboxTitle', 'Safe Sandbox:')}</strong> {t(lang, 'badgeSafeSandboxDesc', 'Unopened links tested via passive OSINT feeds.')}</span>
+        <div className="flex items-center space-x-3.5 p-4 rounded-xl border border-slate-200/80 dark:border-night-border bg-white dark:bg-night-850 text-xs text-slate-600 dark:text-slate-400 shadow-2xs">
+          <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-night-800 flex items-center justify-center flex-shrink-0 text-emerald-600 dark:text-emerald-400">
+            <ShieldCheck className="w-4.5 h-4.5" />
+          </div>
+          <div>
+            <strong className="text-slate-900 dark:text-white block font-bold">
+              {t(lang, 'badgeSafeSandboxTitle', 'Safe Sandbox')}
+            </strong>
+            <span className="text-[11px]">{t(lang, 'badgeSafeSandboxDesc', 'Unopened links tested via passive OSINT feeds.')}</span>
+          </div>
         </div>
 
-        <div className="flex items-center space-x-2.5 p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 text-xs text-slate-600 dark:text-slate-400">
-          <PhoneCall className="w-4 h-4 text-red-600 dark:text-red-500 flex-shrink-0" />
-          <span><strong>{t(lang, 'badge1930Title', '1930 Integration:')}</strong> {t(lang, 'badge1930Desc', 'Emergency Golden Hour guidance ready.')}</span>
+        <div className="flex items-center space-x-3.5 p-4 rounded-xl border border-slate-200/80 dark:border-night-border bg-white dark:bg-night-850 text-xs text-slate-600 dark:text-slate-400 shadow-2xs">
+          <div className="w-9 h-9 rounded-xl bg-rose-50 dark:bg-night-800 flex items-center justify-center flex-shrink-0 text-rose-600 dark:text-rose-400">
+            <PhoneCall className="w-4.5 h-4.5" />
+          </div>
+          <div>
+            <strong className="text-slate-900 dark:text-white block font-bold">
+              {t(lang, 'badge1930Title', '1930 Integration')}
+            </strong>
+            <span className="text-[11px]">{t(lang, 'badge1930Desc', 'Emergency Golden Hour guidance ready.')}</span>
+          </div>
         </div>
       </div>
     </div>

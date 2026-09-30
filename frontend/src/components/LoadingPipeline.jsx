@@ -34,22 +34,41 @@ export default function LoadingPipeline() {
     return () => clearInterval(interval);
   }, []);
 
+  const progressPercent = Math.round(((currentStep + 1) / PROCESSING_STAGES.length) * 100);
+
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 my-6 shadow-xs" aria-live="polite">
-      <div className="flex items-center space-x-3 mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
-        <Loader2 className="w-5 h-5 text-slate-900 dark:text-slate-100 animate-spin" />
-        <div>
-          <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-            Executing Multi-Stage Forensic Triage Pipeline
-          </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
-            Real-time execution across 11 verification modules, external intelligence feeds, and epistemic reasoning engines.
-          </p>
+    <div className="clean-card rounded-2xl p-6 my-6 shadow-sm relative overflow-hidden" aria-live="polite">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5 pb-4 border-b border-slate-100 dark:border-slate-800">
+        <div className="flex items-center space-x-3.5">
+          <div className="w-10 h-10 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-950 flex items-center justify-center flex-shrink-0 shadow-sm">
+            <Loader2 className="w-5 h-5 animate-spin" />
+          </div>
+          <div>
+            <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
+              Forensic Triage Pipeline Active
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              Real-time multi-stage verification across local rules, authoritative threat feeds, and epistemic bounds.
+            </p>
+          </div>
+        </div>
+
+        {/* Progress Badge */}
+        <div className="flex items-center space-x-2.5 self-start sm:self-center">
+          <span className="text-xs font-mono font-bold text-slate-900 dark:text-slate-100">
+            {progressPercent}%
+          </span>
+          <div className="w-28 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-slate-900 dark:bg-white transition-all duration-300 rounded-full"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
         </div>
       </div>
 
       {/* Grid of the 8 Real Stages */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {PROCESSING_STAGES.map((stage, idx) => {
           const isDone = idx < currentStep;
           const isCurrent = idx === currentStep;
@@ -58,28 +77,34 @@ export default function LoadingPipeline() {
           return (
             <div
               key={stage.id}
-              className={`p-2.5 rounded-lg border transition-all duration-150 flex items-start space-x-2.5 ${
+              className={`p-3 rounded-xl border transition-all duration-200 flex items-start space-x-2.5 ${
                 isDone
-                  ? 'bg-slate-50 border-slate-200 text-slate-800 dark:bg-slate-950 dark:border-slate-800 dark:text-slate-200'
+                  ? 'bg-slate-50/70 border-slate-200/80 text-slate-800 dark:bg-slate-900/60 dark:border-slate-800 dark:text-slate-200'
                   : isCurrent
-                  ? 'bg-slate-900 border-slate-900 text-white shadow-xs dark:bg-slate-800 dark:border-slate-700'
-                  : 'bg-white border-slate-100 text-slate-400 dark:bg-slate-900/40 dark:border-slate-800/60 dark:text-slate-600'
+                  ? 'bg-white border-slate-400 dark:bg-slate-900 dark:border-slate-600 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-400/30 dark:ring-slate-600/30'
+                  : 'bg-transparent border-slate-100 text-slate-400 dark:border-slate-850 dark:text-slate-600'
               }`}
             >
               <div className="mt-0.5 flex-shrink-0">
                 {isDone ? (
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 ) : isCurrent ? (
-                  <Loader2 className="w-4 h-4 text-white animate-spin" />
+                  <Loader2 className="w-4 h-4 text-slate-900 dark:text-white animate-spin" />
                 ) : (
                   <Icon className="w-4 h-4 text-slate-300 dark:text-slate-700" />
                 )}
               </div>
               <div className="flex flex-col min-w-0">
-                <span className="text-xs font-bold font-mono tracking-wide leading-tight">
+                <span className={`text-xs font-bold font-mono tracking-wide leading-tight ${
+                  isCurrent ? 'text-slate-950 dark:text-white font-extrabold' : ''
+                }`}>
                   {stage.label}
                 </span>
-                <span className={`text-[10px] mt-0.5 line-clamp-2 leading-tight ${isCurrent ? 'text-slate-300' : 'text-slate-500 dark:text-slate-400'}`}>
+                <span className={`text-[10px] mt-0.5 line-clamp-2 leading-tight ${
+                  isCurrent 
+                    ? 'text-slate-700 dark:text-slate-300 font-medium' 
+                    : 'text-slate-500 dark:text-slate-400'
+                }`}>
                   {stage.desc}
                 </span>
               </div>
