@@ -13,9 +13,9 @@ export default function FraudDna({ fraudDna, targetBrand, extractedDomain }) {
   const relatedCount = fraudDna.related_incidents?.length || 0;
 
   return (
-    <div className="luxury-card p-6 shadow-sm border-amber-500/30">
+    <div className="clean-card clean-card-hover p-6 shadow-sm border-amber-500/30">
       {/* Title Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 mb-3 border-b border-slate-200 dark:border-night-border gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 mb-3 border-b border-slate-200 dark:border-border-dark gap-2">
         <div className="flex items-center space-x-2.5">
           <Network className="w-5 h-5 text-amber-500 animate-pulse" />
           <h3 className="text-sm sm:text-base font-bold text-amber-900 dark:text-amber-200">
@@ -35,7 +35,7 @@ export default function FraudDna({ fraudDna, targetBrand, extractedDomain }) {
       </p>
 
       {/* Campaign Graph View */}
-      <div className="bg-slate-50 dark:bg-night-950 p-4 rounded-xl border border-slate-200 dark:border-night-border mb-3">
+      <div className="bg-slate-50 dark:bg-surface-dark p-4 rounded-xl border border-slate-200 dark:border-border-dark mb-3">
         <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3 flex items-center space-x-1.5">
           <Layers className="w-3.5 h-3.5 text-amber-500" />
           <span>Syndicate Infrastructure Graph</span>
@@ -66,7 +66,7 @@ export default function FraudDna({ fraudDna, targetBrand, extractedDomain }) {
 
           {/* Node 3: Infrastructure / Domain */}
           <div className="p-3 bg-white dark:bg-slate-900 rounded-btn border border-slate-200 dark:border-slate-700 flex items-center space-x-2.5 shadow-sm">
-            <Server className="w-4 h-4 text-purple-600 dark:text-purple-400 flex-shrink-0" />
+            <Server className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
             <div className="min-w-0">
               <span className="text-[10px] text-slate-500 dark:text-slate-400 block">Observed Infrastructure</span>
               <span className="font-mono text-slate-800 dark:text-slate-200 font-semibold truncate block">

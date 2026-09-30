@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Globe, Shield, Check, ArrowRight, X } from 'lucide-react';
+import { Globe, Check, ArrowRight, X } from 'lucide-react';
 import { TRANSLATIONS } from '../i18n/translations';
 
 const LANGUAGES = [
@@ -8,7 +8,7 @@ const LANGUAGES = [
     name: 'English',
     nativeName: 'English',
     region: 'National Standard (All India)',
-    sample: 'Evidence-Driven AI Fraud Protection',
+    sample: 'Evidence-Driven Citizen Cyber Threat Triage',
   },
   {
     code: 'hi',
@@ -21,7 +21,7 @@ const LANGUAGES = [
     code: 'gu',
     name: 'Gujarati',
     nativeName: 'ગુજરાતી',
-    region: 'ગુજરાત રાજ્ય (BSides Ahmedabad)',
+    region: 'ગુજરાત રાજ્ય (Gujarat State)',
     sample: 'પુરાવા-આધારિત સાયબર સુરક્ષા વ્યવસ્થા',
   },
   {
@@ -63,24 +63,24 @@ export default function LanguageSelectionModal({ isOpen, currentLang, onSelectLa
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in">
-      <div className="bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh]">
-        {/* Modal Header with Shield Motif */}
-        <div className="bg-gradient-to-r from-blue-950/80 via-slate-900 to-indigo-950/80 p-6 border-b border-slate-800 flex items-start justify-between">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md animate-fade-in">
+      <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh] transition-colors">
+        {/* Modal Header */}
+        <div className="bg-slate-50 dark:bg-surface-dark-elevated p-6 border-b border-slate-200 dark:border-border-dark flex items-start justify-between">
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/20">
-              <Globe className="w-6 h-6" />
+            <div className="w-11 h-11 rounded-xl bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center shadow-xs flex-shrink-0">
+              <Globe className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-cyan-400 bg-cyan-950/80 border border-cyan-800/60 px-2 py-0.5 rounded">
-                  IRCTC-Style Citizen Gateway
+                <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-300 bg-emerald-100/70 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/80 px-2 py-0.5 rounded-md">
+                  Citizen Multilingual Access
                 </span>
               </div>
-              <h2 className="text-xl font-bold text-white mt-1">
+              <h2 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white mt-1">
                 {t('langSelectTitle')}
               </h2>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 {t('langSelectSub')}
               </p>
             </div>
@@ -89,7 +89,7 @@ export default function LanguageSelectionModal({ isOpen, currentLang, onSelectLa
           {canClose && (
             <button
               onClick={onClose}
-              className="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition-colors"
+              className="text-slate-400 hover:text-slate-700 dark:hover:text-white p-1.5 rounded-lg hover:bg-slate-200/60 dark:hover:bg-surface-dark-hover transition-colors cursor-pointer"
               aria-label="Close"
             >
               <X className="w-5 h-5" />
@@ -106,15 +106,15 @@ export default function LanguageSelectionModal({ isOpen, currentLang, onSelectLa
                 key={lang.code}
                 type="button"
                 onClick={() => setSelected(lang.code)}
-                className={`relative flex flex-col text-left p-4 rounded-xl border transition-all duration-150 ${
+                className={`relative flex flex-col text-left p-4 rounded-xl border transition-all duration-150 cursor-pointer ${
                   isChosen
-                    ? 'bg-gradient-to-br from-cyan-950/60 to-blue-950/40 border-cyan-500 shadow-md shadow-cyan-500/10'
-                    : 'bg-slate-800/50 hover:bg-slate-800 border-slate-700/60 hover:border-slate-600'
+                    ? 'bg-emerald-50/70 dark:bg-emerald-950/30 border-emerald-500 dark:border-emerald-500 ring-1 ring-emerald-500/40 shadow-xs'
+                    : 'bg-slate-50/60 dark:bg-surface-dark-elevated/50 hover:bg-slate-100 dark:hover:bg-surface-dark-hover border-slate-200 dark:border-border-dark'
                 }`}
               >
                 <div className="flex items-center justify-between mb-1.5">
                   <div className="flex items-center gap-2">
-                    <span className="text-lg font-bold text-white tracking-wide">
+                    <span className="text-base font-bold text-slate-900 dark:text-white tracking-wide">
                       {lang.nativeName}
                     </span>
                     <span className="text-xs text-slate-400 font-medium">
@@ -124,19 +124,19 @@ export default function LanguageSelectionModal({ isOpen, currentLang, onSelectLa
                   <div
                     className={`w-5 h-5 rounded-full flex items-center justify-center text-xs transition-colors ${
                       isChosen
-                        ? 'bg-cyan-500 text-slate-950 font-bold'
-                        : 'border border-slate-600 text-transparent'
+                        ? 'bg-emerald-600 text-white font-bold shadow-xs'
+                        : 'border border-slate-300 dark:border-slate-600 text-transparent'
                     }`}
                   >
-                    <Check className="w-3.5 h-3.5" />
+                    <Check className="w-3.5 h-3.5 stroke-[2.5]" />
                   </div>
                 </div>
 
-                <span className="text-[11px] text-cyan-300/80 font-medium mb-1">
+                <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mb-1">
                   {lang.region}
                 </span>
 
-                <span className="text-xs text-slate-400 line-clamp-1 italic mt-auto">
+                <span className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 italic mt-auto">
                   "{lang.sample}"
                 </span>
               </button>
@@ -145,15 +145,15 @@ export default function LanguageSelectionModal({ isOpen, currentLang, onSelectLa
         </div>
 
         {/* Modal Footer */}
-        <div className="bg-slate-950/80 p-5 border-t border-slate-800 flex items-center justify-between flex-wrap gap-3">
-          <span className="text-xs text-slate-400">
+        <div className="bg-slate-50 dark:bg-surface-dark-elevated p-5 border-t border-slate-200 dark:border-border-dark flex items-center justify-between flex-wrap gap-3">
+          <span className="text-xs text-slate-500 dark:text-slate-400">
             {t('changeLangAnytime')}
           </span>
 
           <button
             type="button"
             onClick={handleConfirm}
-            className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold rounded-xl shadow-lg shadow-cyan-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+            className="flex items-center gap-2 px-6 py-2.5 bg-slate-900 hover:bg-slate-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm rounded-xl shadow-sm hover:shadow-md transition-all active:scale-[0.98] cursor-pointer"
           >
             <span>{t('continueInLang')}</span>
             <ArrowRight className="w-4 h-4" />

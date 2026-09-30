@@ -101,7 +101,7 @@ export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = ''
       </div>
 
       {/* ─── Safety Guarantee Banner ─── */}
-      <div className="luxury-card p-4 flex items-start space-x-3.5 border-emerald-500/20 bg-emerald-500/5">
+      <div className="clean-card clean-card-hover p-4 flex items-start space-x-3.5 border-emerald-500/20 bg-emerald-500/5">
         <ShieldCheck className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
         <div className="text-xs space-y-1">
           <h4 className="font-bold text-slate-900 dark:text-white">
@@ -127,7 +127,7 @@ export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = ''
                 setUrl(preset.url);
                 setValidationError(null);
               }}
-              className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border border-slate-200 dark:border-night-border bg-white dark:bg-night-850 hover:bg-slate-50 dark:hover:bg-night-800 text-slate-800 dark:text-slate-200 transition-colors cursor-pointer shadow-2xs"
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border border-slate-200 dark:border-border-dark bg-white dark:bg-surface-dark-elevated hover:bg-slate-50 dark:hover:bg-surface-dark-hover text-slate-800 dark:text-slate-200 transition-colors cursor-pointer shadow-2xs"
             >
               <span className={`w-2 h-2 rounded-full ${preset.type === 'safe' ? 'bg-emerald-500' : 'bg-rose-500'}`} />
               <span>{preset.label}</span>
@@ -137,7 +137,7 @@ export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = ''
       </div>
 
       {/* ─── Focused URL Analysis Form ─── */}
-      <form onSubmit={handleFormSubmit} noValidate className="luxury-card p-6 space-y-5 shadow-sm">
+      <form onSubmit={handleFormSubmit} noValidate className="clean-card clean-card-hover p-6 space-y-5 shadow-sm">
         <div>
           <div className="flex items-center justify-between mb-2">
             <label htmlFor="flow-url-input" className="text-xs font-bold text-slate-900 dark:text-slate-100">
@@ -147,7 +147,7 @@ export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = ''
               <button
                 type="button"
                 onClick={handlePaste}
-                className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-night-800 dark:hover:bg-night-750 text-slate-700 dark:text-slate-300 text-xs font-semibold transition-colors cursor-pointer border border-slate-200 dark:border-night-border"
+                className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-surface-dark-hover dark:hover:bg-surface-dark-hover text-slate-700 dark:text-slate-300 text-xs font-semibold transition-colors cursor-pointer border border-slate-200 dark:border-border-dark"
                 title="Paste from clipboard"
               >
                 <ClipboardPaste className="w-3.5 h-3.5 text-cyan-500" />
@@ -156,7 +156,7 @@ export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = ''
               <button
                 type="button"
                 onClick={handleClear}
-                className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-night-800 dark:hover:bg-night-750 text-slate-700 dark:text-slate-300 text-xs font-semibold transition-colors cursor-pointer border border-slate-200 dark:border-night-border"
+                className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-surface-dark-hover dark:hover:bg-surface-dark-hover text-slate-700 dark:text-slate-300 text-xs font-semibold transition-colors cursor-pointer border border-slate-200 dark:border-border-dark"
                 title="Clear input"
               >
                 <Eraser className="w-3.5 h-3.5 text-slate-400" />
@@ -178,8 +178,8 @@ export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = ''
                 if (validationError) setValidationError(null);
               }}
               placeholder={t(lang, 'urlPlaceholder', 'e.g. sbi-kyc-verify-urgent.com or http://power-bill-payment.top')}
-              className={`w-full bg-slate-50/80 text-slate-900 placeholder-slate-400 border rounded-2xl pl-10 pr-3 py-3 text-xs sm:text-sm font-mono focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 dark:bg-night-950/80 dark:text-slate-100 dark:placeholder-slate-500 transition-all ${
-                validationError ? 'border-rose-500 ring-1 ring-rose-500' : 'border-slate-200 dark:border-night-border'
+              className={`w-full bg-slate-50/80 text-slate-900 placeholder-slate-400 border rounded-2xl pl-10 pr-3 py-3 text-xs sm:text-sm font-mono focus:outline-none focus:ring-2 focus:ring-cyan-500/30 focus:border-cyan-500 dark:bg-surface-dark/80 dark:text-slate-100 dark:placeholder-slate-500 transition-all ${
+                validationError ? 'border-rose-500 ring-1 ring-rose-500' : 'border-slate-200 dark:border-border-dark'
               }`}
             />
           </div>
@@ -206,7 +206,7 @@ export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = ''
                 ? 'border-rose-500 text-rose-900 bg-rose-50 dark:border-rose-600 dark:text-rose-300 dark:bg-rose-950/30' 
                 : userState === 'entered_credentials'
                 ? 'border-amber-500 text-amber-950 bg-amber-50 dark:border-amber-600 dark:text-amber-300 dark:bg-amber-950/30' 
-                : 'bg-slate-50/80 text-slate-900 border-slate-200 dark:bg-night-950/80 dark:text-slate-200 dark:border-night-border'
+                : 'bg-slate-50/80 text-slate-900 border-slate-200 dark:bg-surface-dark/80 dark:text-slate-200 dark:border-border-dark'
             }`}
           >
             <option value="received">{t(lang, 'urlSitReceived', '1. I have NOT clicked it yet (Only received the link)')}</option>
@@ -217,12 +217,12 @@ export default function FlowUrl({ onBack, onSubmit, isAnalyzing, initialUrl = ''
         </div>
 
         {/* Primary Action Button */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-slate-200 dark:border-night-border">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-slate-200 dark:border-border-dark">
           <button
             type="submit"
             id="analyze-url-btn"
             disabled={isAnalyzing}
-            className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-8 py-3 bg-slate-900 hover:bg-slate-800 text-white dark:bg-gradient-to-r dark:from-cyan-600 dark:to-indigo-600 dark:hover:from-cyan-500 dark:hover:to-indigo-500 font-bold rounded-xl text-sm shadow-luxury-glow transition-all duration-150 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-8 py-3 bg-slate-900 hover:bg-slate-800 text-white dark:bg-gradient-to-r dark:from-cyan-600 dark:to-accent dark:hover:from-cyan-500 dark:hover:to-accent font-bold rounded-xl text-sm shadow-card-elevated transition-all duration-150 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             {isAnalyzing ? (
               <>

@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { PRESET_SCENARIOS } from '../data/presets';
 import { t, TRANSLATIONS } from '../i18n/translations';
+import CyberKawachLogo from './CyberKawachLogo';
 
 export default function Sidebar({
   currentFlow,
@@ -35,10 +36,12 @@ export default function Sidebar({
   onSelectPreset,
   lang = 'en'
 }) {
-  const [benchmarksOpen, setBenchmarksOpen] = useState(false);
+  const totalModulesCount = healthData?.modules 
+    ? Object.keys(healthData.modules).length 
+    : 12;
   const activeModulesCount = healthData?.modules 
     ? Object.values(healthData.modules).filter(Boolean).length 
-    : 11;
+    : totalModulesCount;
 
   const handleNav = (flow) => {
     if (!currentUser && flow !== 'home') {
@@ -71,32 +74,27 @@ export default function Sidebar({
 
       {/* Main Command Center Sidebar Container */}
       <aside 
-        className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col bg-white/95 dark:bg-night-900/95 backdrop-blur-2xl border-r border-slate-200/90 dark:border-night-border transition-all duration-300 ease-in-out select-none shadow-xl lg:shadow-none ${
+        className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col bg-white/95 dark:bg-surface-dark/95 backdrop-blur-2xl border-r border-slate-200/90 dark:border-border-dark transition-all duration-300 ease-in-out select-none shadow-xl lg:shadow-none ${
           isMobileOpen ? 'translate-x-0 w-72' : '-translate-x-full lg:translate-x-0'
         } ${isCollapsed ? 'lg:w-[76px]' : 'lg:w-[268px]'}`}
         aria-label="Command Center Sidebar"
       >
         {/* Brand & Logo Header */}
-        <div className="h-16 flex items-center justify-between px-4 border-b border-slate-200/80 dark:border-night-border/80 flex-shrink-0">
+        <div className={`h-16 flex items-center border-b border-slate-200/80 dark:border-border-dark/80 flex-shrink-0 relative ${
+          isCollapsed && !isMobileOpen ? 'justify-center px-2' : 'justify-between px-4'
+        }`}>
           <div 
             onClick={() => handleNav('home')} 
             className="flex items-center space-x-3 cursor-pointer group overflow-hidden"
-            title="Cyber Fraud Guardian Home"
+            title="Cyber Kawach Home"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-violet-600 to-purple-500 p-[1.5px] shadow-luxury-glow flex-shrink-0 group-hover:scale-105 transition-transform">
-              <div className="w-full h-full bg-slate-900 rounded-[10px] flex items-center justify-center">
-                <Shield className="w-5 h-5 text-violet-300" strokeWidth={2.2} />
-              </div>
-            </div>
+            <CyberKawachLogo size="md" />
 
             {(!isCollapsed || isMobileOpen) && (
               <div className="flex flex-col min-w-0 transition-opacity duration-200">
-                <div className="flex items-center space-x-1.5">
+                <div className="flex items-center">
                   <span className="text-sm font-black tracking-tight text-slate-900 dark:text-white leading-tight">
-                    CYBER<span className="text-indigo-600 dark:text-violet-400">KAWACH</span>
-                  </span>
-                  <span className="text-[9px] font-mono px-1 py-0.2 rounded bg-indigo-50 dark:bg-violet-950/80 text-indigo-700 dark:text-violet-300 font-bold border border-indigo-200 dark:border-violet-800">
-                    S2
+                    CYBER<span className="text-emerald-600 dark:text-emerald-400">KAWACH</span>
                   </span>
                 </div>
                 <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium truncate">
@@ -107,15 +105,27 @@ export default function Sidebar({
           </div>
 
           {/* Desktop Collapse / Expand Toggle Button */}
-          <button
-            type="button"
-            onClick={onToggleCollapse}
-            className="hidden lg:flex items-center justify-center w-7 h-7 rounded-lg text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-night-800 transition-colors cursor-pointer"
-            title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
-            aria-label="Toggle Sidebar width"
-          >
-            {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-          </button>
+          {(!isCollapsed || isMobileOpen) ? (
+            <button
+              type="button"
+              onClick={onToggleCollapse}
+              className="hidden lg:flex items-center justify-center w-7 h-7 rounded-lg text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-surface-dark-hover transition-colors cursor-pointer"
+              title="Collapse Sidebar"
+              aria-label="Collapse Sidebar"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={onToggleCollapse}
+              className="hidden lg:flex absolute -right-3 top-5 items-center justify-center w-6 h-6 rounded-full bg-white dark:bg-surface-dark border border-slate-300 dark:border-border-dark text-slate-500 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 shadow-md transition-all hover:scale-110 cursor-pointer z-50"
+              title="Expand Sidebar"
+              aria-label="Expand Sidebar"
+            >
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
 
         {/* Scrollable Navigation Body */}
@@ -140,15 +150,15 @@ export default function Sidebar({
                   onClick={() => handleNav(item.id)}
                   className={`w-full group flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer text-left relative ${
                     isActive
-                      ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-luxury-glow'
-                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100/90 dark:hover:bg-night-800 hover:text-slate-950 dark:hover:text-white'
+                      ? 'bg-slate-100 dark:bg-surface-dark-hover text-slate-900 dark:text-white border-l-2 border-accent'
+                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-surface-dark-hover hover:text-slate-900 dark:hover:text-white border-l-2 border-transparent'
                   }`}
                   title={item.label}
                 >
                   <div className={`p-1.5 rounded-lg transition-colors flex-shrink-0 ${
                     isActive 
-                      ? 'bg-white/20 text-white' 
-                      : 'bg-slate-100 dark:bg-night-800/80 text-slate-500 dark:text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-violet-400'
+                      ? 'bg-accent/10 text-accent dark:text-emerald-400' 
+                      : 'bg-slate-100 dark:bg-surface-dark-hover/80 text-slate-500 dark:text-slate-400 group-hover:text-accent dark:group-hover:text-emerald-400'
                   }`}>
                     <Icon className="w-4 h-4" />
                   </div>
@@ -158,7 +168,7 @@ export default function Sidebar({
                       <div className="flex flex-col">
                         <span className="truncate">{item.label}</span>
                         <span className={`text-[10px] font-normal truncate ${
-                          isActive ? 'text-indigo-100' : 'text-slate-400 dark:text-slate-500'
+                          isActive ? 'text-slate-500 dark:text-slate-400' : 'text-slate-400 dark:text-slate-500'
                         }`}>
                           {item.desc}
                         </span>
@@ -171,7 +181,7 @@ export default function Sidebar({
 
                   {/* Active Indicator Bar on collapsed view */}
                   {isCollapsed && !isMobileOpen && isActive && (
-                    <div className="absolute right-1 top-2.5 bottom-2.5 w-1 rounded-full bg-violet-400" />
+                    <div className="absolute right-1 top-2.5 bottom-2.5 w-1 rounded-full bg-accent" />
                   )}
                 </button>
               );
@@ -180,10 +190,10 @@ export default function Sidebar({
 
           {/* Benchmark Scenarios Section */}
           {(!isCollapsed || isMobileOpen) && (
-            <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-night-border/70">
+            <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-border-dark/70">
               <div className="flex items-center justify-between px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                 <span className="flex items-center space-x-1.5">
-                  <FlaskConical className="w-3 h-3 text-indigo-500" />
+                  <FlaskConical className="w-3 h-3 text-accent" />
                   <span>Benchmark Scenarios</span>
                 </span>
               </div>
@@ -199,11 +209,11 @@ export default function Sidebar({
                         if (isMobileOpen && onCloseMobile) onCloseMobile();
                       }
                     }}
-                    className="w-full text-left px-3 py-1.5 rounded-lg text-[11px] text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-violet-300 hover:bg-slate-100 dark:hover:bg-night-800 transition-colors flex items-center justify-between group cursor-pointer"
+                    className="w-full text-left px-3 py-1.5 rounded-lg text-[11px] text-slate-600 dark:text-slate-300 hover:text-accent dark:hover:text-emerald-300 hover:bg-slate-100 dark:hover:bg-surface-dark-hover transition-colors flex items-center justify-between group cursor-pointer"
                     title={preset.title}
                   >
                     <span className="truncate font-medium">{preset.title}</span>
-                    <span className="text-[9px] font-mono px-1 rounded bg-slate-100 dark:bg-night-800 text-slate-400 group-hover:text-indigo-500 flex-shrink-0 ml-1">
+                    <span className="text-[9px] font-mono px-1 rounded bg-slate-100 dark:bg-surface-dark-hover text-slate-400 group-hover:text-accent flex-shrink-0 ml-1">
                       Test
                     </span>
                   </button>
@@ -214,7 +224,7 @@ export default function Sidebar({
 
           {/* Verification & Legal Dossier */}
           {(!isCollapsed || isMobileOpen) && (
-            <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-night-border/70">
+            <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-border-dark/70">
               <div className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                 Forensic Audits
               </div>
@@ -222,7 +232,7 @@ export default function Sidebar({
                 href="/verification.html"
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center justify-between px-3 py-2 rounded-xl text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-night-800 hover:text-indigo-600 dark:hover:text-violet-300 transition-colors border border-dashed border-slate-200 dark:border-night-border"
+                className="flex items-center justify-between px-3 py-2 rounded-xl text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-surface-dark-hover hover:text-accent dark:hover:text-emerald-300 transition-colors border border-dashed border-slate-200 dark:border-border-dark"
               >
                 <div className="flex items-center space-x-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
@@ -235,19 +245,19 @@ export default function Sidebar({
         </div>
 
         {/* Footer Station: Citizen Account & System Telemetry */}
-        <div className="p-3 border-t border-slate-200/90 dark:border-night-border flex flex-col space-y-2 bg-slate-50/60 dark:bg-night-950/60 flex-shrink-0">
+        <div className="p-3 pb-4 border-t border-slate-200/90 dark:border-border-dark flex flex-col space-y-2 bg-slate-50/60 dark:bg-surface-dark/60 flex-shrink-0">
           {/* Citizen Auth Pill */}
           {!currentUser ? (
             <button
               type="button"
               onClick={() => onOpenAuthModal('Please sign in or register to access verified forensic threat triage.')}
-              className={`flex items-center rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-gradient-to-r dark:from-indigo-600 dark:to-violet-600 text-white text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer ${
+              className={`flex items-center rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-accent dark:hover:bg-accent-hover text-white text-xs font-bold transition-all shadow-sm active:scale-[0.98] cursor-pointer ${
                 isCollapsed && !isMobileOpen ? 'justify-center p-2.5' : 'justify-between px-3 py-2'
               }`}
               title="Citizen Sign In"
             >
               <div className="flex items-center space-x-2 min-w-0">
-                <LogIn className="w-4 h-4 flex-shrink-0 text-violet-300" />
+                <LogIn className="w-4 h-4 flex-shrink-0 text-emerald-300" />
                 {(!isCollapsed || isMobileOpen) && (
                   <span className="truncate">Citizen Sign In</span>
                 )}
@@ -260,7 +270,7 @@ export default function Sidebar({
             <button
               type="button"
               onClick={() => onOpenAuthModal(null, 'history')}
-              className={`flex items-center rounded-xl border border-slate-200 dark:border-night-border bg-white dark:bg-night-850 hover:border-violet-500/50 text-slate-800 dark:text-slate-200 text-xs font-semibold transition-all cursor-pointer shadow-2xs ${
+              className={`flex items-center rounded-xl border border-slate-200 dark:border-border-dark bg-white dark:bg-surface-dark-elevated hover:border-slate-300 text-slate-800 dark:text-slate-200 text-xs font-semibold transition-all cursor-pointer shadow-2xs ${
                 isCollapsed && !isMobileOpen ? 'justify-center p-2.5' : 'justify-between px-3 py-2'
               }`}
               title="Citizen Profile & My Past Checks"
@@ -276,7 +286,7 @@ export default function Sidebar({
                 )}
               </div>
               {(!isCollapsed || isMobileOpen) && (
-                <History className="w-3.5 h-3.5 text-indigo-500" />
+                <History className="w-3.5 h-3.5 text-accent" />
               )}
             </button>
           )}
@@ -292,13 +302,13 @@ export default function Sidebar({
               </span>
               {(!isCollapsed || isMobileOpen) && (
                 <span className="font-mono text-[10px] font-medium text-slate-600 dark:text-slate-400">
-                  {activeModulesCount}/11 Online
+                  {activeModulesCount}/{totalModulesCount} Online
                 </span>
               )}
             </div>
 
             {(!isCollapsed || isMobileOpen) && (
-              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-200/70 dark:bg-night-800 text-slate-600 dark:text-slate-400">
+              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-200/70 dark:bg-surface-dark-hover text-slate-600 dark:text-slate-400">
                 0-PII
               </span>
             )}

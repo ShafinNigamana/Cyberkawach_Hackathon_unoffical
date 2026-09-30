@@ -1,7 +1,6 @@
-# Cyber Fraud Guardian
+# Cyber Fraud Guardian (Cyber Kavach)
 
-> **Cyber Kavach Challenge 2026** — *Track S2: Citizen Fraud-Message Guardian*  
-> **Repository**: [https://github.com/psy9-hackathon/team-bits](https://github.com/psy9-hackathon/team-bits)
+> **Cyber Kavach** — *National Citizen Cyber Threat Triage Platform*  
 
 Cyber Fraud Guardian is a high-assurance, evidence-driven cyber fraud triage and reasoning system engineered to protect citizens from deceptive SMS, WhatsApp, email, social engineering, and payment fraud attacks.
 
@@ -182,8 +181,8 @@ flowchart TD
 
 ### 1. Clone Repository
 ```bash
-git clone https://github.com/psy9-hackathon/team-bits.git
-cd team-bits
+git clone https://github.com/ShafinNigamana/Cyberkawach_Hackathon_unoffical.git
+cd Cyberkawach_Hackathon_unoffical
 ```
 
 ### 2. Backend Setup
@@ -382,5 +381,4 @@ python scripts/run_accuracy_matrix.py
 
 ## 14. License
 
-This project is developed for the **Cyber Kavach Challenge 2026**.  
 Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for details.

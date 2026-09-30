@@ -30,7 +30,7 @@ export default function MethodologyModal({ isOpen, onClose }) {
                 Technical Methodology & Security Architecture
               </h3>
               <p className="text-[11px] text-slate-400">
-                Institutional Triage Standards • Cyber Kavach S2 • Indian Cyber Crime Coordination Centre (I4C) Partner
+                Institutional Triage Standards • Cyber Kavach • Indian Cyber Crime Coordination Centre (I4C) Partner Protocol
               </p>
             </div>
           </div>
@@ -85,7 +85,7 @@ export default function MethodologyModal({ isOpen, onClose }) {
 
             {/* Guarantee 4: Verified Threat Feeds */}
             <div className="p-3.5 bg-slate-950 rounded-btn border border-slate-800">
-              <div className="flex items-center space-x-2 text-purple-400 font-bold mb-1.5">
+              <div className="flex items-center space-x-2 text-amber-400 font-bold mb-1.5">
                 <ShieldCheck className="w-4 h-4" />
                 <span>Hardened Passive Threat Intel</span>
               </div>

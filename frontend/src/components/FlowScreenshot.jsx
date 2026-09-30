@@ -169,7 +169,7 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing, lang = '
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           onClick={() => fileInputRef.current?.click()}
-          className="luxury-card border-2 border-dashed border-indigo-400/40 dark:border-violet-500/30 hover:border-violet-500 dark:hover:border-violet-400 rounded-2xl p-10 text-center transition-all cursor-pointer space-y-4"
+          className="clean-card clean-card-hover border-2 border-dashed border-emerald-600/40 dark:border-emerald-700/30 hover:border-emerald-700 dark:hover:border-emerald-700 rounded-2xl p-10 text-center transition-all cursor-pointer space-y-4"
         >
           <input
             type="file"
@@ -180,7 +180,7 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing, lang = '
             id="screenshot-input"
           />
 
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-purple-500/20 to-indigo-500/20 text-purple-600 dark:text-violet-400 flex items-center justify-center mx-auto border border-purple-500/30 shadow-luxury-glow">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-purple-500/20 to-accent/20 text-amber-600 dark:text-emerald-400 flex items-center justify-center mx-auto border border-amber-500/30 shadow-card-elevated">
             <UploadCloud className="w-7 h-7" />
           </div>
 
@@ -195,7 +195,7 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing, lang = '
 
           <button
             type="button"
-            className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-gradient-to-r dark:from-purple-600 dark:to-indigo-600 dark:hover:from-purple-500 dark:hover:to-indigo-500 text-xs font-bold shadow-luxury-glow cursor-pointer transition-all active:scale-95"
+            className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-gradient-to-r dark:from-purple-600 dark:to-accent dark:hover:from-purple-500 dark:hover:to-accent text-xs font-bold shadow-card-elevated cursor-pointer transition-all active:scale-95"
           >
             <Camera className="w-4 h-4" />
             <span>{t(lang, 'browseImage', 'Browse Image File')}</span>
@@ -203,10 +203,10 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing, lang = '
         </div>
       ) : (
         /* Image Preview & OCR State Box */
-        <div className="luxury-card p-6 space-y-5 shadow-sm">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-night-border">
+        <div className="clean-card clean-card-hover p-6 space-y-5 shadow-sm">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-border-dark">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-slate-100 dark:bg-night-800 rounded-xl text-purple-500">
+              <div className="p-2 bg-slate-100 dark:bg-surface-dark-hover rounded-xl text-amber-500">
                 <ImageIcon className="w-4 h-4" />
               </div>
               <div>
@@ -224,9 +224,9 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing, lang = '
                 type="button"
                 onClick={() => runOcr()}
                 disabled={isOcrProcessing}
-                className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-night-800 dark:hover:bg-night-750 text-slate-700 dark:text-slate-300 text-xs font-semibold transition-colors cursor-pointer border border-slate-200 dark:border-night-border"
+                className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-surface-dark-hover dark:hover:bg-surface-dark-hover text-slate-700 dark:text-slate-300 text-xs font-semibold transition-colors cursor-pointer border border-slate-200 dark:border-border-dark"
               >
-                <ScanText className="w-3.5 h-3.5 text-purple-500" />
+                <ScanText className="w-3.5 h-3.5 text-amber-500" />
                 <span>{t(lang, 'reScanOcr', 'Re-Scan OCR')}</span>
               </button>
               <button
@@ -243,7 +243,7 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing, lang = '
           {/* Thumbnail & OCR Output Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
             {/* Thumbnail Preview */}
-            <div className="md:col-span-1 border border-slate-200 dark:border-night-border rounded-xl p-2 bg-slate-50 dark:bg-night-950 flex flex-col items-center">
+            <div className="md:col-span-1 border border-slate-200 dark:border-border-dark rounded-xl p-2 bg-slate-50 dark:bg-surface-dark flex flex-col items-center">
               <img
                 src={previewUrl}
                 alt="Uploaded Screenshot Preview"
@@ -255,8 +255,8 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing, lang = '
             {/* Extracted Text & URLs */}
             <div className="md:col-span-2 space-y-3.5">
               {isOcrProcessing ? (
-                <div className="h-44 border border-dashed border-indigo-400/30 dark:border-violet-500/30 rounded-xl flex flex-col items-center justify-center p-4 text-center space-y-2 bg-slate-50/50 dark:bg-night-950/40">
-                  <Loader2 className="w-7 h-7 text-purple-500 animate-spin" />
+                <div className="h-44 border border-dashed border-emerald-600/30 dark:border-emerald-700/30 rounded-xl flex flex-col items-center justify-center p-4 text-center space-y-2 bg-slate-50/50 dark:bg-surface-dark/40">
+                  <Loader2 className="w-7 h-7 text-amber-500 animate-spin" />
                   <p className="text-xs font-bold text-slate-900 dark:text-white">
                     {t(lang, 'scanningOcr', 'Scanning image via Optical Character Recognition (OCR)...')}
                   </p>
@@ -275,7 +275,7 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing, lang = '
                       value={extractedText}
                       onChange={(e) => setExtractedText(e.target.value)}
                       placeholder={t(lang, 'extractedMsgPlaceholder', 'OCR extracted text will appear here. You can refine or add text...')}
-                      className="w-full bg-slate-50 text-slate-900 border border-slate-300 dark:border-night-border rounded-xl p-3 text-xs font-sans focus:outline-none focus:ring-2 focus:ring-violet-500 dark:bg-night-950 dark:text-slate-100 leading-relaxed"
+                      className="w-full bg-slate-50 text-slate-900 border border-slate-300 dark:border-border-dark rounded-xl p-3 text-xs font-sans focus:outline-none focus:ring-2 focus:ring-accent dark:bg-surface-dark dark:text-slate-100 leading-relaxed"
                     />
                   </div>
 
@@ -288,7 +288,7 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing, lang = '
                       value={extractedUrls}
                       onChange={(e) => setExtractedUrls(e.target.value)}
                       placeholder="e.g. http://sbi-kyc-verify-urgent.com/login"
-                      className="w-full bg-slate-50 text-slate-900 border border-slate-300 dark:border-night-border rounded-xl px-3 py-2 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-violet-500 dark:bg-night-950 dark:text-slate-100"
+                      className="w-full bg-slate-50 text-slate-900 border border-slate-300 dark:border-border-dark rounded-xl px-3 py-2 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-accent dark:bg-surface-dark dark:text-slate-100"
                     />
                   </div>
                 </>
@@ -297,7 +297,7 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing, lang = '
           </div>
 
           {/* Citizen Situation Selection */}
-          <div className="pt-3 border-t border-slate-200 dark:border-night-border">
+          <div className="pt-3 border-t border-slate-200 dark:border-border-dark">
             <label htmlFor="screenshot-user-state" className="block text-xs font-bold text-slate-900 dark:text-slate-200 mb-1.5">
               {t(lang, 'currentStateQuestion', 'What is your current interaction state?')} <span className="text-rose-500 font-bold">*</span>
             </label>
@@ -305,12 +305,12 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing, lang = '
               id="screenshot-user-state"
               value={userState}
               onChange={(e) => setUserState(e.target.value)}
-              className={`w-full border rounded-xl px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 cursor-pointer font-medium ${
+              className={`w-full border rounded-xl px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-accent cursor-pointer font-medium ${
                 userState === 'paid' 
                   ? 'border-rose-500 text-rose-900 bg-rose-50 dark:border-rose-600 dark:text-rose-300 dark:bg-rose-950/30' 
                   : userState === 'entered_credentials'
                   ? 'border-amber-500 text-amber-950 bg-amber-50 dark:border-amber-600 dark:text-amber-300 dark:bg-amber-950/30'
-                  : 'bg-slate-50 text-slate-900 border-slate-300 dark:bg-night-950 dark:text-slate-200 dark:border-night-border'
+                  : 'bg-slate-50 text-slate-900 border-slate-300 dark:bg-surface-dark dark:text-slate-200 dark:border-border-dark'
               }`}
             >
               <option value="received">{t(lang, 'scrSitReceived', '1. I only have this screenshot (No further action taken)')}</option>
@@ -321,12 +321,12 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing, lang = '
           </div>
 
           {/* Continue Action Button */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-slate-200 dark:border-night-border">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-slate-200 dark:border-border-dark">
             <button
               type="button"
               onClick={handleContinueAnalysis}
               disabled={isAnalyzing || isOcrProcessing || !extractedText.trim()}
-              className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-8 py-3 bg-slate-900 hover:bg-slate-800 text-white dark:bg-gradient-to-r dark:from-purple-600 dark:to-indigo-600 dark:hover:from-purple-500 dark:hover:to-indigo-500 font-bold rounded-xl text-sm shadow-luxury-glow transition-all duration-150 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-8 py-3 bg-slate-900 hover:bg-slate-800 text-white dark:bg-gradient-to-r dark:from-purple-600 dark:to-accent dark:hover:from-purple-500 dark:hover:to-accent font-bold rounded-xl text-sm shadow-card-elevated transition-all duration-150 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {isAnalyzing ? (
                 <>

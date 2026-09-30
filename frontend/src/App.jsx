@@ -223,9 +223,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 dark:bg-night-950 dark:text-slate-100 flex font-sans transition-colors duration-200 relative overflow-x-hidden clean-spotlight clean-grid">
-      {/* Ambient Top Lighting in Violet & Deep Sapphire */}
-      <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[1100px] h-[550px] bg-gradient-to-b from-indigo-500/10 via-violet-500/5 to-transparent blur-3xl rounded-full dark:from-indigo-600/20 dark:via-violet-600/10" aria-hidden="true" />
+    <div className="min-h-screen bg-surface-secondary text-slate-900 dark:bg-surface-dark dark:text-slate-100 flex font-sans transition-colors duration-200 relative overflow-x-hidden">
       
       {/* Command Center Collapsible Navigation Sidebar */}
       <Sidebar
@@ -357,6 +355,7 @@ export default function App() {
               lang={lang}
               currentUser={currentUser}
               onOpenAuthModal={(prompt, tab) => openAuth(prompt, tab)}
+              healthData={healthData}
             />
           )}
         </main>

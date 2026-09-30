@@ -13,7 +13,7 @@ const STAGE_CONFIG = {
   redirection: { label: 'Infrastructure / Fake Portal', icon: Globe, color: 'text-blue-600 dark:text-blue-400' },
   exploitation: { label: 'Credential / OTP Solicitation', icon: KeyRound, color: 'text-orange-600 dark:text-orange-400' },
   monetization: { label: 'Financial Loss / Unauthorized Debit', icon: CreditCard, color: 'text-red-600 dark:text-red-400' },
-  execution: { label: 'Unauthorized Execution', icon: ShieldAlert, color: 'text-purple-600 dark:text-purple-400' },
+  execution: { label: 'Unauthorized Execution', icon: ShieldAlert, color: 'text-amber-600 dark:text-amber-400' },
 };
 
 export default function AttackPath({ attackPath, userState = 'received' }) {
@@ -32,15 +32,15 @@ export default function AttackPath({ attackPath, userState = 'received' }) {
   }
 
   return (
-    <section className="luxury-card p-6" aria-label="Traceable Causal Attack Path">
-      <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-200 dark:border-night-border">
+    <section className="clean-card clean-card-hover p-6" aria-label="Traceable Causal Attack Path">
+      <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-200 dark:border-border-dark">
         <div className="flex items-center space-x-2.5">
-          <GitFork className="w-5 h-5 text-indigo-500 dark:text-violet-400" />
+          <GitFork className="w-5 h-5 text-accent dark:text-emerald-400" />
           <h3 className="text-base font-bold text-slate-900 dark:text-white">
             Traceable Causal Attack Path
           </h3>
         </div>
-        <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 dark:bg-night-800 dark:text-slate-300 border border-slate-200 dark:border-night-border font-semibold">
+        <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 dark:bg-surface-dark-hover dark:text-slate-300 border border-slate-200 dark:border-border-dark font-semibold">
           EVIDENCE-GROUNDED
         </span>
       </div>
