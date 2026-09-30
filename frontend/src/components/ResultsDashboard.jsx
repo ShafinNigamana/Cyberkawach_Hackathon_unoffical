@@ -28,7 +28,6 @@ import UrlInfrastructure from './UrlInfrastructure';
 import ReportModal from './ReportModal';
 import { TRANSLATIONS } from '../i18n/translations';
 
-// Helper to construct a single plain-language verdict sentence
 function getPlainLanguageVerdict(result) {
   if (result.explanation?.summary) {
     const summary = result.explanation.summary.trim();
@@ -71,7 +70,6 @@ export default function ResultsDashboard({
   onCheckAnother,
   lang,
 }) {
-  // Mode: 'quick' (Level 1 + 2 concise) or 'full' (Level 3 Deep Forensic Evidence)
   const [viewMode, setViewMode] = useState('quick');
   const [copiedRef, setCopiedRef] = useState(false);
   const [reportModalOpen, setReportModalOpen] = useState(false);
@@ -98,18 +96,17 @@ export default function ResultsDashboard({
     setTimeout(() => setCopiedRef(false), 2000);
   };
 
-  // Find most important detected finding
   const primaryEvidence = (result.evidence || [])[0]?.description || 
     (isHighRisk ? 'Coercive urgency & deceptive credentials harvesting indicators detected.' : 'No malicious markers found.');
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-6" id="results-dashboard" aria-live="polite">
-      {/* ─── Top Control Bar: Back Navigation, Reference ID, & Quick vs Full Evidence Toggle ─── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/80 dark:border-slate-800/80">
+    <div className="w-full max-w-5xl mx-auto space-y-6" id="results-dashboard" aria-live="polite">
+      {/* ─── Top Control Bar: Back Navigation, Case ID, & View Switcher ─── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/80 dark:border-night-border">
         <button
           type="button"
           onClick={onCheckAnother}
-          className="inline-flex items-center space-x-1.5 text-xs font-semibold text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white transition-colors cursor-pointer self-start"
+          className="inline-flex items-center space-x-1.5 text-xs font-bold text-slate-700 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-violet-300 transition-colors cursor-pointer self-start"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Check Another Message / Link</span>
@@ -117,45 +114,45 @@ export default function ResultsDashboard({
 
         <div className="flex items-center space-x-3 self-end sm:self-auto flex-wrap">
           {/* Reference ID Pill */}
-          <div className="flex items-center space-x-1.5 px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs shadow-2xs">
-            <span className="text-[10px] font-mono text-slate-500 uppercase">Case ID:</span>
+          <div className="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-night-850 border border-slate-200 dark:border-night-border text-xs shadow-2xs">
+            <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Case ID:</span>
             <span className="font-mono font-bold text-slate-900 dark:text-slate-100">{incidentId}</span>
             <button
               onClick={handleCopyRef}
-              className="ml-1 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors cursor-pointer"
-              title="Copy Incident ID"
+              className="ml-1 text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors cursor-pointer"
+              title="Copy Case ID"
             >
-              {copiedRef ? <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+              {copiedRef ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
             </button>
           </div>
 
           {/* Quick View vs Full Evidence Segmented Switch */}
-          <div className="flex items-center bg-slate-100 dark:bg-slate-800/90 p-1 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs" role="group" aria-label="Inspection Depth">
+          <div className="flex items-center bg-slate-100 dark:bg-night-850 p-1 rounded-xl border border-slate-200 dark:border-night-border shadow-2xs" role="group" aria-label="Inspection Depth">
             <button
               type="button"
               onClick={() => setViewMode('quick')}
               className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                 viewMode === 'quick'
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950 shadow-sm'
+                  ? 'bg-slate-900 text-white dark:bg-gradient-to-r dark:from-indigo-600 dark:to-violet-600 shadow-sm'
                   : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
               }`}
             >
-              Quick View
+              Executive Brief
             </button>
             <button
               type="button"
               onClick={() => setViewMode('full')}
               className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center space-x-1 ${
                 viewMode === 'full'
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950 shadow-sm'
+                  ? 'bg-slate-900 text-white dark:bg-gradient-to-r dark:from-indigo-600 dark:to-violet-600 shadow-sm'
                   : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
               }`}
             >
-              <span>Full Evidence</span>
+              <span>Full Dossier</span>
               <span className={`ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-mono ${
                 viewMode === 'full'
-                  ? 'bg-slate-800 text-slate-200 dark:bg-slate-200 dark:text-slate-800'
-                  : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400'
+                  ? 'bg-white/20 text-white'
+                  : 'bg-slate-200 dark:bg-night-800 text-slate-600 dark:text-slate-400'
               }`}>
                 {(result.evidence || []).length}
               </span>
@@ -165,25 +162,25 @@ export default function ResultsDashboard({
       </div>
 
       {/* ─── SECTION 1: WHAT IS HAPPENING? ─── */}
-      <section className={`p-6 sm:p-7 rounded-2xl border transition-all duration-300 shadow-sm relative overflow-hidden ${
+      <section className={`luxury-card p-6 sm:p-7 relative overflow-hidden ${
         isHighRisk
-          ? 'bg-red-50/40 border-red-200 dark:bg-red-950/20 dark:border-red-900/60'
+          ? 'border-rose-400/30 dark:border-rose-500/30'
           : isSafe
-          ? 'bg-emerald-50/40 border-emerald-200 dark:bg-emerald-950/20 dark:border-emerald-900/60'
-          : 'bg-amber-50/40 border-amber-200 dark:bg-amber-950/20 dark:border-amber-900/60'
+          ? 'border-emerald-400/30 dark:border-emerald-500/30'
+          : 'border-amber-400/30 dark:border-amber-500/30'
       }`}>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-          <div className="space-y-3 flex-1">
+          <div className="space-y-3.5 flex-1">
             <div className="flex items-center space-x-2.5 flex-wrap gap-y-2">
               {/* Risk Level Badge */}
               <span className={`inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-extrabold tracking-wider uppercase ${
                 isHighRisk
-                  ? 'bg-red-600 text-white dark:bg-red-500 dark:text-white'
+                  ? 'bg-rose-600 text-white shadow-rose-glow'
                   : isSafe
-                  ? 'bg-emerald-600 text-white dark:bg-emerald-500 dark:text-white'
-                  : 'bg-amber-600 text-white dark:bg-amber-500 dark:text-white'
+                  ? 'bg-emerald-600 text-white shadow-emerald-glow'
+                  : 'bg-amber-600 text-white shadow-sm'
               }`}>
-                <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
                 <span>{riskLevel} RISK • {riskScore}/100</span>
               </span>
 
@@ -193,13 +190,13 @@ export default function ResultsDashboard({
             </div>
 
             {/* Plain-Language Verdict */}
-            <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white leading-snug">
+            <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white leading-snug">
               {verdictSentence}
             </h3>
 
             {/* Most Important Detected Issue */}
-            <div className="p-3 rounded-xl bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800/80 flex items-start space-x-2 text-xs text-slate-700 dark:text-slate-300">
-              <span className="font-bold text-slate-900 dark:text-white flex-shrink-0">Key Finding:</span>
+            <div className="p-3.5 rounded-xl bg-slate-50/80 dark:bg-night-950/70 border border-slate-200/80 dark:border-night-border flex items-start space-x-2.5 text-xs text-slate-700 dark:text-slate-300">
+              <span className="font-extrabold text-slate-900 dark:text-white flex-shrink-0">Key Finding:</span>
               <span>{primaryEvidence}</span>
             </div>
           </div>
@@ -207,38 +204,36 @@ export default function ResultsDashboard({
           {/* Quick Score Circular Ring & Report Action */}
           <div className="flex sm:flex-col items-center justify-between sm:justify-center gap-4 self-start md:self-center flex-shrink-0">
             {/* Circular Gauge */}
-            <div className="relative w-22 h-22 flex items-center justify-center">
-              <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 88 88">
-                {/* Background Ring */}
+            <div className="relative w-24 h-24 flex items-center justify-center">
+              <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 96 96">
                 <circle
-                  cx="44"
-                  cy="44"
-                  r="36"
-                  className="stroke-slate-200 dark:stroke-slate-800"
-                  strokeWidth="7"
+                  cx="48"
+                  cy="48"
+                  r="40"
+                  className="stroke-slate-200 dark:stroke-night-800"
+                  strokeWidth="8"
                   fill="transparent"
                 />
-                {/* Foreground Progress Ring */}
                 <circle
-                  cx="44"
-                  cy="44"
-                  r="36"
+                  cx="48"
+                  cy="48"
+                  r="40"
                   className={`transition-all duration-1000 ease-out ${
                     isHighRisk
-                      ? 'stroke-red-600 dark:stroke-red-500'
+                      ? 'stroke-rose-500'
                       : isSafe
-                      ? 'stroke-emerald-600 dark:stroke-emerald-500'
-                      : 'stroke-amber-600 dark:stroke-amber-500'
+                      ? 'stroke-emerald-500'
+                      : 'stroke-amber-500'
                   }`}
-                  strokeWidth="7"
-                  strokeDasharray={2 * Math.PI * 36}
-                  strokeDashoffset={(2 * Math.PI * 36) - ((riskScore / 100) * (2 * Math.PI * 36))}
+                  strokeWidth="8"
+                  strokeDasharray={2 * Math.PI * 40}
+                  strokeDashoffset={(2 * Math.PI * 40) - ((riskScore / 100) * (2 * Math.PI * 40))}
                   strokeLinecap="round"
                   fill="transparent"
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                <span className="text-xl font-black text-slate-900 dark:text-white leading-none">
+                <span className="text-2xl font-black text-slate-900 dark:text-white leading-none">
                   {riskScore}
                 </span>
                 <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mt-0.5">
@@ -250,7 +245,7 @@ export default function ResultsDashboard({
             <button
               type="button"
               onClick={() => setReportModalOpen(true)}
-              className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-950 text-xs font-bold shadow-sm transition-all active:scale-[0.98] cursor-pointer"
+              className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-gradient-to-r dark:from-indigo-600 dark:to-violet-600 dark:hover:from-indigo-500 dark:hover:to-violet-500 text-xs font-bold shadow-luxury-glow transition-all active:scale-[0.98] cursor-pointer"
             >
               <FileText className="w-3.5 h-3.5" />
               <span>Generate Report</span>
@@ -259,7 +254,7 @@ export default function ResultsDashboard({
         </div>
       </section>
 
-      {/* ─── SECTION 2: WHAT SHOULD I DO? ─── */}
+      {/* ─── SECTION 2: WHAT SHOULD I DO? (Adaptive Guidance Action Center) ─── */}
       <section aria-label="What Should I Do">
         <AdaptiveGuidance
           response={result.response}
@@ -272,7 +267,7 @@ export default function ResultsDashboard({
 
       {/* ─── VIEW MODE: FULL EVIDENCE (DEEP SCAN LEVEL 3) ─── */}
       {viewMode === 'full' ? (
-        <div className="space-y-6 pt-2 border-t border-slate-200 dark:border-slate-800">
+        <div className="space-y-6 pt-2 border-t border-slate-200 dark:border-night-border">
           {/* SECTION 3: WHY DID YOU SAY THAT? (Epistemic Reasoning) */}
           <ExplanationCard explanation={result.explanation} />
 
@@ -304,7 +299,7 @@ export default function ResultsDashboard({
         </div>
       ) : (
         /* In Quick View: Provide an obvious, friendly banner to inspect deeper evidence */
-        <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div className="luxury-card p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div>
             <h4 className="text-xs font-bold text-slate-900 dark:text-white">
               Want to inspect forensic evidence, threat feeds, or the attack path?
@@ -317,23 +312,23 @@ export default function ResultsDashboard({
           <button
             type="button"
             onClick={() => setViewMode('full')}
-            className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition-colors cursor-pointer shadow-xs"
+            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-white dark:bg-night-800 hover:bg-slate-100 dark:hover:bg-night-750 border border-slate-200 dark:border-night-border text-slate-800 dark:text-slate-200 text-xs font-bold transition-all cursor-pointer shadow-xs active:scale-95"
           >
-            <Eye className="w-3.5 h-3.5 text-slate-600 dark:text-slate-400" />
+            <Eye className="w-3.5 h-3.5 text-indigo-500 dark:text-violet-400" />
             <span>Switch to Full Evidence View</span>
           </button>
         </div>
       )}
 
       {/* ─── SECTION 8: REPORT THIS INCIDENT (Formal Reporting Flow) ─── */}
-      <section className="clean-card rounded-2xl p-5 space-y-3 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <section className="luxury-card p-5 sm:p-6 space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h4 className="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-1.5">
-              <FileText className="w-4 h-4 text-slate-700 dark:text-slate-300" />
+            <h4 className="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+              <FileText className="w-4 h-4 text-indigo-600 dark:text-violet-400" />
               <span>Official Law Enforcement & 1930 Incident Dossier</span>
             </h4>
-            <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
               Generate a verified, printable legal complaint preview containing cryptographic SHA-256 hash, extracted IOCs, and forensic evidence for submission to <strong className="text-slate-900 dark:text-white">cybercrime.gov.in</strong> or dialling <strong className="text-slate-900 dark:text-white">1930</strong>.
             </p>
           </div>
@@ -341,7 +336,7 @@ export default function ResultsDashboard({
           <button
             type="button"
             onClick={() => setReportModalOpen(true)}
-            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-950 text-xs font-bold shadow-sm transition-all active:scale-[0.99] cursor-pointer flex-shrink-0"
+            className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-gradient-to-r dark:from-indigo-600 dark:to-violet-600 dark:hover:from-indigo-500 dark:hover:to-violet-500 text-xs font-bold shadow-luxury-glow transition-all active:scale-[0.98] cursor-pointer flex-shrink-0"
           >
             <FileText className="w-4 h-4" />
             <span>Generate Incident Report</span>

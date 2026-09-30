@@ -26,35 +26,35 @@ export default function AdaptiveGuidance({
   const isCaution = currentState === 'clicked';
 
   // Distinct container style based on severity level with Light & Dark theme support
-  let containerStyle = "border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900";
-  let headerColor = "text-blue-700 dark:text-blue-400";
-  let badgeColor = "bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900/40 dark:text-blue-300 dark:border-blue-800";
+  let containerStyle = "border-slate-200 bg-white dark:border-night-border dark:bg-night-850";
+  let headerColor = "text-indigo-600 dark:text-violet-400";
+  let badgeColor = "bg-indigo-50 text-indigo-800 border-indigo-200 dark:bg-night-800 dark:text-violet-300 dark:border-night-border font-bold";
 
   if (isEmergency) {
-    containerStyle = "border-red-400 bg-red-50/80 dark:border-red-600/90 dark:bg-red-950/30 ring-2 ring-red-400/40";
-    headerColor = "text-red-700 dark:text-red-400";
-    badgeColor = "bg-red-200 text-red-900 border-red-400 font-bold dark:bg-red-900/80 dark:text-red-200 dark:border-red-500 animate-pulse";
+    containerStyle = "border-rose-400 bg-rose-50/80 dark:border-rose-600/70 dark:bg-rose-950/25 ring-2 ring-rose-400/30";
+    headerColor = "text-rose-600 dark:text-rose-400";
+    badgeColor = "bg-rose-100 text-rose-900 border-rose-300 font-bold dark:bg-rose-900/80 dark:text-rose-200 dark:border-rose-500 animate-pulse";
   } else if (isHighAlert) {
-    containerStyle = "border-amber-400 bg-amber-50/60 dark:border-amber-600/80 dark:bg-amber-950/20";
-    headerColor = "text-amber-800 dark:text-amber-400";
-    badgeColor = "bg-amber-200 text-amber-900 border-amber-400 font-bold dark:bg-amber-900/60 dark:text-amber-200 dark:border-amber-600";
+    containerStyle = "border-amber-400 bg-amber-50/60 dark:border-amber-600/70 dark:bg-amber-950/20";
+    headerColor = "text-amber-700 dark:text-amber-400";
+    badgeColor = "bg-amber-100 text-amber-900 border-amber-300 font-bold dark:bg-amber-900/60 dark:text-amber-200 dark:border-amber-600";
   } else if (isCaution) {
-    containerStyle = "border-amber-300 bg-slate-50/80 dark:border-amber-700/50 dark:bg-slate-900/95";
+    containerStyle = "border-amber-300 bg-slate-50/80 dark:border-night-border dark:bg-night-850";
     headerColor = "text-amber-700 dark:text-amber-300";
-    badgeColor = "bg-amber-100 text-amber-800 border-amber-300 dark:bg-slate-800 dark:text-amber-300 dark:border-amber-700";
+    badgeColor = "bg-amber-50 text-amber-800 border-amber-200 dark:bg-night-800 dark:text-amber-300 dark:border-night-border";
   }
 
   return (
-    <section className={`rounded-card border p-5 transition-all duration-300 shadow-sm dark:shadow-card-elevated ${containerStyle}`} aria-label="Adaptive Citizen Guidance">
+    <section className={`luxury-card p-5 sm:p-6 transition-all duration-300 shadow-sm ${containerStyle}`} aria-label="Adaptive Citizen Guidance">
       {/* Header Bar */}
-      <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-200 dark:border-night-border">
         <div className="flex items-center space-x-2">
           <ShieldAlert className={`w-5 h-5 ${headerColor}`} />
           <h3 className="text-base font-bold text-slate-900 dark:text-white">
             Recommended Citizen Actions
           </h3>
         </div>
-        <span className={`px-2.5 py-0.5 rounded-badge text-[11px] font-mono border ${badgeColor}`}>
+        <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-mono border ${badgeColor}`}>
           {isEmergency ? 'EMERGENCY PROTOCOL' : urgency.toUpperCase()}
         </span>
       </div>
@@ -155,15 +155,15 @@ export default function AdaptiveGuidance({
           )}
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           <button
             type="button"
             onClick={() => onStateChange('received')}
             disabled={isUpdatingState}
-            className={`px-2.5 py-2 rounded-chip text-xs font-semibold border text-center transition-all cursor-pointer ${
+            className={`px-3 py-2 rounded-xl text-xs font-bold border text-center transition-all cursor-pointer ${
               currentState === 'received'
-                ? 'bg-blue-800 text-white border-blue-900 shadow-sm'
-                : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100 dark:bg-slate-950 dark:text-slate-300 dark:border-slate-800 dark:hover:bg-slate-800'
+                ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white border-transparent shadow-luxury-glow'
+                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 dark:bg-night-800 dark:text-slate-300 dark:border-night-border dark:hover:bg-night-750'
             }`}
           >
             1. Only Received
@@ -173,10 +173,10 @@ export default function AdaptiveGuidance({
             type="button"
             onClick={() => onStateChange('clicked')}
             disabled={isUpdatingState}
-            className={`px-2.5 py-2 rounded-chip text-xs font-semibold border text-center transition-all cursor-pointer ${
+            className={`px-3 py-2 rounded-xl text-xs font-bold border text-center transition-all cursor-pointer ${
               currentState === 'clicked'
                 ? 'bg-amber-600 text-white border-amber-700 shadow-sm'
-                : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100 dark:bg-slate-950 dark:text-slate-300 dark:border-slate-800 dark:hover:bg-slate-800'
+                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 dark:bg-night-800 dark:text-slate-300 dark:border-night-border dark:hover:bg-night-750'
             }`}
           >
             2. Clicked Link
@@ -186,10 +186,10 @@ export default function AdaptiveGuidance({
             type="button"
             onClick={() => onStateChange('entered_credentials')}
             disabled={isUpdatingState}
-            className={`px-2.5 py-2 rounded-chip text-xs font-semibold border text-center transition-all cursor-pointer ${
+            className={`px-3 py-2 rounded-xl text-xs font-bold border text-center transition-all cursor-pointer ${
               currentState === 'entered_credentials'
                 ? 'bg-orange-600 text-white border-orange-700 shadow-sm'
-                : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100 dark:bg-slate-950 dark:text-slate-300 dark:border-slate-800 dark:hover:bg-slate-800'
+                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 dark:bg-night-800 dark:text-slate-300 dark:border-night-border dark:hover:bg-night-750'
             }`}
           >
             3. Entered Details
@@ -199,10 +199,10 @@ export default function AdaptiveGuidance({
             type="button"
             onClick={() => onStateChange('paid')}
             disabled={isUpdatingState}
-            className={`px-2.5 py-2 rounded-chip text-xs font-bold border text-center transition-all cursor-pointer ${
+            className={`px-3 py-2 rounded-xl text-xs font-bold border text-center transition-all cursor-pointer ${
               currentState === 'paid'
-                ? 'bg-red-600 text-white border-red-700 shadow-md animate-pulse'
-                : 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100 dark:bg-red-950/40 dark:text-red-300 dark:border-red-900/60 dark:hover:bg-red-900/50'
+                ? 'bg-rose-600 text-white border-rose-700 shadow-rose-glow animate-pulse'
+                : 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-900/60 dark:hover:bg-rose-900/50'
             }`}
           >
             4. Sent Money

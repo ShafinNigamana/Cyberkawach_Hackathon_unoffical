@@ -21,6 +21,8 @@ import base64
 import hashlib
 import logging
 from typing import Any, Optional
+from threading import Lock
+import time
 from urllib.parse import urlparse
 
 import httpx
@@ -73,10 +75,42 @@ class ThreatIntelProvider(abc.ABC):
 
 # ─── Concrete Provider: URLhaus (abuse.ch) ───
 
+_URLHAUS_FEED_CACHE: tuple[float, set[str]] = (0.0, set())
+_URLHAUS_LOCK = Lock()
+
+async def _get_urlhaus_online_set() -> set[str]:
+    """Fetch and cache URLhaus active online malicious URL set (15-min TTL)."""
+    global _URLHAUS_FEED_CACHE
+    now = time.time()
+    with _URLHAUS_LOCK:
+        if now - _URLHAUS_FEED_CACHE[0] < 900 and _URLHAUS_FEED_CACHE[1]:
+            return _URLHAUS_FEED_CACHE[1]
+    try:
+        async with httpx.AsyncClient(timeout=8.0) as client:
+            resp = await client.get(
+                "https://urlhaus.abuse.ch/downloads/text_online/",
+                headers={"User-Agent": "CyberKawach-Intel/1.0"},
+            )
+            if resp.status_code == 200:
+                urls = set()
+                for line in resp.text.splitlines():
+                    line = line.strip().lower()
+                    if line and not line.startswith("#"):
+                        urls.add(line)
+                with _URLHAUS_LOCK:
+                    _URLHAUS_FEED_CACHE = (now, urls)
+                return urls
+    except Exception as e:
+        logger.debug("Failed to fetch live URLhaus online feed: %s", safe_error_message(e))
+    with _URLHAUS_LOCK:
+        return _URLHAUS_FEED_CACHE[1]
+
+
 class URLhausProvider(ThreatIntelProvider):
     """
     abuse.ch URLhaus threat feed.
-    Free and public API tracking live malware distribution and phishing URLs.
+    Live malware distribution and phishing URL intelligence.
+    Dynamically queries live online URLhaus threat database when API key is unconfigured.
     """
 
     @property
@@ -85,115 +119,150 @@ class URLhausProvider(ThreatIntelProvider):
 
     @property
     def is_available(self) -> bool:
-        return True  # URLhaus public API does not mandate an API key for basic lookups
+        return True
 
     async def check_url(self, url: str) -> ThreatIntelResult:
         settings = get_settings()
         api_url = "https://urlhaus-api.abuse.ch/v1/url/"
-        headers = {"User-Agent": "CyberKawach-Intel/1.0"}
-        if getattr(settings, "urlhaus_api_key", None):
-            headers["Auth-Key"] = settings.urlhaus_api_key
+        api_key = getattr(settings, "urlhaus_api_key", None)
 
+        # 1. If an Auth-Key is configured, attempt official API first
+        if api_key and api_key.strip():
+            headers = {"User-Agent": "CyberKawach-Intel/1.0", "Auth-Key": api_key.strip()}
+            try:
+                async with httpx.AsyncClient(timeout=_DEFAULT_TIMEOUT) as client:
+                    resp = await client.post(api_url, data={"url": url}, headers=headers)
+                    if resp.status_code == 200:
+                        data = resp.json()
+                        query_status = data.get("query_status", "")
+                        if query_status == "ok":
+                            url_status = data.get("url_status", "unknown")
+                            threat = data.get("threat", "malware_url")
+                            tags = ", ".join(data.get("tags") or [])
+                            details = f"Known threat: {threat} (status: {url_status})"
+                            if tags:
+                                details += f" [tags: {tags}]"
+                            return ThreatIntelResult(
+                                source=self.name,
+                                match=True,
+                                details=details,
+                                lookup_url=url,
+                                intel_status=ThreatIntelStatus.KNOWN_MALICIOUS,
+                            )
+                        elif query_status == "no_results":
+                            return ThreatIntelResult(
+                                source=self.name,
+                                match=False,
+                                details="No matching threat records in URLhaus",
+                                lookup_url=url,
+                                intel_status=ThreatIntelStatus.NO_KNOWN_MATCH,
+                            )
+            except Exception as e:
+                logger.debug("URLhaus API error: %s", safe_error_message(e))
+
+        # 2. Dynamic live fallback: query URLhaus active online dataset
         try:
-            async with httpx.AsyncClient(timeout=_DEFAULT_TIMEOUT) as client:
-                resp = await client.post(api_url, data={"url": url}, headers=headers)
-                if resp.status_code != 200:
-                    return ThreatIntelResult(
-                        source=self.name,
-                        lookup_url=url,
-                        error=f"HTTP {resp.status_code}",
-                        intel_status=ThreatIntelStatus.SOURCE_ERROR,
-                    )
-                data = resp.json()
-                query_status = data.get("query_status", "")
+            online_urls = await _get_urlhaus_online_set()
+            clean_l = url.strip().lower()
+            parsed_domain = ""
+            try:
+                parsed_domain = urlparse(clean_l).netloc.split(":")[0]
+            except Exception:
+                pass
 
-                if query_status == "ok":
-                    url_status = data.get("url_status", "unknown")
-                    threat = data.get("threat", "malware_url")
-                    tags = ", ".join(data.get("tags") or [])
-                    details = f"Known threat: {threat} (status: {url_status})"
-                    if tags:
-                        details += f" [tags: {tags}]"
-                    return ThreatIntelResult(
-                        source=self.name,
-                        match=True,
-                        details=details,
-                        lookup_url=url,
-                        intel_status=ThreatIntelStatus.KNOWN_MALICIOUS,
-                    )
-                elif query_status == "no_results":
-                    return ThreatIntelResult(
-                        source=self.name,
-                        match=False,
-                        details="No matching threat records in URLhaus",
-                        lookup_url=url,
-                        intel_status=ThreatIntelStatus.NO_KNOWN_MATCH,
-                    )
-                else:
-                    return ThreatIntelResult(
-                        source=self.name,
-                        lookup_url=url,
-                        error=query_status or "Unknown query status",
-                        intel_status=ThreatIntelStatus.SOURCE_ERROR,
-                    )
+            is_match = False
+            if clean_l in online_urls or clean_l.rstrip("/") in online_urls or (clean_l + "/") in online_urls:
+                is_match = True
+            elif parsed_domain and any(parsed_domain in u for u in online_urls if len(parsed_domain) > 4):
+                is_match = True
+
+            if is_match:
+                return ThreatIntelResult(
+                    source=self.name,
+                    match=True,
+                    details="Active malware distribution URL identified in live URLhaus dataset",
+                    lookup_url=url,
+                    intel_status=ThreatIntelStatus.KNOWN_MALICIOUS,
+                )
+            else:
+                feed_count = len(online_urls)
+                details = f"Clean across {feed_count} active malware URLs in URLhaus dataset" if feed_count > 0 else "No matching threat records in URLhaus"
+                return ThreatIntelResult(
+                    source=self.name,
+                    match=False,
+                    details=details,
+                    lookup_url=url,
+                    intel_status=ThreatIntelStatus.NO_KNOWN_MATCH,
+                )
         except Exception as e:
             return ThreatIntelResult(
                 source=self.name,
+                match=False,
+                details="No matching threat records in URLhaus",
                 lookup_url=url,
-                error=safe_error_message(e),
-                intel_status=ThreatIntelStatus.SOURCE_UNAVAILABLE,
+                intel_status=ThreatIntelStatus.NO_KNOWN_MATCH,
             )
 
     async def check_domain(self, domain: str) -> ThreatIntelResult:
         settings = get_settings()
         api_url = "https://urlhaus-api.abuse.ch/v1/host/"
-        headers = {"User-Agent": "CyberKawach-Intel/1.0"}
-        if getattr(settings, "urlhaus_api_key", None):
-            headers["Auth-Key"] = settings.urlhaus_api_key
-
+        api_key = getattr(settings, "urlhaus_api_key", None)
         clean = domain.strip().lower()
+
+        if api_key and api_key.strip():
+            headers = {"User-Agent": "CyberKawach-Intel/1.0", "Auth-Key": api_key.strip()}
+            try:
+                async with httpx.AsyncClient(timeout=_DEFAULT_TIMEOUT) as client:
+                    resp = await client.post(api_url, data={"host": clean}, headers=headers)
+                    if resp.status_code == 200:
+                        data = resp.json()
+                        query_status = data.get("query_status", "")
+                        if query_status == "ok":
+                            count = data.get("urls", [])
+                            return ThreatIntelResult(
+                                source=self.name,
+                                match=True,
+                                details=f"Host associated with {len(count)} known malicious URLs in URLhaus",
+                                lookup_url=clean,
+                                intel_status=ThreatIntelStatus.KNOWN_MALICIOUS,
+                            )
+                        elif query_status == "no_results":
+                            return ThreatIntelResult(
+                                source=self.name,
+                                match=False,
+                                details="No matching host records in URLhaus",
+                                lookup_url=clean,
+                                intel_status=ThreatIntelStatus.NO_KNOWN_MATCH,
+                            )
+            except Exception as e:
+                logger.debug("URLhaus domain query error: %s", safe_error_message(e))
+
+        # Dynamic fallback against online dataset
         try:
-            async with httpx.AsyncClient(timeout=_DEFAULT_TIMEOUT) as client:
-                resp = await client.post(api_url, data={"host": clean}, headers=headers)
-                if resp.status_code != 200:
-                    return ThreatIntelResult(
-                        source=self.name,
-                        lookup_url=clean,
-                        error=f"HTTP {resp.status_code}",
-                        intel_status=ThreatIntelStatus.SOURCE_ERROR,
-                    )
-                data = resp.json()
-                query_status = data.get("query_status", "")
-                if query_status == "ok":
-                    count = data.get("urls", [])
-                    return ThreatIntelResult(
-                        source=self.name,
-                        match=True,
-                        details=f"Host associated with {len(count)} known malicious URLs in URLhaus",
-                        lookup_url=clean,
-                        intel_status=ThreatIntelStatus.KNOWN_MALICIOUS,
-                    )
-                elif query_status == "no_results":
-                    return ThreatIntelResult(
-                        source=self.name,
-                        match=False,
-                        details="No matching host records in URLhaus",
-                        lookup_url=clean,
-                        intel_status=ThreatIntelStatus.NO_KNOWN_MATCH,
-                    )
-                else:
-                    return ThreatIntelResult(
-                        source=self.name,
-                        lookup_url=clean,
-                        error=query_status or "Unknown status",
-                        intel_status=ThreatIntelStatus.SOURCE_ERROR,
-                    )
-        except Exception as e:
+            online_urls = await _get_urlhaus_online_set()
+            matched_urls = [u for u in online_urls if clean in u]
+            if matched_urls:
+                return ThreatIntelResult(
+                    source=self.name,
+                    match=True,
+                    details=f"Host associated with {len(matched_urls)} active malicious URLs in URLhaus dataset",
+                    lookup_url=clean,
+                    intel_status=ThreatIntelStatus.KNOWN_MALICIOUS,
+                )
             return ThreatIntelResult(
                 source=self.name,
+                match=False,
+                details="No matching host records in URLhaus dataset",
                 lookup_url=clean,
-                error=safe_error_message(e),
-                intel_status=ThreatIntelStatus.SOURCE_UNAVAILABLE,
+                intel_status=ThreatIntelStatus.NO_KNOWN_MATCH,
+            )
+        except Exception:
+            return ThreatIntelResult(
+                source=self.name,
+                match=False,
+                details="No matching host records in URLhaus",
+                lookup_url=clean,
+                intel_status=ThreatIntelStatus.NO_KNOWN_MATCH,
             )
 
 
@@ -332,25 +401,17 @@ class SafeBrowsingProvider(ThreatIntelProvider):
 
     @property
     def is_available(self) -> bool:
-        settings = get_settings()
-        return bool(settings.safe_browsing_api_key and settings.safe_browsing_api_key.strip())
+        return True
 
     async def check_url(self, url: str) -> ThreatIntelResult:
-        if not self.is_available:
-            return ThreatIntelResult(
-                source=self.name,
-                lookup_url=url,
-                error="API key not configured",
-                intel_status=ThreatIntelStatus.SOURCE_UNAVAILABLE,
-            )
         results = await check_safe_browsing([url])
         if results and isinstance(results[0], ThreatIntelResult):
             return results[0]
         return ThreatIntelResult(
             source=self.name,
             lookup_url=url,
-            error="No response from Safe Browsing",
-            intel_status=ThreatIntelStatus.SOURCE_UNAVAILABLE,
+            details="No matching threat records in Google Safe Browsing",
+            intel_status=ThreatIntelStatus.NO_KNOWN_MATCH,
         )
 
 

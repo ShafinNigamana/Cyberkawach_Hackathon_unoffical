@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
+import Sidebar from './components/Sidebar';
 import HomeChoice from './components/HomeChoice';
 import FlowMessage from './components/FlowMessage';
 import FlowUrl from './components/FlowUrl';
@@ -26,6 +27,10 @@ export default function App() {
   const [pendingPreset, setPendingPreset] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [healthData, setHealthData] = useState(null);
+
+  // Command Center Sidebar State
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => localStorage.getItem('cf_sidebar_collapsed') === 'true');
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   // Current task flow: 'home' | 'message' | 'url' | 'screenshot' | 'result'
   const [currentFlow, setCurrentFlow] = useState('home');
@@ -218,31 +223,12 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 dark:bg-[#0B0F19] dark:text-slate-100 flex flex-col font-sans transition-colors duration-200 relative overflow-hidden clean-spotlight clean-grid">
-      {/* Subtle Top Radial Lighting */}
-      <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-gradient-to-b from-blue-500/8 via-indigo-500/4 to-transparent blur-3xl rounded-full dark:from-blue-600/12 dark:via-indigo-600/6" aria-hidden="true" />
-      {/* First-visit and On-demand Language Selection Modal */}
-      <LanguageSelectionModal
-        isOpen={languageModalOpen}
-        onClose={() => setLanguageModalOpen(false)}
-        onSelectLanguage={(selected) => {
-          handleLangChange(selected);
-          setLanguageModalOpen(false);
-        }}
-        currentLang={lang}
-      />
-
-      {/* Official Institutional Header with Flow Navigation Ribbon */}
-      <Header
-        lang={lang}
-        onLangChange={handleLangChange}
-        fontSize={fontSize}
-        onFontSizeChange={handleFontSizeChange}
-        isDark={isDark}
-        onThemeToggle={handleThemeToggle}
-        onOpenMethodology={() => setMethodologyOpen(true)}
-        onOpenLanguageModal={() => setLanguageModalOpen(true)}
-        healthData={healthData}
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 dark:bg-night-950 dark:text-slate-100 flex font-sans transition-colors duration-200 relative overflow-x-hidden clean-spotlight clean-grid">
+      {/* Ambient Top Lighting in Violet & Deep Sapphire */}
+      <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[1100px] h-[550px] bg-gradient-to-b from-indigo-500/10 via-violet-500/5 to-transparent blur-3xl rounded-full dark:from-indigo-600/20 dark:via-violet-600/10" aria-hidden="true" />
+      
+      {/* Command Center Collapsible Navigation Sidebar */}
+      <Sidebar
         currentFlow={currentFlow}
         onSelectFlow={(flow) => {
           if (!currentUser && flow !== 'home') {
@@ -254,110 +240,154 @@ export default function App() {
         }}
         currentUser={currentUser}
         onOpenAuthModal={(prompt, tab) => openAuth(prompt, tab)}
-      />
-
-      {/* Main Content View Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6" id="main-content">
-        {/* Error Notification */}
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-900 dark:bg-red-950/60 dark:border-red-800 dark:text-red-200 rounded-xl text-xs sm:text-sm flex items-center justify-between shadow-xs">
-            <span>{error}</span>
-            <button
-              onClick={() => setError(null)}
-              className="text-red-700 dark:text-red-400 font-bold hover:underline ml-3 cursor-pointer"
-            >
-              Dismiss
-            </button>
-          </div>
-        )}
-
-        {/* Real Multi-Stage Analysis Progress View */}
-        {isAnalyzing ? (
-          <LoadingPipeline lang={lang} />
-        ) : currentFlow === 'result' && result ? (
-          /* Shared Incident / Result View */
-          <ResultsDashboard
-            result={result}
-            currentUserState={formData.user_state}
-            onStateChange={handleStateChange}
-            isUpdatingState={isUpdatingState}
-            onCheckAnother={() => setCurrentFlow('home')}
-            lang={lang}
-          />
-        ) : currentFlow === 'message' ? (
-          /* Task Flow B: Check Message / SMS */
-          <FlowMessage
-            onBack={() => setCurrentFlow('home')}
-            onSubmit={handleFlowSubmit}
-            isAnalyzing={isAnalyzing}
-            initialMessage={formData.message}
-            initialUrls={formData.urls}
-            initialState={formData.user_state}
-            initialChannel={formData.input_type}
-            lang={lang}
-          />
-        ) : currentFlow === 'url' ? (
-          /* Task Flow C: Check URL / Website */
-          <FlowUrl
-            onBack={() => setCurrentFlow('home')}
-            onSubmit={handleFlowSubmit}
-            isAnalyzing={isAnalyzing}
-            initialUrl={typeof formData.urls === 'string' ? formData.urls.split('\n')[0] : ''}
-            lang={lang}
-          />
-        ) : currentFlow === 'screenshot' ? (
-          /* Task Flow D: Check Screenshot / Photo */
-          <FlowScreenshot
-            onBack={() => setCurrentFlow('home')}
-            onSubmit={handleFlowSubmit}
-            isAnalyzing={isAnalyzing}
-            lang={lang}
-          />
-        ) : (
-          /* Task Flow A: Minimal Citizen Home Starting Point */
-          <HomeChoice
-            onSelectFlow={(flow) => {
-              if (!currentUser) {
-                openAuth(`Please sign in or register to access the ${flow} triage engine.`, 'login', flow);
-                return;
-              }
-              setError(null);
-              setCurrentFlow(flow);
-            }}
-            onSelectPreset={handleSelectPreset}
-            lang={lang}
-            currentUser={currentUser}
-            onOpenAuthModal={(prompt, tab) => openAuth(prompt, tab)}
-          />
-        )}
-      </main>
-
-      {/* Institutional Footer */}
-      <Footer onOpenMethodology={() => setMethodologyOpen(true)} lang={lang} />
-
-      {/* Technical Methodology & Audit Modal */}
-      <MethodologyModal
-        isOpen={methodologyOpen}
-        onClose={() => setMethodologyOpen(false)}
+        healthData={healthData}
+        isCollapsed={isSidebarCollapsed}
+        onToggleCollapse={() => {
+          const next = !isSidebarCollapsed;
+          setIsSidebarCollapsed(next);
+          localStorage.setItem('cf_sidebar_collapsed', next ? 'true' : 'false');
+        }}
+        isMobileOpen={isMobileSidebarOpen}
+        onCloseMobile={() => setIsMobileSidebarOpen(false)}
+        onSelectPreset={handleSelectPreset}
         lang={lang}
       />
 
-      {/* Citizen Authentication & My Checks Modal */}
-      <AuthModal
-        isOpen={authModalOpen}
-        onClose={() => {
-          setAuthModalOpen(false);
-          setAuthModalPrompt(null);
-          setPendingFlow(null);
-          setPendingPreset(null);
-        }}
-        currentUser={currentUser}
-        onUserChange={setCurrentUser}
-        onSelectIncident={handleSelectHistoryIncident}
-        initialPrompt={authModalPrompt}
-        initialTab={authModalTab}
-        onAuthSuccess={handleAuthSuccess}
-      />
+      {/* Main Workspace Area (offsets based on sidebar state) */}
+      <div className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out ${
+        isSidebarCollapsed ? 'lg:pl-[76px]' : 'lg:pl-[268px]'
+      }`}>
+        {/* First-visit and On-demand Language Selection Modal */}
+        <LanguageSelectionModal
+          isOpen={languageModalOpen}
+          onClose={() => setLanguageModalOpen(false)}
+          onSelectLanguage={(selected) => {
+            handleLangChange(selected);
+            setLanguageModalOpen(false);
+          }}
+          currentLang={lang}
+        />
+
+        {/* Top Command Bar */}
+        <Header
+          lang={lang}
+          onLangChange={handleLangChange}
+          fontSize={fontSize}
+          onFontSizeChange={handleFontSizeChange}
+          isDark={isDark}
+          onThemeToggle={handleThemeToggle}
+          onOpenMethodology={() => setMethodologyOpen(true)}
+          onOpenLanguageModal={() => setLanguageModalOpen(true)}
+          healthData={healthData}
+          currentFlow={currentFlow}
+          currentUser={currentUser}
+          onOpenAuthModal={(prompt, tab) => openAuth(prompt, tab)}
+          onToggleMobileMenu={() => setIsMobileSidebarOpen(true)}
+        />
+
+        {/* Main Content Workspace Container */}
+        <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6" id="main-content">
+          {/* Error Notification */}
+          {error && (
+            <div className="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-900 dark:bg-rose-950/60 dark:border-rose-800 dark:text-rose-200 rounded-2xl text-xs sm:text-sm flex items-center justify-between shadow-xs">
+              <span>{error}</span>
+              <button
+                onClick={() => setError(null)}
+                className="text-rose-700 dark:text-rose-400 font-bold hover:underline ml-3 cursor-pointer"
+              >
+                Dismiss
+              </button>
+            </div>
+          )}
+
+          {/* Real Multi-Stage Analysis Progress View */}
+          {isAnalyzing ? (
+            <LoadingPipeline lang={lang} />
+          ) : currentFlow === 'result' && result ? (
+            /* Shared Incident / Result View */
+            <ResultsDashboard
+              result={result}
+              currentUserState={formData.user_state}
+              onStateChange={handleStateChange}
+              isUpdatingState={isUpdatingState}
+              onCheckAnother={() => setCurrentFlow('home')}
+              lang={lang}
+            />
+          ) : currentFlow === 'message' ? (
+            /* Task Flow B: Check Message / SMS */
+            <FlowMessage
+              onBack={() => setCurrentFlow('home')}
+              onSubmit={handleFlowSubmit}
+              isAnalyzing={isAnalyzing}
+              initialMessage={formData.message}
+              initialUrls={formData.urls}
+              initialState={formData.user_state}
+              initialChannel={formData.input_type}
+              lang={lang}
+            />
+          ) : currentFlow === 'url' ? (
+            /* Task Flow C: Check URL / Website */
+            <FlowUrl
+              onBack={() => setCurrentFlow('home')}
+              onSubmit={handleFlowSubmit}
+              isAnalyzing={isAnalyzing}
+              initialUrl={typeof formData.urls === 'string' ? formData.urls.split('\n')[0] : ''}
+              lang={lang}
+            />
+          ) : currentFlow === 'screenshot' ? (
+            /* Task Flow D: Check Screenshot / Photo */
+            <FlowScreenshot
+              onBack={() => setCurrentFlow('home')}
+              onSubmit={handleFlowSubmit}
+              isAnalyzing={isAnalyzing}
+              lang={lang}
+            />
+          ) : (
+            /* Task Flow A: Minimal Citizen Home Starting Point */
+            <HomeChoice
+              onSelectFlow={(flow) => {
+                if (!currentUser) {
+                  openAuth(`Please sign in or register to access the ${flow} triage engine.`, 'login', flow);
+                  return;
+                }
+                setError(null);
+                setCurrentFlow(flow);
+              }}
+              onSelectPreset={handleSelectPreset}
+              lang={lang}
+              currentUser={currentUser}
+              onOpenAuthModal={(prompt, tab) => openAuth(prompt, tab)}
+            />
+          )}
+        </main>
+
+        {/* Institutional Footer */}
+        <Footer onOpenMethodology={() => setMethodologyOpen(true)} lang={lang} />
+
+        {/* Technical Methodology & Audit Modal */}
+        <MethodologyModal
+          isOpen={methodologyOpen}
+          onClose={() => setMethodologyOpen(false)}
+          lang={lang}
+        />
+
+        {/* Citizen Authentication & My Checks Modal */}
+        <AuthModal
+          isOpen={authModalOpen}
+          onClose={() => {
+            setAuthModalOpen(false);
+            setAuthModalPrompt(null);
+            setPendingFlow(null);
+            setPendingPreset(null);
+          }}
+          currentUser={currentUser}
+          onUserChange={setCurrentUser}
+          onSelectIncident={handleSelectHistoryIncident}
+          initialPrompt={authModalPrompt}
+          initialTab={authModalTab}
+          onAuthSuccess={handleAuthSuccess}
+        />
+      </div>
     </div>
   );
 }

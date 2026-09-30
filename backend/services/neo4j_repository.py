@@ -13,11 +13,15 @@ from __future__ import annotations
 
 import hashlib
 import hmac
+import json
 import logging
 import os
+from pathlib import Path
 import re
 import secrets
+import sqlite3
 import threading
+import time
 from datetime import datetime, timezone, timedelta
 from typing import Any, Optional
 from urllib.parse import urlparse
@@ -34,6 +38,9 @@ from backend.models.evidence import (
 )
 
 logger = logging.getLogger(__name__)
+
+# Local persistent SQLite fallback datastore path
+_LOCAL_DB_PATH = Path(__file__).resolve().parent.parent / "data" / "investigations.db"
 
 # Security constants
 _PBKDF2_ROUNDS = 100_000
@@ -98,6 +105,62 @@ class Neo4jRepository:
         self._driver: Optional[neo4j.Driver] = None
         self._lock = threading.Lock()
         self._schema_initialized = False
+
+    def _get_sqlite_conn(self) -> sqlite3.Connection:
+        """Thread-safe SQLite connection ensuring local auth & session persistence tables exist."""
+        _LOCAL_DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+        conn = sqlite3.connect(str(_LOCAL_DB_PATH), check_same_thread=False, timeout=10.0)
+        conn.row_factory = sqlite3.Row
+        with conn:
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS citizen_users (
+                    user_id TEXT PRIMARY KEY,
+                    email TEXT NOT NULL,
+                    email_normalized TEXT NOT NULL UNIQUE,
+                    phone TEXT,
+                    phone_masked TEXT,
+                    password_hash TEXT NOT NULL,
+                    display_name TEXT,
+                    preferred_language TEXT DEFAULT 'en',
+                    is_active INTEGER DEFAULT 1,
+                    created_at TEXT NOT NULL,
+                    updated_at TEXT NOT NULL,
+                    last_login_at TEXT
+                )
+            """)
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS citizen_sessions (
+                    session_id TEXT PRIMARY KEY,
+                    user_id TEXT NOT NULL,
+                    token_hash TEXT NOT NULL UNIQUE,
+                    created_at TEXT NOT NULL,
+                    expires_at TEXT NOT NULL,
+                    last_seen_at TEXT NOT NULL,
+                    revoked_at TEXT,
+                    FOREIGN KEY (user_id) REFERENCES citizen_users(user_id)
+                )
+            """)
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS citizen_preferences (
+                    user_id TEXT PRIMARY KEY,
+                    preferences_json TEXT NOT NULL,
+                    updated_at TEXT NOT NULL,
+                    FOREIGN KEY (user_id) REFERENCES citizen_users(user_id)
+                )
+            """)
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS citizen_audit_events (
+                    event_id TEXT PRIMARY KEY,
+                    timestamp TEXT NOT NULL,
+                    event_type TEXT NOT NULL,
+                    actor_id TEXT,
+                    resource_type TEXT NOT NULL,
+                    resource_id TEXT NOT NULL,
+                    metadata TEXT,
+                    created_at TEXT NOT NULL
+                )
+            """)
+        return conn
 
     def get_driver(self) -> Optional[neo4j.Driver]:
         """Get or initialize the reusable application-level Neo4j driver."""
@@ -182,7 +245,13 @@ class Neo4jRepository:
         if not driver:
             raise ServiceUnavailable("Neo4j datastore is unavailable or not enabled")
         db = settings.neo4j_database.strip() if settings.neo4j_database else None
-        return driver.session(database=db) if db else driver.session()
+        # Neo4j Aura Free uses default database; passing database="neo4j" raises DatabaseNotFound
+        if db and db.lower() not in ("neo4j", "default", "none"):
+            try:
+                return driver.session(database=db)
+            except Exception:
+                pass
+        return driver.session()
 
     def _run_in_session(self, fn):
         """Run an operation with retry and automatic reconnect if connection is defunct."""
@@ -239,7 +308,7 @@ class Neo4jRepository:
             with self._get_session() as session:
                 for c in constraints:
                     try:
-                        session.run(c)
+                        session.run(c).consume()
                     except Exception as e:
                         logger.debug("Constraint creation notice: %s", type(e).__name__)
             self._schema_initialized = True
@@ -261,90 +330,186 @@ class Neo4jRepository:
         phone: Optional[str] = None,
         preferred_language: str = "en",
     ) -> Optional[dict]:
-        """Register a new application User in Neo4j."""
+        """Register a new application User in Neo4j (with persistent SQLite offline fallback)."""
         norm_email = email.lower().strip()
         user_id = f"usr_{secrets.token_hex(8)}"
         pw_hash = hash_password(password)
         now_iso = datetime.now(timezone.utc).isoformat()
+        phone_clean = phone.strip() if phone else None
+        phone_masked = f"******{phone_clean[-4:]}" if phone_clean and len(phone_clean) >= 4 else phone_clean
+        disp_name = (display_name or "").strip() or email.split("@")[0]
 
-        cypher = """
-        MERGE (u:User {email_normalized: $email_normalized})
-        ON CREATE SET
-            u.user_id = $user_id,
-            u.email = $email,
-            u.phone = $phone,
-            u.password_hash = $password_hash,
-            u.display_name = $display_name,
-            u.preferred_language = $preferred_language,
-            u.is_active = true,
-            u.created_at = $created_at,
-            u.updated_at = $created_at
-        RETURN u, (u.user_id = $user_id) AS was_created
-        """
-        def _op(session):
-            res = session.run(
-                cypher,
-                email_normalized=norm_email,
-                user_id=user_id,
-                email=email.strip(),
-                phone=phone.strip() if phone else None,
-                password_hash=pw_hash,
-                display_name=display_name.strip(),
-                preferred_language=preferred_language,
-                created_at=now_iso,
-            )
-            record = res.single()
-            if not record or not record["was_created"]:
-                return None  # Duplicate email
-            u = dict(record["u"])
-            u.pop("password_hash", None)
-            return u
+        # 1. If Neo4j is available, try Neo4j first
+        if self.is_available():
+            cypher = """
+            MERGE (u:User {email_normalized: $email_normalized})
+            ON CREATE SET
+                u.user_id = $user_id,
+                u.email = $email,
+                u.phone = $phone,
+                u.phone_masked = $phone_masked,
+                u.password_hash = $password_hash,
+                u.display_name = $display_name,
+                u.preferred_language = $preferred_language,
+                u.is_active = true,
+                u.created_at = $created_at,
+                u.updated_at = $created_at
+            RETURN u, (u.user_id = $user_id) AS was_created
+            """
+            def _op(session):
+                res = session.run(
+                    cypher,
+                    email_normalized=norm_email,
+                    user_id=user_id,
+                    email=email.strip(),
+                    phone=phone_clean,
+                    phone_masked=phone_masked,
+                    password_hash=pw_hash,
+                    display_name=disp_name,
+                    preferred_language=preferred_language,
+                    created_at=now_iso,
+                )
+                record = res.single()
+                if not record or not record["was_created"]:
+                    return None  # Duplicate email
+                u = dict(record["u"])
+                u.pop("password_hash", None)
+                return u
 
+            try:
+                neo_user = self._run_in_session(_op)
+                if neo_user is not None:
+                    # Also persist to local SQLite for offline redundancy
+                    try:
+                        conn = self._get_sqlite_conn()
+                        with conn:
+                            conn.execute(
+                                """
+                                INSERT OR REPLACE INTO citizen_users (
+                                    user_id, email, email_normalized, phone, phone_masked,
+                                    password_hash, display_name, preferred_language, is_active,
+                                    created_at, updated_at, last_login_at
+                                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, NULL)
+                                """,
+                                (user_id, email.strip(), norm_email, phone_clean, phone_masked, pw_hash, disp_name, preferred_language, now_iso, now_iso),
+                            )
+                        conn.close()
+                    except Exception as e:
+                        logger.debug("SQLite user mirror notice: %s", type(e).__name__)
+                    return neo_user
+                else:
+                    return None  # Duplicate email in Neo4j
+            except Exception as e:
+                logger.warning("create_user failed against Neo4j (%s), engaging local persistent fallback", type(e).__name__)
+
+        # 2. Local SQLite Persistent Fallback
         try:
-            return self._run_in_session(_op)
+            conn = self._get_sqlite_conn()
+            with conn:
+                existing = conn.execute("SELECT user_id FROM citizen_users WHERE email_normalized = ?", (norm_email,)).fetchone()
+                if existing:
+                    conn.close()
+                    return None  # Duplicate email
+
+                conn.execute(
+                    """
+                    INSERT INTO citizen_users (
+                        user_id, email, email_normalized, phone, phone_masked,
+                        password_hash, display_name, preferred_language, is_active,
+                        created_at, updated_at, last_login_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, NULL)
+                    """,
+                    (user_id, email.strip(), norm_email, phone_clean, phone_masked, pw_hash, disp_name, preferred_language, now_iso, now_iso),
+                )
+            conn.close()
+            return {
+                "user_id": user_id,
+                "email": email.strip(),
+                "display_name": disp_name,
+                "phone": phone_clean,
+                "phone_masked": phone_masked,
+                "preferred_language": preferred_language,
+                "is_active": True,
+                "created_at": now_iso,
+                "updated_at": now_iso,
+                "last_login_at": None,
+            }
         except Exception as e:
-            logger.warning("create_user failed: %s", type(e).__name__)
+            logger.error("create_user SQLite fallback failed: %s", type(e).__name__)
             return None
 
     def get_user_by_email(self, email: str) -> Optional[dict]:
-        """Retrieve user with password_hash for authentication."""
+        """Retrieve user with password_hash for authentication (with local persistent fallback)."""
         norm_email = email.lower().strip()
-        cypher = """
-        MATCH (u:User {email_normalized: $email_normalized})
-        RETURN u
-        """
-        def _op(session):
-            res = session.run(cypher, email_normalized=norm_email)
-            record = res.single()
-            return dict(record["u"]) if record else None
+        if self.is_available():
+            cypher = """
+            MATCH (u:User {email_normalized: $email_normalized})
+            RETURN u
+            """
+            def _op(session):
+                res = session.run(cypher, email_normalized=norm_email)
+                record = res.single()
+                return dict(record["u"]) if record else None
 
+            try:
+                u = self._run_in_session(_op)
+                if u:
+                    return u
+            except Exception:
+                pass
+
+        # Fallback to local SQLite datastore
         try:
-            return self._run_in_session(_op)
-        except Exception:
-            return None
+            conn = self._get_sqlite_conn()
+            row = conn.execute("SELECT * FROM citizen_users WHERE email_normalized = ?", (norm_email,)).fetchone()
+            conn.close()
+            if row:
+                u = dict(row)
+                u["is_active"] = bool(u.get("is_active", 1))
+                return u
+        except Exception as e:
+            logger.debug("get_user_by_email SQLite fallback error: %s", type(e).__name__)
+        return None
 
     def get_user_by_id(self, user_id: str) -> Optional[dict]:
-        """Retrieve user profile without password hash."""
-        cypher = """
-        MATCH (u:User {user_id: $user_id})
-        RETURN u
-        """
-        def _op(session):
-            res = session.run(cypher, user_id=user_id)
-            record = res.single()
-            if not record:
-                return None
-            u = dict(record["u"])
-            u.pop("password_hash", None)
-            return u
+        """Retrieve user profile without password hash (with local persistent fallback)."""
+        if self.is_available():
+            cypher = """
+            MATCH (u:User {user_id: $user_id})
+            RETURN u
+            """
+            def _op(session):
+                res = session.run(cypher, user_id=user_id)
+                record = res.single()
+                if not record:
+                    return None
+                u = dict(record["u"])
+                u.pop("password_hash", None)
+                return u
 
+            try:
+                u = self._run_in_session(_op)
+                if u:
+                    return u
+            except Exception:
+                pass
+
+        # Fallback to local SQLite datastore
         try:
-            return self._run_in_session(_op)
-        except Exception:
-            return None
+            conn = self._get_sqlite_conn()
+            row = conn.execute("SELECT * FROM citizen_users WHERE user_id = ?", (user_id,)).fetchone()
+            conn.close()
+            if row:
+                u = dict(row)
+                u.pop("password_hash", None)
+                u["is_active"] = bool(u.get("is_active", 1))
+                return u
+        except Exception as e:
+            logger.debug("get_user_by_id SQLite fallback error: %s", type(e).__name__)
+        return None
 
     def authenticate_user(self, email: str, password: str) -> Optional[dict]:
-        """Validate password and update last_login_at."""
+        """Validate password and update last_login_at (with local persistent fallback)."""
         user = self.get_user_by_email(email)
         if not user or not user.get("password_hash"):
             return None
@@ -353,16 +518,27 @@ class Neo4jRepository:
             return None
 
         now_iso = datetime.now(timezone.utc).isoformat()
+        if self.is_available():
+            try:
+                self._run_in_session(lambda s: s.run(
+                    "MATCH (u:User {user_id: $user_id}) SET u.last_login_at = $now",
+                    user_id=user["user_id"],
+                    now=now_iso,
+                ))
+            except Exception:
+                pass
+
+        # Update last_login_at in local SQLite
         try:
-            self._run_in_session(lambda s: s.run(
-                "MATCH (u:User {user_id: $user_id}) SET u.last_login_at = $now",
-                user_id=user["user_id"],
-                now=now_iso,
-            ))
+            conn = self._get_sqlite_conn()
+            with conn:
+                conn.execute("UPDATE citizen_users SET last_login_at = ? WHERE user_id = ?", (now_iso, user["user_id"]))
+            conn.close()
         except Exception:
             pass
 
         user.pop("password_hash", None)
+        user["last_login_at"] = now_iso
         return user
 
     # ─────────────────────────────────────────────────────────────
@@ -370,7 +546,7 @@ class Neo4jRepository:
     # ─────────────────────────────────────────────────────────────
 
     def create_session(self, user_id: str, ttl_hours: int = 72) -> tuple[str, dict]:
-        """Create a new session, returning raw bearer token and session record."""
+        """Create a new session, returning raw bearer token and session record (with local fallback)."""
         raw_token = secrets.token_urlsafe(32)
         token_hash_val = hash_token(raw_token)
         session_id = f"sess_{secrets.token_hex(8)}"
@@ -378,86 +554,141 @@ class Neo4jRepository:
         expires_at = (now + timedelta(hours=ttl_hours)).isoformat()
         now_iso = now.isoformat()
 
-        cypher = """
-        MATCH (u:User {user_id: $user_id})
-        CREATE (s:Session {
-            session_id: $session_id,
-            user_id: $user_id,
-            token_hash: $token_hash,
-            created_at: $created_at,
-            expires_at: $expires_at,
-            last_seen_at: $created_at,
-            revoked_at: null
-        })
-        CREATE (u)-[:HAS_SESSION]->(s)
-        RETURN s
-        """
-        def _op(session):
-            res = session.run(
-                cypher,
-                user_id=user_id,
-                session_id=session_id,
-                token_hash=token_hash_val,
-                created_at=now_iso,
-                expires_at=expires_at,
-            )
-            record = res.single()
-            sess_dict = dict(record["s"]) if record else {"session_id": session_id}
-            sess_dict.pop("token_hash", None)
-            return raw_token, sess_dict
+        sess_dict = {
+            "session_id": session_id,
+            "user_id": user_id,
+            "created_at": now_iso,
+            "expires_at": expires_at,
+            "last_seen_at": now_iso,
+        }
 
+        if self.is_available():
+            cypher = """
+            MATCH (u:User {user_id: $user_id})
+            CREATE (s:Session {
+                session_id: $session_id,
+                user_id: $user_id,
+                token_hash: $token_hash,
+                created_at: $created_at,
+                expires_at: $expires_at,
+                last_seen_at: $created_at,
+                revoked_at: null
+            })
+            CREATE (u)-[:HAS_SESSION]->(s)
+            RETURN s
+            """
+            def _op(session):
+                res = session.run(
+                    cypher,
+                    user_id=user_id,
+                    session_id=session_id,
+                    token_hash=token_hash_val,
+                    created_at=now_iso,
+                    expires_at=expires_at,
+                )
+                record = res.single()
+                sd = dict(record["s"]) if record else {"session_id": session_id}
+                sd.pop("token_hash", None)
+                return sd
+
+            try:
+                neo_sess = self._run_in_session(_op)
+                if neo_sess:
+                    sess_dict = neo_sess
+            except Exception as e:
+                logger.debug("create_session Neo4j notice: %s", type(e).__name__)
+
+        # Save session to local SQLite datastore
         try:
-            return self._run_in_session(_op)
+            conn = self._get_sqlite_conn()
+            with conn:
+                conn.execute(
+                    """
+                    INSERT OR REPLACE INTO citizen_sessions (
+                        session_id, user_id, token_hash, created_at, expires_at, last_seen_at, revoked_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, NULL)
+                    """,
+                    (session_id, user_id, token_hash_val, now_iso, expires_at, now_iso),
+                )
+            conn.close()
         except Exception as e:
-            logger.warning("create_session failed: %s", type(e).__name__)
-            # Return in-memory fallback session if DB error
-            return raw_token, {
-                "session_id": session_id,
-                "user_id": user_id,
-                "created_at": now_iso,
-                "expires_at": expires_at,
-            }
+            logger.debug("create_session SQLite error: %s", type(e).__name__)
+
+        return raw_token, sess_dict
 
     def validate_session(self, raw_token: str) -> Optional[dict]:
-        """Validate session token and return user & session."""
+        """Validate session token and return user & session (with local fallback)."""
         if not raw_token:
             return None
         token_hash_val = hash_token(raw_token)
         now_iso = datetime.now(timezone.utc).isoformat()
 
-        cypher = """
-        MATCH (u:User)-[:HAS_SESSION]->(s:Session {token_hash: $token_hash})
-        WHERE (s.revoked_at IS NULL) AND (s.expires_at > $now)
-        SET s.last_seen_at = $now
-        RETURN u, s
-        """
+        if self.is_available():
+            cypher = """
+            MATCH (u:User)-[:HAS_SESSION]->(s:Session {token_hash: $token_hash})
+            WHERE (s.revoked_at IS NULL) AND (s.expires_at > $now)
+            SET s.last_seen_at = $now
+            RETURN u, s
+            """
+            try:
+                with self._get_session() as session:
+                    res = session.run(cypher, token_hash=token_hash_val, now=now_iso)
+                    record = res.single()
+                    if record:
+                        u = dict(record["u"])
+                        u.pop("password_hash", None)
+                        s = dict(record["s"])
+                        s.pop("token_hash", None)
+                        return {"user": u, "session": s}
+            except Exception:
+                pass
+
+        # Fallback to local SQLite datastore
         try:
-            with self._get_session() as session:
-                res = session.run(cypher, token_hash=token_hash_val, now=now_iso)
-                record = res.single()
-                if not record:
+            conn = self._get_sqlite_conn()
+            row = conn.execute(
+                """
+                SELECT session_id, user_id, created_at, expires_at, last_seen_at, revoked_at
+                FROM citizen_sessions
+                WHERE token_hash = ? AND (revoked_at IS NULL) AND (expires_at > ?)
+                """,
+                (token_hash_val, now_iso),
+            ).fetchone()
+            if row:
+                with conn:
+                    conn.execute("UPDATE citizen_sessions SET last_seen_at = ? WHERE session_id = ?", (now_iso, row["session_id"]))
+                conn.close()
+                user = self.get_user_by_id(row["user_id"])
+                if not user:
                     return None
-                u = dict(record["u"])
-                u.pop("password_hash", None)
-                s = dict(record["s"])
-                s.pop("token_hash", None)
-                return {"user": u, "session": s}
-        except Exception:
-            return None
+                s = dict(row)
+                return {"user": user, "session": s}
+            conn.close()
+        except Exception as e:
+            logger.debug("validate_session SQLite fallback notice: %s", type(e).__name__)
+        return None
 
     def revoke_session(self, session_id: str) -> bool:
-        """Revoke a session explicitly upon logout."""
+        """Revoke a session explicitly upon logout (with local fallback)."""
         now_iso = datetime.now(timezone.utc).isoformat()
-        cypher = """
-        MATCH (s:Session {session_id: $session_id})
-        SET s.revoked_at = $now
-        RETURN count(s) AS count
-        """
+        if self.is_available():
+            cypher = """
+            MATCH (s:Session {session_id: $session_id})
+            SET s.revoked_at = $now
+            RETURN count(s) AS count
+            """
+            try:
+                with self._get_session() as session:
+                    session.run(cypher, session_id=session_id, now=now_iso)
+            except Exception:
+                pass
+
         try:
-            with self._get_session() as session:
-                res = session.run(cypher, session_id=session_id, now=now_iso)
-                record = res.single()
-                return bool(record and record["count"] > 0)
+            conn = self._get_sqlite_conn()
+            with conn:
+                conn.execute("UPDATE citizen_sessions SET revoked_at = ? WHERE session_id = ?", (now_iso, session_id))
+            conn.close()
+            return True
         except Exception:
             return False
 
@@ -467,35 +698,64 @@ class Neo4jRepository:
 
     def update_user_preferences(self, user_id: str, preferences: dict) -> dict:
         """Persist user UI preferences (language, theme, font_size, accessibility)."""
-        cypher = """
-        MATCH (u:User {user_id: $user_id})
-        MERGE (u)-[:HAS_PREFERENCES]->(p:UserPreferences)
-        SET p += $preferences,
-            p.updated_at = $now
-        RETURN p
-        """
         now_iso = datetime.now(timezone.utc).isoformat()
+        if self.is_available():
+            cypher = """
+            MATCH (u:User {user_id: $user_id})
+            MERGE (u)-[:HAS_PREFERENCES]->(p:UserPreferences)
+            SET p += $preferences,
+                p.updated_at = $now
+            RETURN p
+            """
+            try:
+                with self._get_session() as session:
+                    res = session.run(cypher, user_id=user_id, preferences=preferences, now=now_iso)
+                    record = res.single()
+                    if record:
+                        return dict(record["p"])
+            except Exception:
+                pass
+
         try:
-            with self._get_session() as session:
-                res = session.run(cypher, user_id=user_id, preferences=preferences, now=now_iso)
-                record = res.single()
-                return dict(record["p"]) if record else preferences
+            conn = self._get_sqlite_conn()
+            with conn:
+                conn.execute(
+                    """
+                    INSERT OR REPLACE INTO citizen_preferences (user_id, preferences_json, updated_at)
+                    VALUES (?, ?, ?)
+                    """,
+                    (user_id, json.dumps(preferences), now_iso),
+                )
+            conn.close()
         except Exception:
-            return preferences
+            pass
+        return preferences
 
     def get_user_preferences(self, user_id: str) -> Optional[dict]:
         """Fetch user preferences."""
-        cypher = """
-        MATCH (u:User {user_id: $user_id})-[:HAS_PREFERENCES]->(p:UserPreferences)
-        RETURN p
-        """
+        if self.is_available():
+            cypher = """
+            MATCH (u:User {user_id: $user_id})-[:HAS_PREFERENCES]->(p:UserPreferences)
+            RETURN p
+            """
+            try:
+                with self._get_session() as session:
+                    res = session.run(cypher, user_id=user_id)
+                    record = res.single()
+                    if record:
+                        return dict(record["p"])
+            except Exception:
+                pass
+
         try:
-            with self._get_session() as session:
-                res = session.run(cypher, user_id=user_id)
-                record = res.single()
-                return dict(record["p"]) if record else None
+            conn = self._get_sqlite_conn()
+            row = conn.execute("SELECT preferences_json FROM citizen_preferences WHERE user_id = ?", (user_id,)).fetchone()
+            conn.close()
+            if row:
+                return json.loads(row["preferences_json"])
         except Exception:
-            return None
+            pass
+        return None
 
     # ─────────────────────────────────────────────────────────────
     # Full Incident Graph Persistence (Atomically connects all nodes)
@@ -754,7 +1014,7 @@ class Neo4jRepository:
             evidence.fraud_dna.graph_persisted = True
             return True
         except Exception as e:
-            logger.warning("save_full_incident transaction failed: %s", type(e).__name__)
+            logger.warning("save_full_incident transaction failed: %s - %s", type(e).__name__, str(e))
             return False
 
     # ─────────────────────────────────────────────────────────────
@@ -815,23 +1075,55 @@ class Neo4jRepository:
             return None
 
     def list_user_incidents(self, user_id: str, limit: int = 50) -> list[dict]:
-        """Fetch all incidents owned by a specific authenticated user for 'My Checks'."""
-        cypher = """
-        MATCH (u:User {user_id: $user_id})-[:OWNS]->(i:Incident)
-        OPTIONAL MATCH (i)-[:BELONGS_TO]->(c:Campaign)
-        RETURN i, c.campaign_id AS campaign_id
-        ORDER BY i.created_at DESC
-        LIMIT $limit
-        """
+        """Fetch all incidents owned by a specific authenticated user for 'My Checks' (with local fallback)."""
+        if self.is_available():
+            cypher = """
+            MATCH (u:User {user_id: $user_id})-[:OWNS]->(i:Incident)
+            OPTIONAL MATCH (i)-[:BELONGS_TO]->(c:Campaign)
+            RETURN i, c.campaign_id AS campaign_id
+            ORDER BY i.created_at DESC
+            LIMIT $limit
+            """
+            try:
+                with self._get_session() as session:
+                    res = session.run(cypher, user_id=user_id, limit=limit)
+                    incidents = []
+                    for r in res:
+                        item = dict(r["i"])
+                        item["campaign_id"] = r["campaign_id"]
+                        incidents.append(item)
+                    if incidents:
+                        return incidents
+            except Exception:
+                pass
+
+        # Fallback to local SQLite investigations table
         try:
-            with self._get_session() as session:
-                res = session.run(cypher, user_id=user_id, limit=limit)
-                incidents = []
-                for r in res:
-                    item = dict(r["i"])
-                    item["campaign_id"] = r["campaign_id"]
-                    incidents.append(item)
-                return incidents
+            conn = self._get_sqlite_conn()
+            rows = conn.execute(
+                """
+                SELECT incident_id, created_at, input_type, raw_input, risk_score, risk_level, fraud_category
+                FROM investigations
+                ORDER BY created_at DESC
+                LIMIT ?
+                """,
+                (limit,),
+            ).fetchall()
+            conn.close()
+            results = []
+            for r in rows:
+                results.append({
+                    "incident_id": r["incident_id"],
+                    "created_at": r["created_at"],
+                    "input_type": r["input_type"],
+                    "title": f"Threat Triage {r['incident_id']}",
+                    "message_preview": (r["raw_input"] or "")[:200],
+                    "risk_score": float(r["risk_score"] or 0.0),
+                    "risk_level": r["risk_level"] or "UNKNOWN",
+                    "fraud_category": r["fraud_category"] or "generic",
+                    "campaign_id": None,
+                })
+            return results
         except Exception:
             return []
 

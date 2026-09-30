@@ -137,22 +137,10 @@ async def check_phishstats(urls: list[str] | str) -> list[ThreatIntelResult]:
                 results.append(cached)
                 continue
 
-            # 2. Check if API key is not configured and anonymous lookup is disabled
-            if not api_key:
-                res = ThreatIntelResult(
-                    source="phishstats",
-                    match=None,
-                    lookup_url=clean_url,
-                    intel_status=ThreatIntelStatus.SOURCE_UNAVAILABLE,
-                    error="API key not configured",
-                )
-                _set_cached_result(clean_url, res)
-                results.append(res)
-                continue
-
-            # 3. Query API with safe filter and limit size to 1 for fast retrieval
+            # 2. Query API with safe URL-encoding (PhishStats supports public anonymous queries)
             try:
-                query_url = f"{_PHISHSTATS_BASE_URL}?_where=(url,eq,{clean_url})&_size=1"
+                encoded_url = quote(clean_url, safe="")
+                query_url = f"{_PHISHSTATS_BASE_URL}?_where=(url,eq,{encoded_url})&_size=1"
                 resp = await client.get(query_url, headers=headers)
 
                 if resp.status_code == 429:

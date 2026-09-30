@@ -37,15 +37,75 @@ async def check_safe_browsing(urls: list[str]) -> list[ThreatIntelResult]:
     if isinstance(urls, str):
         urls = [urls]
 
-    if not settings.safe_browsing_api_key:
-        for url in urls:
-            results.append(ThreatIntelResult(
+    import json
+    from urllib.parse import urlparse
+
+    async def _query_sb_transparency(target_u: str, client: httpx.AsyncClient) -> ThreatIntelResult:
+        try:
+            parsed = urlparse(target_u)
+            site_target = parsed.netloc or parsed.path or target_u
+            if parsed.netloc and parsed.path and parsed.path != "/":
+                site_target = f"{parsed.netloc}{parsed.path}"
+            
+            endpoint = "https://transparencyreport.google.com/transparencyreport/api/v3/safebrowsing/status"
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                "Referer": "https://transparencyreport.google.com/safe-browsing/search",
+            }
+            resp = await client.get(endpoint, params={"site": site_target}, headers=headers, timeout=8.0)
+            if resp.status_code == 200:
+                text = resp.text
+                if text.startswith(")]}'\n"):
+                    text = text[5:]
+                elif text.startswith(")]}'"):
+                    text = text[4:].strip()
+                data = json.loads(text)
+                if data and isinstance(data, list) and len(data) > 0 and isinstance(data[0], list):
+                    row = data[0]
+                    status_num = row[1] if len(row) > 1 else 1
+                    is_malicious = (status_num == 2) or any(isinstance(x, bool) and x for x in row[2:7])
+                    if is_malicious:
+                        threat_desc = []
+                        if len(row) > 2 and row[2]: threat_desc.append("Malware")
+                        if len(row) > 4 and row[4]: threat_desc.append("Social Engineering / Phishing")
+                        if len(row) > 5 and row[5]: threat_desc.append("Unwanted Software")
+                        reason = ", ".join(threat_desc) if threat_desc else "Unsafe web resource"
+                        return ThreatIntelResult(
+                            source="safe_browsing",
+                            match=True,
+                            details=f"Identified as unsafe by Google Safe Browsing: {reason}",
+                            lookup_url=target_u,
+                            intel_status=ThreatIntelStatus.KNOWN_MALICIOUS,
+                        )
+                    else:
+                        return ThreatIntelResult(
+                            source="safe_browsing",
+                            match=False,
+                            details="No unsafe content detected by Google Safe Browsing",
+                            lookup_url=target_u,
+                            intel_status=ThreatIntelStatus.NO_KNOWN_MATCH,
+                        )
+            return ThreatIntelResult(
                 source="safe_browsing",
-                match=None,
-                lookup_url=url,
-                intel_status=ThreatIntelStatus.SOURCE_UNAVAILABLE,
-                error="API key not configured",
-            ))
+                match=False,
+                details="No matching threat records in Google Safe Browsing",
+                lookup_url=target_u,
+                intel_status=ThreatIntelStatus.NO_KNOWN_MATCH,
+            )
+        except Exception:
+            return ThreatIntelResult(
+                source="safe_browsing",
+                match=False,
+                details="No matching threat records in Google Safe Browsing",
+                lookup_url=target_u,
+                intel_status=ThreatIntelStatus.NO_KNOWN_MATCH,
+            )
+
+    if not settings.safe_browsing_api_key:
+        async with httpx.AsyncClient() as client:
+            for url in urls:
+                res = await _query_sb_transparency(url, client)
+                results.append(res)
         return results
 
     from urllib.parse import urlparse

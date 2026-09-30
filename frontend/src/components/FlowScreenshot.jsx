@@ -169,7 +169,7 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing, lang = '
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           onClick={() => fileInputRef.current?.click()}
-          className="clean-card border-2 border-dashed border-slate-300/80 dark:border-slate-700/80 hover:border-slate-400 dark:hover:border-slate-500 rounded-2xl p-8 text-center transition-all cursor-pointer space-y-3"
+          className="luxury-card border-2 border-dashed border-indigo-400/40 dark:border-violet-500/30 hover:border-violet-500 dark:hover:border-violet-400 rounded-2xl p-10 text-center transition-all cursor-pointer space-y-4"
         >
           <input
             type="file"
@@ -180,34 +180,34 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing, lang = '
             id="screenshot-input"
           />
 
-          <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center mx-auto">
-            <UploadCloud className="w-6 h-6" />
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-purple-500/20 to-indigo-500/20 text-purple-600 dark:text-violet-400 flex items-center justify-center mx-auto border border-purple-500/30 shadow-luxury-glow">
+            <UploadCloud className="w-7 h-7" />
           </div>
 
-          <div className="space-y-1">
-            <p className="text-sm font-bold text-slate-900 dark:text-white">
+          <div className="space-y-1.5">
+            <p className="text-base font-bold text-slate-900 dark:text-white">
               {t(lang, 'dropzoneTitle', 'Click to select image or drag & drop screenshot here')}
             </p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
+            <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">
               {t(lang, 'dropzoneSubtitle', 'Supports PNG, JPG, JPEG, WEBP up to 10MB. Works on mobile camera & gallery.')}
             </p>
           </div>
 
           <button
             type="button"
-            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-950 text-xs font-semibold shadow-xs"
+            className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-gradient-to-r dark:from-purple-600 dark:to-indigo-600 dark:hover:from-purple-500 dark:hover:to-indigo-500 text-xs font-bold shadow-luxury-glow cursor-pointer transition-all active:scale-95"
           >
-            <Camera className="w-3.5 h-3.5" />
+            <Camera className="w-4 h-4" />
             <span>{t(lang, 'browseImage', 'Browse Image File')}</span>
           </button>
         </div>
       ) : (
         /* Image Preview & OCR State Box */
-        <div className="clean-card rounded-2xl p-5 space-y-4 shadow-xs">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
-            <div className="flex items-center space-x-2.5">
-              <div className="p-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg">
-                <ImageIcon className="w-4 h-4 text-slate-700 dark:text-slate-300" />
+        <div className="luxury-card p-6 space-y-5 shadow-sm">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-night-border">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-slate-100 dark:bg-night-800 rounded-xl text-purple-500">
+                <ImageIcon className="w-4 h-4" />
               </div>
               <div>
                 <h4 className="text-xs font-bold text-slate-900 dark:text-white truncate max-w-xs sm:max-w-md">
@@ -224,15 +224,15 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing, lang = '
                 type="button"
                 onClick={() => runOcr()}
                 disabled={isOcrProcessing}
-                className="inline-flex items-center space-x-1 px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-medium transition-colors cursor-pointer"
+                className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-night-800 dark:hover:bg-night-750 text-slate-700 dark:text-slate-300 text-xs font-semibold transition-colors cursor-pointer border border-slate-200 dark:border-night-border"
               >
-                <ScanText className="w-3.5 h-3.5" />
+                <ScanText className="w-3.5 h-3.5 text-purple-500" />
                 <span>{t(lang, 'reScanOcr', 'Re-Scan OCR')}</span>
               </button>
               <button
                 type="button"
                 onClick={handleClear}
-                className="p-1 rounded text-slate-400 hover:text-red-600 transition-colors"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
                 title="Remove image"
               >
                 <X className="w-4 h-4" />
@@ -241,22 +241,22 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing, lang = '
           </div>
 
           {/* Thumbnail & OCR Output Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
             {/* Thumbnail Preview */}
-            <div className="md:col-span-1 border border-slate-200 dark:border-slate-800 rounded-lg p-1.5 bg-slate-50 dark:bg-slate-950 flex flex-col items-center">
+            <div className="md:col-span-1 border border-slate-200 dark:border-night-border rounded-xl p-2 bg-slate-50 dark:bg-night-950 flex flex-col items-center">
               <img
                 src={previewUrl}
                 alt="Uploaded Screenshot Preview"
-                className="max-h-48 object-contain rounded"
+                className="max-h-48 object-contain rounded-lg"
               />
-              <span className="text-[10px] text-slate-400 mt-1">{t(lang, 'uploadedPreview', 'Uploaded preview')}</span>
+              <span className="text-[10px] text-slate-400 mt-1.5 font-medium">{t(lang, 'uploadedPreview', 'Uploaded preview')}</span>
             </div>
 
             {/* Extracted Text & URLs */}
-            <div className="md:col-span-2 space-y-3">
+            <div className="md:col-span-2 space-y-3.5">
               {isOcrProcessing ? (
-                <div className="h-44 border border-dashed border-slate-300 dark:border-slate-700 rounded-lg flex flex-col items-center justify-center p-4 text-center space-y-2 bg-slate-50 dark:bg-slate-950/40">
-                  <Loader2 className="w-6 h-6 text-slate-900 dark:text-slate-100 animate-spin" />
+                <div className="h-44 border border-dashed border-indigo-400/30 dark:border-violet-500/30 rounded-xl flex flex-col items-center justify-center p-4 text-center space-y-2 bg-slate-50/50 dark:bg-night-950/40">
+                  <Loader2 className="w-7 h-7 text-purple-500 animate-spin" />
                   <p className="text-xs font-bold text-slate-900 dark:text-white">
                     {t(lang, 'scanningOcr', 'Scanning image via Optical Character Recognition (OCR)...')}
                   </p>
@@ -267,7 +267,7 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing, lang = '
               ) : (
                 <>
                   <div>
-                    <label className="block text-xs font-bold text-slate-900 dark:text-slate-200 mb-1">
+                    <label className="block text-xs font-bold text-slate-900 dark:text-slate-200 mb-1.5">
                       {t(lang, 'extractedMsgContent', 'Extracted Message Content (Editable):')}
                     </label>
                     <textarea
@@ -275,12 +275,12 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing, lang = '
                       value={extractedText}
                       onChange={(e) => setExtractedText(e.target.value)}
                       placeholder={t(lang, 'extractedMsgPlaceholder', 'OCR extracted text will appear here. You can refine or add text...')}
-                      className="w-full bg-slate-50 text-slate-900 border border-slate-300 rounded-lg p-2.5 text-xs font-sans focus:outline-none focus:ring-2 focus:ring-slate-900 dark:bg-slate-950 dark:text-slate-100 dark:border-slate-700 leading-relaxed"
+                      className="w-full bg-slate-50 text-slate-900 border border-slate-300 dark:border-night-border rounded-xl p-3 text-xs font-sans focus:outline-none focus:ring-2 focus:ring-violet-500 dark:bg-night-950 dark:text-slate-100 leading-relaxed"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-900 dark:text-slate-200 mb-1">
+                    <label className="block text-xs font-bold text-slate-900 dark:text-slate-200 mb-1.5">
                       {t(lang, 'extractedUrls', 'Extracted Web Addresses / Links:')}
                     </label>
                     <input
@@ -288,7 +288,7 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing, lang = '
                       value={extractedUrls}
                       onChange={(e) => setExtractedUrls(e.target.value)}
                       placeholder="e.g. http://sbi-kyc-verify-urgent.com/login"
-                      className="w-full bg-slate-50 text-slate-900 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-slate-900 dark:bg-slate-950 dark:text-slate-100 dark:border-slate-700"
+                      className="w-full bg-slate-50 text-slate-900 border border-slate-300 dark:border-night-border rounded-xl px-3 py-2 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-violet-500 dark:bg-night-950 dark:text-slate-100"
                     />
                   </div>
                 </>
@@ -297,20 +297,20 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing, lang = '
           </div>
 
           {/* Citizen Situation Selection */}
-          <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
-            <label htmlFor="screenshot-user-state" className="block text-xs font-bold text-slate-900 dark:text-slate-300 mb-1">
-              {t(lang, 'currentStateQuestion', 'What is your current interaction state?')} <span className="text-red-600 font-bold">*</span>
+          <div className="pt-3 border-t border-slate-200 dark:border-night-border">
+            <label htmlFor="screenshot-user-state" className="block text-xs font-bold text-slate-900 dark:text-slate-200 mb-1.5">
+              {t(lang, 'currentStateQuestion', 'What is your current interaction state?')} <span className="text-rose-500 font-bold">*</span>
             </label>
             <select
               id="screenshot-user-state"
               value={userState}
               onChange={(e) => setUserState(e.target.value)}
-              className={`w-full border rounded-lg px-2.5 py-1.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 cursor-pointer font-medium ${
+              className={`w-full border rounded-xl px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 cursor-pointer font-medium ${
                 userState === 'paid' 
-                  ? 'border-red-600 text-red-900 bg-red-50 dark:border-red-600 dark:text-red-300 dark:bg-red-950/20' 
+                  ? 'border-rose-500 text-rose-900 bg-rose-50 dark:border-rose-600 dark:text-rose-300 dark:bg-rose-950/30' 
                   : userState === 'entered_credentials'
-                  ? 'border-amber-600 text-amber-950 bg-amber-50 dark:border-amber-600 dark:text-amber-300 dark:bg-amber-950/20'
-                  : 'bg-slate-50 text-slate-900 border-slate-300 dark:bg-slate-950 dark:text-slate-200 dark:border-slate-700'
+                  ? 'border-amber-500 text-amber-950 bg-amber-50 dark:border-amber-600 dark:text-amber-300 dark:bg-amber-950/30'
+                  : 'bg-slate-50 text-slate-900 border-slate-300 dark:bg-night-950 dark:text-slate-200 dark:border-night-border'
               }`}
             >
               <option value="received">{t(lang, 'scrSitReceived', '1. I only have this screenshot (No further action taken)')}</option>
@@ -321,21 +321,21 @@ export default function FlowScreenshot({ onBack, onSubmit, isAnalyzing, lang = '
           </div>
 
           {/* Continue Action Button */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-slate-200 dark:border-night-border">
             <button
               type="button"
               onClick={handleContinueAnalysis}
               disabled={isAnalyzing || isOcrProcessing || !extractedText.trim()}
-              className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-7 py-2.5 bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:hover:bg-white dark:text-slate-900 font-bold rounded-lg text-sm shadow-sm transition-all duration-150 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-8 py-3 bg-slate-900 hover:bg-slate-800 text-white dark:bg-gradient-to-r dark:from-purple-600 dark:to-indigo-600 dark:hover:from-purple-500 dark:hover:to-indigo-500 font-bold rounded-xl text-sm shadow-luxury-glow transition-all duration-150 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {isAnalyzing ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin text-white dark:text-slate-900" />
+                  <Loader2 className="w-4 h-4 animate-spin text-white" />
                   <span>{t(lang, 'processingForensic', 'Processing Forensic Analysis...')}</span>
                 </>
               ) : (
                 <>
-                  <Search className="w-4 h-4 text-white dark:text-slate-900" strokeWidth={2.4} />
+                  <Search className="w-4 h-4 text-white" strokeWidth={2.4} />
                   <span>{t(lang, 'analyzeExtracted', 'Analyze Extracted Content')}</span>
                 </>
               )}

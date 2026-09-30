@@ -7,9 +7,9 @@ export default function Footer({ onOpenMethodology, lang = 'en' }) {
   const [mobileGuaranteesOpen, setMobileGuaranteesOpen] = useState(false);
 
   return (
-    <footer className="w-full bg-slate-100/90 dark:bg-[#070B14]/95 backdrop-blur-md border-t border-slate-200/90 dark:border-slate-800 text-slate-600 dark:text-slate-400 text-xs mt-12 py-10 px-4 sm:px-6 select-none transition-colors relative z-20" role="contentinfo">
+    <footer className="w-full bg-slate-100/90 dark:bg-night-950/95 backdrop-blur-md border-t border-slate-200/90 dark:border-night-border text-slate-600 dark:text-slate-400 text-xs mt-12 py-10 px-4 sm:px-6 select-none transition-colors relative z-20" role="contentinfo">
       <div className="max-w-7xl mx-auto space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pb-8 border-b border-slate-200 dark:border-slate-800/80">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pb-8 border-b border-slate-200 dark:border-night-border/80">
           {/* Col 1: Identity & Partnership */}
           <div className="space-y-3">
             <div className="flex items-center space-x-3">

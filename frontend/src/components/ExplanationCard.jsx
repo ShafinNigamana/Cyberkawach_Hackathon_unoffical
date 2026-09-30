@@ -22,16 +22,16 @@ export default function ExplanationCard({ explanation }) {
   const summaryText = explanation.summary || 'Analytical assessment based on observed message artifacts and multi-layer fraud rules.';
 
   return (
-    <section className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-card p-5 shadow-sm dark:shadow-card-elevated" aria-label="Why We Concluded This Section">
+    <section className="luxury-card p-5 sm:p-6" aria-label="Why We Concluded This Section">
       {/* Title Bar */}
-      <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-200 dark:border-slate-800">
-        <div className="flex items-center space-x-2">
-          <BrainCircuit className="w-5 h-5 text-amber-500 dark:text-amber-400" />
+      <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-200 dark:border-night-border">
+        <div className="flex items-center space-x-2.5">
+          <BrainCircuit className="w-5 h-5 text-indigo-500 dark:text-violet-400" />
           <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
             Why We Concluded This
           </h3>
         </div>
-        <span className="text-[10px] font-mono px-2 py-0.5 rounded-badge bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+        <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 dark:bg-night-800 dark:text-slate-300 border border-slate-200 dark:border-night-border font-semibold">
           Engine: {modelUsed}
         </span>
       </div>
@@ -47,7 +47,7 @@ export default function ExplanationCard({ explanation }) {
           type="button"
           onClick={() => setDetailsExpanded(!detailsExpanded)}
           aria-expanded={detailsExpanded}
-          className="inline-flex items-center space-x-1.5 text-xs font-semibold text-blue-700 hover:text-blue-800 dark:text-amber-400 dark:hover:text-amber-300 focus:outline-none focus:underline transition-colors cursor-pointer"
+          className="inline-flex items-center space-x-1.5 text-xs font-bold text-indigo-600 hover:text-indigo-700 dark:text-violet-400 dark:hover:text-violet-300 focus:outline-none transition-colors cursor-pointer"
         >
           <span>{detailsExpanded ? 'Hide technical breakdown' : 'Show forensic details & limits'}</span>
           {detailsExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -56,7 +56,7 @@ export default function ExplanationCard({ explanation }) {
 
       {/* Expandable Forensic Breakdown */}
       {detailsExpanded && (
-        <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800/80 space-y-4 text-xs">
+        <div className="mt-4 pt-4 border-t border-slate-200 dark:border-night-border/80 space-y-4 text-xs">
           {/* Key Epistemic Factors (Checklist Style, Short Lines) */}
           {reasons.length > 0 && (
             <div>
