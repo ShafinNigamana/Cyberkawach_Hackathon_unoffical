@@ -248,22 +248,52 @@ def fuse_evidence(evidence: IncidentEvidence) -> IncidentEvidence:
             )
 
     # ─────────────────────────────────────────────────────────────
-    # Contradictory Signal Resolution: Verified Official Brand Domains
+    # Contradictory Signal Resolution: Verified Official Brand Domains & Government Infrastructure
     # ─────────────────────────────────────────────────────────────
 
     has_verified_official_domain = False
+    verified_domains: list[str] = []
     if evidence.urls:
-        has_verified_official_domain = any(
-            is_official_brand_domain(u.domain) for u in evidence.urls
+        for u in evidence.urls:
+            if is_official_brand_domain(u.domain):
+                has_verified_official_domain = True
+                verified_domains.append(u.domain)
+
+    # Check if sender header is a verified TRAI Government entity header
+    has_gov_sender = any(
+        item.type == EvidenceType.SENDER_ANALYSIS
+        and (item.raw_data or {}).get("is_government") is True
+        for item in evidence.evidence
+    )
+
+    is_trusted_entity = has_verified_official_domain or has_gov_sender
+
+    if is_trusted_entity and not has_strong_brand_mismatch:
+        # Check if any hard malicious behavior was confirmed (threat intel, credential theft, external exfiltration, fake mobile bank)
+        has_real_attack_intent = bool(
+            confirmed_ti_hits
+            or has_credential_request
+            or has_financial_demand
+            or has_cred_exfiltration
+            or has_mobile_bank_impersonation
         )
 
-    if has_verified_official_domain and not has_strong_brand_mismatch:
-        # Legitimate banking or service domains often mention "OTP", "account", or "update"
-        # Dampen heuristic penalty so official communications are not falsely branded as scams
-        total_score = min(total_score, 0.15)
-        contributing_factors.append(
-            "Verified official brand domain matches message context — heuristic risk dampened"
-        )
+        if not has_real_attack_intent:
+            # Trusted infrastructure + absence of scam payload = Legitimate / Safe broadcast
+            # Suppress heuristic keyword noise, statutory disclosures, and statistical fluctuations
+            total_score = 0.0
+            domain_label = ", ".join(verified_domains) if verified_domains else "TRAI Government DLT sender"
+            contributing_factors = [
+                f"[OFFICIAL INFRASTRUCTURE VERIFIED] Domain/sender matches confirmed official portal ({domain_label}). "
+                "Absence of credential demands, suspicious forms, or brand mismatch confirms legitimate communication; "
+                "statutory regulatory disclosures and civic campaign context do not elevate threat level."
+            ]
+        else:
+            # If sensitive demands exist on an official domain (e.g. routine bank OTP notice), dampen heuristic score
+            total_score = min(total_score, 0.15)
+            contributing_factors.append(
+                "Verified official brand domain matches message context — heuristic risk dampened"
+            )
 
     final_score = max(0.0, min(1.0, total_score))
 
@@ -276,7 +306,12 @@ def fuse_evidence(evidence: IncidentEvidence) -> IncidentEvidence:
         evidence.urls or evidence.iocs or evidence.brands or evidence.rule_matches
     )
 
-    if not active_suspicious_items and (text_words < 6 or not has_verifiable_indicators):
+    if is_trusted_entity and not (confirmed_ti_hits or has_strong_brand_mismatch or has_credential_request or has_financial_demand or has_cred_exfiltration or has_mobile_bank_impersonation):
+        evidence_sufficiency = "SUFFICIENT"
+        final_level = RiskLevel.LOW
+        final_category = UserCategory.LOW_CONCERN
+        final_score = 0.0
+    elif not active_suspicious_items and (text_words < 6 or not has_verifiable_indicators):
         # Input lacks sufficient substance to evaluate
         evidence_sufficiency = "INSUFFICIENT"
         final_level = RiskLevel.UNKNOWN

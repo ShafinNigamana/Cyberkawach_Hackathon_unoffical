@@ -1,8 +1,19 @@
 import React from 'react';
-import { Globe, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { Globe, AlertTriangle, ShieldCheck, ShieldAlert } from 'lucide-react';
 
-export default function UrlInfrastructure({ urls = [] }) {
+export default function UrlInfrastructure({ urls = [], threatIntel = [] }) {
   if (!urls || urls.length === 0) return null;
+
+  // Filter confirmed threat intelligence matches
+  const activeThreats = (threatIntel || []).filter(ti => {
+    const status = (ti.intel_status || ti.status || '').toUpperCase();
+    return (
+      status === 'CONFIRMED_MALICIOUS' || 
+      status === 'MATCH' || 
+      status === 'MATCH (MALICIOUS)' || 
+      ti.is_match === true
+    );
+  });
 
   return (
     <section className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-card p-5 shadow-sm dark:shadow-card" aria-label="Extracted Web Infrastructure">
@@ -15,17 +26,46 @@ export default function UrlInfrastructure({ urls = [] }) {
 
       <div className="space-y-2.5">
         {urls.map((item, idx) => {
-          const isSuspicious = item.is_suspicious || item.risk_score > 0.4;
-          const signals = item.signals || item.reasons || [];
+          const itemUrlLower = (item.url || '').toLowerCase();
+          const itemDomainLower = (item.domain || '').toLowerCase();
+
+          // Check if this URL or its host matched any live threat intelligence feeds
+          const matchedThreat = activeThreats.find(ti => {
+            const tiUrl = (ti.url || ti.target || ti.raw_reference || '').toLowerCase();
+            const tiHost = (ti.host || ti.domain || '').toLowerCase();
+            if (tiUrl && (itemUrlLower.includes(tiUrl) || tiUrl.includes(itemUrlLower))) return true;
+            if (tiHost && (itemDomainLower === tiHost || itemDomainLower.endsWith('.' + tiHost))) return true;
+            if (urls.length === 1 && activeThreats.length > 0) return true;
+            return false;
+          });
+
+          // Aggregate signals
+          const rawSignals = item.signals || item.reasons || [];
+          const signals = [...rawSignals];
+
+          if (matchedThreat && !signals.some(s => s.toLowerCase().includes('browsing') || s.toLowerCase().includes('intel'))) {
+            const providerName = matchedThreat.source === 'safe_browsing' ? 'Google Safe Browsing' : (matchedThreat.source || 'Threat Intel');
+            const threatType = matchedThreat.threat_type || matchedThreat.details || 'Social Engineering / Phishing';
+            signals.unshift(`${providerName}: ${threatType}`);
+          }
+
+          const isMalicious = !!matchedThreat || signals.some(s => s.toLowerCase().includes('safe_browsing') || s.toLowerCase().includes('phishtank'));
+          const isSuspicious = !isMalicious && (item.is_suspicious || signals.length > 0 || (item.risk_score && item.risk_score > 0.4));
 
           return (
             <div 
               key={idx} 
-              className="p-3.5 bg-slate-50 dark:bg-slate-950 rounded-btn border border-slate-200 dark:border-slate-800 flex flex-col gap-1.5"
+              className={`p-3.5 rounded-btn border flex flex-col gap-1.5 transition-colors ${
+                isMalicious
+                  ? 'bg-red-50/50 dark:bg-red-950/20 border-red-200 dark:border-red-900/60'
+                  : 'bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800'
+              }`}
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center space-x-2 truncate">
-                  {isSuspicious ? (
+                  {isMalicious ? (
+                    <ShieldAlert className="w-4 h-4 text-red-600 dark:text-red-400 flex-shrink-0" />
+                  ) : isSuspicious ? (
                     <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
                   ) : (
                     <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
@@ -36,11 +76,13 @@ export default function UrlInfrastructure({ urls = [] }) {
                 </div>
 
                 <span className={`px-2 py-0.5 rounded-badge text-[10px] font-bold ${
-                  isSuspicious 
-                    ? 'bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800' 
-                    : 'bg-emerald-100 text-emerald-900 border border-emerald-300 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800'
+                  isMalicious
+                    ? 'bg-red-100 text-red-800 border border-red-300 dark:bg-red-950 dark:text-red-300 dark:border-red-800'
+                    : isSuspicious 
+                      ? 'bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800' 
+                      : 'bg-emerald-100 text-emerald-900 border border-emerald-300 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800'
                 }`}>
-                  {isSuspicious ? 'SUSPICIOUS DOMAIN' : 'NO ANOMALIES'}
+                  {isMalicious ? 'CONFIRMED MALICIOUS' : isSuspicious ? 'SUSPICIOUS PATTERNS' : 'NO SYNTACTIC ANOMALIES'}
                 </span>
               </div>
 
@@ -52,14 +94,21 @@ export default function UrlInfrastructure({ urls = [] }) {
 
               {signals.length > 0 && (
                 <div className="flex flex-wrap gap-1.5 mt-1.5">
-                  {signals.map((sig, sIdx) => (
-                    <span 
-                      key={sIdx} 
-                      className="px-2 py-0.5 rounded bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-mono text-[10px]"
-                    >
-                      {typeof sig === 'string' ? sig.replace(/_/g, ' ') : JSON.stringify(sig)}
-                    </span>
-                  ))}
+                  {signals.map((sig, sIdx) => {
+                    const isThreatSig = typeof sig === 'string' && (sig.includes('Safe Browsing') || sig.includes('PhishTank') || sig.includes('Threat Intel') || sig.includes('safe_browsing'));
+                    return (
+                      <span 
+                        key={sIdx} 
+                        className={`px-2 py-0.5 rounded font-mono text-[10px] ${
+                          isThreatSig
+                            ? 'bg-red-100 text-red-800 border border-red-300 dark:bg-red-950/80 dark:text-red-300 dark:border-red-800 font-semibold'
+                            : 'bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+                        }`}
+                      >
+                        {typeof sig === 'string' ? sig.replace(/_/g, ' ') : JSON.stringify(sig)}
+                      </span>
+                    );
+                  })}
                 </div>
               )}
             </div>

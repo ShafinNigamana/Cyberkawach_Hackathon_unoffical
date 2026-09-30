@@ -354,6 +354,7 @@ def _analyze_single_url(url_signal: URLSignal) -> tuple[URLSignal, list[Evidence
         ))
 
     url_signal.signals = signals
+    url_signal.is_suspicious = any(s != 'shortened_url' for s in signals) if signals else False
     return url_signal, evidence_items
 
 

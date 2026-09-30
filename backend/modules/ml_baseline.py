@@ -13,8 +13,12 @@ from typing import Optional
 
 from backend.models.evidence import (
     EvidenceItem,
+    EvidenceReliability,
+    EvidenceSeverity,
+    EvidenceStatus,
     EvidenceType,
     IncidentEvidence,
+    RiskDirection,
 )
 
 logger = logging.getLogger("cyber_guardian.ml_baseline")
@@ -59,6 +63,8 @@ _TRAINING_CORPUS: list[tuple[str, int]] = [
     ("Reminder: Team weekly standup scheduled at 11:00 AM on Google Meet", 0),
     ("Your order #8291 has been shipped via BlueDart. Track delivery on our official website", 0),
     ("Happy birthday! Wishing you a wonderful year ahead filled with joy and success", 0),
+    ("This Independence Day celebrate 150 years of Vande Mataram with Har Ghar Tiranga hoist Tiranga at home upload selfie on harghartiranga.com", 0),
+    ("Advisory as per the Telecommunications Act 2023 acquiring SIMs or telecom identifiers by fraud is a punishable offence with imprisonment and fine", 0),
 ]
 
 
@@ -133,18 +139,34 @@ def run_ml_baseline(evidence: IncidentEvidence) -> IncidentEvidence:
             EvidenceItem(
                 type=EvidenceType.PATTERN_MATCH,
                 source="ml_baseline",
+                source_type="content",
+                evidence_tier="DERIVED",
+                finding=f"ML baseline classifier: elevated scam likelihood ({prob:.0%})",
                 description=f"ML baseline (TF-IDF + Logistic Regression): scam likelihood {prob:.0%}",
                 confidence=prob,
+                status=EvidenceStatus.OBSERVED,
+                reliability=EvidenceReliability.MODEL_SIGNAL,
+                risk_direction=RiskDirection.INCREASES_RISK,
+                severity=EvidenceSeverity.MEDIUM,
+                correlation_group="ml_baseline_signal",
                 raw_data={"model": "tfidf_logistic_regression", "scam_probability": prob},
             )
         )
-    elif prob < 0.25:
+    elif prob < 0.50:
         evidence.evidence.append(
             EvidenceItem(
                 type=EvidenceType.PATTERN_MATCH,
                 source="ml_baseline",
+                source_type="content",
+                evidence_tier="DERIVED",
+                finding=f"ML baseline classifier: low scam likelihood ({prob:.0%})",
                 description=f"ML baseline (TF-IDF + Logistic Regression): low scam likelihood ({prob:.0%})",
                 confidence=round(1.0 - prob, 4),
+                status=EvidenceStatus.OBSERVED,
+                reliability=EvidenceReliability.MODEL_SIGNAL,
+                risk_direction=RiskDirection.NEUTRAL,
+                severity=EvidenceSeverity.INFORMATIONAL,
+                correlation_group="ml_baseline_signal",
                 raw_data={"model": "tfidf_logistic_regression", "scam_probability": prob},
             )
         )

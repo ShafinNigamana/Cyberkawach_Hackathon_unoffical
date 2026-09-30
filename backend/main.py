@@ -834,7 +834,7 @@ async def analyze_message(request: AnalyzeRequest, raw_request: Request):
     try:
         from backend.services.sender_analyzer import analyze_sms_sender, analyze_email_sender
         import re
-        sms_match = re.search(r'\b([A-Za-z]{2}[-\s]?[A-Za-z0-9]{6})\b', evidence.message)
+        sms_match = re.search(r'\b([A-Za-z]{2}[-\s]?[A-Za-z0-9]{6}(?:-[A-Za-z0-9]{1,2})?)\b', evidence.message)
         phone_match = re.search(r'(?:(?:\+?91[\-\s]?)?[6-9]\d{9})\b', evidence.message)
         if sms_match:
             _, sms_items = analyze_sms_sender(sms_match.group(1), evidence.message)
@@ -867,6 +867,21 @@ async def analyze_message(request: AnalyzeRequest, raw_request: Request):
         from backend.modules.threat_intel import query_threat_intel
         evidence = await query_threat_intel(evidence)
         modules_executed.append("threat_intel")
+
+        # Correlate live threat intelligence hits directly into extracted URL signals
+        for ti in evidence.threat_intel:
+            status_val = getattr(getattr(ti, "intel_status", None), "value", str(getattr(ti, "intel_status", ""))).lower()
+            is_mal = status_val in ("confirmed_malicious", "match", "match (malicious)") or getattr(ti, "is_match", False)
+            if is_mal:
+                ti_target = (getattr(ti, "url", "") or getattr(ti, "raw_reference", "") or "").lower()
+                for u in evidence.urls:
+                    if not ti_target or (ti_target in u.url.lower() or u.url.lower() in ti_target or (u.domain and u.domain.lower() in ti_target)):
+                        u.is_suspicious = True
+                        u.risk_score = max(u.risk_score, 0.95)
+                        provider_label = "Google Safe Browsing" if "safe_browsing" in ti.source.lower() else ti.source.capitalize()
+                        sig_label = f"{provider_label}: {ti.threat_type or 'Confirmed Phishing / Social Engineering'}"
+                        if sig_label not in u.signals:
+                            u.signals.insert(0, sig_label)
     except Exception as e:
         modules_failed.append("threat_intel")
         evidence.errors.append(f"threat_intel: {safe_error_message(e)}")

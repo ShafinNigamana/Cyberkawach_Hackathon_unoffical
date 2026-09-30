@@ -176,3 +176,43 @@ def test_golden_hour_protocol_enforced_on_paid_state():
         assert any(term in combined.lower() for term in ["freeze", "golden hour", "block", "dispute"]), (
             "Fund freeze / dispute action must be present in response"
         )
+
+
+def test_har_ghar_tiranga_official_broadcast_scored_near_zero():
+    """
+    False-positive regression test:
+    The official Har Ghar Tiranga campaign SMS with statutory advisory from JG-REGINF-G
+    must score LOW / near 0 (score <= 0.05).
+    - Verified official domain -> no brand mismatch
+    - No credential or OTP request
+    - No suspicious forms
+    - Official campaign context + TRAI DLT Government header
+    - Statutory legal notice wording does not override trusted-domain evidence
+    """
+    message = (
+        "JG-REGINF-G\n"
+        "This Independence Day, celebrate 150 years of Vande Mataram with Har Ghar Tiranga. "
+        "Hoist Tiranga at home & upload your selfie on https://harghartiranga.com/\n"
+        "Advisory as per the Telecommunications Act 2023. Acquiring SIMs or telecom identifiers by fraud, "
+        "cheating or personation is a punishable offence under the Telecommunications Act, 2023 with imprisonment "
+        "up to 3 years, a fine up to Rs. 50 lakhs or both. The same penalty applies to abetment, attempt, or conspiracy."
+    )
+    res = client.post("/api/analyze", json={"message": message})
+    assert res.status_code == 200
+    data = res.json()
+
+    assert data["risk"]["level"] == "LOW"
+    assert data["risk"]["score"] <= 0.05
+    assert data["risk"]["category"] == "LOW CONCERN"
+    assert data.get("fraud_category") is None
+
+    # Check evidence items
+    evidence_types = [e.get("type") for e in data.get("evidence", [])]
+    # No brand mismatch should be generated
+    assert "brand_mismatch" not in evidence_types
+
+    # Verified official domain and government sender must be recognized
+    findings = [e.get("finding") or e.get("description") or "" for e in data.get("evidence", [])]
+    assert any("harghartiranga.com" in f for f in findings)
+    assert any("TRAI DLT" in f for f in findings)
+

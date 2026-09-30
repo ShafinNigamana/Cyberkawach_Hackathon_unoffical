@@ -12,8 +12,12 @@ from urllib.parse import urlparse
 
 from backend.models.evidence import (
     EvidenceItem,
+    EvidenceReliability,
+    EvidenceSeverity,
+    EvidenceStatus,
     EvidenceType,
     IncidentEvidence,
+    RiskDirection,
     URLSignal,
 )
 
@@ -160,8 +164,9 @@ def extract_iocs(evidence: IncidentEvidence, additional_urls: list[str] | None =
     # Add any additional user-supplied URLs
     if additional_urls:
         for url in additional_urls:
-            if url and url not in found_urls:
-                found_urls.append(url)
+            cleaned = url.strip().rstrip('.,;:!?)')
+            if cleaned and cleaned not in found_urls:
+                found_urls.append(cleaned)
 
     # Build URL signals
     evidence.urls = [_url_to_signal(u) for u in found_urls]
@@ -191,8 +196,16 @@ def extract_iocs(evidence: IncidentEvidence, additional_urls: list[str] | None =
         evidence.evidence.append(EvidenceItem(
             type=EvidenceType.IOC_EXTRACTED,
             source="ingestion",
+            source_type="content",
+            evidence_tier="OBSERVED",
+            finding=f"Extracted {len(evidence.urls)} URL(s) from message",
             description=f"Extracted {len(evidence.urls)} URL(s) from message",
             confidence=1.0,
+            status=EvidenceStatus.OBSERVED,
+            reliability=EvidenceReliability.DETERMINISTIC_FACT,
+            risk_direction=RiskDirection.NEUTRAL,
+            severity=EvidenceSeverity.INFORMATIONAL,
+            correlation_group="ioc_extraction",
             raw_data={"urls": [u.url for u in evidence.urls]},
         ))
 
@@ -200,8 +213,16 @@ def extract_iocs(evidence: IncidentEvidence, additional_urls: list[str] | None =
         evidence.evidence.append(EvidenceItem(
             type=EvidenceType.IOC_EXTRACTED,
             source="ingestion",
+            source_type="content",
+            evidence_tier="OBSERVED",
+            finding=f"Extracted {len(emails)} email address(es)",
             description=f"Extracted {len(emails)} email address(es): {', '.join(emails)}",
             confidence=1.0,
+            status=EvidenceStatus.OBSERVED,
+            reliability=EvidenceReliability.DETERMINISTIC_FACT,
+            risk_direction=RiskDirection.NEUTRAL,
+            severity=EvidenceSeverity.INFORMATIONAL,
+            correlation_group="ioc_extraction",
             raw_data={"emails": emails},
         ))
 
@@ -209,8 +230,16 @@ def extract_iocs(evidence: IncidentEvidence, additional_urls: list[str] | None =
         evidence.evidence.append(EvidenceItem(
             type=EvidenceType.IOC_EXTRACTED,
             source="ingestion",
+            source_type="content",
+            evidence_tier="OBSERVED",
+            finding=f"Extracted {len(upi_ids)} UPI ID(s)",
             description=f"Extracted {len(upi_ids)} UPI ID(s): {', '.join(upi_ids)}",
             confidence=1.0,
+            status=EvidenceStatus.OBSERVED,
+            reliability=EvidenceReliability.DETERMINISTIC_FACT,
+            risk_direction=RiskDirection.NEUTRAL,
+            severity=EvidenceSeverity.INFORMATIONAL,
+            correlation_group="ioc_extraction",
             raw_data={"upi_ids": upi_ids},
         ))
 
@@ -218,8 +247,16 @@ def extract_iocs(evidence: IncidentEvidence, additional_urls: list[str] | None =
         evidence.evidence.append(EvidenceItem(
             type=EvidenceType.IOC_EXTRACTED,
             source="ingestion",
+            source_type="content",
+            evidence_tier="OBSERVED",
+            finding=f"Extracted {len(phones)} phone number(s)",
             description=f"Extracted {len(phones)} phone number(s)",
             confidence=0.8,
+            status=EvidenceStatus.OBSERVED,
+            reliability=EvidenceReliability.DETERMINISTIC_FACT,
+            risk_direction=RiskDirection.NEUTRAL,
+            severity=EvidenceSeverity.INFORMATIONAL,
+            correlation_group="ioc_extraction",
             raw_data={"phones": phones},
         ))
 

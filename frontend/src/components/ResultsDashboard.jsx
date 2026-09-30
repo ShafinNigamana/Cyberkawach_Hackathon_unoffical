@@ -250,7 +250,10 @@ export default function ResultsDashboard({
           />
 
           {result.urls && result.urls.length > 0 && (
-            <UrlInfrastructure urls={result.urls} />
+            <UrlInfrastructure 
+              urls={result.urls} 
+              threatIntel={result.threat_intel} 
+            />
           )}
 
           {/* SECTION 7: FRAUD DNA SYNDICATE CORRELATION */}

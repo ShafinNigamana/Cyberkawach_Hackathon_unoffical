@@ -24,8 +24,10 @@ from backend.models.evidence import (
 
 
 def is_official_brand_domain(domain: str) -> bool:
-    """Check if domain is a registered legitimate brand domain."""
+    """Check if domain is a registered legitimate brand domain or official government domain."""
     d = domain.lower().strip().removeprefix('www.')
+    if d.endswith('.gov.in') or d.endswith('.nic.in') or d == 'gov.in' or d == 'nic.in':
+        return True
     for _, (legit_domains, _) in _BRAND_REGISTRY.items():
         if any(d == ld or d.endswith('.' + ld) for ld in legit_domains):
             return True
@@ -54,12 +56,15 @@ _BRAND_REGISTRY: dict[str, tuple[list[str], list[str]]] = {
     "Google Pay": (["pay.google.com"], ["google pay", "gpay"]),
     "BHIM": (["bhimupi.org.in"], ["bhim"]),
 
-    # Indian government
+    # Indian government & national initiatives
     "Income Tax India": (["incometax.gov.in", "incometaxindia.gov.in"], ["income tax"]),
     "EPFO": (["epfindia.gov.in"], ["epfo", "provident fund"]),
     "Aadhaar": (["uidai.gov.in"], ["aadhaar", "aadhar", "uidai"]),
     "DigiLocker": (["digilocker.gov.in"], ["digilocker"]),
     "India Post": (["indiapost.gov.in"], ["india post"]),
+    "Har Ghar Tiranga": (["harghartiranga.com"], ["har ghar tiranga", "harghartiranga", "tiranga", "vande mataram"]),
+    "Department of Telecommunications": (["dot.gov.in", "sancharsaathi.gov.in", "trai.gov.in", "telecom.gov.in", "tafcop.dgtelecom.gov.in"], ["department of telecommunications", "dot india", "sanchar saathi", "tafcop"]),
+    "Government of India": (["india.gov.in", "mygov.in", "pib.gov.in", "meity.gov.in", "harghartiranga.com"], ["government of india", "govt of india", "mygov", "ministry of culture", "ministry", "azadi ka amrit mahotsav"]),
 
     # Indian e-commerce/delivery
     "Flipkart": (["flipkart.com"], ["flipkart"]),
@@ -152,6 +157,23 @@ def check_brands(evidence: IncidentEvidence) -> IncidentEvidence:
             )
 
             if is_legit:
+                evidence.evidence.append(EvidenceItem(
+                    type=EvidenceType.URL_ANALYSIS,
+                    source="brand_check",
+                    source_type="rule",
+                    evidence_tier="OBSERVED",
+                    indicator=domain,
+                    finding=f"Verified official domain for {brand_name}: '{domain}'",
+                    description=f"The URL domain '{domain}' is confirmed as an official registered domain for {brand_name}.",
+                    observed_value=f"Domain: {domain}, Entity: {brand_name}",
+                    interpretation=f"The destination URL matches the official, authentic domain infrastructure for {brand_name}.",
+                    status=EvidenceStatus.CONFIRMED,
+                    reliability=EvidenceReliability.DETERMINISTIC_FACT,
+                    risk_direction=RiskDirection.NEUTRAL,
+                    severity=EvidenceSeverity.INFORMATIONAL,
+                    correlation_group="brand_verification",
+                    raw_data={"brand": brand_name, "domain": domain, "is_official": True},
+                ))
                 continue  # No impersonation — domain matches
 
             # Check if domain LOOKS LIKE a legitimate domain (typosquatting)
@@ -253,6 +275,11 @@ def check_brands(evidence: IncidentEvidence) -> IncidentEvidence:
 
         # Brand mentioned + URLs present but none are legit = suspicious
         if evidence.urls and not has_legit_url and not has_brand_match:
+            # If all URLs in the message are already verified official brand/government domains,
+            # auxiliary mentions (e.g. government ministries, statutory acts, sponsor brands) do not represent brand spoofing.
+            if all(is_official_brand_domain(u.domain) for u in evidence.urls):
+                continue
+
             evidence.evidence.append(EvidenceItem(
                 type=EvidenceType.BRAND_MISMATCH,
                 source="brand_check",

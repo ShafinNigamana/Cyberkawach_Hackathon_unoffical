@@ -141,6 +141,8 @@ class URLSignal(BaseModel):
     is_shortened: bool = False
     redirect_chain: list[str] = Field(default_factory=list)
     final_url: Optional[str] = None
+    is_suspicious: bool = False
+    risk_score: float = 0.0
 
 
 class BrandMatch(BaseModel):

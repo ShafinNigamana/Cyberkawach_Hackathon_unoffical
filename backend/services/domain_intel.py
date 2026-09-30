@@ -206,60 +206,89 @@ def inspect_tls_certificate(domain: str, port: int = 443) -> dict[str, Any] | No
         logger.debug("Failed to resolve %s for TLS: %s", target, safe_error_message(e))
         return None
 
-    ctx = ssl.create_default_context()
-    ctx.check_hostname = False
-    ctx.verify_mode = ssl.CERT_NONE
+    cert = None
+    target_l = target.lower()
 
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.settimeout(_DEFAULT_TLS_TIMEOUT)
+    # 1. Attempt standard verified connection to get full peer cert dictionary
+    try:
+        ctx_v = ssl.create_default_context()
+        ctx_v.check_hostname = False
+        with socket.create_connection((target_ip, port), timeout=_DEFAULT_TLS_TIMEOUT) as sock:
+            with ctx_v.wrap_socket(sock, server_hostname=target) as ssock:
+                cert = ssock.getpeercert()
+    except Exception:
+        pass
+
+    # 2. Fallback to unverified connection and decode binary DER certificate
+    if not cert:
+        try:
+            ctx_u = ssl.create_default_context()
+            ctx_u.check_hostname = False
+            ctx_u.verify_mode = ssl.CERT_NONE
+            with socket.create_connection((target_ip, port), timeout=_DEFAULT_TLS_TIMEOUT) as sock:
+                with ctx_u.wrap_socket(sock, server_hostname=target) as ssock:
+                    cert_bin = ssock.getpeercert(binary_form=True)
+                    if cert_bin:
+                        pem = ssl.DER_cert_to_PEM_cert(cert_bin)
+                        import tempfile
+                        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.pem') as tf:
+                            tf.write(pem)
+                            tf_path = tf.name
+                        try:
+                            cert = ssl._ssl._test_decode_cert(tf_path)
+                        finally:
+                            try:
+                                os.remove(tf_path)
+                            except Exception:
+                                pass
+        except Exception:
+            pass
+
+    if not cert:
+        return None
 
     try:
-        sock.connect((target_ip, port))
-        with ctx.wrap_socket(sock, server_hostname=target) as ssock:
-            cert_bin = ssock.getpeercert(binary_form=True)
-            if not cert_bin:
-                return None
-            cert = ssock.getpeercert()
-
         issuer_str = "Unknown"
         subject_str = "Unknown"
         not_before = None
         not_after = None
         sans: list[str] = []
 
-        if cert:
-            issuer_parts = cert.get("issuer", ())
-            issuer_dict = {item[0][0]: item[0][1] for item in issuer_parts if item and item[0]}
-            issuer_str = issuer_dict.get("organizationName") or issuer_dict.get("commonName") or "Unknown Issuer"
+        issuer_parts = cert.get("issuer", ())
+        issuer_dict = {item[0][0]: item[0][1] for item in issuer_parts if item and item[0]}
+        issuer_str = issuer_dict.get("organizationName") or issuer_dict.get("commonName") or "Unknown Issuer"
 
-            subject_parts = cert.get("subject", ())
-            subject_dict = {item[0][0]: item[0][1] for item in subject_parts if item and item[0]}
-            subject_str = subject_dict.get("commonName") or "Unknown Subject"
+        subject_parts = cert.get("subject", ())
+        subject_dict = {item[0][0]: item[0][1] for item in subject_parts if item and item[0]}
+        subject_str = subject_dict.get("commonName") or "Unknown Subject"
 
-            not_before_str = cert.get("notBefore")
-            not_after_str = cert.get("notAfter")
-            if not_before_str:
-                try:
-                    not_before = datetime.strptime(not_before_str, "%b %d %H:%M:%S %Y %Z").replace(tzinfo=timezone.utc)
-                except Exception:
-                    pass
-            if not_after_str:
-                try:
-                    not_after = datetime.strptime(not_after_str, "%b %d %H:%M:%S %Y %Z").replace(tzinfo=timezone.utc)
-                except Exception:
-                    pass
+        not_before_str = cert.get("notBefore")
+        not_after_str = cert.get("notAfter")
+        if not_before_str:
+            try:
+                not_before = datetime.strptime(not_before_str, "%b %d %H:%M:%S %Y %Z").replace(tzinfo=timezone.utc)
+            except Exception:
+                pass
+        if not_after_str:
+            try:
+                not_after = datetime.strptime(not_after_str, "%b %d %H:%M:%S %Y %Z").replace(tzinfo=timezone.utc)
+            except Exception:
+                pass
 
-            for san_type, san_val in cert.get("subjectAltName", ()):
-                if san_type.lower() == "dns":
-                    sans.append(san_val.lower().strip())
+        for san_type, san_val in cert.get("subjectAltName", ()):
+            if san_type.lower() == "dns":
+                sans.append(san_val.lower().strip())
 
         covered = False
-        target_l = target.lower()
-        for name in sans + ([subject_str.lower()] if subject_str else []):
+        all_names = [n.lower() for n in sans]
+        if subject_str and subject_str != "Unknown Subject":
+            all_names.append(subject_str.lower())
+
+        for name in all_names:
             if name == target_l:
                 covered = True
                 break
-            if name.startswith("*.") and target_l.endswith(name[1:]) and target_l.count(".") == name.count("."):
+            if name.startswith("*.") and (target_l.endswith(name[1:]) or target_l == name[2:]):
                 covered = True
                 break
 
@@ -285,13 +314,8 @@ def inspect_tls_certificate(domain: str, port: int = 443) -> dict[str, Any] | No
             "is_self_signed": issuer_str == subject_str and issuer_str != "Unknown",
         }
     except Exception as e:
-        logger.debug("TLS inspection failed for %s: %s", target, safe_error_message(e))
+        logger.debug("TLS parsing failed for %s: %s", target, safe_error_message(e))
         return None
-    finally:
-        try:
-            sock.close()
-        except Exception:
-            pass
 
 
 # ─── 3. Live RDAP / WHOIS Registration ───

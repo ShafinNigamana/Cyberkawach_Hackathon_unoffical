@@ -31,8 +31,8 @@ from backend.models.evidence import (
 
 logger = logging.getLogger(__name__)
 
-# TRAI DLT header regex: 2 alpha prefix + optional hyphen/space + 6 alphanumeric header
-_TRAI_DLT_REGEX = re.compile(r"^[A-Za-z]{2}[-\s]?[A-Za-z0-9]{6}$")
+# TRAI DLT header regex: 2 alpha prefix + optional hyphen/space + 6 alphanumeric header + optional suffix (e.g. -G for government)
+_TRAI_DLT_REGEX = re.compile(r"^[A-Za-z]{2}[-\s]?[A-Za-z0-9]{6}(?:-[A-Za-z0-9]{1,2})?$", re.I)
 
 # Indian personal mobile phone numbers: starts with 6, 7, 8, or 9
 _INDIAN_PERSONAL_MOBILE_REGEX = re.compile(r"^(?:\+?91[\-\s]?)?[6-9]\d{9}$")
@@ -148,25 +148,39 @@ def analyze_sms_sender(sender: str, message_text: str = "") -> tuple[dict[str, A
     # 2. Check TRAI DLT Header Compliance
     is_dlt = bool(_TRAI_DLT_REGEX.match(clean_sender))
     analysis["is_dlt_compliant"] = is_dlt
+    is_gov = clean_sender.upper().endswith("-G") or clean_sender.upper().endswith("_G")
+    analysis["is_government"] = is_gov
 
     if is_dlt:
+        if is_gov:
+            finding = f"Sender header complies with TRAI DLT Government format ({clean_sender})"
+            desc = (
+                f"The sender '{clean_sender}' follows the standardized TRAI DLT header format with a '-G' suffix, "
+                "which is strictly allocated to authorized Government and statutory entities for official broadcasts."
+            )
+            interp = "Official Government broadcast header verified under TRAI telecom regulations."
+        else:
+            finding = f"Sender header complies with TRAI DLT alphanumeric format ({clean_sender})"
+            desc = f"The sender '{clean_sender}' follows the standardized 2-alpha circle prefix and 6-char entity format."
+            interp = "Message header matches legitimate registered telecom broadcast conventions."
+
         evidence_items.append(EvidenceItem(
             type=EvidenceType.SENDER_ANALYSIS,
             source="sender_analyzer",
             source_type="content",
             evidence_tier="OBSERVED",
             indicator=clean_sender,
-            finding=f"Sender header complies with TRAI DLT alphanumeric format ({clean_sender})",
-            description=f"The sender '{clean_sender}' follows the standardized 2-alpha circle prefix and 6-char entity format.",
+            finding=finding,
+            description=desc,
             observed_value=clean_sender,
-            interpretation="Message header matches legitimate registered telecom broadcast conventions.",
-            status=EvidenceStatus.OBSERVED,
+            interpretation=interp,
+            status=EvidenceStatus.CONFIRMED if is_gov else EvidenceStatus.OBSERVED,
             reliability=EvidenceReliability.DETERMINISTIC_FACT,
             risk_direction=RiskDirection.NEUTRAL,
             severity=EvidenceSeverity.INFORMATIONAL,
-            confidence=0.60,
+            confidence=0.90 if is_gov else 0.60,
             correlation_group="sender_authenticity",
-            raw_data={"sender": clean_sender, "dlt_format": True},
+            raw_data={"sender": clean_sender, "dlt_format": True, "is_government": is_gov},
         ))
 
     return analysis, evidence_items

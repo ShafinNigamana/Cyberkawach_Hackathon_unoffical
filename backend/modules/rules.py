@@ -38,7 +38,7 @@ _FRAUD_CATEGORIES: list[tuple[str, list[tuple[re.Pattern, float]]]] = [
         (re.compile(r'\b(?:parcel|package|delivery|courier|shipment|dispatch|customs|tracking)\b', re.I), 0.35),
         (re.compile(r'\b(?:delhivery|bluedart|dtdc|fedex|dhl|india\s*post|ecom\s*express|ekart|speed\s*post)\b', re.I), 0.4),
         (re.compile(r'\b(?:address|reschedule|failed\s*delivery|undelivered|return|hold|detained|wrong\s*address)\b', re.I), 0.35),
-        (re.compile(r'\b(?:fee|charge|duty|pay|tax|fine|rs\.?|₹|customs\s*fee)\b', re.I), 0.35),
+        (re.compile(r'\b(?:customs\s*fee|delivery\s*(?:fee|charge)|redelivery\s*(?:fee|charge)|parcel\s*(?:charge|duty|fee)|shipment\s*(?:fee|charge)|shipping\s*fee)\b', re.I), 0.35),
         (re.compile(r'(?:पार्सल|डिलीवरी|डाक|કુરિયર|ટપાલ|பார்சல்|டெலிவரி)', re.U), 0.35),
     ]),
     ("government", [
@@ -133,6 +133,14 @@ _FINANCIAL_PATTERNS: list[tuple[re.Pattern, str]] = [
     (re.compile(r'\b(?:google\s*pay|phonepe|paytm|bhim|upi|neft|rtgs|imps)\b', re.I), "payment_method_mention"),
 ]
 
+# Statutory awareness notices & official regulatory advisories (e.g., Telecommunications Act 2023 / DoT / TRAI)
+_STATUTORY_ADVISORY_PATTERNS = re.compile(
+    r'\b(?:advisory\s+as\s+per|telecommunications\s+act|punishable\s+offence\s+under|'
+    r'statutory\s+advisory|public\s+advisory|public\s+notice|'
+    r'under\s+the\s+telecommunications\s+act|acquiring\s+sims.*by\s+fraud)\b',
+    re.I,
+)
+
 
 def apply_rules(evidence: IncidentEvidence) -> IncidentEvidence:
     """
@@ -142,6 +150,27 @@ def apply_rules(evidence: IncidentEvidence) -> IncidentEvidence:
     text = evidence.message
     if not text:
         return evidence
+
+    # ─── Statutory / Regulatory Advisory Check ───
+    is_statutory = bool(_STATUTORY_ADVISORY_PATTERNS.search(text))
+    if is_statutory:
+        evidence.evidence.append(EvidenceItem(
+            type=EvidenceType.RULE_MATCH,
+            source="rules",
+            source_type="content",
+            evidence_tier="OBSERVED",
+            indicator="statutory_advisory",
+            finding="Statutory regulatory advisory context detected (Telecommunications Act / public notice)",
+            description="Message contains recognized statutory awareness text informing the public of legal provisions.",
+            observed_value="Statutory advisory context",
+            interpretation="Legal sanction disclosures in official regulatory notices describe the law and do not indicate scam pressure.",
+            status=EvidenceStatus.CONFIRMED,
+            reliability=EvidenceReliability.DETERMINISTIC_FACT,
+            severity=EvidenceSeverity.INFORMATIONAL,
+            risk_direction=RiskDirection.NEUTRAL,
+            correlation_group="statutory_notice",
+            raw_data={"is_statutory_advisory": True},
+        ))
 
     # ─── Category detection ───
     category_scores: dict[str, float] = {}
@@ -153,30 +182,34 @@ def apply_rules(evidence: IncidentEvidence) -> IncidentEvidence:
         if score > 0:
             category_scores[category] = min(score, 1.0)
 
-    # Pick top category
+    # Pick top category if confidence meets minimum threshold (>= 0.40)
     if category_scores:
         top_category = max(category_scores, key=category_scores.get)  # type: ignore[arg-type]
-        evidence.fraud_category = top_category
-        evidence.evidence.append(EvidenceItem(
-            type=EvidenceType.RULE_MATCH,
-            source="rules",
-            description=f"Message matches fraud category: {top_category} (score: {category_scores[top_category]:.2f})",
-            confidence=category_scores[top_category],
-            status=EvidenceStatus.OBSERVED,
-            reliability=EvidenceReliability.DETERMINISTIC_FACT,
-            severity=EvidenceSeverity.MEDIUM if category_scores[top_category] >= 0.5 else EvidenceSeverity.LOW,
-            risk_direction=RiskDirection.INCREASES_RISK,
-            observed_value=f"Lexical category match: {top_category} (score: {category_scores[top_category]:.2f})",
-            interpretation=f"Text vocabulary aligns with known {top_category} scam solicitation patterns",
-            correlation_group="rules_category",
-            raw_data={"category_scores": category_scores},
-        ))
+        if category_scores[top_category] >= 0.40:
+            evidence.fraud_category = top_category
+            evidence.evidence.append(EvidenceItem(
+                type=EvidenceType.RULE_MATCH,
+                source="rules",
+                description=f"Message matches fraud category: {top_category} (score: {category_scores[top_category]:.2f})",
+                confidence=category_scores[top_category],
+                status=EvidenceStatus.OBSERVED,
+                reliability=EvidenceReliability.DETERMINISTIC_FACT,
+                severity=EvidenceSeverity.MEDIUM if category_scores[top_category] >= 0.5 else EvidenceSeverity.LOW,
+                risk_direction=RiskDirection.INCREASES_RISK,
+                observed_value=f"Lexical category match: {top_category} (score: {category_scores[top_category]:.2f})",
+                interpretation=f"Text vocabulary aligns with known {top_category} scam solicitation patterns",
+                correlation_group="rules_category",
+                raw_data={"category_scores": category_scores},
+            ))
 
     # ─── Urgency signals ───
     urgency_hits = []
     for pattern, signal_type in _URGENCY_PATTERNS:
         match = pattern.search(text)
         if match:
+            # If statutory legal notice, do not misinterpret statutory sanctions ("penalty", "fine", "imprisonment") as psychological scam pressure
+            if is_statutory and signal_type == "threat_pressure":
+                continue
             urgency_hits.append((signal_type, match.group()))
 
     if urgency_hits:

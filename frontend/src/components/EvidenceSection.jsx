@@ -14,11 +14,28 @@ import {
 import { fetchIncidentOsint } from '../services/api';
 
 // Helper to determine source label and unified epistemic status
-function getProvenanceDetails(source, type, rawStatus, tier) {
+function getProvenanceDetails(itemOrSource, type, rawStatus, tier) {
+  let source = itemOrSource;
+  let riskDirection = '';
+  let finding = '';
+  let severity = '';
+
+  if (typeof itemOrSource === 'object' && itemOrSource !== null) {
+    source = itemOrSource.source;
+    type = itemOrSource.type;
+    rawStatus = itemOrSource.status;
+    tier = itemOrSource.evidence_tier;
+    riskDirection = itemOrSource.risk_direction || '';
+    finding = itemOrSource.finding || itemOrSource.description || '';
+    severity = itemOrSource.severity || '';
+  }
+
   const s = (source || '').toLowerCase();
   const t = (type || '').toLowerCase();
   const tierUpper = (tier || '').toUpperCase();
   const statusUpper = (rawStatus || '').toUpperCase();
+  const riskUpper = (riskDirection || '').toUpperCase();
+  const findingLower = (finding || '').toLowerCase();
 
   let sourceLabel = source || 'Forensic Module';
 
@@ -52,18 +69,52 @@ function getProvenanceDetails(source, type, rawStatus, tier) {
     sourceLabel = 'RDAP / WHOIS';
   }
 
-  // Tier badge
+  // Tier / status badge determination
   let tierBadge = {
     label: tierUpper || 'OBSERVED',
-    badgeClass: 'bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800',
+    badgeClass: 'bg-slate-100 text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700',
   };
 
-  if (tierUpper === 'DIRECT' || statusUpper === 'CONFIRMED') {
+  const isFeedUnavailable =
+    statusUpper === 'UNAVAILABLE' ||
+    tierUpper === 'UNAVAILABLE' ||
+    findingLower.includes('unavailable') ||
+    findingLower.includes('http 401') ||
+    findingLower.includes('http 403');
+
+  const isThreatMiss =
+    t === 'threat_intel_miss' ||
+    findingLower.includes('no malicious match') ||
+    findingLower.includes('clean/unlisted') ||
+    findingLower.includes('no record of malicious');
+
+  const isPositiveThreat =
+    t === 'threat_intel_hit' ||
+    (riskUpper === 'INCREASES_RISK' && (tierUpper === 'DIRECT' || statusUpper === 'CONFIRMED')) ||
+    findingLower.includes('confirmed active threat') ||
+    findingLower.includes('known malicious');
+
+  if (isFeedUnavailable) {
     tierBadge = {
-      label: tierUpper === 'DIRECT' ? 'DIRECT THREAT' : 'CONFIRMED FACT',
+      label: 'FEED UNAVAILABLE',
+      badgeClass: 'bg-slate-100 text-slate-600 border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700',
+    };
+  } else if (isThreatMiss) {
+    tierBadge = {
+      label: 'UNLISTED / CLEAN',
+      badgeClass: 'bg-slate-100 text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700',
+    };
+  } else if (isPositiveThreat) {
+    tierBadge = {
+      label: 'DIRECT THREAT',
       badgeClass: 'bg-red-100 text-red-800 border-red-300 dark:bg-red-950/80 dark:text-red-200 dark:border-red-800',
     };
-  } else if (tierUpper === 'DERIVED' || statusUpper === 'SUSPICIOUS') {
+  } else if (statusUpper === 'CONFIRMED') {
+    tierBadge = {
+      label: 'CONFIRMED FACT',
+      badgeClass: 'bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800',
+    };
+  } else if (tierUpper === 'DERIVED' || statusUpper === 'SUSPICIOUS' || riskUpper === 'INCREASES_RISK') {
     tierBadge = {
       label: tierUpper === 'DERIVED' ? 'DERIVED INTEL' : 'SUSPICIOUS SIGNAL',
       badgeClass: 'bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950/70 dark:text-amber-200 dark:border-amber-800',
@@ -195,7 +246,7 @@ export default function EvidenceSection({
       {/* Collapsed Accordion Evidence Rows */}
       <div className="space-y-2.5" role="region" aria-label="Evidence Items Accordion List">
         {allEvidence.map((item, idx) => {
-          const { sourceLabel, statusBadge } = getProvenanceDetails(item.source, item.type, item.status, item.evidence_tier);
+          const { sourceLabel, statusBadge } = getProvenanceDetails(item);
           const confidence = item.confidence != null ? `${Math.round(item.confidence * 100)}%` : '--';
           const isExpanded = expandedIndices.has(idx);
 
