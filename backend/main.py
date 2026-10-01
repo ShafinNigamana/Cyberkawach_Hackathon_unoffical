@@ -834,16 +834,26 @@ async def analyze_message(request: AnalyzeRequest, raw_request: Request):
     try:
         from backend.services.sender_analyzer import analyze_sms_sender, analyze_email_sender
         import re
-        sms_match = re.search(r'\b([A-Za-z]{2}[-\s]?[A-Za-z0-9]{6}(?:-[A-Za-z0-9]{1,2})?)\b', evidence.message)
+        # TRAI DLT headers strictly require a 2-char circle/telco prefix separated by hyphen/space followed by 6 alphanumeric chars
+        sms_match = re.search(r'\b([A-Za-z]{2}[-\s][A-Za-z0-9]{6}(?:-[A-Za-z0-9]{1,2})?)\b', evidence.message)
         phone_match = re.search(r'(?:(?:\+?91[\-\s]?)?[6-9]\d{9})\b', evidence.message)
+        
+        target_senders = []
+        if request.sender and getattr(request.sender, 'phone', None):
+            target_senders.append(request.sender.phone)
+        if phone_match:
+            target_senders.append(phone_match.group(0))
         if sms_match:
-            _, sms_items = analyze_sms_sender(sms_match.group(1), evidence.message)
-            for item in sms_items:
-                evidence.evidence.append(item)
-        elif phone_match:
-            _, sms_items = analyze_sms_sender(phone_match.group(0), evidence.message)
-            for item in sms_items:
-                evidence.evidence.append(item)
+            target_senders.append(sms_match.group(1))
+
+        seen_senders = set()
+        for s in target_senders:
+            clean_s = s.strip()
+            if clean_s and clean_s not in seen_senders:
+                seen_senders.add(clean_s)
+                _, sms_items = analyze_sms_sender(clean_s, evidence.message)
+                for item in sms_items:
+                    evidence.evidence.append(item)
 
         if "from:" in evidence.message.lower():
             from_m = re.search(r'from:\s*([^\r\n]+)', evidence.message, re.IGNORECASE)
@@ -861,6 +871,82 @@ async def analyze_message(request: AnalyzeRequest, raw_request: Request):
     except Exception as e:
         modules_failed.append("sender_analyzer")
         evidence.errors.append(f"sender_analyzer: {safe_error_message(e)}")
+
+    # Stage 4c: Financial & Banking OSINT
+    try:
+        from backend.services.financial_osint import (
+            extract_ifsc_codes,
+            extract_upi_vpas,
+            lookup_ifsc_razorpay,
+            analyze_upi_vpa,
+        )
+        found_ifscs = extract_ifsc_codes(evidence.message)
+        for code in found_ifscs[:3]:
+            ifsc_data = await lookup_ifsc_razorpay(code)
+            if ifsc_data.get("valid"):
+                bank = ifsc_data.get("bank", "Unknown Bank")
+                branch = ifsc_data.get("branch", "Main Branch")
+                district = ifsc_data.get("district", "")
+                state = ifsc_data.get("state", "")
+                location = f"{branch}, {district}" if district else branch
+                
+                # Check for bank entity mismatch if message claimed a specific brand
+                claimed_entity = evidence.brands[0].brand if evidence.brands else None
+                mismatch_finding = ""
+                if claimed_entity and claimed_entity.lower() not in bank.lower() and bank.lower() not in claimed_entity.lower():
+                    mismatch_finding = f" [ROUTING MISMATCH: message claimed '{claimed_entity}' but payment routes to '{bank}']"
+                
+                evidence.evidence.append(EvidenceItem(
+                    type=EvidenceType.FINANCIAL_ANALYSIS,
+                    source="financial_osint",
+                    source_type="content",
+                    evidence_tier="OBSERVED",
+                    indicator=code,
+                    finding=f"Verified Indian Bank IFSC Code: {bank} ({location}){mismatch_finding}",
+                    description=f"Payment routing code '{code}' verified as {bank} ({location}). State: {state}.",
+                    observed_value=f"IFSC: {code} -> {bank} ({branch})",
+                    interpretation=f"Direct banking payment routing destination identified via RBI / Razorpay registry.{mismatch_finding}",
+                    status=EvidenceStatus.SUSPICIOUS if mismatch_finding else EvidenceStatus.CONFIRMED,
+                    reliability=EvidenceReliability.DETERMINISTIC_FACT,
+                    risk_direction=RiskDirection.INCREASES_RISK if mismatch_finding else RiskDirection.NEUTRAL,
+                    severity=EvidenceSeverity.HIGH if mismatch_finding else EvidenceSeverity.INFO,
+                    confidence=0.95,
+                    correlation_group="financial_routing",
+                    raw_data=ifsc_data,
+                ))
+
+        found_vpas = extract_upi_vpas(evidence.message)
+        for vpa in found_vpas[:3]:
+            vpa_analysis = analyze_upi_vpa(vpa)
+            if vpa_analysis.get("deceptive"):
+                reason = vpa_analysis.get("reason", "Deceptive institutional claim on consumer UPI handle")
+                evidence.evidence.append(EvidenceItem(
+                    type=EvidenceType.FINANCIAL_ANALYSIS,
+                    source="financial_osint",
+                    source_type="content",
+                    evidence_tier="OBSERVED",
+                    indicator=vpa,
+                    finding=f"Deceptive consumer UPI VPA handle ({vpa}) posing as official authority/service",
+                    description=(
+                        f"The payment handle '{vpa}' incorporates institutional keywords "
+                        f"('{vpa_analysis.get('username')}') on a consumer payment provider ('@{vpa_analysis.get('handle')}'). "
+                        "Legitimate statutory bodies and major utility providers never collect official fees or penalties "
+                        "on personal Google Pay, PhonePe, or consumer UPI handles."
+                    ),
+                    observed_value=vpa,
+                    interpretation="Consumer UPI account deceptively named to trick citizens into transferring funds.",
+                    status=EvidenceStatus.CONFIRMED,
+                    reliability=EvidenceReliability.DETERMINISTIC_FACT,
+                    risk_direction=RiskDirection.INCREASES_RISK,
+                    severity=EvidenceSeverity.CRITICAL,
+                    confidence=0.92,
+                    correlation_group="payment_diversion",
+                    raw_data=vpa_analysis,
+                ))
+        modules_executed.append("financial_osint")
+    except Exception as e:
+        modules_failed.append("financial_osint")
+        evidence.errors.append(f"financial_osint: {safe_error_message(e)}")
 
     # Stage 5: Threat intelligence
     try:

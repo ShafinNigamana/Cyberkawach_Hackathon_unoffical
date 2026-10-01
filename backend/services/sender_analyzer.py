@@ -29,6 +29,10 @@ from backend.models.evidence import (
     RiskDirection,
 )
 
+import phonenumbers
+from phonenumbers import carrier as phone_carrier
+from phonenumbers import geocoder as phone_geocoder
+
 logger = logging.getLogger(__name__)
 
 # TRAI DLT header regex: 2 alpha prefix + optional hyphen/space + 6 alphanumeric header + optional suffix (e.g. -G for government)
@@ -36,6 +40,38 @@ _TRAI_DLT_REGEX = re.compile(r"^[A-Za-z]{2}[-\s]?[A-Za-z0-9]{6}(?:-[A-Za-z0-9]{1
 
 # Indian personal mobile phone numbers: starts with 6, 7, 8, or 9
 _INDIAN_PERSONAL_MOBILE_REGEX = re.compile(r"^(?:\+?91[\-\s]?)?[6-9]\d{9}$")
+
+
+def enrich_phone_number(phone_str: str) -> dict[str, Any]:
+    """
+    Enrich phone number using Google libphonenumber (carrier, telecom circle, line type).
+    """
+    if not phone_str:
+        return {"valid": False, "raw": phone_str}
+    try:
+        parsed = phonenumbers.parse(phone_str, "IN")
+        if not phonenumbers.is_valid_number(parsed):
+            return {"valid": False, "raw": phone_str}
+
+        carrier_name = phone_carrier.name_for_number(parsed, "en")
+        location = phone_geocoder.description_for_number(parsed, "en")
+        num_type = phonenumbers.number_type(parsed)
+        is_voip = (num_type == phonenumbers.PhoneNumberType.VOIP)
+        is_mobile = (num_type in (phonenumbers.PhoneNumberType.MOBILE, phonenumbers.PhoneNumberType.FIXED_LINE_OR_MOBILE))
+        formatted = phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.NATIONAL)
+
+        return {
+            "valid": True,
+            "raw": phone_str,
+            "formatted": formatted,
+            "carrier": carrier_name or "Indian Telecom Operator",
+            "circle_state": location or "India",
+            "is_voip": is_voip,
+            "is_mobile": is_mobile,
+            "number_type": str(num_type),
+        }
+    except Exception as e:
+        return {"valid": False, "raw": phone_str, "error": str(e)}
 
 _FREE_WEBMAIL_DOMAINS = frozenset({
     "gmail.com", "yahoo.com", "yahoo.co.in", "hotmail.com", "outlook.com",
@@ -81,6 +117,8 @@ def analyze_sms_sender(sender: str, message_text: str = "") -> tuple[dict[str, A
         "is_personal_mobile": False,
         "is_spoofed_mask": False,
         "claimed_entity": None,
+        "telecom_carrier": None,
+        "telecom_circle": None,
     }
 
     if not clean_sender:
@@ -98,6 +136,13 @@ def analyze_sms_sender(sender: str, message_text: str = "") -> tuple[dict[str, A
     is_mobile = bool(_INDIAN_PERSONAL_MOBILE_REGEX.match(clean_sender.replace(" ", "").replace("-", "")))
     analysis["is_personal_mobile"] = is_mobile
 
+    carrier_desc = ""
+    phone_info = enrich_phone_number(clean_sender)
+    if phone_info.get("valid"):
+        analysis["telecom_carrier"] = phone_info.get("carrier")
+        analysis["telecom_circle"] = phone_info.get("circle_state")
+        carrier_desc = f" [{phone_info.get('carrier')}, {phone_info.get('circle_state')}]"
+
     if is_mobile and claimed:
         # Severe anomaly: Bank or Govt alert sent from a personal mobile phone
         evidence_items.append(EvidenceItem(
@@ -106,14 +151,14 @@ def analyze_sms_sender(sender: str, message_text: str = "") -> tuple[dict[str, A
             source_type="content",
             evidence_tier="OBSERVED",
             indicator=clean_sender,
-            finding=f"Claimed {claimed} message sent from a personal 10-digit mobile number ({clean_sender})",
+            finding=f"Claimed {claimed} message sent from a personal 10-digit mobile number ({clean_sender}{carrier_desc})",
             description=(
                 f"The message references '{claimed}', but the originating sender is a personal 10-digit "
-                f"mobile phone number ({clean_sender}). Legitimate Indian financial institutions and government "
+                f"mobile phone number ({clean_sender}{carrier_desc}). Legitimate Indian financial institutions and government "
                 "authorities NEVER send account or KYC alerts from personal mobile phones; they are strictly required "
                 "by TRAI to use registered 6-character alphanumeric DLT headers."
             ),
-            observed_value=f"Personal mobile: {clean_sender}, Claim: {claimed}",
+            observed_value=f"Personal mobile: {clean_sender}{carrier_desc}, Claim: {claimed}",
             interpretation="Personal phone number impersonating an institution — definitive hallmark of smishing scams.",
             status=EvidenceStatus.CONFIRMED,
             reliability=EvidenceReliability.DETERMINISTIC_FACT,
@@ -121,7 +166,27 @@ def analyze_sms_sender(sender: str, message_text: str = "") -> tuple[dict[str, A
             severity=EvidenceSeverity.HIGH,
             confidence=0.92,
             correlation_group="sender_authenticity",
-            raw_data={"sender": clean_sender, "claimed_entity": claimed, "type": "personal_mobile_impersonation"},
+            raw_data={"sender": clean_sender, "claimed_entity": claimed, "type": "personal_mobile_impersonation", "telecom": phone_info},
+        ))
+    elif phone_info.get("is_voip") and claimed:
+        # VoIP line impersonating official body
+        evidence_items.append(EvidenceItem(
+            type=EvidenceType.SENDER_ANALYSIS,
+            source="sender_analyzer",
+            source_type="content",
+            evidence_tier="OBSERVED",
+            indicator=clean_sender,
+            finding=f"VoIP virtual line ({clean_sender}) impersonating {claimed}",
+            description=f"Message or call from virtual VoIP number claiming to represent statutory entity '{claimed}'.",
+            observed_value=f"VoIP Number: {clean_sender}",
+            interpretation="Virtual VoIP lines are commonly used by criminal syndicates in Digital Arrest and extortion scams.",
+            status=EvidenceStatus.CONFIRMED,
+            reliability=EvidenceReliability.DETERMINISTIC_FACT,
+            risk_direction=RiskDirection.INCREASES_RISK,
+            severity=EvidenceSeverity.CRITICAL,
+            confidence=0.95,
+            correlation_group="sender_authenticity",
+            raw_data=phone_info,
         ))
     elif is_mobile:
         # Check if text contains high-urgency financial or credential demands
@@ -132,9 +197,9 @@ def analyze_sms_sender(sender: str, message_text: str = "") -> tuple[dict[str, A
                 source_type="content",
                 evidence_tier="OBSERVED",
                 indicator=clean_sender,
-                finding=f"Urgent operational or KYC alert delivered via personal mobile phone ({clean_sender})",
-                description=f"Message requesting urgent action or verification was received from personal number '{clean_sender}'.",
-                observed_value=clean_sender,
+                finding=f"Urgent operational or KYC alert delivered via personal mobile phone ({clean_sender}{carrier_desc})",
+                description=f"Message requesting urgent action or verification was received from personal number '{clean_sender}{carrier_desc}'.",
+                observed_value=f"{clean_sender}{carrier_desc}",
                 interpretation="Urgent operational notices sent from personal numbers represent unverified, high-risk communication.",
                 status=EvidenceStatus.SUSPICIOUS,
                 reliability=EvidenceReliability.DETERMINISTIC_FACT,
@@ -142,7 +207,7 @@ def analyze_sms_sender(sender: str, message_text: str = "") -> tuple[dict[str, A
                 severity=EvidenceSeverity.MEDIUM,
                 confidence=0.75,
                 correlation_group="sender_authenticity",
-                raw_data={"sender": clean_sender},
+                raw_data={"sender": clean_sender, "telecom": phone_info},
             ))
 
     # 2. Check TRAI DLT Header Compliance

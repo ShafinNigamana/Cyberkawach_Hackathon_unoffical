@@ -45,8 +45,10 @@ function getProvenanceDetails(itemOrSource, type, rawStatus, tier) {
     sourceLabel = 'TLS Certificate';
   } else if (s.includes('website') || t.includes('website') || s.includes('sandbox')) {
     sourceLabel = 'Live Website Scanner';
-  } else if (s.includes('sender') || t.includes('sender')) {
-    sourceLabel = 'Sender Identity';
+  } else if (s.includes('financial') || s.includes('ifsc') || s.includes('upi') || s.includes('razorpay')) {
+    sourceLabel = 'Banking & UPI OSINT';
+  } else if (s.includes('sender') || t.includes('sender') || s.includes('telecom') || s.includes('carrier') || s.includes('phonenumber')) {
+    sourceLabel = 'Sender & Telecom OSINT';
   } else if (s.includes('urlhaus')) {
     sourceLabel = 'URLhaus Feed';
   } else if (s.includes('openphish')) {

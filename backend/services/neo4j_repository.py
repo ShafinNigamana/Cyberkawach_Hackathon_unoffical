@@ -194,10 +194,10 @@ class Neo4jRepository:
                         self._driver = neo4j.GraphDatabase.driver(
                             candidate_uri,
                             auth=auth,
-                            max_connection_lifetime=60,
-                            liveness_check_timeout=1.0,
+                            max_connection_lifetime=120,
+                            liveness_check_timeout=2.0,
                             max_connection_pool_size=50,
-                            connection_acquisition_timeout=30.0,
+                            connection_acquisition_timeout=5.0,
                         )
                         self._driver.verify_connectivity()
                         logger.info("Connected to Neo4j Aura at %s", candidate_uri)
