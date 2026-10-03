@@ -136,9 +136,40 @@ async def inspect_website(url: str) -> tuple[dict[str, Any], list[EvidenceItem]]
         logger.debug("Website inspection failed for %s: %s", url, safe_error_message(e))
         return analysis, evidence_items
 
+    # Delegate DOM & redirect behavior analysis to modular analyzer
+    dom_analysis, dom_items = analyze_html_content(final_url, response_body, redirect_chain, initial_domain)
+    analysis.update(dom_analysis)
+    evidence_items.extend(dom_items)
+    return analysis, evidence_items
+
+
+def analyze_html_content(
+    final_url: str,
+    response_body: str,
+    redirect_chain: list[str] | None = None,
+    initial_domain: str | None = None,
+) -> tuple[dict[str, Any], list[EvidenceItem]]:
+    """
+    Modular analysis of HTML DOM and redirect behavior for phishing signatures:
+    - Cross-domain redirects
+    - Credential entry fields
+    - Cross-domain form destinations
+    - Telegram / Discord exfiltration webhooks
+    - Anti-bot / cloaking evasion scripts
+    """
+    analysis: dict[str, Any] = {
+        "title": None,
+        "has_password_field": False,
+        "credential_fields": [],
+        "cross_domain_forms": [],
+    }
+    evidence_items: list[EvidenceItem] = []
+    redirect_chain = redirect_chain or [final_url]
+
     # ─── 1. Redirect Chain Analysis ───
     final_parsed = urlparse(final_url)
     final_domain = (final_parsed.hostname or "").lower()
+    initial_domain = initial_domain or final_domain
 
     if len(redirect_chain) > 1:
         if initial_domain != final_domain:
@@ -230,5 +261,60 @@ async def inspect_website(url: str) -> tuple[dict[str, Any], list[EvidenceItem]]
                     raw_data={"form_action": action_val, "page_host": final_domain, "action_host": action_host},
                 ))
                 break
+
+    # ─── 5. Telegram / Discord Exfiltration Drop Trap ───
+    exfil_trap_regex = re.compile(
+        r'(api\.telegram\.org/bot[0-9a-zA-Z:_-]+|discord(?:app)?\.com/api/webhooks/[0-9]+/[0-9a-zA-Z_-]+)',
+        re.IGNORECASE,
+    )
+    exfil_match = exfil_trap_regex.search(response_body)
+    if exfil_match:
+        evidence_items.append(EvidenceItem(
+            type=EvidenceType.WEBSITE_BEHAVIOR,
+            source="website_analyzer",
+            source_type="sandbox",
+            evidence_tier="OBSERVED",
+            indicator=final_url,
+            finding="Direct credential exfiltration webhook endpoint observed in page source",
+            description="Page contains direct exfiltration API call pointing to Telegram Bot or Discord Webhook drop service.",
+            observed_value=exfil_match.group(0)[:60] + "...",
+            interpretation="Confirmed active credential exfiltration infrastructure used to stream stolen credentials directly to scam operators.",
+            status=EvidenceStatus.CONFIRMED,
+            reliability=EvidenceReliability.DETERMINISTIC_FACT,
+            risk_direction=RiskDirection.INCREASES_RISK,
+            severity=EvidenceSeverity.CRITICAL,
+            confidence=0.98,
+            correlation_group="credential_exfiltration",
+            raw_data={"exfiltration_target": exfil_match.group(0)[:80]},
+        ))
+
+    # ─── 6. Anti-Analysis & Bot Cloaking Script Detection ───
+    cloaking_patterns = [
+        "navigator.webdriver",
+        "devtools-detector",
+        "debugger;",
+        "window.callPhantom",
+        "_phantom",
+    ]
+    detected_cloaking = [p for p in cloaking_patterns if p in response_body]
+    if detected_cloaking:
+        evidence_items.append(EvidenceItem(
+            type=EvidenceType.WEBSITE_BEHAVIOR,
+            source="website_analyzer",
+            source_type="sandbox",
+            evidence_tier="OBSERVED",
+            indicator=final_url,
+            finding=f"Anti-analysis / crawler evasion logic detected ({', '.join(detected_cloaking)})",
+            description=f"Page script inspects runtime environment for automated scanners ({', '.join(detected_cloaking)}).",
+            observed_value=", ".join(detected_cloaking),
+            interpretation="Anti-bot / crawler cloaking scripts are deployed by phishing kits to conceal malicious DOM from automated security analyzers.",
+            status=EvidenceStatus.SUSPICIOUS,
+            reliability=EvidenceReliability.DETERMINISTIC_FACT,
+            risk_direction=RiskDirection.INCREASES_RISK,
+            severity=EvidenceSeverity.HIGH,
+            confidence=0.85,
+            correlation_group="anti_analysis_cloaking",
+            raw_data={"cloaking_signatures": detected_cloaking},
+        ))
 
     return analysis, evidence_items

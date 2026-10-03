@@ -142,24 +142,37 @@ def detect_script_language(text: str) -> str:
     return "en"
 
 
+from backend.modules.adversarial_normalizer import normalize_adversarial_text
+
+
 def extract_iocs(evidence: IncidentEvidence, additional_urls: list[str] | None = None) -> IncidentEvidence:
     """
     Main ingestion entry point.
     Normalizes text, extracts URLs, emails, phones, IPs, UPI IDs.
     Populates evidence.urls, evidence.iocs, and adds IOC evidence items.
     """
-    # Normalize
-    normalized = _normalize_text(evidence.message)
-    evidence.message = normalized
+    # Run Adversarial Obfuscation Normalizer (Homoglyphs, Zero-Width, Leetspeak) directly on raw text
+    adv_text, adv_meta, adv_items = normalize_adversarial_text(evidence.message or "")
+    evidence.message = adv_text
+    if adv_items:
+        evidence.evidence.extend(adv_items)
+
+    # Basic text normalization for remaining whitespace/separators
+    base_normalized = _normalize_text(adv_text)
+    evidence.message = base_normalized
 
     # Auto-detect native script language if not already specified as non-English
     if evidence.language in ("en", ""):
-        script_lang = detect_script_language(normalized)
+        script_lang = detect_script_language(adv_text)
         if script_lang != "en":
             evidence.language = script_lang
 
-    # Extract URLs from message
-    found_urls = _extract_urls(normalized)
+    # Extract URLs from both normalized and raw text to ensure no evasion bypasses extraction
+    found_urls = _extract_urls(adv_text)
+    if base_normalized != adv_text:
+        for u in _extract_urls(base_normalized):
+            if u not in found_urls:
+                found_urls.append(u)
 
     # Add any additional user-supplied URLs
     if additional_urls:
@@ -172,6 +185,7 @@ def extract_iocs(evidence: IncidentEvidence, additional_urls: list[str] | None =
     evidence.urls = [_url_to_signal(u) for u in found_urls]
 
     # Extract other IOCs with fast pre-filters to prevent ReDoS
+    normalized = adv_text
     emails = _EMAIL_PATTERN.findall(normalized) if '@' in normalized else []
     phones = [p.strip() for p in _PHONE_PATTERN.findall(normalized) if len(p.strip()) >= 7]
     ips = _IP_PATTERN.findall(normalized) if any(c.isdigit() for c in normalized) else []
