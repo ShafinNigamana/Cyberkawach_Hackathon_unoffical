@@ -833,18 +833,33 @@ async def analyze_message(request: AnalyzeRequest, raw_request: Request):
     # Stage 4b: Sender & Channel Analysis
     try:
         from backend.services.sender_analyzer import analyze_sms_sender, analyze_email_sender
-        import re
-        # TRAI DLT headers strictly require a 2-char circle/telco prefix separated by hyphen/space followed by 6 alphanumeric chars
-        sms_match = re.search(r'\b([A-Za-z]{2}[-\s][A-Za-z0-9]{6}(?:-[A-Za-z0-9]{1,2})?)\b', evidence.message)
-        phone_match = re.search(r'(?:(?:\+?91[\-\s]?)?[6-9]\d{9})\b', evidence.message)
-        
         target_senders = []
-        if request.sender and getattr(request.sender, 'phone', None):
-            target_senders.append(request.sender.phone)
-        if phone_match:
-            target_senders.append(phone_match.group(0))
-        if sms_match:
-            target_senders.append(sms_match.group(1))
+        if request.sender:
+            if getattr(request.sender, 'phone', None):
+                target_senders.append(request.sender.phone)
+            if getattr(request.sender, 'sender_id', None):
+                target_senders.append(request.sender.sender_id)
+
+        # Check for explicit sender prefixes in SMS text (e.g. "From: +919821839201" or "Sender: VK-SBIINB")
+        header_prefix_match = re.search(
+            r'(?:^|\n)\s*(?:from|sender|sent by|msg from)\s*[:\-]\s*([A-Za-z0-9\+\-\s]{3,20})\b',
+            evidence.message,
+            re.IGNORECASE,
+        )
+        if header_prefix_match:
+            cand = header_prefix_match.group(1).strip()
+            if cand and not any(cand.lower().startswith(x) for x in ("upi", "ref", "acc", "txn", "order", "dr")):
+                target_senders.append(cand)
+
+        # TRAI DLT alphanumeric headers (e.g. 'VK-SBIINB', 'AD-HDFCBK')
+        sms_dlt_match = re.search(r'\b([A-Za-z]{2}[-\s][A-Za-z0-9]{6}(?:-[A-Za-z0-9]{1,2})?)\b', evidence.message)
+        if sms_dlt_match:
+            target_senders.append(sms_dlt_match.group(1))
+
+        # Standalone phone at the very beginning of text (e.g. "+919821839201: Dear customer")
+        lead_phone_match = re.search(r'^\s*(?:\+?91[\-\s]?)?([6-9]\d{9})\s*[:\-]', evidence.message)
+        if lead_phone_match:
+            target_senders.append(lead_phone_match.group(1))
 
         seen_senders = set()
         for s in target_senders:
