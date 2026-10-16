@@ -35,16 +35,11 @@ export default function Sidebar({
   onSelectPreset,
   lang = 'en'
 }) {
-  const [benchmarksOpen, setBenchmarksOpen] = useState(false);
   const activeModulesCount = healthData?.modules 
     ? Object.values(healthData.modules).filter(Boolean).length 
     : 11;
 
   const handleNav = (flow) => {
-    if (!currentUser && flow !== 'home') {
-      onOpenAuthModal(`Citizen authentication required to access the ${flow} triage engine.`, 'login', flow);
-      return;
-    }
     onSelectFlow(flow);
     if (isMobileOpen && onCloseMobile) {
       onCloseMobile();
@@ -71,7 +66,7 @@ export default function Sidebar({
 
       {/* Main Command Center Sidebar Container */}
       <aside 
-        className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col bg-white/95 dark:bg-night-900/95 backdrop-blur-2xl border-r border-slate-200/90 dark:border-night-border transition-all duration-300 ease-in-out select-none shadow-xl lg:shadow-none ${
+        className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col bg-white dark:bg-night-900 border-r border-slate-200/90 dark:border-night-border transition-all duration-300 ease-in-out select-none shadow-xl lg:shadow-none ${
           isMobileOpen ? 'translate-x-0 w-72' : '-translate-x-full lg:translate-x-0'
         } ${isCollapsed ? 'lg:w-[76px]' : 'lg:w-[268px]'}`}
         aria-label="Command Center Sidebar"
@@ -110,7 +105,7 @@ export default function Sidebar({
           <button
             type="button"
             onClick={onToggleCollapse}
-            className="hidden lg:flex items-center justify-center w-7 h-7 rounded-lg text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-night-800 transition-colors cursor-pointer"
+            className="hidden lg:flex items-center justify-center w-7 h-7 rounded-lg text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-night-800 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
             title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
             aria-label="Toggle Sidebar width"
           >
@@ -138,17 +133,17 @@ export default function Sidebar({
                   key={item.id}
                   type="button"
                   onClick={() => handleNav(item.id)}
-                  className={`w-full group flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer text-left relative ${
+                  className={`w-full group flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer text-left relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${
                     isActive
-                      ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-luxury-glow'
-                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100/90 dark:hover:bg-night-800 hover:text-slate-950 dark:hover:text-white'
+                      ? 'bg-slate-900 text-white dark:bg-gradient-to-r dark:from-indigo-600 dark:to-violet-600 shadow-sm'
+                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-night-800 hover:text-slate-950 dark:hover:text-white'
                   }`}
                   title={item.label}
                 >
                   <div className={`p-1.5 rounded-lg transition-colors flex-shrink-0 ${
                     isActive 
                       ? 'bg-white/20 text-white' 
-                      : 'bg-slate-100 dark:bg-night-800/80 text-slate-500 dark:text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-violet-400'
+                      : 'bg-slate-100 dark:bg-night-800 text-slate-500 dark:text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-violet-400'
                   }`}>
                     <Icon className="w-4 h-4" />
                   </div>
@@ -158,7 +153,7 @@ export default function Sidebar({
                       <div className="flex flex-col">
                         <span className="truncate">{item.label}</span>
                         <span className={`text-[10px] font-normal truncate ${
-                          isActive ? 'text-indigo-100' : 'text-slate-400 dark:text-slate-500'
+                          isActive ? 'text-slate-200 dark:text-indigo-100' : 'text-slate-400 dark:text-slate-500'
                         }`}>
                           {item.desc}
                         </span>
@@ -171,7 +166,7 @@ export default function Sidebar({
 
                   {/* Active Indicator Bar on collapsed view */}
                   {isCollapsed && !isMobileOpen && isActive && (
-                    <div className="absolute right-1 top-2.5 bottom-2.5 w-1 rounded-full bg-violet-400" />
+                    <div className="absolute right-1 top-2.5 bottom-2.5 w-1 rounded-full bg-indigo-500 dark:bg-violet-400" />
                   )}
                 </button>
               );
@@ -199,7 +194,7 @@ export default function Sidebar({
                         if (isMobileOpen && onCloseMobile) onCloseMobile();
                       }
                     }}
-                    className="w-full text-left px-3 py-1.5 rounded-lg text-[11px] text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-violet-300 hover:bg-slate-100 dark:hover:bg-night-800 transition-colors flex items-center justify-between group cursor-pointer"
+                    className="w-full text-left px-3 py-1.5 rounded-lg text-[11px] text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-violet-300 hover:bg-slate-100 dark:hover:bg-night-800 transition-colors flex items-center justify-between group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
                     title={preset.title}
                   >
                     <span className="truncate font-medium">{preset.title}</span>
@@ -222,7 +217,7 @@ export default function Sidebar({
                 href="/verification.html"
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center justify-between px-3 py-2 rounded-xl text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-night-800 hover:text-indigo-600 dark:hover:text-violet-300 transition-colors border border-dashed border-slate-200 dark:border-night-border"
+                className="flex items-center justify-between px-3 py-2 rounded-xl text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-night-800 hover:text-indigo-600 dark:hover:text-violet-300 transition-colors border border-dashed border-slate-200 dark:border-night-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
               >
                 <div className="flex items-center space-x-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
@@ -235,13 +230,13 @@ export default function Sidebar({
         </div>
 
         {/* Footer Station: Citizen Account & System Telemetry */}
-        <div className="p-3 border-t border-slate-200/90 dark:border-night-border flex flex-col space-y-2 bg-slate-50/60 dark:bg-night-950/60 flex-shrink-0">
+        <div className="p-3 border-t border-slate-200/90 dark:border-night-border flex flex-col space-y-2 bg-slate-50/80 dark:bg-night-950/80 flex-shrink-0">
           {/* Citizen Auth Pill */}
           {!currentUser ? (
             <button
               type="button"
               onClick={() => onOpenAuthModal('Please sign in or register to access verified forensic threat triage.')}
-              className={`flex items-center rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-gradient-to-r dark:from-indigo-600 dark:to-violet-600 text-white text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer ${
+              className={`flex items-center rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-gradient-to-r dark:from-indigo-600 dark:to-violet-600 text-white text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${
                 isCollapsed && !isMobileOpen ? 'justify-center p-2.5' : 'justify-between px-3 py-2'
               }`}
               title="Citizen Sign In"
@@ -260,7 +255,7 @@ export default function Sidebar({
             <button
               type="button"
               onClick={() => onOpenAuthModal(null, 'history')}
-              className={`flex items-center rounded-xl border border-slate-200 dark:border-night-border bg-white dark:bg-night-850 hover:border-violet-500/50 text-slate-800 dark:text-slate-200 text-xs font-semibold transition-all cursor-pointer shadow-2xs ${
+              className={`flex items-center rounded-xl border border-slate-200 dark:border-night-border bg-white dark:bg-night-850 hover:border-violet-500/50 text-slate-800 dark:text-slate-200 text-xs font-semibold transition-all cursor-pointer shadow-2xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${
                 isCollapsed && !isMobileOpen ? 'justify-center p-2.5' : 'justify-between px-3 py-2'
               }`}
               title="Citizen Profile & My Past Checks"

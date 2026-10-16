@@ -63,24 +63,29 @@ export default function LanguageSelectionModal({ isOpen, currentLang, onSelectLa
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in">
-      <div className="bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh]">
-        {/* Modal Header with Shield Motif */}
-        <div className="bg-gradient-to-r from-blue-950/80 via-slate-900 to-indigo-950/80 p-6 border-b border-slate-800 flex items-start justify-between">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Select Official Language"
+    >
+      <div className="bg-white dark:bg-night-900 border border-slate-200 dark:border-night-border rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh]">
+        {/* Modal Header */}
+        <div className="bg-slate-50 dark:bg-night-950 p-6 border-b border-slate-200 dark:border-night-border flex items-start justify-between">
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/20">
+            <div className="w-12 h-12 rounded-xl bg-indigo-600 dark:bg-indigo-500/20 text-white dark:text-indigo-400 border border-transparent dark:border-indigo-500/30 flex items-center justify-center shadow-lg shadow-indigo-500/20">
               <Globe className="w-6 h-6" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-cyan-400 bg-cyan-950/80 border border-cyan-800/60 px-2 py-0.5 rounded">
-                  IRCTC-Style Citizen Gateway
+                <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/80 border border-indigo-200 dark:border-indigo-800/60 px-2 py-0.5 rounded">
+                  Citizen Language Gateway
                 </span>
               </div>
-              <h2 className="text-xl font-bold text-white mt-1">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white mt-1">
                 {t('langSelectTitle')}
               </h2>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 {t('langSelectSub')}
               </p>
             </div>
@@ -89,7 +94,7 @@ export default function LanguageSelectionModal({ isOpen, currentLang, onSelectLa
           {canClose && (
             <button
               onClick={onClose}
-              className="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition-colors"
+              className="text-slate-400 hover:text-slate-700 dark:hover:text-white p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-night-800 transition-colors cursor-pointer"
               aria-label="Close"
             >
               <X className="w-5 h-5" />
@@ -98,7 +103,7 @@ export default function LanguageSelectionModal({ isOpen, currentLang, onSelectLa
         </div>
 
         {/* Language Selection Grid */}
-        <div className="p-6 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+        <div className="p-6 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-3.5 bg-slate-50/50 dark:bg-night-900/50">
           {LANGUAGES.map((lang) => {
             const isChosen = selected === lang.code;
             return (
@@ -106,37 +111,37 @@ export default function LanguageSelectionModal({ isOpen, currentLang, onSelectLa
                 key={lang.code}
                 type="button"
                 onClick={() => setSelected(lang.code)}
-                className={`relative flex flex-col text-left p-4 rounded-xl border transition-all duration-150 ${
+                className={`relative flex flex-col text-left p-4 rounded-xl border transition-all duration-150 cursor-pointer ${
                   isChosen
-                    ? 'bg-gradient-to-br from-cyan-950/60 to-blue-950/40 border-cyan-500 shadow-md shadow-cyan-500/10'
-                    : 'bg-slate-800/50 hover:bg-slate-800 border-slate-700/60 hover:border-slate-600'
+                    ? 'bg-indigo-50 dark:bg-indigo-950/40 border-indigo-500 ring-2 ring-indigo-500/20 shadow-sm'
+                    : 'bg-white dark:bg-night-800 hover:bg-slate-50 dark:hover:bg-night-700/80 border-slate-200 dark:border-night-border'
                 }`}
               >
                 <div className="flex items-center justify-between mb-1.5">
                   <div className="flex items-center gap-2">
-                    <span className="text-lg font-bold text-white tracking-wide">
+                    <span className="text-lg font-bold text-slate-900 dark:text-white tracking-wide">
                       {lang.nativeName}
                     </span>
-                    <span className="text-xs text-slate-400 font-medium">
+                    <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                       ({lang.name})
                     </span>
                   </div>
                   <div
                     className={`w-5 h-5 rounded-full flex items-center justify-center text-xs transition-colors ${
                       isChosen
-                        ? 'bg-cyan-500 text-slate-950 font-bold'
-                        : 'border border-slate-600 text-transparent'
+                        ? 'bg-indigo-600 text-white font-bold'
+                        : 'border border-slate-300 dark:border-slate-600 text-transparent'
                     }`}
                   >
                     <Check className="w-3.5 h-3.5" />
                   </div>
                 </div>
 
-                <span className="text-[11px] text-cyan-300/80 font-medium mb-1">
+                <span className="text-[11px] text-indigo-600 dark:text-indigo-400 font-medium mb-1">
                   {lang.region}
                 </span>
 
-                <span className="text-xs text-slate-400 line-clamp-1 italic mt-auto">
+                <span className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 italic mt-auto">
                   "{lang.sample}"
                 </span>
               </button>
@@ -145,15 +150,15 @@ export default function LanguageSelectionModal({ isOpen, currentLang, onSelectLa
         </div>
 
         {/* Modal Footer */}
-        <div className="bg-slate-950/80 p-5 border-t border-slate-800 flex items-center justify-between flex-wrap gap-3">
-          <span className="text-xs text-slate-400">
+        <div className="bg-white dark:bg-night-950 p-5 border-t border-slate-200 dark:border-night-border flex items-center justify-between flex-wrap gap-3">
+          <span className="text-xs text-slate-500 dark:text-slate-400">
             {t('changeLangAnytime')}
           </span>
 
           <button
             type="button"
             onClick={handleConfirm}
-            className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-bold rounded-xl shadow-lg shadow-cyan-500/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+            className="flex items-center gap-2 px-6 py-2.5 btn-primary cursor-pointer shadow-md"
           >
             <span>{t('continueInLang')}</span>
             <ArrowRight className="w-4 h-4" />

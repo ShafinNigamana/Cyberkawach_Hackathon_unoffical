@@ -93,6 +93,14 @@ _FINANCIAL_KEYWORDS = [
     "payment", "won rs", "earn daily", "part time job", "bill due",
 ]
 
+ZERO_WIDTH_CHARS: dict[str, str] = {
+    "\u200b": "Zero-Width Space",
+    "\u200c": "Zero-Width Non-Joiner",
+    "\u200d": "Zero-Width Joiner",
+    "\ufeff": "Byte Order Mark",
+    "\u00ad": "Soft Hyphen",
+}
+
 
 class NormalizedURL(BaseModel):
     """Structured decomposition of an extracted URL."""
@@ -125,6 +133,8 @@ class ExtractedIndicators(BaseModel):
     credential_keywords: list[str] = Field(default_factory=list)
     financial_keywords: list[str] = Field(default_factory=list)
     anchor_mismatches: list[dict] = Field(default_factory=list)
+    zero_width_characters: list[dict] = Field(default_factory=list)
+    crypto_addresses: list[dict] = Field(default_factory=list)
 
 
 def _split_domain_parts(hostname: str) -> tuple[str, str]:
@@ -296,6 +306,21 @@ def extract_indicators(text: str, additional_urls: list[str] | None = None) -> E
     credentials = [w for w in _CREDENTIAL_KEYWORDS if w in lower_text]
     financial = [w for w in _FINANCIAL_KEYWORDS if w in lower_text]
 
+    # 9. Extract Zero-Width Obfuscation
+    zero_width_found: list[dict] = []
+    for ch, label in ZERO_WIDTH_CHARS.items():
+        cnt = text.count(ch)
+        if cnt > 0:
+            zero_width_found.append({
+                "char_hex": f"U+{ord(ch):04X}",
+                "name": label,
+                "count": cnt,
+            })
+
+    # 10. Extract Cryptocurrency Addresses
+    from backend.services.financial_osint import extract_crypto_addresses
+    crypto_addrs = extract_crypto_addresses(text)
+
     return ExtractedIndicators(
         original_text=text,
         urls=norm_urls,
@@ -309,4 +334,6 @@ def extract_indicators(text: str, additional_urls: list[str] | None = None) -> E
         credential_keywords=credentials,
         financial_keywords=financial,
         anchor_mismatches=anchor_mismatches,
+        zero_width_characters=zero_width_found,
+        crypto_addresses=crypto_addrs,
     )

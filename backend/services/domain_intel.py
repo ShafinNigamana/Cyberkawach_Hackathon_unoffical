@@ -79,6 +79,132 @@ def clean_domain(domain_or_url: str) -> str:
     return d
 
 
+# ─── Homoglyph & Infrastructure Intelligence Constants ───
+
+CYRILLIC_LOOKALIKES: dict[str, str] = {
+    "\u0430": "a", "\u0441": "c", "\u0435": "e", "\u043e": "o",
+    "\u0440": "p", "\u0455": "s", "\u0445": "x", "\u0443": "y",
+    "\u0456": "i", "\u0458": "j", "\u0410": "A", "\u0412": "B",
+    "\u0421": "C", "\u0415": "E", "\u041d": "H", "\u041e": "O",
+    "\u0420": "P", "\u0422": "T", "\u0425": "X",
+}
+
+KNOWN_HIGH_RISK_HOSTERS: set[str] = {
+    "alexhost", "bulletproof", "stark industries", "free range cloud",
+    "flokinet", "hostwinds", "hostinger", "namecheap", "contabo",
+    "hetzner", "ovh", "vultr", "digitalocean", "linode", "choopa",
+}
+
+
+def detect_homoglyphs(domain: str) -> dict[str, Any]:
+    """
+    Detect Cyrillic / Greek lookalike characters or Punycode spoofing in domains.
+    """
+    clean = clean_domain(domain)
+    has_punycode = clean.startswith("xn--") or ".xn--" in clean
+
+    found_homoglyphs = []
+    normalized_chars = []
+    is_spoofed = False
+
+    for ch in clean:
+        if ch in CYRILLIC_LOOKALIKES:
+            found_homoglyphs.append({
+                "char": ch,
+                "looks_like": CYRILLIC_LOOKALIKES[ch],
+                "hex": f"U+{ord(ch):04X}",
+            })
+            normalized_chars.append(CYRILLIC_LOOKALIKES[ch])
+            is_spoofed = True
+        else:
+            normalized_chars.append(ch)
+
+    normalized_domain = "".join(normalized_chars)
+
+    return {
+        "domain": clean,
+        "is_spoofed": is_spoofed or has_punycode,
+        "has_punycode": has_punycode,
+        "homoglyph_count": len(found_homoglyphs),
+        "found_homoglyphs": found_homoglyphs,
+        "normalized_domain": normalized_domain if is_spoofed else clean,
+    }
+
+
+def lookup_asn_and_infrastructure(ip_str: str, timeout: float = 2.5) -> dict[str, Any]:
+    """
+    Resolve IP to Autonomous System Number (ASN), BGP Prefix, Country, Org Name, and Reverse DNS (PTR).
+    Uses DNS-based Team Cymru mapping for high-speed deterministic resolution without external API tokens.
+    """
+    ip = ip_str.strip()
+    if not is_safe_ip(ip):
+        return {"ip": ip, "valid": False, "error": "Non-public IP or SSRF restricted"}
+
+    result: dict[str, Any] = {
+        "ip": ip,
+        "valid": True,
+        "asn": None,
+        "bgp_prefix": None,
+        "country": None,
+        "org_name": None,
+        "ptr": None,
+        "is_high_risk_hosting": False,
+        "error": None,
+    }
+
+    # 1. Reverse DNS (PTR)
+    try:
+        host, _, _ = socket.gethostbyaddr(ip)
+        result["ptr"] = host
+    except Exception:
+        pass
+
+    # 2. Team Cymru DNS IP-to-ASN
+    try:
+        octets = ip.split(".")
+        if len(octets) == 4:
+            reversed_ip = ".".join(reversed(octets))
+            query_name = f"{reversed_ip}.origin.asn.cymru.com"
+            resolver = dns.resolver.Resolver()
+            resolver.lifetime = timeout
+            resolver.timeout = timeout
+            answers = resolver.resolve(query_name, "TXT")
+            for rdata in answers:
+                for s in rdata.strings:
+                    raw = s.decode("utf-8", errors="ignore").strip('"')
+                    parts = [p.strip() for p in raw.split("|")]
+                    if len(parts) >= 3:
+                        result["asn"] = f"AS{parts[0]}" if not parts[0].startswith("AS") else parts[0]
+                        result["bgp_prefix"] = parts[1]
+                        result["country"] = parts[2]
+                        break
+
+            # Query AS Name if ASN is found
+            if result["asn"]:
+                asn_num = result["asn"].replace("AS", "").strip()
+                as_query = f"AS{asn_num}.asn.cymru.com"
+                as_answers = resolver.resolve(as_query, "TXT")
+                for rdata in as_answers:
+                    for s in rdata.strings:
+                        raw = s.decode("utf-8", errors="ignore").strip('"')
+                        parts = [p.strip() for p in raw.split("|")]
+                        if len(parts) >= 5:
+                            result["org_name"] = parts[4].strip()
+                            break
+    except Exception as e:
+        logger.debug("Cymru DNS ASN lookup notice for %s: %s", ip, safe_error_message(e))
+
+    # Check if hosting organization or PTR matches known offshore / disposable hosting
+    org_l = (result.get("org_name") or "").lower()
+    ptr_l = (result.get("ptr") or "").lower()
+    for high_risk in KNOWN_HIGH_RISK_HOSTERS:
+        if high_risk in org_l or high_risk in ptr_l:
+            result["is_high_risk_hosting"] = True
+            break
+
+    return result
+
+
 # ─── 1. DNS Resolution ───
 
 def resolve_dns(domain: str) -> dict[str, Any]:
@@ -87,8 +213,15 @@ def resolve_dns(domain: str) -> dict[str, Any]:
     Returns structured results and flags SSRF or security concerns.
     """
     target = clean_domain(domain)
+    # IDNA encode non-ascii domains (e.g. Cyrillic homoglyphs) for standard DNS resolution
+    try:
+        query_target = target.encode("idna").decode("ascii")
+    except Exception:
+        query_target = target
+
     result: dict[str, Any] = {
         "domain": target,
+        "query_target": query_target,
         "a": [],
         "aaaa": [],
         "mx": [],
@@ -112,7 +245,7 @@ def resolve_dns(domain: str) -> dict[str, Any]:
 
     # A Records
     try:
-        answers = resolver.resolve(target, "A")
+        answers = resolver.resolve(query_target, "A")
         for rdata in answers:
             ip_val = rdata.to_text().strip()
             result["a"].append(ip_val)
@@ -128,7 +261,7 @@ def resolve_dns(domain: str) -> dict[str, Any]:
 
     # AAAA Records
     try:
-        answers = resolver.resolve(target, "AAAA")
+        answers = resolver.resolve(query_target, "AAAA")
         for rdata in answers:
             ip_val = rdata.to_text().strip()
             result["aaaa"].append(ip_val)
@@ -140,7 +273,7 @@ def resolve_dns(domain: str) -> dict[str, Any]:
 
     # MX Records
     try:
-        answers = resolver.resolve(target, "MX")
+        answers = resolver.resolve(query_target, "MX")
         for rdata in answers:
             result["mx"].append(rdata.exchange.to_text().rstrip("."))
     except Exception:
@@ -148,7 +281,7 @@ def resolve_dns(domain: str) -> dict[str, Any]:
 
     # NS Records
     try:
-        answers = resolver.resolve(target, "NS")
+        answers = resolver.resolve(query_target, "NS")
         for rdata in answers:
             result["ns"].append(rdata.target.to_text().rstrip("."))
     except Exception:
@@ -156,7 +289,7 @@ def resolve_dns(domain: str) -> dict[str, Any]:
 
     # CNAME Records
     try:
-        answers = resolver.resolve(target, "CNAME")
+        answers = resolver.resolve(query_target, "CNAME")
         for rdata in answers:
             result["cname"].append(rdata.target.to_text().rstrip("."))
     except Exception:
@@ -164,7 +297,7 @@ def resolve_dns(domain: str) -> dict[str, Any]:
 
     # TXT Records (SPF)
     try:
-        answers = resolver.resolve(target, "TXT")
+        answers = resolver.resolve(query_target, "TXT")
         for rdata in answers:
             for txt_string in rdata.strings:
                 decoded = txt_string.decode("utf-8", errors="ignore")
@@ -176,7 +309,7 @@ def resolve_dns(domain: str) -> dict[str, Any]:
 
     # DMARC Record (_dmarc.domain)
     try:
-        dmarc_target = f"_dmarc.{target}"
+        dmarc_target = f"_dmarc.{query_target}"
         answers = resolver.resolve(dmarc_target, "TXT")
         for rdata in answers:
             for txt_string in rdata.strings:
@@ -486,6 +619,31 @@ def collect_domain_evidence(domain: str) -> list[EvidenceItem]:
     if not target or "." not in target:
         return items
 
+    # 0. Homoglyph & Punycode Spoofing Check
+    homo_res = detect_homoglyphs(target)
+    if homo_res.get("is_spoofed"):
+        items.append(EvidenceItem(
+            type=EvidenceType.URL_ANALYSIS,
+            source="homoglyph_detector",
+            source_type="content",
+            evidence_tier="OBSERVED",
+            indicator=target,
+            finding=f"Homoglyph Unicode / Punycode visual spoofing detected: '{target}' masquerades as '{homo_res['normalized_domain']}'",
+            description=(
+                f"Domain contains {homo_res['homoglyph_count']} lookalike character(s) from a foreign script (e.g. Cyrillic) "
+                f"or Punycode prefix (xn--) to deceive human visual inspection into believing it is '{homo_res['normalized_domain']}'."
+            ),
+            observed_value=f"Target: {target} -> Visual clone of: {homo_res['normalized_domain']}",
+            interpretation="Homoglyph visual deception is a deliberate technique to forge known organizational brands.",
+            status=EvidenceStatus.CONFIRMED,
+            reliability=EvidenceReliability.DETERMINISTIC_FACT,
+            risk_direction=RiskDirection.INCREASES_RISK,
+            severity=EvidenceSeverity.CRITICAL,
+            confidence=0.95,
+            correlation_group="domain_homoglyph_spoofing",
+            raw_data=homo_res,
+        ))
+
     # 1. DNS Findings
     dns_res = resolve_dns(target)
     if dns_res.get("is_resolvable"):
@@ -508,25 +666,160 @@ def collect_domain_evidence(domain: str) -> list[EvidenceItem]:
             raw_data=dns_res,
         ))
 
-        # Check for SPF / DMARC
-        if dns_res.get("spf"):
-            items.append(EvidenceItem(
-                type=EvidenceType.DNS_RECORD,
-                source="dns_resolver",
-                source_type="dns",
-                evidence_tier="OBSERVED",
-                indicator=target,
-                finding=f"SPF record configured for domain: {dns_res['spf'][:60]}...",
-                description="Domain has an active Sender Policy Framework (SPF) DNS record.",
-                observed_value=dns_res["spf"],
-                interpretation="Domain defines authorized mail sending servers.",
-                status=EvidenceStatus.OBSERVED,
-                reliability=EvidenceReliability.DETERMINISTIC_FACT,
-                risk_direction=RiskDirection.NEUTRAL,
-                severity=EvidenceSeverity.INFORMATIONAL,
-                correlation_group="email_authentication",
-                raw_data={"spf": dns_res["spf"]},
-            ))
+        # Autonomous System (ASN) & BGP Infrastructure Forensics
+        for ip in dns_res.get("a", [])[:2]:
+            asn_info = lookup_asn_and_infrastructure(ip)
+            if asn_info.get("valid") and (asn_info.get("asn") or asn_info.get("ptr")):
+                asn_str = asn_info.get("asn") or "Unknown ASN"
+                org_str = asn_info.get("org_name") or "Hosting Provider"
+                country_str = asn_info.get("country") or "Global"
+                ptr_str = asn_info.get("ptr") or "No PTR"
+                is_high_risk = asn_info.get("is_high_risk_hosting", False)
+
+                items.append(EvidenceItem(
+                    type=EvidenceType.INFRASTRUCTURE_ANALYSIS,
+                    source="asn_infrastructure_inspector",
+                    source_type="dns",
+                    evidence_tier="OBSERVED",
+                    indicator=ip,
+                    finding=f"BGP Autonomous System: {asn_str} ({org_str}) in {country_str}",
+                    description=(
+                        f"Resolved IP {ip} is hosted under {asn_str} [{org_str}], Prefix: {asn_info.get('bgp_prefix', 'N/A')}, "
+                        f"Country: {country_str}, Reverse DNS PTR: '{ptr_str}'. "
+                        + ("Identified with known bulletproof / disposable hosting provider patterns." if is_high_risk else "Public internet routing verified.")
+                    ),
+                    observed_value=f"{ip} -> {asn_str} ({org_str}), Country: {country_str}, PTR: {ptr_str}",
+                    interpretation="Hosting infrastructure and network autonomous routing characteristics identified via live BGP/DNS telemetry.",
+                    status=EvidenceStatus.CONFIRMED,
+                    reliability=EvidenceReliability.DETERMINISTIC_FACT,
+                    risk_direction=RiskDirection.INCREASES_RISK if is_high_risk else RiskDirection.NEUTRAL,
+                    severity=EvidenceSeverity.HIGH if is_high_risk else EvidenceSeverity.INFORMATIONAL,
+                    confidence=0.90,
+                    correlation_group="bgp_infrastructure",
+                    raw_data=asn_info,
+                ))
+
+        # Check SPF Policy
+        spf_rec = dns_res.get("spf")
+        if spf_rec:
+            spf_l = spf_rec.lower()
+            if "+all" in spf_l:
+                items.append(EvidenceItem(
+                    type=EvidenceType.DNS_RECORD,
+                    source="email_security_auditor",
+                    source_type="dns",
+                    evidence_tier="OBSERVED",
+                    indicator=target,
+                    finding=f"Critical email security vulnerability: SPF policy '+all' permits ANY server to spoof '{target}'",
+                    description=f"SPF record '{spf_rec}' includes '+all', explicitly authorizing any computer worldwide to send emails as this domain.",
+                    observed_value=spf_rec,
+                    interpretation="Permissive SPF (+all) enables threat actors to send forged phishing emails without authentication failure.",
+                    status=EvidenceStatus.CONFIRMED,
+                    reliability=EvidenceReliability.DETERMINISTIC_FACT,
+                    risk_direction=RiskDirection.INCREASES_RISK,
+                    severity=EvidenceSeverity.CRITICAL,
+                    confidence=0.95,
+                    correlation_group="email_authentication",
+                    raw_data={"spf": spf_rec, "vulnerability": "permissive_plus_all"},
+                ))
+            elif "?all" in spf_l:
+                items.append(EvidenceItem(
+                    type=EvidenceType.DNS_RECORD,
+                    source="email_security_auditor",
+                    source_type="dns",
+                    evidence_tier="OBSERVED",
+                    indicator=target,
+                    finding=f"Neutral SPF policy '?all' on '{target}' provides zero spoofing protection",
+                    description="Domain explicitly declares a neutral SPF policy (?all), meaning recipient mail servers will not reject unauthorized senders.",
+                    observed_value=spf_rec,
+                    interpretation="Neutral SPF fails to protect email recipients from fraudulent sender impersonation.",
+                    status=EvidenceStatus.CONFIRMED,
+                    reliability=EvidenceReliability.DETERMINISTIC_FACT,
+                    risk_direction=RiskDirection.INCREASES_RISK,
+                    severity=EvidenceSeverity.HIGH,
+                    confidence=0.88,
+                    correlation_group="email_authentication",
+                    raw_data={"spf": spf_rec, "vulnerability": "neutral_policy"},
+                ))
+            elif "-all" in spf_l:
+                items.append(EvidenceItem(
+                    type=EvidenceType.DNS_RECORD,
+                    source="email_security_auditor",
+                    source_type="dns",
+                    evidence_tier="OBSERVED",
+                    indicator=target,
+                    finding=f"Hardfail SPF policy (-all) enforced for domain '{target}'",
+                    description="Domain defines a strict hardfail SPF record (-all) instructing recipient servers to reject unlisted senders.",
+                    observed_value=spf_rec,
+                    interpretation="Legitimate email authentication policy enforced.",
+                    status=EvidenceStatus.CONFIRMED,
+                    reliability=EvidenceReliability.DETERMINISTIC_FACT,
+                    risk_direction=RiskDirection.DECREASES_RISK,
+                    severity=EvidenceSeverity.INFORMATIONAL,
+                    correlation_group="email_authentication",
+                    raw_data={"spf": spf_rec},
+                ))
+            else:
+                items.append(EvidenceItem(
+                    type=EvidenceType.DNS_RECORD,
+                    source="email_security_auditor",
+                    source_type="dns",
+                    evidence_tier="OBSERVED",
+                    indicator=target,
+                    finding=f"Active SPF record configured: {spf_rec[:60]}...",
+                    description="Domain has an active Sender Policy Framework (SPF) record.",
+                    observed_value=spf_rec,
+                    interpretation="Domain defines authorized mail sending servers.",
+                    status=EvidenceStatus.OBSERVED,
+                    reliability=EvidenceReliability.DETERMINISTIC_FACT,
+                    risk_direction=RiskDirection.NEUTRAL,
+                    severity=EvidenceSeverity.INFORMATIONAL,
+                    correlation_group="email_authentication",
+                    raw_data={"spf": spf_rec},
+                ))
+
+        # Check DMARC Policy
+        dmarc_rec = dns_res.get("dmarc")
+        if dmarc_rec:
+            dmarc_l = dmarc_rec.lower()
+            if "p=none" in dmarc_l:
+                items.append(EvidenceItem(
+                    type=EvidenceType.DNS_RECORD,
+                    source="email_security_auditor",
+                    source_type="dns",
+                    evidence_tier="OBSERVED",
+                    indicator=target,
+                    finding=f"Permissive DMARC policy (p=none) on '{target}' — monitoring only, no rejection",
+                    description=f"DMARC record '{dmarc_rec}' specifies 'p=none'. Spoofed emails sent by impostors will NOT be rejected by receiving mail gateways.",
+                    observed_value=dmarc_rec,
+                    interpretation="DMARC monitoring-only mode allows spoofed emails to land in citizen inboxes.",
+                    status=EvidenceStatus.CONFIRMED,
+                    reliability=EvidenceReliability.DETERMINISTIC_FACT,
+                    risk_direction=RiskDirection.INCREASES_RISK,
+                    severity=EvidenceSeverity.MEDIUM,
+                    confidence=0.85,
+                    correlation_group="email_authentication",
+                    raw_data={"dmarc": dmarc_rec},
+                ))
+            elif "p=reject" in dmarc_l or "p=quarantine" in dmarc_l:
+                policy_type = "reject" if "p=reject" in dmarc_l else "quarantine"
+                items.append(EvidenceItem(
+                    type=EvidenceType.DNS_RECORD,
+                    source="email_security_auditor",
+                    source_type="dns",
+                    evidence_tier="OBSERVED",
+                    indicator=target,
+                    finding=f"Strict DMARC policy (p={policy_type}) enforced on '{target}'",
+                    description=f"Domain strictly enforces DMARC p={policy_type}. Unauthorized emails will be rejected or placed in quarantine.",
+                    observed_value=dmarc_rec,
+                    interpretation="Domain owner actively protects reputation against unauthorized email forgery.",
+                    status=EvidenceStatus.CONFIRMED,
+                    reliability=EvidenceReliability.DETERMINISTIC_FACT,
+                    risk_direction=RiskDirection.DECREASES_RISK,
+                    severity=EvidenceSeverity.INFORMATIONAL,
+                    correlation_group="email_authentication",
+                    raw_data={"dmarc": dmarc_rec},
+                ))
     elif dns_res.get("error") and "NXDOMAIN" in dns_res.get("error", ""):
         items.append(EvidenceItem(
             type=EvidenceType.DNS_RECORD,

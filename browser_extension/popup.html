@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CyberKawach Monitor</title>
+  <style>
+    body {
+      width: 320px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 16px;
+      background-color: #0d1117;
+      color: #c9d1d9;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid #30363d;
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+    }
+    .shield-icon {
+      font-size: 24px;
+    }
+    .title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #58a6ff;
+      margin: 0;
+    }
+    .status-badge {
+      font-size: 11px;
+      background-color: #238636;
+      color: #ffffff;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 500;
+      display: inline-block;
+      margin-top: 4px;
+    }
+    .field-label {
+      font-size: 12px;
+      color: #8b949e;
+      margin-bottom: 4px;
+      display: block;
+    }
+    input[type="text"] {
+      width: 100%;
+      box-sizing: border-box;
+      background: #161b22;
+      border: 1px solid #30363d;
+      color: #f0f6fc;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+    button {
+      background: #238636;
+      color: #ffffff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      width: 100%;
+    }
+    button:hover {
+      background: #2ea043;
+    }
+    .info-box {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 10px;
+      margin-top: 14px;
+      font-size: 12px;
+      line-height: 1.4;
+      color: #8b949e;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span class="shield-icon">🛡️</span>
+    <div>
+      <h1 class="title">CyberKawach Guardian</h1>
+      <span class="status-badge" id="status-badge">Active Interceptor</span>
+    </div>
+  </div>
+
+  <label class="field-label" for="backend-url">CyberKawach Forensic Engine URL:</label>
+  <input type="text" id="backend-url" value="http://127.0.0.1:8000" />
+  <button id="save-btn">Save Configuration</button>
+
+  <div class="info-box">
+    <strong>Zero-Trust Early Scan:</strong><br/>
+    All browser downloads are automatically paused on creation, inspected by CyberKawach's multi-engine scanner, and only released if proven clean.
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

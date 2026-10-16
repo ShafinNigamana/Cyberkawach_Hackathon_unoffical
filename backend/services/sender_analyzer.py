@@ -44,12 +44,15 @@ _INDIAN_PERSONAL_MOBILE_REGEX = re.compile(r"^(?:\+?91[\-\s]?)?[6-9]\d{9}$")
 
 def enrich_phone_number(phone_str: str) -> dict[str, Any]:
     """
-    Enrich phone number using Google libphonenumber (carrier, telecom circle, line type).
+    Enrich phone number using Google libphonenumber (carrier, telecom circle, line type, country).
+    Supports both Indian domestic numbers and international numbers with country codes.
     """
     if not phone_str:
         return {"valid": False, "raw": phone_str}
     try:
-        parsed = phonenumbers.parse(phone_str, "IN")
+        clean = phone_str.strip().replace(" ", "").replace("-", "")
+        default_region = None if clean.startswith("+") else "IN"
+        parsed = phonenumbers.parse(clean, default_region)
         if not phonenumbers.is_valid_number(parsed):
             return {"valid": False, "raw": phone_str}
 
@@ -58,20 +61,121 @@ def enrich_phone_number(phone_str: str) -> dict[str, Any]:
         num_type = phonenumbers.number_type(parsed)
         is_voip = (num_type == phonenumbers.PhoneNumberType.VOIP)
         is_mobile = (num_type in (phonenumbers.PhoneNumberType.MOBILE, phonenumbers.PhoneNumberType.FIXED_LINE_OR_MOBILE))
-        formatted = phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.NATIONAL)
+        formatted = phonenumbers.format_number(parsed, phonenumbers.PhoneNumberFormat.INTERNATIONAL)
+        country_code = parsed.country_code
 
         return {
             "valid": True,
             "raw": phone_str,
             "formatted": formatted,
-            "carrier": carrier_name or "Indian Telecom Operator",
-            "circle_state": location or "India",
+            "country_code": country_code,
+            "carrier": carrier_name or "Telecom Operator",
+            "circle_state": location or "Unknown Region",
             "is_voip": is_voip,
             "is_mobile": is_mobile,
             "number_type": str(num_type),
         }
     except Exception as e:
         return {"valid": False, "raw": phone_str, "error": str(e)}
+
+
+# National Cybercrime Reporting Portal (I4C) Documented Operating Hubs & Corridors
+CYBERCRIME_CORRIDORS: list[dict[str, Any]] = [
+    {
+        "keywords": ["jharkhand", "bihar", "jamtara", "deoghar", "giridih", "nawada"],
+        "hub_name": "Jamtara-Deoghar Banking & KYC Phishing Corridor",
+        "primary_modus": "Bank KYC suspension, SBI YONO re-activation, and SIM swap fraud",
+        "risk_level": "CRITICAL",
+    },
+    {
+        "keywords": ["haryana", "rajasthan", "mewat", "nuh", "bharatpur", "alwar"],
+        "hub_name": "Mewat-Bharatpur Utility & Social Engineering Corridor",
+        "primary_modus": "Electricity disconnection notices, armed forces OLX identity theft, and video extortion",
+        "risk_level": "CRITICAL",
+    },
+    {
+        "keywords": ["west bengal", "kolkata"],
+        "hub_name": "Kolkata Tech Support & Remote Desktop Access Corridor",
+        "primary_modus": "Fake customer care numbers, AnyDesk/TeamViewer remote access, and international call centers",
+        "risk_level": "HIGH",
+    },
+]
+
+SOUTHEAST_ASIA_FRAUD_COUNTRY_CODES: dict[int, str] = {
+    855: "Cambodia (Sihanoukville / Poipet cyber scam compound hub)",
+    95: "Myanmar (Myawaddy / Shwe Kokko cyber slavery compound hub)",
+    856: "Lao PDR (Golden Triangle Special Economic Zone)",
+    84: "Vietnam (Cross-border illegal task/call routing hub)",
+}
+
+
+def analyze_chat_redirects(message_text: str) -> list[EvidenceItem]:
+    """
+    Extract and inspect WhatsApp click-to-chat and Telegram channels in message text.
+    """
+    items: list[EvidenceItem] = []
+    if not message_text:
+        return items
+
+    # WhatsApp wa.me or api.whatsapp.com
+    wa_matches = re.findall(r'(?:wa\.me|api\.whatsapp\.com/send\?phone=)\/?(\+?\d{7,15})', message_text, re.I)
+    for raw_wa in list(dict.fromkeys(wa_matches)):
+        target_num = "+" + raw_wa.lstrip("+")
+        p_info = enrich_phone_number(target_num)
+        cc = p_info.get("country_code")
+        carrier = p_info.get("carrier", "Unknown")
+        loc = p_info.get("circle_state", "Unknown")
+
+        is_sea = cc in SOUTHEAST_ASIA_FRAUD_COUNTRY_CODES
+        is_voip = p_info.get("is_voip", False)
+
+        items.append(EvidenceItem(
+            type=EvidenceType.TELECOM_ANALYSIS,
+            source="chat_redirection_inspector",
+            source_type="content",
+            evidence_tier="OBSERVED",
+            indicator=f"wa.me/{raw_wa}",
+            finding=f"WhatsApp direct chat redirection to {p_info.get('formatted', target_num)} ({loc})",
+            description=(
+                f"Message diverts victim away from official communication to a direct private WhatsApp session with {target_num} "
+                f"[{loc}, Carrier: {carrier}]. "
+                + (f"TARGET LOCATED IN HIGH-RISK TRANSNATIONAL FRAUD ZONE: {SOUTHEAST_ASIA_FRAUD_COUNTRY_CODES[cc]}." if is_sea else "")
+            ),
+            observed_value=f"WhatsApp Target: {p_info.get('formatted', target_num)} ({loc})",
+            interpretation="Off-platform WhatsApp diversion is standard operational protocol for cybercrime syndicates to avoid telecom tracking.",
+            status=EvidenceStatus.CONFIRMED,
+            reliability=EvidenceReliability.DETERMINISTIC_FACT,
+            risk_direction=RiskDirection.INCREASES_RISK,
+            severity=EvidenceSeverity.CRITICAL if (is_sea or is_voip) else EvidenceSeverity.HIGH,
+            confidence=0.94,
+            correlation_group="chat_redirection",
+            raw_data={"whatsapp_target": target_num, "telecom_info": p_info},
+        ))
+
+    # Telegram invites
+    tg_matches = re.findall(r'(?:t\.me|telegram\.me)\/([a-zA-Z0-9_+]{3,32})', message_text, re.I)
+    for tg_chan in list(dict.fromkeys(tg_matches)):
+        if tg_chan.lower() not in ("joinchat", "share"):
+            items.append(EvidenceItem(
+                type=EvidenceType.TELECOM_ANALYSIS,
+                source="chat_redirection_inspector",
+                source_type="content",
+                evidence_tier="OBSERVED",
+                indicator=f"t.me/{tg_chan}",
+                finding=f"Telegram channel/bot redirection link observed: @{tg_chan}",
+                description=f"Message routes victims to Telegram handle @{tg_chan}. Telegram is widely leveraged by investment and task fraud syndicates for anonymous victim handling.",
+                observed_value=f"Telegram: @{tg_chan}",
+                interpretation="Unregulated Telegram communication channel commonly used in investment fraud and task scam operations.",
+                status=EvidenceStatus.OBSERVED,
+                reliability=EvidenceReliability.DETERMINISTIC_FACT,
+                risk_direction=RiskDirection.INCREASES_RISK,
+                severity=EvidenceSeverity.MEDIUM,
+                confidence=0.85,
+                correlation_group="chat_redirection",
+                raw_data={"telegram_channel": tg_chan},
+            ))
+
+    return items
 
 _FREE_WEBMAIL_DOMAINS = frozenset({
     "gmail.com", "yahoo.com", "yahoo.co.in", "hotmail.com", "outlook.com",
@@ -247,6 +351,37 @@ def analyze_sms_sender(sender: str, message_text: str = "") -> tuple[dict[str, A
             correlation_group="sender_authenticity",
             raw_data={"sender": clean_sender, "dlt_format": True, "is_government": is_gov},
         ))
+
+    # 3. Check for Cybercrime Operational Corridors (MHA / I4C Hotspots)
+    circle_lower = (phone_info.get("circle_state") or "").lower()
+    for corridor in CYBERCRIME_CORRIDORS:
+        if any(k in circle_lower for k in corridor["keywords"]):
+            evidence_items.append(EvidenceItem(
+                type=EvidenceType.TELECOM_ANALYSIS,
+                source="cybercrime_corridor_profiler",
+                source_type="content",
+                evidence_tier="DERIVED",
+                indicator=clean_sender,
+                finding=f"Originates from verified cybercrime operational cluster: {corridor['hub_name']}",
+                description=(
+                    f"Sender phone number '{clean_sender}' is registered in {phone_info.get('circle_state')} "
+                    f"({phone_info.get('carrier')}), an identified national cybercrime hotspot recognized by I4C for: {corridor['primary_modus']}."
+                ),
+                observed_value=f"Telecom Circle: {phone_info.get('circle_state')} -> {corridor['hub_name']}",
+                interpretation=f"Geographical telecom alignment with known syndicate operations ({corridor['primary_modus']}).",
+                status=EvidenceStatus.SUSPICIOUS,
+                reliability=EvidenceReliability.HEURISTIC,
+                risk_direction=RiskDirection.INCREASES_RISK,
+                severity=EvidenceSeverity.HIGH if corridor["risk_level"] == "CRITICAL" else EvidenceSeverity.MEDIUM,
+                confidence=0.88,
+                correlation_group="telecom_syndicate_corridor",
+                raw_data={"circle": phone_info.get("circle_state"), "corridor": corridor},
+            ))
+            break
+
+    # 4. Inspect Chat Redirections (WhatsApp / Telegram) in message body
+    chat_items = analyze_chat_redirects(message_text)
+    evidence_items.extend(chat_items)
 
     return analysis, evidence_items
 

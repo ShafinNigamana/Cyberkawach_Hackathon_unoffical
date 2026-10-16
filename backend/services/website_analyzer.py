@@ -124,6 +124,7 @@ async def inspect_website(url: str) -> tuple[dict[str, Any], list[EvidenceItem]]
                             break
                     raw_bytes = b"".join(content_chunks)
                     response_body = raw_bytes.decode("utf-8", errors="ignore")
+                    response_headers = dict(resp.headers)
                     break
 
             analysis["status_code"] = status_code
@@ -137,7 +138,13 @@ async def inspect_website(url: str) -> tuple[dict[str, Any], list[EvidenceItem]]
         return analysis, evidence_items
 
     # Delegate DOM & redirect behavior analysis to modular analyzer
-    dom_analysis, dom_items = analyze_html_content(final_url, response_body, redirect_chain, initial_domain)
+    dom_analysis, dom_items = analyze_html_content(
+        final_url=final_url,
+        response_body=response_body,
+        redirect_chain=redirect_chain,
+        initial_domain=initial_domain,
+        response_headers=locals().get("response_headers", {}),
+    )
     analysis.update(dom_analysis)
     evidence_items.extend(dom_items)
     return analysis, evidence_items
@@ -148,6 +155,7 @@ def analyze_html_content(
     response_body: str,
     redirect_chain: list[str] | None = None,
     initial_domain: str | None = None,
+    response_headers: dict[str, str] | None = None,
 ) -> tuple[dict[str, Any], list[EvidenceItem]]:
     """
     Modular analysis of HTML DOM and redirect behavior for phishing signatures:
@@ -156,6 +164,10 @@ def analyze_html_content(
     - Cross-domain form destinations
     - Telegram / Discord exfiltration webhooks
     - Anti-bot / cloaking evasion scripts
+    - Android APK sideloading lures
+    - Right-click / DevTools blocking handlers
+    - High-urgency coercive prompts in DOM
+    - HTTP response security headers & technology banners
     """
     analysis: dict[str, Any] = {
         "title": None,
@@ -316,5 +328,164 @@ def analyze_html_content(
             correlation_group="anti_analysis_cloaking",
             raw_data={"cloaking_signatures": detected_cloaking},
         ))
+
+    # ─── 7. Malicious Android APK Sideloading Detection ───
+    apk_matches = re.findall(r'href=["\']([^"\']+\.apk(?:\?[^"\']*)?)["\']', response_body, re.I)
+    apk_matches += re.findall(r'["\'](https?://[^"\']+\.apk(?:\?[^"\']*)?)["\']', response_body, re.I)
+    if final_url.lower().endswith(".apk") or ".apk?" in final_url.lower():
+        apk_matches.append(final_url)
+
+    unique_apks = list(dict.fromkeys(apk_matches))
+    if unique_apks:
+        apk_target = unique_apks[0]
+        apk_name = apk_target.split("/")[-1].split("?")[0]
+        evidence_items.append(EvidenceItem(
+            type=EvidenceType.WEBSITE_BEHAVIOR,
+            source="website_analyzer",
+            source_type="sandbox",
+            evidence_tier="OBSERVED",
+            indicator=final_url,
+            finding=f"Malicious Android APK sideloading lure observed: '{apk_name}'",
+            description=f"Page presents direct download links to an Android Package (.apk) file '{apk_name}'.",
+            observed_value=f"APK Target: {apk_target[:80]}",
+            interpretation="Android APK sideloading is the primary vehicle in India for mobile financial Trojans, SMS OTP forwarders, and banking drainers.",
+            status=EvidenceStatus.CONFIRMED,
+            reliability=EvidenceReliability.DETERMINISTIC_FACT,
+            risk_direction=RiskDirection.INCREASES_RISK,
+            severity=EvidenceSeverity.CRITICAL,
+            confidence=0.96,
+            correlation_group="malicious_apk_sideloading",
+            raw_data={"apk_links": unique_apks[:3]},
+        ))
+
+    # ─── 8. Anti-Inspection & Right-Click Disabling Handlers ───
+    anti_inspect_patterns = [
+        ("oncontextmenu", 'oncontextmenu="return false;"'),
+        ("oncontextmenu", "oncontextmenu='return false;'"),
+        ("onselectstart", 'onselectstart="return false;"'),
+        ("f12_block", "keyCode == 123"),
+        ("ctrl_shift_i", "ctrlKey && e.shiftKey && e.keyCode == 73"),
+    ]
+    detected_anti_inspect = [label for label, pat in anti_inspect_patterns if pat.lower() in response_body.lower()]
+    if detected_anti_inspect:
+        evidence_items.append(EvidenceItem(
+            type=EvidenceType.WEBSITE_BEHAVIOR,
+            source="website_analyzer",
+            source_type="sandbox",
+            evidence_tier="OBSERVED",
+            indicator=final_url,
+            finding="Anti-forensic browser controls detected: right-click or DevTools disabled",
+            description="Page script intentionally disables context menus (right-click) or developer shortcut keys (F12/Ctrl+Shift+I) to prevent user inspection.",
+            observed_value=", ".join(detected_anti_inspect),
+            interpretation="Anti-inspection tactics are deployed by phishing kits to obstruct victims from checking URL properties or viewing source code.",
+            status=EvidenceStatus.CONFIRMED,
+            reliability=EvidenceReliability.DETERMINISTIC_FACT,
+            risk_direction=RiskDirection.INCREASES_RISK,
+            severity=EvidenceSeverity.HIGH,
+            confidence=0.90,
+            correlation_group="anti_analysis_cloaking",
+            raw_data={"disabled_handlers": detected_anti_inspect},
+        ))
+
+    # ─── 9. Coercive Threat & Countdown Modals in DOM ───
+    coercion_dom_regex = re.compile(
+        r'(disconnect(?:ed)?\s+(?:tonight|within\s+\d+|at\s+9[:.]30\s*pm)|'
+        r'arrest\s+warrant|'
+        r'account\s+(?:blocked|suspended)\s+within\s+\d+\s+hours|'
+        r'update\s+kyc\s+immediately\s+or)',
+        re.I
+    )
+    coercion_dom_match = coercion_dom_regex.search(response_body)
+    if coercion_dom_match:
+        matched_threat = coercion_dom_match.group(0).strip()
+        evidence_items.append(EvidenceItem(
+            type=EvidenceType.WEBSITE_BEHAVIOR,
+            source="website_analyzer",
+            source_type="sandbox",
+            evidence_tier="OBSERVED",
+            indicator=final_url,
+            finding=f"Psychological coercion alert in page DOM: '{matched_threat}'",
+            description=f"HTML content displays an artificial emergency ultimatum: '{matched_threat}'.",
+            observed_value=matched_threat,
+            interpretation="High-pressure deadline ultimatum intended to induce panic and bypass logical scrutiny.",
+            status=EvidenceStatus.CONFIRMED,
+            reliability=EvidenceReliability.DETERMINISTIC_FACT,
+            risk_direction=RiskDirection.INCREASES_RISK,
+            severity=EvidenceSeverity.HIGH,
+            confidence=0.92,
+            correlation_group="psychological_coercion",
+            raw_data={"dom_coercion_text": matched_threat},
+        ))
+
+    # ─── 10. HTTP Response Security Headers & Fingerprinting ───
+    if response_headers:
+        h_lower = {k.lower(): v for k, v in response_headers.items()}
+        # Missing HSTS on HTTPS
+        if final_url.lower().startswith("https://") and "strict-transport-security" not in h_lower:
+            evidence_items.append(EvidenceItem(
+                type=EvidenceType.WEBSITE_BEHAVIOR,
+                source="http_security_auditor",
+                source_type="sandbox",
+                evidence_tier="OBSERVED",
+                indicator=final_url,
+                finding="Missing HTTP Strict Transport Security (HSTS) header on secure endpoint",
+                description="The HTTPS web server does not enforce HSTS, allowing sslstrip and man-in-the-middle downgrade attacks.",
+                observed_value="Strict-Transport-Security: [MISSING]",
+                interpretation="Financial and enterprise authentication portals strictly mandate HSTS; omission indicates negligent or ad-hoc attack infrastructure.",
+                status=EvidenceStatus.OBSERVED,
+                reliability=EvidenceReliability.DETERMINISTIC_FACT,
+                risk_direction=RiskDirection.INCREASES_RISK,
+                severity=EvidenceSeverity.MEDIUM,
+                confidence=0.80,
+                correlation_group="http_security_hardening",
+                raw_data={"hsts_missing": True},
+            ))
+
+        # Missing CSP / X-Frame-Options
+        if "content-security-policy" not in h_lower and "x-frame-options" not in h_lower:
+            evidence_items.append(EvidenceItem(
+                type=EvidenceType.WEBSITE_BEHAVIOR,
+                source="http_security_auditor",
+                source_type="sandbox",
+                evidence_tier="OBSERVED",
+                indicator=final_url,
+                finding="Missing framing protections (CSP frame-ancestors & X-Frame-Options)",
+                description="Server sends neither Content-Security-Policy nor X-Frame-Options, leaving page vulnerable to clickjacking overlay attacks.",
+                observed_value="X-Frame-Options & CSP: [MISSING]",
+                interpretation="Lacks standard defense-in-depth framing restrictions.",
+                status=EvidenceStatus.OBSERVED,
+                reliability=EvidenceReliability.DETERMINISTIC_FACT,
+                risk_direction=RiskDirection.INCREASES_RISK,
+                severity=EvidenceSeverity.LOW,
+                confidence=0.75,
+                correlation_group="http_security_hardening",
+                raw_data={"framing_defense_missing": True},
+            ))
+
+        # Server Technology Information Disclosure
+        server_hdr = h_lower.get("server")
+        powered_by = h_lower.get("x-powered-by")
+        if server_hdr or powered_by:
+            tech_desc = f"Server: {server_hdr}" if server_hdr else ""
+            if powered_by:
+                tech_desc += f", Powered-By: {powered_by}" if tech_desc else f"Powered-By: {powered_by}"
+            evidence_items.append(EvidenceItem(
+                type=EvidenceType.WEBSITE_BEHAVIOR,
+                source="http_security_auditor",
+                source_type="sandbox",
+                evidence_tier="OBSERVED",
+                indicator=final_url,
+                finding=f"Server technology banner disclosed: {tech_desc}",
+                description=f"HTTP response headers reveal backend execution environment details: {tech_desc}.",
+                observed_value=tech_desc,
+                interpretation="Server software version disclosure allows attackers and analysts to profile underlying hosting stack.",
+                status=EvidenceStatus.OBSERVED,
+                reliability=EvidenceReliability.DETERMINISTIC_FACT,
+                risk_direction=RiskDirection.NEUTRAL,
+                severity=EvidenceSeverity.INFORMATIONAL,
+                confidence=0.90,
+                correlation_group="http_server_fingerprint",
+                raw_data={"server": server_hdr, "x_powered_by": powered_by},
+            ))
 
     return analysis, evidence_items

@@ -163,7 +163,7 @@ class Neo4jRepository:
         return conn
 
     def get_driver(self) -> Optional[neo4j.Driver]:
-        """Get or initialize the reusable application-level Neo4j driver."""
+        """Get or initialize the reusable application-level Neo4j driver with Circuit Breaker protection."""
         settings = get_settings()
         if not settings.neo4j_enabled or not settings.neo4j_uri:
             return None
@@ -171,9 +171,19 @@ class Neo4jRepository:
         if self._driver is not None:
             return self._driver
 
+        from backend.utils.circuit_breaker import get_circuit_breaker
+        cb = get_circuit_breaker("neo4j_aura", failure_threshold=2, recovery_timeout=90.0)
+
+        # Fail-fast immediately if circuit is OPEN
+        if not cb.is_available():
+            return None
+
         with self._lock:
             if self._driver is not None:
                 return self._driver
+
+            if not cb.is_available():
+                return None
 
             uri = settings.neo4j_uri.strip()
             username = (settings.neo4j_username or "").strip()
@@ -188,31 +198,33 @@ class Neo4jRepository:
             elif uri.startswith("neo4j+ssc://"):
                 target_uris.append(uri.replace("neo4j+ssc://", "neo4j+s://"))
 
+            last_exc = None
             for candidate_uri in target_uris:
-                for attempt in range(2):
-                    try:
-                        self._driver = neo4j.GraphDatabase.driver(
-                            candidate_uri,
-                            auth=auth,
-                            max_connection_lifetime=120,
-                            liveness_check_timeout=2.0,
-                            max_connection_pool_size=50,
-                            connection_acquisition_timeout=5.0,
-                        )
-                        self._driver.verify_connectivity()
-                        logger.info("Connected to Neo4j Aura at %s", candidate_uri)
-                        return self._driver
-                    except Exception as e:
-                        if self._driver is not None:
-                            try:
-                                self._driver.close()
-                            except Exception:
-                                pass
-                            self._driver = None
-                        if attempt == 0:
-                            time.sleep(1.0)
+                try:
+                    self._driver = neo4j.GraphDatabase.driver(
+                        candidate_uri,
+                        auth=auth,
+                        max_connection_lifetime=120,
+                        liveness_check_timeout=2.0,
+                        max_connection_pool_size=50,
+                        connection_acquisition_timeout=3.0,
+                    )
+                    self._driver.verify_connectivity()
+                    logger.info("Connected to Neo4j Aura at %s", candidate_uri)
+                    cb.record_success()
+                    return self._driver
+                except Exception as e:
+                    last_exc = e
+                    if self._driver is not None:
+                        try:
+                            self._driver.close()
+                        except Exception:
+                            pass
+                        self._driver = None
 
-            logger.warning("All Neo4j Aura driver connection attempts failed.")
+            if last_exc:
+                cb.record_failure(last_exc)
+            logger.warning("Neo4j Aura connection unavailable (Circuit: %s): %s", cb.state.value, safe_error_message(last_exc))
             self._driver = None
             return None
 

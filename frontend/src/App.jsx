@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
-import Sidebar from './components/Sidebar';
 import HomeChoice from './components/HomeChoice';
 import FlowMessage from './components/FlowMessage';
 import FlowUrl from './components/FlowUrl';
@@ -10,6 +9,7 @@ import ResultsDashboard from './components/ResultsDashboard';
 import MethodologyModal from './components/MethodologyModal';
 import LanguageSelectionModal from './components/LanguageSelectionModal';
 import AuthModal from './components/AuthModal';
+import FileScanModal from './components/FileScanModal';
 import Footer from './components/Footer';
 import { analyzeMessage, updateUserState, fetchHealth, fetchCurrentUser } from './services/api';
 import { TRANSLATIONS } from './i18n/translations';
@@ -20,6 +20,7 @@ export default function App() {
   const [fontSize, setFontSize] = useState(() => localStorage.getItem('cf_fontsize') || 'normal');
   const [isDark, setIsDark] = useState(() => localStorage.getItem('cf_theme') === 'dark');
   const [methodologyOpen, setMethodologyOpen] = useState(false);
+  const [fileScanModalOpen, setFileScanModalOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authModalPrompt, setAuthModalPrompt] = useState(null);
   const [authModalTab, setAuthModalTab] = useState('login');
@@ -47,6 +48,15 @@ export default function App() {
   const [isUpdatingState, setIsUpdatingState] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+
+  // Ensure secure origin context in Chrome for microphone and Web Speech API
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hostname === '127.0.0.1') {
+      try {
+        window.location.hostname = 'localhost';
+      } catch (_) {}
+    }
+  }, []);
 
   // Sync language with localStorage and update active incident if present
   const handleLangChange = async (newLang) => {
@@ -159,11 +169,6 @@ export default function App() {
 
   // Quick preset scenario trigger from Home or other components
   const handleSelectPreset = (preset) => {
-    if (!currentUser) {
-      setPendingPreset(preset);
-      openAuth('Please sign in or register to test this benchmark fraud scenario.', 'login', 'message');
-      return;
-    }
     setFormData({
       message: preset.message || '',
       urls: preset.urls || '',
@@ -176,11 +181,6 @@ export default function App() {
 
   // Flow submission handler connecting to the real backend
   const handleFlowSubmit = async (submissionData) => {
-    if (!currentUser) {
-      openAuth('Citizen authentication required to submit messages for forensic analysis.');
-      return;
-    }
-
     setIsAnalyzing(true);
     setError(null);
     setResult(null);
@@ -223,70 +223,45 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 dark:bg-night-950 dark:text-slate-100 flex font-sans transition-colors duration-200 relative overflow-x-hidden clean-spotlight clean-grid">
-      {/* Ambient Top Lighting in Violet & Deep Sapphire */}
-      <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[1100px] h-[550px] bg-gradient-to-b from-indigo-500/10 via-violet-500/5 to-transparent blur-3xl rounded-full dark:from-indigo-600/20 dark:via-violet-600/10" aria-hidden="true" />
-      
-      {/* Command Center Collapsible Navigation Sidebar */}
-      <Sidebar
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors relative">
+      {/* First-visit and On-demand Language Selection Modal */}
+      <LanguageSelectionModal
+        isOpen={languageModalOpen}
+        onClose={() => setLanguageModalOpen(false)}
+        onSelectLanguage={(selected) => {
+          handleLangChange(selected);
+          setLanguageModalOpen(false);
+        }}
+        currentLang={lang}
+      />
+
+      {/* Top Command Bar */}
+      <Header
+        lang={lang}
+        onLangChange={handleLangChange}
+        fontSize={fontSize}
+        onFontSizeChange={handleFontSizeChange}
+        isDark={isDark}
+        onThemeToggle={handleThemeToggle}
+        onOpenMethodology={() => setMethodologyOpen(true)}
+        onOpenLanguageModal={() => setLanguageModalOpen(true)}
+        healthData={healthData}
         currentFlow={currentFlow}
+        currentUser={currentUser}
+        onOpenAuthModal={(prompt, tab) => openAuth(prompt, tab)}
+        onOpenFileScanModal={() => setFileScanModalOpen(true)}
         onSelectFlow={(flow) => {
-          if (!currentUser && flow !== 'home') {
-            openAuth(`Please sign in or register to access the ${flow} triage engine.`, 'login', flow);
+          if (flow === 'filescan') {
+            setFileScanModalOpen(true);
             return;
           }
           setError(null);
           setCurrentFlow(flow);
         }}
-        currentUser={currentUser}
-        onOpenAuthModal={(prompt, tab) => openAuth(prompt, tab)}
-        healthData={healthData}
-        isCollapsed={isSidebarCollapsed}
-        onToggleCollapse={() => {
-          const next = !isSidebarCollapsed;
-          setIsSidebarCollapsed(next);
-          localStorage.setItem('cf_sidebar_collapsed', next ? 'true' : 'false');
-        }}
-        isMobileOpen={isMobileSidebarOpen}
-        onCloseMobile={() => setIsMobileSidebarOpen(false)}
-        onSelectPreset={handleSelectPreset}
-        lang={lang}
       />
 
-      {/* Main Workspace Area (offsets based on sidebar state) */}
-      <div className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out ${
-        isSidebarCollapsed ? 'lg:pl-[76px]' : 'lg:pl-[268px]'
-      }`}>
-        {/* First-visit and On-demand Language Selection Modal */}
-        <LanguageSelectionModal
-          isOpen={languageModalOpen}
-          onClose={() => setLanguageModalOpen(false)}
-          onSelectLanguage={(selected) => {
-            handleLangChange(selected);
-            setLanguageModalOpen(false);
-          }}
-          currentLang={lang}
-        />
-
-        {/* Top Command Bar */}
-        <Header
-          lang={lang}
-          onLangChange={handleLangChange}
-          fontSize={fontSize}
-          onFontSizeChange={handleFontSizeChange}
-          isDark={isDark}
-          onThemeToggle={handleThemeToggle}
-          onOpenMethodology={() => setMethodologyOpen(true)}
-          onOpenLanguageModal={() => setLanguageModalOpen(true)}
-          healthData={healthData}
-          currentFlow={currentFlow}
-          currentUser={currentUser}
-          onOpenAuthModal={(prompt, tab) => openAuth(prompt, tab)}
-          onToggleMobileMenu={() => setIsMobileSidebarOpen(true)}
-        />
-
-        {/* Main Content Workspace Container */}
-        <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6" id="main-content">
+      {/* Main Content Workspace Container */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8" id="main-content">
           {/* Error Notification */}
           {error && (
             <div className="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-900 dark:bg-rose-950/60 dark:border-rose-800 dark:text-rose-200 rounded-2xl text-xs sm:text-sm flex items-center justify-between shadow-xs">
@@ -312,6 +287,8 @@ export default function App() {
               isUpdatingState={isUpdatingState}
               onCheckAnother={() => setCurrentFlow('home')}
               lang={lang}
+              currentUser={currentUser}
+              onOpenAuthModal={(prompt, tab) => openAuth(prompt, tab)}
             />
           ) : currentFlow === 'message' ? (
             /* Task Flow B: Check Message / SMS */
@@ -346,17 +323,16 @@ export default function App() {
             /* Task Flow A: Minimal Citizen Home Starting Point */
             <HomeChoice
               onSelectFlow={(flow) => {
-                if (!currentUser) {
-                  openAuth(`Please sign in or register to access the ${flow} triage engine.`, 'login', flow);
-                  return;
-                }
                 setError(null);
                 setCurrentFlow(flow);
               }}
               onSelectPreset={handleSelectPreset}
+              onSubmit={handleFlowSubmit}
+              isAnalyzing={isAnalyzing}
               lang={lang}
               currentUser={currentUser}
               onOpenAuthModal={(prompt, tab) => openAuth(prompt, tab)}
+              onOpenFileScanModal={() => setFileScanModalOpen(true)}
             />
           )}
         </main>
@@ -369,6 +345,12 @@ export default function App() {
           isOpen={methodologyOpen}
           onClose={() => setMethodologyOpen(false)}
           lang={lang}
+        />
+
+        {/* Automatic File Scanning & Threat Quarantine Modal (Phase 7) */}
+        <FileScanModal
+          isOpen={fileScanModalOpen}
+          onClose={() => setFileScanModalOpen(false)}
         />
 
         {/* Citizen Authentication & My Checks Modal */}
@@ -388,6 +370,5 @@ export default function App() {
           onAuthSuccess={handleAuthSuccess}
         />
       </div>
-    </div>
   );
 }

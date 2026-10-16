@@ -10,9 +10,9 @@ import {
 
 const STAGE_CONFIG = {
   lure: { label: 'Initial Lure / Engagement', icon: Mail, color: 'text-amber-600 dark:text-amber-400' },
-  redirection: { label: 'Infrastructure / Fake Portal', icon: Globe, color: 'text-blue-600 dark:text-blue-400' },
+  redirection: { label: 'Infrastructure / Fake Portal', icon: Globe, color: 'text-indigo-600 dark:text-indigo-400' },
   exploitation: { label: 'Credential / OTP Solicitation', icon: KeyRound, color: 'text-orange-600 dark:text-orange-400' },
-  monetization: { label: 'Financial Loss / Unauthorized Debit', icon: CreditCard, color: 'text-red-600 dark:text-red-400' },
+  monetization: { label: 'Financial Loss / Unauthorized Debit', icon: CreditCard, color: 'text-rose-600 dark:text-rose-400' },
   execution: { label: 'Unauthorized Execution', icon: ShieldAlert, color: 'text-purple-600 dark:text-purple-400' },
 };
 
@@ -60,10 +60,10 @@ export default function AttackPath({ attackPath, userState = 'received' }) {
             return (
               <div key={idx} className="relative flex flex-col">
                 <div
-                  className={`flex-1 p-3.5 rounded-card border transition-all duration-200 flex flex-col justify-between ${
+                  className={`flex-1 p-3.5 rounded-xl border transition-all duration-200 flex flex-col justify-between ${
                     isReachedOrObserved
-                      ? 'bg-slate-50 border-slate-300 shadow-sm ring-1 ring-amber-400/50 dark:bg-slate-950/90 dark:border-slate-700 dark:ring-amber-500/40'
-                      : 'bg-white/50 dark:bg-slate-950/40 border-dashed border-slate-200 dark:border-slate-800 opacity-60'
+                      ? 'bg-slate-50/90 border-indigo-300 dark:bg-night-800/90 dark:border-violet-500/50 shadow-xs ring-1 ring-indigo-400/30 dark:ring-violet-500/30'
+                      : 'bg-white/50 dark:bg-night-950/40 border-dashed border-slate-200 dark:border-night-border opacity-65'
                   }`}
                 >
                   <div>
@@ -72,8 +72,8 @@ export default function AttackPath({ attackPath, userState = 'received' }) {
                       <div className="flex items-center space-x-2">
                         <div className={`w-5 h-5 rounded-full flex items-center justify-center font-mono text-[10px] font-bold ${
                           isReachedOrObserved 
-                            ? 'bg-amber-500 text-slate-950' 
-                            : 'bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                            ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' 
+                            : 'bg-slate-200 text-slate-600 dark:bg-night-800 dark:text-slate-400'
                         }`}>
                           {idx + 1}
                         </div>
@@ -81,12 +81,12 @@ export default function AttackPath({ attackPath, userState = 'received' }) {
                       </div>
 
                       {/* Reached Status Badge */}
-                      <span className={`text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-badge ${
+                      <span className={`text-[9px] font-bold uppercase px-1.5 py-0.5 rounded ${
                         idx === reachedStageIndex 
-                          ? 'bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-600'
+                          ? 'bg-indigo-100 text-indigo-900 border border-indigo-300 dark:bg-violet-950 dark:text-violet-300 dark:border-violet-700'
                           : isReachedOrObserved
-                          ? 'bg-slate-200 text-slate-800 dark:bg-slate-800 dark:text-slate-300'
-                          : 'bg-slate-100 text-slate-500 dark:bg-slate-900 dark:text-slate-600'
+                          ? 'bg-slate-200 text-slate-800 dark:bg-night-750 dark:text-slate-300'
+                          : 'bg-slate-100 text-slate-500 dark:bg-night-900 dark:text-slate-600'
                       }`}>
                         {idx === reachedStageIndex ? 'CURRENT' : isReachedOrObserved ? 'REACHED' : 'POTENTIAL'}
                       </span>
@@ -104,7 +104,7 @@ export default function AttackPath({ attackPath, userState = 'received' }) {
                   </div>
 
                   {/* Intended Consequence & Citations */}
-                  <div className="mt-3 pt-2 border-t border-slate-200 dark:border-slate-800/80">
+                  <div className="mt-3 pt-2 border-t border-slate-200 dark:border-night-border">
                     {step.intended_consequence && (
                       <div className="text-[11px] text-slate-600 dark:text-slate-400 mb-1.5 leading-snug">
                         <strong className="text-slate-800 dark:text-slate-200">Objective:</strong> {step.intended_consequence}
@@ -116,7 +116,7 @@ export default function AttackPath({ attackPath, userState = 'received' }) {
                         {step.evidence_indices.map((eIdx) => (
                           <span 
                             key={eIdx}
-                            className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-amber-300 dark:border-slate-700"
+                            className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 dark:bg-night-800 dark:text-violet-300 dark:border-night-border"
                           >
                             Evid. [{eIdx}]
                           </span>
@@ -132,8 +132,8 @@ export default function AttackPath({ attackPath, userState = 'received' }) {
       ) : (
         <div className="space-y-2">
           {rawSteps.map((step, idx) => (
-            <div key={idx} className="flex items-start space-x-3 p-3 bg-slate-50 dark:bg-slate-950/60 rounded-btn border border-slate-200 dark:border-slate-800 text-xs sm:text-sm text-slate-800 dark:text-slate-300">
-              <span className="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center font-mono text-[10px] text-amber-600 dark:text-amber-400 font-bold flex-shrink-0 mt-0.5">
+            <div key={idx} className="flex items-start space-x-3 p-3 bg-slate-50 dark:bg-night-950/60 rounded-xl border border-slate-200 dark:border-night-border text-xs sm:text-sm text-slate-800 dark:text-slate-300">
+              <span className="w-5 h-5 rounded-full bg-slate-200 dark:bg-night-800 flex items-center justify-center font-mono text-[10px] text-indigo-600 dark:text-violet-400 font-bold flex-shrink-0 mt-0.5">
                 {idx + 1}
               </span>
               <span className="leading-relaxed">{step}</span>

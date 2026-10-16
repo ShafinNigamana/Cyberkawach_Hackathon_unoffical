@@ -39,6 +39,83 @@ export async function analyzeMessage({ message, urls = [], user_state = 'receive
   return response.json();
 }
 
+/**
+ * Phase 3: Real-Time Server-Sent Events (SSE) Streaming Analysis
+ * Reads progressive milestones (ioc_discovered, infrastructure_resolved, threat_intel_hits, final_verdict)
+ */
+export async function analyzeMessageStream({
+  message,
+  urls = [],
+  user_state = 'received',
+  language = 'en',
+  input_type = 'sms',
+  onEvent = null,
+}) {
+  const normalizedInputType = (input_type === 'image' || input_type === 'photo') ? 'screenshot' : input_type;
+  const payload = {
+    message: message.trim(),
+    urls: Array.isArray(urls) ? urls : urls.split('\n').map(u => u.trim()).filter(Boolean),
+    user_state,
+    language,
+    response_language: language,
+    input_type: normalizedInputType,
+  };
+
+  const token = localStorage.getItem('cf_auth_token');
+  const headers = {
+    'Content-Type': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest',
+  };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const response = await fetch(`${API_BASE}/api/analyze/stream`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ detail: 'Network error occurred during analysis stream.' }));
+    throw new Error(errorData.detail || errorData.error || `Server responded with ${response.status}`);
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+  let finalResult = null;
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    buffer += decoder.decode(value, { stream: true });
+    const parts = buffer.split('\n\n');
+    buffer = parts.pop() || '';
+
+    for (const chunk of parts) {
+      if (!chunk.trim() || chunk.startsWith(':')) continue;
+      const eventMatch = chunk.match(/^event:\s*([^\r\n]+)/m);
+      const dataMatch = chunk.match(/^data:\s*([^\r\n]+)/m);
+      if (eventMatch && dataMatch) {
+        const eventName = eventMatch[1].trim();
+        try {
+          const eventData = JSON.parse(dataMatch[1].trim());
+          if (onEvent) onEvent(eventName, eventData);
+          if (eventName === 'final_verdict') {
+            finalResult = eventData;
+          }
+        } catch (err) {
+          console.debug('Failed to parse SSE event chunk:', err);
+        }
+      }
+    }
+  }
+
+  return finalResult;
+}
+
 export async function updateUserState(incidentId, userState, responseLanguage = null) {
   const payload = { user_state: userState };
   if (responseLanguage) {
@@ -94,6 +171,75 @@ export async function uploadScreenshot(file) {
     throw new Error(errorData.detail || errorData.error || 'Screenshot upload failed');
   }
 
+  return response.json();
+}
+
+export async function scanFileForThreats(file) {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const response = await fetch(`${API_BASE}/api/scan/file`, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ detail: 'File threat scan failed.' }));
+    throw new Error(errorData.detail || errorData.error || 'Threat scan failed');
+  }
+
+  return response.json();
+}
+
+export async function scanRemoteDownloadUrl(downloadUrl, customFilename = '') {
+  const response = await fetch(`${API_BASE}/api/scan/url`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ download_url: downloadUrl, custom_filename: customFilename }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ detail: 'Download inspection failed.' }));
+    throw new Error(errorData.detail || errorData.error || 'Download scan failed');
+  }
+
+  return response.json();
+}
+
+export async function getFileScanReport(scanId) {
+  const response = await fetch(`${API_BASE}/api/scan/${encodeURIComponent(scanId)}`);
+  if (!response.ok) throw new Error('Failed to fetch file scan record');
+  return response.json();
+}
+
+export function getSafeDownloadUrl(scanId) {
+  return `${API_BASE}/api/scan/${encodeURIComponent(scanId)}/download`;
+}
+
+export async function scanFolderBatch(files, folderName = 'Uploaded_Folder') {
+  const formData = new FormData();
+  formData.append('folder_name', folderName);
+  for (const file of files) {
+    const path = file.webkitRelativePath || file.name;
+    formData.append('files', file, path);
+  }
+
+  const response = await fetch(`${API_BASE}/api/scan/folder`, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ detail: 'Folder scan failed.' }));
+    throw new Error(errorData.detail || errorData.error || 'Folder scan failed');
+  }
+
+  return response.json();
+}
+
+export async function getFolderScanReport(batchId) {
+  const response = await fetch(`${API_BASE}/api/scan/folder/${encodeURIComponent(batchId)}`);
+  if (!response.ok) throw new Error('Failed to fetch folder scan record');
   return response.json();
 }
 

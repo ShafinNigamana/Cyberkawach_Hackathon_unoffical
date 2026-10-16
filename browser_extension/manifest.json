@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "CyberKawach — Download Threat Guardian",
+  "version": "1.0.0",
+  "description": "Real-time download interceptor and threat scanner powered by the CyberKawach forensic platform.",
+  "permissions": [
+    "downloads",
+    "storage",
+    "notifications"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:8000/*",
+    "http://localhost:8000/*",
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "CyberKawach Download Monitor"
+  }
+}

@@ -48,6 +48,10 @@ _WEIGHTS = {
     EvidenceType.HTTP_REDIRECT: 0.10,
     EvidenceType.WEBSITE_BEHAVIOR: 0.22,
     EvidenceType.SENDER_ANALYSIS: 0.18,
+    EvidenceType.FINANCIAL_ANALYSIS: 0.22,
+    EvidenceType.INFRASTRUCTURE_ANALYSIS: 0.16,
+    EvidenceType.TELECOM_ANALYSIS: 0.18,
+    EvidenceType.LINGUISTIC_ANALYSIS: 0.16,
 }
 
 # ─── Risk level thresholds ───

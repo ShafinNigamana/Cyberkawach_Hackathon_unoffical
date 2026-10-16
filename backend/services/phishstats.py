@@ -131,10 +131,23 @@ async def check_phishstats(urls: list[str] | str) -> list[ThreatIntelResult]:
             if not clean_url:
                 continue
 
-            # 1. Check in-memory TTL cache
+            # 1. Check in-memory TTL cache (returns cached mock in tests)
             cached = _get_cached_result(clean_url)
             if cached:
                 results.append(cached)
+                continue
+
+            # 2. Check if API key is configured
+            if not api_key:
+                results.append(
+                    ThreatIntelResult(
+                        source="phishstats",
+                        match=None,
+                        lookup_url=clean_url,
+                        intel_status=ThreatIntelStatus.SOURCE_UNAVAILABLE,
+                        error="API key not configured",
+                    )
+                )
                 continue
 
             # 2. Query API with safe URL-encoding (PhishStats supports public anonymous queries)

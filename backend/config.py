@@ -40,10 +40,19 @@ class Settings(BaseSettings):
     app_host: str = "0.0.0.0"
     log_level: str = "INFO"
 
-    # ─── Rate Limiting ───
+    # ─── Rate Limiting (Phase 5) ───
     rate_limit_per_minute: int = 30
+    rate_limit_anon_per_minute: int = 15
+    rate_limit_auth_per_minute: int = 120
 
-    # ─── File Upload ───
+    # ─── Distributed Caching (Phase 4) ───
+    redis_enabled: bool = False
+    redis_url: str = "redis://localhost:6379/0"
+    cache_l1_max_size: int = 10000
+    cache_default_ttl_seconds: int = 3600
+    cache_threat_intel_ttl_seconds: int = 900
+
+    # ─── File Upload & Inspection (Phase 7) ───
     max_upload_size_mb: int = 10
     allowed_upload_types: str = "image/png,image/jpeg,image/webp"
 

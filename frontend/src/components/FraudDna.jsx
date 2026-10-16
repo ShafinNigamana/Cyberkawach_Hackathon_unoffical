@@ -43,7 +43,7 @@ export default function FraudDna({ fraudDna, targetBrand, extractedDomain }) {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
           {/* Node 1: Campaign Cluster */}
-          <div className="p-3 bg-white dark:bg-slate-900 rounded-btn border border-amber-200 dark:border-amber-800/60 flex items-center space-x-2.5 shadow-sm">
+          <div className="p-3 bg-white dark:bg-night-900 rounded-xl border border-amber-200 dark:border-amber-800/60 flex items-center space-x-2.5 shadow-2xs">
             <Network className="w-4 h-4 text-amber-500 dark:text-amber-400 flex-shrink-0" />
             <div className="min-w-0">
               <span className="text-[10px] text-slate-500 dark:text-slate-400 block">Campaign Syndicate</span>
@@ -54,8 +54,8 @@ export default function FraudDna({ fraudDna, targetBrand, extractedDomain }) {
           </div>
 
           {/* Node 2: Target Brand / Sector */}
-          <div className="p-3 bg-white dark:bg-slate-900 rounded-btn border border-slate-200 dark:border-slate-700 flex items-center space-x-2.5 shadow-sm">
-            <Building className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+          <div className="p-3 bg-white dark:bg-night-900 rounded-xl border border-slate-200 dark:border-night-border flex items-center space-x-2.5 shadow-2xs">
+            <Building className="w-4 h-4 text-indigo-600 dark:text-indigo-400 flex-shrink-0" />
             <div className="min-w-0">
               <span className="text-[10px] text-slate-500 dark:text-slate-400 block">Target Brand Impersonated</span>
               <span className="font-semibold text-slate-800 dark:text-slate-200 truncate block">
@@ -65,7 +65,7 @@ export default function FraudDna({ fraudDna, targetBrand, extractedDomain }) {
           </div>
 
           {/* Node 3: Infrastructure / Domain */}
-          <div className="p-3 bg-white dark:bg-slate-900 rounded-btn border border-slate-200 dark:border-slate-700 flex items-center space-x-2.5 shadow-sm">
+          <div className="p-3 bg-white dark:bg-night-900 rounded-xl border border-slate-200 dark:border-night-border flex items-center space-x-2.5 shadow-2xs">
             <Server className="w-4 h-4 text-purple-600 dark:text-purple-400 flex-shrink-0" />
             <div className="min-w-0">
               <span className="text-[10px] text-slate-500 dark:text-slate-400 block">Observed Infrastructure</span>
@@ -78,11 +78,11 @@ export default function FraudDna({ fraudDna, targetBrand, extractedDomain }) {
       </div>
 
       {/* Fingerprint & Related Incidents Details */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-600 dark:text-slate-400 pt-3 border-t border-slate-200 dark:border-slate-800 gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs text-slate-600 dark:text-slate-400 pt-3 border-t border-slate-200 dark:border-night-border gap-2">
         <div className="flex items-center space-x-1.5 font-mono">
           <Fingerprint className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
           <span>Fingerprint:</span>
-          <code className="text-slate-800 dark:text-slate-300 font-mono text-[11px] bg-slate-100 dark:bg-slate-950 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-800">
+          <code className="text-slate-800 dark:text-slate-300 font-mono text-[11px] bg-slate-100 dark:bg-night-950 px-1.5 py-0.5 rounded border border-slate-200 dark:border-night-border">
             {fraudDna.fingerprint || 'N/A'}
           </code>
         </div>
