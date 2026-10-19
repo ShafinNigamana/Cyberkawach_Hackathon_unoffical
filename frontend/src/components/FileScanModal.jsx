@@ -443,6 +443,35 @@ export default function FileScanModal({ isOpen, onClose }) {
                 </ul>
               </div>
 
+              {/* Archive Member File Inspection Table */}
+              {scanResult.deep_analysis?.archive_members?.length > 0 && (
+                <div className="space-y-1.5 pt-2 border-t border-slate-800/60">
+                  <span className="text-[11px] font-semibold text-slate-400 flex items-center gap-1.5">
+                    <Archive className="w-3.5 h-3.5 text-blue-400" />
+                    Archive Member Inspection ({scanResult.deep_analysis.archive_members.length} files inspected):
+                  </span>
+                  <div className="max-h-36 overflow-y-auto rounded-lg border border-slate-800 divide-y divide-slate-800/80 text-xs">
+                    {scanResult.deep_analysis.archive_members.map((m, idx) => (
+                      <div key={idx} className="p-2 flex items-center justify-between hover:bg-slate-900/60 transition-colors">
+                        <div className="truncate max-w-[70%]">
+                          <span className="font-mono text-slate-200 block truncate">{m.filename}</span>
+                          <span className="text-[10px] text-slate-500">
+                            {(m.size_bytes / 1024).toFixed(1)} KB • Entropy: {m.entropy ?? '0.0'}
+                          </span>
+                        </div>
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                          m.is_safe
+                            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
+                            : 'bg-rose-500/10 text-rose-400 border border-rose-500/30'
+                        }`}>
+                          {m.is_safe ? 'VERIFIED' : 'THREAT'}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Release Gate Action Button */}
               <div className="pt-2 border-t border-slate-800/60 flex items-center justify-between">
                 <span className="text-xs text-slate-400">

