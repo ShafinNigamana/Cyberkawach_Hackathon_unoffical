@@ -27,9 +27,11 @@ from backend.models.evidence import (
     RiskLevel,
     UserCategory,
 )
+from backend.config import get_settings
 from backend.utils.security_logging import safe_error_message
 
 logger = logging.getLogger(__name__)
+settings = get_settings()
 
 # Database location
 _DB_DIR = Path(__file__).resolve().parent.parent / "data"
@@ -202,24 +204,25 @@ def save_investigation(incident: IncidentEvidence) -> bool:
 
 
 def get_cached_indicator(indicator: str, provider: str) -> Optional[dict[str, Any]]:
-    """Retrieve cached indicator data if not expired."""
-    key = f"{provider}:{indicator.strip().lower()}"
+    """Retrieve cached indicator data from L1 LRU -> L2 Redis -> SQLite fallback."""
+    from backend.services.cache_service import cache_manager
+
+    clean_ind = indicator.strip().lower()
+    cache_key = cache_manager.make_ioc_key(provider, clean_ind)
+
+    # 1. Fast two-tier cache lookup (L1 In-Memory LRU + L2 Redis)
+    fast_val = cache_manager.get(cache_key)
+    if fast_val is not None:
+        return fast_val
+
+    # 2. Check local SQLite cache table as persistent fallback
     now = time.time()
-
-    # 1. Check in-memory cache
-    with _LOCK:
-        if key in _MEM_CACHE:
-            exp, val = _MEM_CACHE[key]
-            if now < exp:
-                return val
-
-    # 2. Check SQLite cache
     try:
         conn = _get_connection()
         cur = conn.cursor()
         cur.execute(
             "SELECT data_json, expires_at FROM indicator_cache WHERE indicator_key = ? AND provider = ?",
-            (indicator.strip().lower(), provider),
+            (clean_ind, provider),
         )
         row = cur.fetchone()
         conn.close()
@@ -228,25 +231,50 @@ def get_cached_indicator(indicator: str, provider: str) -> Optional[dict[str, An
             data_json, expires_at = row["data_json"], row["expires_at"]
             if now < expires_at:
                 parsed = json.loads(data_json)
-                with _LOCK:
-                    _MEM_CACHE[key] = (expires_at, parsed)
+                rem_ttl = max(1.0, expires_at - now)
+                cache_manager.set(cache_key, parsed, ttl_seconds=int(rem_ttl))
                 return parsed
     except Exception as e:
-        logger.debug("Cache lookup error for %s: %s", key, safe_error_message(e))
+        logger.debug("SQLite cache lookup error for %s: %s", cache_key, safe_error_message(e))
 
     return None
 
 
-def set_cached_indicator(indicator: str, provider: str, data: dict[str, Any], ttl_seconds: int = 3600) -> None:
-    """Store indicator result with TTL expiration."""
+def set_cached_indicator(
+    indicator: str,
+    provider: str,
+    data: dict[str, Any],
+    ttl_seconds: Optional[int] = None,
+) -> None:
+    """
+    Store indicator result with TTL expiration across two-tier cache and SQLite.
+    Never caches provider errors or inconclusive/unavailable states.
+    """
+    # Guard against caching errors as clean results
+    status_str = str(data.get("intel_status", "") or data.get("status", "")).upper()
+    if "ERROR" in status_str or "UNAVAILABLE" in status_str or data.get("error"):
+        return
+
+    from backend.services.cache_service import cache_manager
+
     clean_ind = indicator.strip().lower()
-    key = f"{provider}:{clean_ind}"
+    cache_key = cache_manager.make_ioc_key(provider, clean_ind)
+
+    # Use fine-grained TTL: 24 hours for confirmed malicious hits, 15m for unlisted, default 1 hour
+    actual_ttl = ttl_seconds
+    if actual_ttl is None:
+        if data.get("match") is True or "MALICIOUS" in status_str:
+            actual_ttl = 86400  # 24 hours
+        else:
+            actual_ttl = settings.cache_threat_intel_ttl_seconds
+
     now = time.time()
-    expires_at = now + ttl_seconds
+    expires_at = now + actual_ttl
 
-    with _LOCK:
-        _MEM_CACHE[key] = (expires_at, data)
+    # 1. Store in Two-Tier Cache (L1 LRU + L2 Redis)
+    cache_manager.set(cache_key, data, ttl_seconds=actual_ttl)
 
+    # 2. Store in local SQLite database
     try:
         conn = _get_connection()
         with conn:
@@ -259,7 +287,7 @@ def set_cached_indicator(indicator: str, provider: str, data: dict[str, Any], tt
             )
         conn.close()
     except Exception as e:
-        logger.debug("Failed to set indicator cache for %s: %s", key, safe_error_message(e))
+        logger.debug("Failed to set SQLite indicator cache for %s: %s", clean_ind, safe_error_message(e))
 
 
 # Auto-initialize database schema on module load

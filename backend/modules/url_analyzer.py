@@ -26,6 +26,16 @@ from backend.models.evidence import (
     RiskDirection,
     URLSignal,
 )
+from backend.modules.adversarial_normalizer import calculate_entropy
+from backend.modules.brand_check import is_official_brand_domain
+
+
+# ─── Protected Institutional Brands for Zero-Day Typosquatting Defense ───
+_PROTECTED_INSTITUTIONAL_KEYWORDS = frozenset({
+    "hdfc", "icici", "sbi", "yono", "axisbank", "paytm", "phonepe",
+    "bhim", "epfindia", "incometax", "uidai", "aadhaar", "kotak", "pnbindia",
+    "canarabank", "bankofbaroda", "bob", "unionbank",
+})
 
 
 # ─── Suspicious TLDs (commonly abused, cheap/free registration) ───
@@ -276,6 +286,44 @@ def _analyze_single_url(url_signal: URLSignal) -> tuple[URLSignal, list[Evidence
                 correlation_group="url_structure",
                 raw_data={"url": url, "domain": host, "length": len(host)},
             ))
+
+        # High Lexical Entropy (DGA / Randomized Domain Detection)
+        entropy = calculate_entropy(host.split(':')[0])
+        if entropy >= 3.75 and len(host) >= 12 and not is_cloud_multi:
+            signals.append('high_entropy_domain')
+            evidence_items.append(EvidenceItem(
+                type=EvidenceType.URL_ANALYSIS,
+                source="url_analyzer",
+                description=f"High domain lexical entropy ({entropy:.2f}) observed on: {host}",
+                observed_value=str(entropy),
+                interpretation="High character randomness frequently indicates algorithmically generated (DGA) zero-day scam domains",
+                status=EvidenceStatus.SUSPICIOUS,
+                reliability=EvidenceReliability.HEURISTIC,
+                risk_direction=RiskDirection.INCREASES_RISK,
+                severity=EvidenceSeverity.HIGH,
+                correlation_group="url_dga_entropy",
+                raw_data={"url": url, "domain": host, "entropy": entropy},
+            ))
+
+        # Brand Typosquatting / Unauthorized Institutional Keyword in Domain
+        if not is_official_brand_domain(host):
+            for brand_kw in _PROTECTED_INSTITUTIONAL_KEYWORDS:
+                if brand_kw in host.lower():
+                    signals.append('brand_typosquatting')
+                    evidence_items.append(EvidenceItem(
+                        type=EvidenceType.BRAND_MISMATCH,
+                        source="url_analyzer",
+                        description=f"Unauthorized domain embedding protected brand keyword '{brand_kw}': {host}",
+                        observed_value=host,
+                        interpretation=f"Domain incorporates banking/institutional brand '{brand_kw}' but does not belong to verified infrastructure",
+                        status=EvidenceStatus.SUSPICIOUS,
+                        reliability=EvidenceReliability.DETERMINISTIC_FACT,
+                        risk_direction=RiskDirection.INCREASES_RISK,
+                        severity=EvidenceSeverity.HIGH,
+                        correlation_group="brand_impersonation",
+                        raw_data={"url": url, "domain": host, "brand_keyword": brand_kw},
+                    ))
+                    break
 
     # ─── 3. Path & Query Heuristics (Applies to both IP and domains) ───
 

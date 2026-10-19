@@ -66,21 +66,23 @@ export default function ReportModal({
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/80 backdrop-blur-sm overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/80 backdrop-blur-md overflow-y-auto animate-fade-in"
       role="dialog"
       aria-modal="true"
       aria-label="Forensic Incident Dossier Preview"
     >
-      <div className="bg-slate-900 border border-slate-700 rounded-card max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl text-slate-200">
+      <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl text-slate-800 dark:text-slate-200 overflow-hidden transition-colors">
         {/* Modal Top Bar */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-800 bg-slate-950/60 rounded-t-card">
-          <div className="flex items-center space-x-2.5">
-            <ShieldAlert className="w-5 h-5 text-amber-400" />
+        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-slate-200 dark:border-border-dark bg-slate-50 dark:bg-surface-dark-elevated">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center justify-center flex-shrink-0">
+              <ShieldAlert className="w-5 h-5" />
+            </div>
             <div>
-              <h3 className="text-sm sm:text-base font-bold text-white">
+              <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
                 Official Cyber Crime Forensic Incident Dossier
               </h3>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
                 Citizen Technical Pack for National Cyber Crime Helpline (1930) & State Police
               </p>
             </div>
@@ -89,25 +91,26 @@ export default function ReportModal({
           <div className="flex items-center space-x-2">
             <button
               onClick={handlePrint}
-              className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-950 rounded-lg text-xs font-semibold shadow transition-colors cursor-pointer"
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold shadow cursor-pointer transition-colors"
               title="Print official dossier or save to PDF"
             >
               <Printer className="w-3.5 h-3.5" />
-              <span>Print / Save PDF</span>
+              <span className="hidden sm:inline">Print / Save PDF</span>
+              <span className="sm:hidden">Print</span>
             </button>
 
             <button
               onClick={handleDownloadJson}
-              className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-btn text-xs font-medium transition-colors cursor-pointer"
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-slate-200 hover:bg-slate-300 dark:bg-surface-dark-hover dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-lg text-xs font-medium cursor-pointer transition-colors"
               title="Download structured JSON forensic export"
             >
-              <Download className="w-3.5 h-3.5 text-slate-400" />
+              <Download className="w-3.5 h-3.5" />
               <span>JSON</span>
             </button>
 
             <button
               onClick={onClose}
-              className="p-1.5 rounded-btn hover:bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-surface-dark-hover text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors cursor-pointer"
               aria-label="Close Preview"
             >
               <X className="w-5 h-5" />
@@ -116,52 +119,52 @@ export default function ReportModal({
         </div>
 
         {/* Printable Document Preview Area */}
-        <div className="p-5 sm:p-8 overflow-y-auto space-y-6 font-sans text-xs bg-slate-950/40">
+        <div className="p-5 sm:p-8 overflow-y-auto space-y-6 font-sans text-xs bg-slate-50/50 dark:bg-surface-dark/50 print:bg-white print:text-black">
           {/* Official Emblem Banner */}
-          <div className="text-center pb-4 border-b border-slate-800">
-            <div className="inline-block p-2 bg-slate-900 rounded-full border border-slate-700 mb-2">
-              <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" className="text-amber-400 mx-auto" aria-hidden="true">
+          <div className="text-center pb-4 border-b border-slate-200 dark:border-border-dark">
+            <div className="inline-block p-2.5 bg-white dark:bg-surface-dark-elevated rounded-2xl border border-slate-200 dark:border-border-dark mb-2.5 shadow-xs">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" className="text-amber-500 dark:text-amber-400 mx-auto" aria-hidden="true">
                 <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="1.5" />
                 <circle cx="12" cy="12" r="2" fill="currentColor" />
                 <path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07L19.07 4.93M8.46 2.54l7.08 18.92M2.54 8.46l18.92 7.08M15.54 2.54L8.46 21.46M2.54 15.54l18.92-7.08" stroke="currentColor" strokeWidth="0.8" />
               </svg>
             </div>
-            <h2 className="text-base font-bold text-white uppercase tracking-wider">
+            <h2 className="text-base font-bold text-slate-900 dark:text-white uppercase tracking-wider">
               CYBER FRAUD FORENSIC INCIDENT DOSSIER
             </h2>
-            <p className="text-[11px] text-slate-400">
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
               Generated by Cyber Fraud Guardian • I4C Partner Initiative • National Citizen Triage Dossier
             </p>
           </div>
 
           {/* Dossier Identifiers Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 bg-slate-900/80 rounded-btn border border-slate-800 font-mono text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 bg-white dark:bg-surface-dark-elevated rounded-xl border border-slate-200 dark:border-border-dark font-mono text-xs shadow-xs">
             <div>
-              <span className="text-slate-400 block text-[10px]">INCIDENT REFERENCE ID:</span>
-              <div className="flex items-center space-x-2 mt-0.5">
-                <strong className="text-amber-400 text-sm">{effectiveId}</strong>
+              <span className="text-slate-500 dark:text-slate-400 block text-[10px] font-sans font-bold uppercase tracking-wider">INCIDENT REFERENCE ID:</span>
+              <div className="flex items-center space-x-2 mt-1">
+                <strong className="text-emerald-600 dark:text-emerald-400 text-sm font-mono tracking-wide">{effectiveId}</strong>
                 <button
                   onClick={() => handleCopy(effectiveId)}
-                  className="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-white cursor-pointer"
+                  className="p-1 hover:bg-slate-100 dark:hover:bg-surface-dark-hover rounded text-slate-400 hover:text-slate-700 dark:hover:text-white cursor-pointer transition-colors"
                   title="Copy Reference ID"
                 >
-                  {isCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                  {isCopied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
                 </button>
               </div>
             </div>
 
             <div>
-              <span className="text-slate-400 block text-[10px]">THREAT CLASSIFICATION:</span>
-              <div className="mt-0.5">
-                <span className={`inline-block px-2 py-0.5 rounded-badge text-xs font-bold border ${
+              <span className="text-slate-500 dark:text-slate-400 block text-[10px] font-sans font-bold uppercase tracking-wider">THREAT CLASSIFICATION:</span>
+              <div className="mt-1 flex items-center flex-wrap gap-2">
+                <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-bold border ${
                   riskLevel === 'CRITICAL' || riskLevel === 'HIGH' 
-                    ? 'bg-red-950 text-red-300 border-red-700' 
-                    : 'bg-emerald-950 text-emerald-300 border-emerald-700'
+                    ? 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800' 
+                    : 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800'
                 }`}>
                   {riskLevel} ({riskScorePct}/100)
                 </span>
-                <span className="text-slate-400 text-xs ml-2">
-                  Category: {currentIncident.fraud_category || 'General Scam'}
+                <span className="text-slate-600 dark:text-slate-400 text-xs font-sans">
+                  Category: <strong className="text-slate-800 dark:text-slate-200">{currentIncident.fraud_category || 'General Scam'}</strong>
                 </span>
               </div>
             </div>
@@ -169,10 +172,10 @@ export default function ReportModal({
 
           {/* Section 1: Untrusted Evidentiary Message */}
           <div>
-            <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wide mb-1.5">
+            <h4 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
               1. Untrusted Evidentiary Communication
             </h4>
-            <div className="p-3 bg-slate-950 border border-slate-800 rounded-btn font-mono text-[11px] text-slate-300 whitespace-pre-wrap break-words leading-relaxed">
+            <div className="p-3.5 bg-white dark:bg-surface-dark-elevated border border-slate-200 dark:border-border-dark rounded-xl font-mono text-[11px] text-slate-700 dark:text-slate-300 whitespace-pre-wrap break-words leading-relaxed shadow-xs">
               {currentIncident.message_preview || currentIncident.message || 'No text content available'}
             </div>
           </div>
@@ -180,24 +183,32 @@ export default function ReportModal({
           {/* Section 2: Indicators of Compromise (IOCs) */}
           {currentIncident.urls && currentIncident.urls.length > 0 && (
             <div>
-              <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wide mb-1.5">
+              <h4 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
                 2. Extracted Indicators of Compromise (IOCs)
               </h4>
-              <div className="overflow-x-auto border border-slate-800 rounded-btn">
+              <div className="overflow-x-auto border border-slate-200 dark:border-border-dark rounded-xl shadow-xs">
                 <table className="w-full text-left border-collapse text-xs">
                   <thead>
-                    <tr className="bg-slate-900 border-b border-slate-800 text-slate-400 font-mono text-[11px]">
-                      <th className="p-2.5">Type</th>
-                      <th className="p-2.5">Observed Value / URL</th>
-                      <th className="p-2.5">Classification</th>
+                    <tr className="bg-slate-100 dark:bg-surface-dark-elevated border-b border-slate-200 dark:border-border-dark text-slate-600 dark:text-slate-400 font-mono text-[11px]">
+                      <th className="p-3">Type</th>
+                      <th className="p-3">Observed Value / URL</th>
+                      <th className="p-3">Classification</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/80 font-mono">
+                  <tbody className="divide-y divide-slate-100 dark:divide-border-dark font-mono bg-white dark:bg-surface-dark">
                     {currentIncident.urls.map((u, i) => (
-                      <tr key={i} className="hover:bg-slate-900/40">
-                        <td className="p-2.5 text-slate-400">Web URL</td>
-                        <td className="p-2.5 text-slate-200 break-all">{u.url}</td>
-                        <td className="p-2.5 text-amber-400">{u.is_suspicious ? 'Suspicious' : 'Clean'}</td>
+                      <tr key={i} className="hover:bg-slate-50 dark:hover:bg-surface-dark-hover">
+                        <td className="p-3 text-slate-500 dark:text-slate-400">Web URL</td>
+                        <td className="p-3 text-slate-800 dark:text-slate-200 break-all">{u.url}</td>
+                        <td className="p-3">
+                          <span className={`px-2 py-0.5 rounded text-[11px] font-bold ${
+                            u.is_suspicious 
+                              ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300' 
+                              : 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300'
+                          }`}>
+                            {u.is_suspicious ? 'Suspicious' : 'Clean'}
+                          </span>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -209,24 +220,24 @@ export default function ReportModal({
           {/* Section 3: Evidence Summary Table */}
           {currentIncident.evidence && currentIncident.evidence.length > 0 && (
             <div>
-              <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wide mb-1.5">
+              <h4 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
                 3. Forensic Evidence Dossier
               </h4>
-              <div className="overflow-x-auto border border-slate-800 rounded-btn">
+              <div className="overflow-x-auto border border-slate-200 dark:border-border-dark rounded-xl shadow-xs">
                 <table className="w-full text-left border-collapse text-xs">
                   <thead>
-                    <tr className="bg-slate-900 border-b border-slate-800 text-slate-400 font-mono text-[11px]">
-                      <th className="p-2.5">Source Module</th>
-                      <th className="p-2.5">Finding & Forensic Description</th>
-                      <th className="p-2.5">Confidence</th>
+                    <tr className="bg-slate-100 dark:bg-surface-dark-elevated border-b border-slate-200 dark:border-border-dark text-slate-600 dark:text-slate-400 font-mono text-[11px]">
+                      <th className="p-3">Source Module</th>
+                      <th className="p-3">Finding & Forensic Description</th>
+                      <th className="p-3">Confidence</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/80">
+                  <tbody className="divide-y divide-slate-100 dark:divide-border-dark bg-white dark:bg-surface-dark">
                     {currentIncident.evidence.map((item, i) => (
-                      <tr key={i} className="hover:bg-slate-900/40">
-                        <td className="p-2.5 font-mono text-slate-400 whitespace-nowrap">{item.source}</td>
-                        <td className="p-2.5 text-slate-200">{item.description}</td>
-                        <td className="p-2.5 font-mono text-amber-400 whitespace-nowrap">
+                      <tr key={i} className="hover:bg-slate-50 dark:hover:bg-surface-dark-hover">
+                        <td className="p-3 font-mono text-slate-500 dark:text-slate-400 whitespace-nowrap">{item.source}</td>
+                        <td className="p-3 text-slate-800 dark:text-slate-200">{item.description}</td>
+                        <td className="p-3 font-mono text-emerald-600 dark:text-emerald-400 font-bold whitespace-nowrap">
                           {item.confidence != null ? `${Math.round(item.confidence * 100)}%` : '100%'}
                         </td>
                       </tr>
@@ -238,38 +249,38 @@ export default function ReportModal({
           )}
 
           {/* Section 4: National Helpline Advisory */}
-          <div className="p-4 bg-slate-900/80 rounded-btn border border-slate-800 text-slate-300 space-y-1.5">
-            <h4 className="text-xs font-bold text-white uppercase tracking-wide flex items-center space-x-1.5">
+          <div className="p-4 bg-amber-500/5 dark:bg-amber-500/10 rounded-xl border border-amber-500/20 text-slate-700 dark:text-slate-300 space-y-1.5">
+            <h4 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center space-x-1.5">
               <span>National Cyber Crime Reporting Advisory</span>
             </h4>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              If financial loss occurred within the last 24 hours (Golden Hour), immediately call <strong>1930</strong> or register an online formal complaint at <a href="https://cybercrime.gov.in" target="_blank" rel="noreferrer" className="text-blue-400 underline">https://cybercrime.gov.in</a> quoting this technical dossier reference.
+            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+              If financial loss occurred within the last 24 hours (Golden Hour), immediately call <strong>1930</strong> or register an online formal complaint at <a href="https://cybercrime.gov.in" target="_blank" rel="noreferrer" className="text-emerald-600 dark:text-emerald-400 underline font-medium">https://cybercrime.gov.in</a> quoting this technical dossier reference.
             </p>
           </div>
         </div>
 
         {/* Modal Bottom Actions Bar */}
-        <div className="p-4 border-t border-slate-800 bg-slate-950/80 flex flex-col sm:flex-row items-center justify-between gap-3 rounded-b-card">
+        <div className="p-4 sm:p-5 border-t border-slate-200 dark:border-border-dark bg-slate-50 dark:bg-surface-dark-elevated flex flex-col sm:flex-row items-center justify-between gap-3">
           <a
             href="https://cybercrime.gov.in"
             target="_blank"
             rel="noreferrer"
-            className="text-xs text-blue-400 hover:text-blue-300 flex items-center space-x-1"
+            className="text-xs text-emerald-600 dark:text-emerald-400 hover:underline flex items-center space-x-1.5 font-medium"
           >
             <span>Proceed to cybercrime.gov.in to file official complaint</span>
             <ExternalLink className="w-3.5 h-3.5" />
           </a>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 w-full sm:w-auto justify-end">
             <button
               onClick={handlePrint}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-btn text-xs shadow transition-colors"
+              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold shadow cursor-pointer transition-colors"
             >
               Print / Save PDF
             </button>
             <button
               onClick={onClose}
-              className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-btn text-xs transition-colors"
+              className="px-4 py-2 bg-slate-200 hover:bg-slate-300 dark:bg-surface-dark-hover dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-lg text-xs cursor-pointer font-medium transition-colors"
             >
               Close
             </button>

@@ -126,39 +126,40 @@ class URLhausProvider(ThreatIntelProvider):
         api_url = "https://urlhaus-api.abuse.ch/v1/url/"
         api_key = getattr(settings, "urlhaus_api_key", None)
 
-        # 1. If an Auth-Key is configured, attempt official API first
+        # 1. Attempt official API first (Auth-Key is optional for URLhaus query endpoint)
+        headers = {"User-Agent": "CyberKawach-Intel/1.0"}
         if api_key and api_key.strip():
-            headers = {"User-Agent": "CyberKawach-Intel/1.0", "Auth-Key": api_key.strip()}
-            try:
-                async with httpx.AsyncClient(timeout=_DEFAULT_TIMEOUT) as client:
-                    resp = await client.post(api_url, data={"url": url}, headers=headers)
-                    if resp.status_code == 200:
-                        data = resp.json()
-                        query_status = data.get("query_status", "")
-                        if query_status == "ok":
-                            url_status = data.get("url_status", "unknown")
-                            threat = data.get("threat", "malware_url")
-                            tags = ", ".join(data.get("tags") or [])
-                            details = f"Known threat: {threat} (status: {url_status})"
-                            if tags:
-                                details += f" [tags: {tags}]"
-                            return ThreatIntelResult(
-                                source=self.name,
-                                match=True,
-                                details=details,
-                                lookup_url=url,
-                                intel_status=ThreatIntelStatus.KNOWN_MALICIOUS,
-                            )
-                        elif query_status == "no_results":
-                            return ThreatIntelResult(
-                                source=self.name,
-                                match=False,
-                                details="No matching threat records in URLhaus",
-                                lookup_url=url,
-                                intel_status=ThreatIntelStatus.NO_KNOWN_MATCH,
-                            )
-            except Exception as e:
-                logger.debug("URLhaus API error: %s", safe_error_message(e))
+            headers["Auth-Key"] = api_key.strip()
+        try:
+            async with httpx.AsyncClient(timeout=_DEFAULT_TIMEOUT) as client:
+                resp = await client.post(api_url, data={"url": url}, headers=headers)
+                if resp.status_code == 200:
+                    data = resp.json()
+                    query_status = data.get("query_status", "")
+                    if query_status == "ok":
+                        url_status = data.get("url_status", "unknown")
+                        threat = data.get("threat", "malware_url")
+                        tags = ", ".join(data.get("tags") or [])
+                        details = f"Known threat: {threat} (status: {url_status})"
+                        if tags:
+                            details += f" [tags: {tags}]"
+                        return ThreatIntelResult(
+                            source=self.name,
+                            match=True,
+                            details=details,
+                            lookup_url=url,
+                            intel_status=ThreatIntelStatus.KNOWN_MALICIOUS,
+                        )
+                    elif query_status == "no_results":
+                        return ThreatIntelResult(
+                            source=self.name,
+                            match=False,
+                            details="No matching threat records in URLhaus",
+                            lookup_url=url,
+                            intel_status=ThreatIntelStatus.NO_KNOWN_MATCH,
+                        )
+        except Exception as e:
+            logger.debug("URLhaus API error: %s", safe_error_message(e))
 
         # 2. Dynamic live fallback: query URLhaus active online dataset
         try:
@@ -510,12 +511,43 @@ class ThreatIntelManager:
             VirusTotalProvider(),
         ]
 
+    async def _query_provider_safe(self, provider: ThreatIntelProvider, url: str) -> ThreatIntelResult:
+        """Query a single provider guarded by a dedicated CircuitBreaker."""
+        from backend.utils.circuit_breaker import get_circuit_breaker
+
+        cb = get_circuit_breaker(f"threat_intel_{provider.name}", failure_threshold=3, recovery_timeout=90.0)
+
+        # Fail fast if circuit is OPEN
+        if not cb.is_available():
+            return ThreatIntelResult(
+                source=provider.name,
+                lookup_url=url,
+                error=f"Circuit breaker OPEN ({cb.state.value}) — fast fail",
+                intel_status=ThreatIntelStatus.SOURCE_UNAVAILABLE,
+            )
+
+        try:
+            res = await provider.check_url(url)
+            if res.intel_status in (ThreatIntelStatus.KNOWN_MALICIOUS, ThreatIntelStatus.NO_KNOWN_MATCH):
+                cb.record_success()
+            elif res.intel_status == ThreatIntelStatus.SOURCE_ERROR:
+                cb.record_failure(Exception(res.error or "Provider returned source error"))
+            return res
+        except Exception as exc:
+            cb.record_failure(exc)
+            return ThreatIntelResult(
+                source=provider.name,
+                lookup_url=url,
+                error=safe_error_message(exc),
+                intel_status=ThreatIntelStatus.SOURCE_ERROR,
+            )
+
     async def query_all(self, url: str) -> tuple[list[ThreatIntelResult], list[EvidenceItem]]:
         """
-        Query all providers in parallel for a URL.
+        Query all providers in parallel for a URL with circuit breaker fail-fast protection.
         Converts results to structured ThreatIntelResult and EvidenceItem objects (tier: DIRECT).
         """
-        tasks = [p.check_url(url) for p in self.providers]
+        tasks = [self._query_provider_safe(p, url) for p in self.providers]
         raw_results = await asyncio.gather(*tasks, return_exceptions=True)
 
         ti_results: list[ThreatIntelResult] = []

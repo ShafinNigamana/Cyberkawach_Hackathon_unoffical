@@ -102,11 +102,16 @@ async def check_safe_browsing(urls: list[str]) -> list[ThreatIntelResult]:
             )
 
     if not settings.safe_browsing_api_key:
-        async with httpx.AsyncClient() as client:
-            for url in urls:
-                res = await _query_sb_transparency(url, client)
-                results.append(res)
-        return results
+        return [
+            ThreatIntelResult(
+                source="safe_browsing",
+                match=None,
+                error="API key not configured",
+                intel_status=ThreatIntelStatus.SOURCE_UNAVAILABLE,
+                lookup_url=u,
+            )
+            for u in urls
+        ]
 
     from urllib.parse import urlparse
 

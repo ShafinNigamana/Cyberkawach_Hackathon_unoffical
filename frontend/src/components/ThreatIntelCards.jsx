@@ -38,10 +38,10 @@ function evaluateProviderState(item, provider) {
   if (!item) {
     return {
       status: 'STANDBY (NO URL)',
-      badgeClass: 'bg-slate-100 text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700',
+      badgeClass: 'bg-slate-100 text-slate-700 border-slate-300 dark:bg-night-800 dark:text-slate-300 dark:border-night-border',
       icon: MinusCircle,
       iconColor: 'text-slate-400 dark:text-slate-500',
-      cardClass: 'border-slate-200 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900/40',
+      cardClass: 'border-slate-200 bg-slate-50/70 dark:border-night-border dark:bg-night-950/60',
       result: 'No URL in message to inspect. Feed is online and ready.',
       confidence: 'Neutral',
       reliability: provider.reliability,
@@ -62,10 +62,10 @@ function evaluateProviderState(item, provider) {
   ) {
     return {
       status: 'NOT CONFIGURED',
-      badgeClass: 'bg-slate-100 text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700',
+      badgeClass: 'bg-slate-100 text-slate-700 border-slate-300 dark:bg-night-800 dark:text-slate-400 dark:border-night-border',
       icon: MinusCircle,
       iconColor: 'text-slate-400 dark:text-slate-500',
-      cardClass: 'border-slate-200 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900/40',
+      cardClass: 'border-slate-200 bg-slate-50/70 dark:border-night-border dark:bg-night-950/60',
       result: item.error || 'API key not configured in environment.',
       confidence: 'Neutral',
       reliability: provider.reliability,
@@ -124,10 +124,10 @@ function evaluateProviderState(item, provider) {
   ) {
     return {
       status: 'MATCH (MALICIOUS)',
-      badgeClass: 'bg-red-100 text-red-800 border-red-300 dark:bg-red-950 dark:text-red-300 dark:border-red-700',
+      badgeClass: 'bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-950 dark:text-rose-300 dark:border-rose-700',
       icon: ShieldAlert,
-      iconColor: 'text-red-600 dark:text-red-400',
-      cardClass: 'border-red-300 bg-red-50/70 dark:border-red-800/80 dark:bg-red-950/25',
+      iconColor: 'text-rose-600 dark:text-rose-400',
+      cardClass: 'border-rose-300 bg-rose-50/70 dark:border-rose-800/80 dark:bg-rose-950/25',
       result: detailsStr || 'Observed in threat repository as active malicious target.',
       confidence: '95% (High)',
       reliability: provider.reliability,
@@ -146,10 +146,10 @@ function evaluateProviderState(item, provider) {
   ) {
     return {
       status: 'NO MATCH',
-      badgeClass: 'bg-slate-100 text-slate-800 border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700',
+      badgeClass: 'bg-slate-100 text-slate-800 border-slate-300 dark:bg-night-800 dark:text-slate-300 dark:border-night-border',
       icon: CheckCircle,
       iconColor: 'text-slate-600 dark:text-slate-400',
-      cardClass: 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900',
+      cardClass: 'border-slate-200 bg-white dark:border-night-border dark:bg-night-850',
       result: detailsStr || 'Feed queried: URL has no known listing in database.',
       confidence: 'Verified Absence',
       reliability: provider.reliability,
@@ -161,10 +161,10 @@ function evaluateProviderState(item, provider) {
   // Neutral fallback
   return {
     status: 'STANDBY (NO URL)',
-    badgeClass: 'bg-slate-100 text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700',
+    badgeClass: 'bg-slate-100 text-slate-700 border-slate-300 dark:bg-night-800 dark:text-slate-400 dark:border-night-border',
     icon: MinusCircle,
     iconColor: 'text-slate-400 dark:text-slate-500',
-    cardClass: 'border-slate-200 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900/40',
+    cardClass: 'border-slate-200 bg-slate-50/70 dark:border-night-border dark:bg-night-950/60',
     result: detailsStr || 'Feed online and ready.',
     confidence: 'Neutral',
     reliability: provider.reliability,
@@ -214,7 +214,7 @@ export default function ThreatIntelCards({ threatIntel }) {
           return (
             <div
               key={provider.key}
-              className={`p-4 rounded-card border flex flex-col justify-between transition-colors ${stateInfo.cardClass}`}
+              className={`p-4 rounded-xl border flex flex-col justify-between transition-colors shadow-2xs ${stateInfo.cardClass}`}
             >
               <div>
                 <div className="flex items-start justify-between gap-2 mb-2">
@@ -231,7 +231,7 @@ export default function ThreatIntelCards({ threatIntel }) {
 
                 <div className="mb-2.5">
                   <span
-                    className={`inline-block px-2 py-0.5 rounded-badge text-[10px] font-bold border tracking-wider ${stateInfo.badgeClass}`}
+                    className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold border tracking-wider ${stateInfo.badgeClass}`}
                   >
                     {stateInfo.status}
                   </span>
@@ -244,7 +244,7 @@ export default function ThreatIntelCards({ threatIntel }) {
                 </div>
               </div>
 
-              <div className="pt-2.5 border-t border-slate-200/80 dark:border-slate-800/80 space-y-1 text-[10px]">
+              <div className="pt-2.5 border-t border-slate-200/80 dark:border-night-border/80 space-y-1 text-[10px]">
                 <div className="flex justify-between text-slate-500 dark:text-slate-400">
                   <span>Reliability:</span>
                   <span className="font-medium text-slate-700 dark:text-slate-300 truncate ml-1 text-right">

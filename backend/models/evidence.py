@@ -82,6 +82,10 @@ class EvidenceType(str, Enum):
     SENDER_ANALYSIS = "sender_analysis"
     REDIRECT_CHAIN = "redirect_chain"
     CAMPAIGN_LINK = "campaign_link"
+    FINANCIAL_ANALYSIS = "financial_analysis"
+    INFRASTRUCTURE_ANALYSIS = "infrastructure_analysis"
+    TELECOM_ANALYSIS = "telecom_analysis"
+    LINGUISTIC_ANALYSIS = "linguistic_analysis"
 
 
 class EvidenceStatus(str, Enum):

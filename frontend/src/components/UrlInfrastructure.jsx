@@ -16,9 +16,9 @@ export default function UrlInfrastructure({ urls = [], threatIntel = [] }) {
   });
 
   return (
-    <section className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-card p-5 shadow-sm dark:shadow-card" aria-label="Extracted Web Infrastructure">
-      <div className="flex items-center space-x-2 pb-3 mb-3 border-b border-slate-200 dark:border-slate-800">
-        <Globe className="w-5 h-5 text-amber-500 dark:text-amber-400" />
+    <section className="luxury-card p-6 shadow-sm" aria-label="Extracted Web Infrastructure">
+      <div className="flex items-center space-x-2 pb-3 mb-3 border-b border-slate-200 dark:border-night-border">
+        <Globe className="w-5 h-5 text-indigo-500 dark:text-violet-400" />
         <h3 className="text-base font-bold text-slate-900 dark:text-white">
           Extracted URLs & Web Infrastructure
         </h3>
@@ -55,16 +55,16 @@ export default function UrlInfrastructure({ urls = [], threatIntel = [] }) {
           return (
             <div 
               key={idx} 
-              className={`p-3.5 rounded-btn border flex flex-col gap-1.5 transition-colors ${
+              className={`p-3.5 rounded-xl border flex flex-col gap-1.5 transition-colors ${
                 isMalicious
-                  ? 'bg-red-50/50 dark:bg-red-950/20 border-red-200 dark:border-red-900/60'
-                  : 'bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800'
+                  ? 'bg-rose-50/60 dark:bg-rose-950/20 border-rose-200 dark:border-rose-900/60'
+                  : 'bg-slate-50 dark:bg-night-950/60 border-slate-200 dark:border-night-border'
               }`}
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center space-x-2 truncate">
                   {isMalicious ? (
-                    <ShieldAlert className="w-4 h-4 text-red-600 dark:text-red-400 flex-shrink-0" />
+                    <ShieldAlert className="w-4 h-4 text-rose-600 dark:text-rose-400 flex-shrink-0" />
                   ) : isSuspicious ? (
                     <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
                   ) : (
@@ -75,9 +75,9 @@ export default function UrlInfrastructure({ urls = [], threatIntel = [] }) {
                   </span>
                 </div>
 
-                <span className={`px-2 py-0.5 rounded-badge text-[10px] font-bold ${
+                <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                   isMalicious
-                    ? 'bg-red-100 text-red-800 border border-red-300 dark:bg-red-950 dark:text-red-300 dark:border-red-800'
+                    ? 'bg-rose-100 text-rose-800 border border-rose-300 dark:bg-rose-950 dark:text-rose-300 dark:border-rose-800'
                     : isSuspicious 
                       ? 'bg-amber-100 text-amber-900 border border-amber-300 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800' 
                       : 'bg-emerald-100 text-emerald-900 border border-emerald-300 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-800'
@@ -101,8 +101,8 @@ export default function UrlInfrastructure({ urls = [], threatIntel = [] }) {
                         key={sIdx} 
                         className={`px-2 py-0.5 rounded font-mono text-[10px] ${
                           isThreatSig
-                            ? 'bg-red-100 text-red-800 border border-red-300 dark:bg-red-950/80 dark:text-red-300 dark:border-red-800 font-semibold'
-                            : 'bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300'
+                            ? 'bg-rose-100 text-rose-800 border border-rose-300 dark:bg-rose-950/80 dark:text-rose-300 dark:border-rose-800 font-semibold'
+                            : 'bg-white dark:bg-night-900 border border-slate-300 dark:border-night-border text-slate-700 dark:text-slate-300'
                         }`}
                       >
                         {typeof sig === 'string' ? sig.replace(/_/g, ' ') : JSON.stringify(sig)}

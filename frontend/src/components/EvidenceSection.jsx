@@ -39,14 +39,32 @@ function getProvenanceDetails(itemOrSource, type, rawStatus, tier) {
 
   let sourceLabel = source || 'Forensic Module';
 
-  if (s.includes('dns') || t.includes('dns')) {
+  if (s.includes('asn') || t.includes('infrastructure')) {
+    sourceLabel = 'BGP & Infrastructure OSINT';
+  } else if (s.includes('email_security') || findingLower.includes('dmarc') || findingLower.includes('spf policy')) {
+    sourceLabel = 'Email Security & DMARC';
+  } else if (s.includes('homoglyph')) {
+    sourceLabel = 'Unicode & Homoglyph Forensics';
+  } else if (s.includes('corridor') || s.includes('syndicate')) {
+    sourceLabel = 'I4C Cybercrime Corridor Profiler';
+  } else if (s.includes('chat_redirection') || s.includes('whatsapp')) {
+    sourceLabel = 'Chat Redirection & Telecom';
+  } else if (s.includes('crypto')) {
+    sourceLabel = 'Cryptocurrency Forensic OSINT';
+  } else if (s.includes('obfuscation') || t.includes('linguistic')) {
+    sourceLabel = 'Zero-Width Deobfuscator';
+  } else if (s.includes('http_security') || findingLower.includes('hsts') || findingLower.includes('security header')) {
+    sourceLabel = 'HTTP Security Header Audit';
+  } else if (s.includes('dns') || t.includes('dns')) {
     sourceLabel = 'DNS Records';
   } else if (s.includes('tls') || t.includes('tls')) {
     sourceLabel = 'TLS Certificate';
   } else if (s.includes('website') || t.includes('website') || s.includes('sandbox')) {
     sourceLabel = 'Live Website Scanner';
-  } else if (s.includes('sender') || t.includes('sender')) {
-    sourceLabel = 'Sender Identity';
+  } else if (s.includes('financial') || s.includes('ifsc') || s.includes('upi') || s.includes('razorpay')) {
+    sourceLabel = 'Banking & UPI OSINT';
+  } else if (s.includes('sender') || t.includes('sender') || s.includes('telecom') || s.includes('carrier') || s.includes('phonenumber')) {
+    sourceLabel = 'Sender & Telecom OSINT';
   } else if (s.includes('urlhaus')) {
     sourceLabel = 'URLhaus Feed';
   } else if (s.includes('openphish')) {
@@ -72,7 +90,7 @@ function getProvenanceDetails(itemOrSource, type, rawStatus, tier) {
   // Tier / status badge determination
   let tierBadge = {
     label: tierUpper || 'OBSERVED',
-    badgeClass: 'bg-slate-100 text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700',
+    badgeClass: 'bg-slate-100 text-slate-700 border-slate-300 dark:bg-night-800 dark:text-slate-300 dark:border-night-border',
   };
 
   const isFeedUnavailable =
@@ -97,17 +115,17 @@ function getProvenanceDetails(itemOrSource, type, rawStatus, tier) {
   if (isFeedUnavailable) {
     tierBadge = {
       label: 'FEED UNAVAILABLE',
-      badgeClass: 'bg-slate-100 text-slate-600 border-slate-300 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700',
+      badgeClass: 'bg-slate-100 text-slate-600 border-slate-300 dark:bg-night-800 dark:text-slate-400 dark:border-night-border',
     };
   } else if (isThreatMiss) {
     tierBadge = {
       label: 'UNLISTED / CLEAN',
-      badgeClass: 'bg-slate-100 text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700',
+      badgeClass: 'bg-slate-100 text-slate-700 border-slate-300 dark:bg-night-800 dark:text-slate-300 dark:border-night-border',
     };
   } else if (isPositiveThreat) {
     tierBadge = {
       label: 'DIRECT THREAT',
-      badgeClass: 'bg-red-100 text-red-800 border-red-300 dark:bg-red-950/80 dark:text-red-200 dark:border-red-800',
+      badgeClass: 'bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-950/80 dark:text-rose-200 dark:border-rose-800',
     };
   } else if (statusUpper === 'CONFIRMED') {
     tierBadge = {
@@ -201,7 +219,7 @@ export default function EvidenceSection({
             <button
               type="button"
               onClick={toggleAllAccordions}
-              className="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 dark:bg-surface-dark-hover dark:hover:bg-surface-dark-hover dark:text-slate-300 dark:border-border-dark transition-colors cursor-pointer"
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 dark:bg-surface-dark-hover dark:hover:bg-surface-dark-hover dark:text-slate-300 dark:border-border-dark transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
               title={isAllExpanded ? "Collapse all evidence accordions" : "Expand all evidence accordions"}
             >
               {isAllExpanded ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
@@ -217,7 +235,7 @@ export default function EvidenceSection({
 
       {/* Asynchronous OSINT Trigger (if domain available) */}
       {extractedDomain && !osintData && (
-        <div className="mb-4 p-3.5 bg-slate-50/80 dark:bg-surface-dark/80 rounded-xl border border-slate-200 dark:border-border-dark flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="mb-4 p-3.5 bg-slate-50/80 dark:bg-surface-dark/80 rounded-xl border border-slate-200 dark:border-border-dark flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
           <div className="flex items-center space-x-2.5 truncate">
             <Globe2 className="w-4 h-4 text-accent dark:text-emerald-400 flex-shrink-0" />
             <span className="text-xs text-slate-700 dark:text-slate-300 truncate">
@@ -229,7 +247,7 @@ export default function EvidenceSection({
             type="button"
             onClick={handleFetchOsint}
             disabled={osintLoading}
-            className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white dark:bg-gradient-to-r dark:from-accent dark:to-accent-hover text-xs font-bold rounded-lg shadow-sm transition-all disabled:opacity-50 cursor-pointer self-start sm:self-auto flex-shrink-0"
+            className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white dark:bg-gradient-to-r dark:from-accent dark:to-accent-hover text-xs font-bold rounded-lg shadow-sm transition-all disabled:opacity-50 cursor-pointer self-start sm:self-auto flex-shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
           >
             {osintLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Search className="w-3.5 h-3.5" />}
             <span>Query Live OSINT (WHOIS & CT)</span>
@@ -265,27 +283,27 @@ export default function EvidenceSection({
                 type="button"
                 onClick={() => toggleAccordion(idx)}
                 aria-expanded={isExpanded}
-                className="w-full text-left p-3.5 flex items-start sm:items-center justify-between gap-2.5 focus:outline-none focus:ring-2 focus:ring-cyan-500/40 cursor-pointer"
+                className="w-full text-left p-3.5 flex items-start sm:items-center justify-between gap-2.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 cursor-pointer"
               >
                 <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-2.5">
                   <div className="flex items-center space-x-1.5 flex-wrap flex-shrink-0">
                     {/* Consistent Source Tag */}
-                    <span className="px-2 py-0.5 rounded-badge bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 text-[10px] font-bold border border-slate-300 dark:border-slate-700">
+                    <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 dark:bg-night-800 dark:text-slate-300 text-[10px] font-bold border border-slate-300 dark:border-night-border">
                       {sourceLabel}
                     </span>
 
                     {/* Unified Tier/Status Badge */}
-                    <span className={`px-2 py-0.5 rounded-badge text-[10px] font-bold border ${statusBadge.badgeClass}`}>
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${statusBadge.badgeClass}`}>
                       {statusBadge.label}
                     </span>
 
                     {/* LIVE vs CACHED Badge */}
                     {item.is_cached ? (
-                      <span className="px-1.5 py-0.2 rounded text-[9px] font-mono bg-slate-100 text-slate-500 border border-slate-300 dark:bg-slate-800 dark:text-slate-400">
+                      <span className="px-1.5 py-0.2 rounded text-[9px] font-mono bg-slate-100 text-slate-500 border border-slate-300 dark:bg-night-800 dark:text-slate-400 dark:border-night-border">
                         CACHED
                       </span>
                     ) : (
-                      <span className="px-1.5 py-0.2 rounded text-[9px] font-mono bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/60 dark:text-blue-300">
+                      <span className="px-1.5 py-0.2 rounded text-[9px] font-mono bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800">
                         LIVE
                       </span>
                     )}
@@ -310,7 +328,7 @@ export default function EvidenceSection({
 
               {/* Accordion Body (Revealed on Click) */}
               {isExpanded && (
-                <div className="px-3.5 pb-3.5 pt-1 border-t border-slate-200/80 dark:border-slate-800/80 text-xs space-y-2">
+                <div className="px-3.5 pb-3.5 pt-1 border-t border-slate-200/80 dark:border-night-border text-xs space-y-2">
                   {/* Full Description if truncated */}
                   <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
                     {item.description}
@@ -318,12 +336,12 @@ export default function EvidenceSection({
 
                   {/* Observed Technical Fact (Short Tokens Only) */}
                   {item.observed_value && (
-                    <div className="p-2.5 bg-slate-100 dark:bg-slate-900 rounded border border-slate-200 dark:border-slate-800">
+                    <div className="p-2.5 bg-slate-100 dark:bg-night-950 rounded border border-slate-200 dark:border-night-border">
                       <div className="flex items-start space-x-1.5">
                         <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 flex-shrink-0">
                           Observed Token:
                         </span>
-                        <code className="text-[11px] font-mono font-medium text-blue-700 dark:text-amber-300 break-all">
+                        <code className="text-[11px] font-mono font-medium text-indigo-700 dark:text-violet-300 break-all">
                           {item.observed_value}
                         </code>
                       </div>

@@ -149,5 +149,53 @@ If time pressure mounts, these are explicitly forbidden additions:
 Route all remaining time to Phase 5 instead.
 
 ---
-*Roadmap created: 2026-09-25*
-*Last updated: 2026-09-25 after initialization*
+
+## Enterprise Production-Grade Architecture Enhancements
+
+### Phase 1: Concurrent Pipeline Execution
+- **File:** `backend/services/pipeline_service.py`
+- **Capabilities:** Non-blocking `asyncio.gather()` enrichment, thread pool execution for synchronous domain/DNS lookups, and concurrent DOM fetches.
+- **Status:** Completed & Tested
+
+### Phase 2: Circuit Breakers & Fail-Fast Downstream Isolation
+- **Files:** `backend/utils/circuit_breaker.py`, `backend/services/neo4j_repository.py`, `backend/services/threat_intel_providers.py`
+- **Capabilities:** State transitions (`CLOSED`, `OPEN`, `HALF_OPEN`), immediate 401/403/AuthError tripping, preventing cascading latency failures.
+- **Status:** Completed & Tested
+
+### Phase 3: Server-Sent Events (SSE) Real-Time Triage Streaming
+- **Files:** `backend/routes/analysis.py` (`POST /api/analyze/stream`), `frontend/src/services/api.js`
+- **Capabilities:** Chunked EventSource streaming emitting progressive stages (`pipeline_started`, `ioc_discovered`, `infrastructure_resolved`, `threat_intel_hits`, `final_verdict`) with keepalive heartbeats.
+- **Status:** Completed & Tested
+
+### Phase 4: Two-Tier Caching (L1 LRU + L2 Distributed Redis / In-Memory TTL)
+- **Files:** `backend/services/cache_service.py`, `backend/services/evidence_store.py`
+- **Capabilities:** Sub-millisecond L1 memory cache, distributed L2 Redis fallback, single-flight stampede mutex locks, and negative caching safety.
+- **Status:** Completed & Tested
+
+### Phase 5: Sliding-Window Rate Limiting & Abuse Prevention
+- **Files:** `backend/utils/rate_limiter.py`
+- **Capabilities:** Atomic Redis sliding window with memory fallback, tiered quotas (15 req/min Anonymous vs. 120 req/min Authenticated), and RFC-compliant `Retry-After` headers.
+- **Status:** Completed & Tested
+
+### Phase 6: Observability with OpenTelemetry Spans & Prometheus Metrics
+- **Files:** `backend/utils/telemetry.py`, `backend/main.py` (`GET /metrics`)
+- **Capabilities:** Real-time metrics counters (`cyberkawach_file_scans_total`, `cyberkawach_pipeline_latency_seconds`, etc.) and distributed context tracing.
+- **Status:** Completed & Tested
+
+### Phase 7: Automatic File Scanning and Threat Detection
+- **Files:** `backend/services/file_scanner.py`, `backend/routes/file_scan.py`, `docs/BROWSER_EXTENSION_SPEC.md`
+- **Capabilities:**
+  1. **Download Monitoring:** Ingests platform-managed downloads directly (`POST /api/scan/file`, `POST /api/scan/url`). Specifies Chrome/Edge Manifest v3 extension architecture for intercepting external browser downloads via `chrome.downloads.onCreated`.
+  2. **Early Streaming Inspection:** Calculates SHA-256 and SHA-1 hashes dynamically while streaming incoming byte chunks into isolated sandbox storage (`data/quarantine`).
+  3. **Multi-Engine Detection:**
+     - Real MIME & format verification using true magic byte file signatures (protects against disguised `.exe` / `.apk` renaming).
+     - Antivirus test fixture detection (EICAR standard verification pattern).
+     - Known-threat SHA-256 hash reputation blacklist match.
+     - Archive bomb defense (enforces 100:1 compression ratio limits and uncompressed expansion boundaries).
+     - Zip-slip path traversal defense (`..` / absolute paths).
+     - Socket-level daemon integration with local/container ClamAV (`clamd`).
+  4. **Secure Quarantine & Release Policy:** Strict state machine (`INITIATED`, `RECEIVING`, `SCANNING`, `CLEAN`, `SUSPICIOUS`, `MALICIOUS`, `ERROR`). `GET /api/scan/{scan_id}/download` acts as a zero-trust release gate: returns HTTP 403 Forbidden for any quarantined, uninspected, or failed scan.
+- **Status:** Implemented & Verified
+
+---
+*Roadmap updated with Enterprise & Threat Detection Architecture: 2026-10-16*

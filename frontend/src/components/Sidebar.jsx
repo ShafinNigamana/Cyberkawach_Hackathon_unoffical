@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { 
   Shield, 
   Home, 
@@ -28,6 +28,7 @@ export default function Sidebar({
   onSelectFlow,
   currentUser,
   onOpenAuthModal,
+  onOpenFileScanModal,
   healthData,
   isCollapsed,
   onToggleCollapse,
@@ -44,10 +45,6 @@ export default function Sidebar({
     : totalModulesCount;
 
   const handleNav = (flow) => {
-    if (!currentUser && flow !== 'home') {
-      onOpenAuthModal(`Citizen authentication required to access the ${flow} triage engine.`, 'login', flow);
-      return;
-    }
     onSelectFlow(flow);
     if (isMobileOpen && onCloseMobile) {
       onCloseMobile();
@@ -109,7 +106,7 @@ export default function Sidebar({
             <button
               type="button"
               onClick={onToggleCollapse}
-              className="hidden lg:flex items-center justify-center w-7 h-7 rounded-lg text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-surface-dark-hover transition-colors cursor-pointer"
+              className="hidden lg:flex items-center justify-center w-7 h-7 rounded-lg text-slate-400 hover:text-slate-800 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-surface-dark-hover transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
               title="Collapse Sidebar"
               aria-label="Collapse Sidebar"
             >
@@ -119,7 +116,7 @@ export default function Sidebar({
             <button
               type="button"
               onClick={onToggleCollapse}
-              className="hidden lg:flex absolute -right-3 top-5 items-center justify-center w-6 h-6 rounded-full bg-white dark:bg-surface-dark border border-slate-300 dark:border-border-dark text-slate-500 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 shadow-md transition-all hover:scale-110 cursor-pointer z-50"
+              className="hidden lg:flex absolute -right-3 top-5 items-center justify-center w-6 h-6 rounded-full bg-white dark:bg-surface-dark border border-slate-300 dark:border-border-dark text-slate-500 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 shadow-md transition-all hover:scale-110 cursor-pointer z-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
               title="Expand Sidebar"
               aria-label="Expand Sidebar"
             >
@@ -129,7 +126,7 @@ export default function Sidebar({
         </div>
 
         {/* Scrollable Navigation Body */}
-        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-6 scrollbar-none">
+        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-5 scrollbar-none">
           {/* Main Navigation Section */}
           <div className="space-y-1">
             {(!isCollapsed || isMobileOpen) && (
@@ -148,9 +145,9 @@ export default function Sidebar({
                   key={item.id}
                   type="button"
                   onClick={() => handleNav(item.id)}
-                  className={`w-full group flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 cursor-pointer text-left relative ${
+                  className={`w-full group flex items-center space-x-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer text-left relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
                     isActive
-                      ? 'bg-slate-100 dark:bg-surface-dark-hover text-slate-900 dark:text-white border-l-2 border-accent'
+                      ? 'bg-slate-100 dark:bg-surface-dark-hover text-slate-900 dark:text-white border-l-2 border-accent shadow-xs'
                       : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-surface-dark-hover hover:text-slate-900 dark:hover:text-white border-l-2 border-transparent'
                   }`}
                   title={item.label}
@@ -188,6 +185,36 @@ export default function Sidebar({
             })}
           </div>
 
+          {/* Quick APK & File Scanning Trigger */}
+          {onOpenFileScanModal && (
+            <div className="pt-1">
+              <button
+                type="button"
+                onClick={() => {
+                  onOpenFileScanModal();
+                  if (isMobileOpen && onCloseMobile) onCloseMobile();
+                }}
+                className={`w-full group flex items-center space-x-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer text-left border border-dashed border-emerald-500/40 bg-emerald-500/5 hover:bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500`}
+                title="Deep APK & Document File Scanner"
+              >
+                <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex-shrink-0">
+                  <FileText className="w-4 h-4" />
+                </div>
+                {(!isCollapsed || isMobileOpen) && (
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between">
+                      <span className="truncate font-bold">Scan APK / File</span>
+                      <span className="text-[9px] font-mono uppercase bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 px-1 py-0.2 rounded font-extrabold">New</span>
+                    </div>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 font-normal truncate block">
+                      Malware & Hash OSINT
+                    </span>
+                  </div>
+                )}
+              </button>
+            </div>
+          )}
+
           {/* Benchmark Scenarios Section */}
           {(!isCollapsed || isMobileOpen) && (
             <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-border-dark/70">
@@ -209,7 +236,7 @@ export default function Sidebar({
                         if (isMobileOpen && onCloseMobile) onCloseMobile();
                       }
                     }}
-                    className="w-full text-left px-3 py-1.5 rounded-lg text-[11px] text-slate-600 dark:text-slate-300 hover:text-accent dark:hover:text-emerald-300 hover:bg-slate-100 dark:hover:bg-surface-dark-hover transition-colors flex items-center justify-between group cursor-pointer"
+                    className="w-full text-left px-3 py-1.5 rounded-lg text-[11px] text-slate-600 dark:text-slate-300 hover:text-accent dark:hover:text-emerald-300 hover:bg-slate-100 dark:hover:bg-surface-dark-hover transition-colors flex items-center justify-between group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
                     title={preset.title}
                   >
                     <span className="truncate font-medium">{preset.title}</span>
@@ -232,7 +259,7 @@ export default function Sidebar({
                 href="/verification.html"
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center justify-between px-3 py-2 rounded-xl text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-surface-dark-hover hover:text-accent dark:hover:text-emerald-300 transition-colors border border-dashed border-slate-200 dark:border-border-dark"
+                className="flex items-center justify-between px-3 py-2 rounded-xl text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-surface-dark-hover hover:text-accent dark:hover:text-emerald-300 transition-colors border border-dashed border-slate-200 dark:border-border-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
               >
                 <div className="flex items-center space-x-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
@@ -251,7 +278,7 @@ export default function Sidebar({
             <button
               type="button"
               onClick={() => onOpenAuthModal('Please sign in or register to access verified forensic threat triage.')}
-              className={`flex items-center rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-accent dark:hover:bg-accent-hover text-white text-xs font-bold transition-all shadow-sm active:scale-[0.98] cursor-pointer ${
+              className={`flex items-center rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-accent dark:hover:bg-accent-hover text-white text-xs font-bold transition-all shadow-sm active:scale-[0.98] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
                 isCollapsed && !isMobileOpen ? 'justify-center p-2.5' : 'justify-between px-3 py-2'
               }`}
               title="Citizen Sign In"
@@ -270,7 +297,7 @@ export default function Sidebar({
             <button
               type="button"
               onClick={() => onOpenAuthModal(null, 'history')}
-              className={`flex items-center rounded-xl border border-slate-200 dark:border-border-dark bg-white dark:bg-surface-dark-elevated hover:border-slate-300 text-slate-800 dark:text-slate-200 text-xs font-semibold transition-all cursor-pointer shadow-2xs ${
+              className={`flex items-center rounded-xl border border-slate-200 dark:border-border-dark bg-white dark:bg-surface-dark-elevated hover:border-slate-300 text-slate-800 dark:text-slate-200 text-xs font-semibold transition-all cursor-pointer shadow-2xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
                 isCollapsed && !isMobileOpen ? 'justify-center p-2.5' : 'justify-between px-3 py-2'
               }`}
               title="Citizen Profile & My Past Checks"

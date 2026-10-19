@@ -63,7 +63,12 @@ export default function LanguageSelectionModal({ isOpen, currentLang, onSelectLa
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md animate-fade-in">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md animate-fade-in"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Select Official Language"
+    >
       <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh] transition-colors">
         {/* Modal Header */}
         <div className="bg-slate-50 dark:bg-surface-dark-elevated p-6 border-b border-slate-200 dark:border-border-dark flex items-start justify-between">
@@ -98,7 +103,7 @@ export default function LanguageSelectionModal({ isOpen, currentLang, onSelectLa
         </div>
 
         {/* Language Selection Grid */}
-        <div className="p-6 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+        <div className="p-6 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 gap-3.5 bg-slate-50/50 dark:bg-surface-dark/50">
           {LANGUAGES.map((lang) => {
             const isChosen = selected === lang.code;
             return (
@@ -117,7 +122,7 @@ export default function LanguageSelectionModal({ isOpen, currentLang, onSelectLa
                     <span className="text-base font-bold text-slate-900 dark:text-white tracking-wide">
                       {lang.nativeName}
                     </span>
-                    <span className="text-xs text-slate-400 font-medium">
+                    <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                       ({lang.name})
                     </span>
                   </div>

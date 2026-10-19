@@ -39,3 +39,7 @@ backend/data/*.db-journal
 *.db
 *.sqlite
 *.sqlite3
+
+# Quarantined & safe download artifacts
+backend/data/quarantine/
+backend/data/safe_downloads/

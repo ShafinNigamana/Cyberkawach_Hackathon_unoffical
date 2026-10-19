@@ -32,7 +32,8 @@ _FRAUD_CATEGORIES: list[tuple[str, list[tuple[re.Pattern, float]]]] = [
         (re.compile(r'\b(?:block(?:ed)?|suspend(?:ed)?|frozen|deactivat(?:ed?|ing)|limit(?:ed)?|band\s*ho\s*jayega)\b', re.I), 0.3),
         (re.compile(r'\b(?:kyc|pan|aadhaar|aadhar|verify|verification|update|turant\s*update)\b', re.I), 0.25),
         # Indic native scripts: Hindi, Gujarati, Tamil
-        (re.compile(r'(?:खाता|बैंक|ब्लॉक|केवाईसी|आधार|पैन|ओटीपी|पैसे|खाતું|બેંક|બ્લોક|કેવાયસી|આધાર|ઓટીપી|வங்கி|கணக்கு|முடக்கப்பட்டது|கேஒய்சி|புதுப்பிக்கவும்)', re.U), 0.35),
+        (re.compile(r'(?:खाता|बैंक|खाતું|બેંક|வங்கி|கணக்கு)', re.U), 0.35),
+        (re.compile(r'(?:ब्लॉक|केवाईसी|आधार|पैन|ओटीपी|पैसे|બ્લોક|કેવાયસી|આધાર|ઓટીપી|முடக்கப்பட்டது|கேஒய்சி|புதுப்பிக்கவும்)', re.U), 0.30),
     ]),
     ("courier", [
         (re.compile(r'\b(?:parcel|package|delivery|courier|shipment|dispatch|customs|tracking)\b', re.I), 0.35),
