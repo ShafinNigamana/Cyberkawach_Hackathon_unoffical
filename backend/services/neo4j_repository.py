@@ -36,6 +36,7 @@ from backend.models.evidence import (
     ThreatIntelResult,
     ThreatIntelStatus,
 )
+from backend.utils.security_logging import safe_error_message
 
 logger = logging.getLogger(__name__)
 
