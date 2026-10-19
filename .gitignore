@@ -43,3 +43,28 @@ backend/data/*.db-journal
 # Quarantined & safe download artifacts
 backend/data/quarantine/
 backend/data/safe_downloads/
+
+# Dummy, Demo & Scratch Files
+*dummy*
+*dummy*.*
+dummy/
+dummy_*
+scratch/
+temp/
+tmp/
+*.tmp
+*.temp
+debug_*.py
+test_debug*
+local_test*
+backend/create_demo_user.py
+backend/read_db.py
+
+# Test coverage & evaluation reports
+.coverage
+htmlcov/
+.coverage.*
+coverage/
+*.cover
+scripts/e2e_demo_matrix_results.json
+scripts/*results*.json
