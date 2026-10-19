@@ -10,6 +10,7 @@ import MethodologyModal from './components/MethodologyModal';
 import LanguageSelectionModal from './components/LanguageSelectionModal';
 import AuthModal from './components/AuthModal';
 import FileScanModal from './components/FileScanModal';
+import Sidebar from './components/Sidebar';
 import Footer from './components/Footer';
 import { analyzeMessage, updateUserState, fetchHealth, fetchCurrentUser } from './services/api';
 import { TRANSLATIONS } from './i18n/translations';
