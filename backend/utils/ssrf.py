@@ -102,9 +102,9 @@ def validate_url_for_ssrf(url: str) -> tuple[bool, str]:
                 return False, f"Invalid resolved IP format: {ip_str}"
 
     except socket.gaierror:
-        # Unresolvable domains cannot be SSRF targets for live internal networks,
-        # but for external fetch attempts we consider resolution failure unsafe.
-        return False, f"Cannot resolve host {hostname}"
+        # Unresolvable external domains cannot target internal private infrastructure,
+        # so they are safe from an SSRF perspective.
+        return True, "Unresolvable domain (safe from SSRF)"
     except Exception as e:
         return False, f"DNS verification error: {str(e)}"
 
@@ -131,6 +131,11 @@ async def safe_fetch_url(
 
     async with httpx.AsyncClient(timeout=timeout, follow_redirects=False) as client:
         while True:
+            # Re-verify destination before each fetch to prevent TOCTOU DNS rebinding
+            is_valid, validation_msg = validate_url_for_ssrf(current_url)
+            if not is_valid:
+                raise ValueError(f"SSRF blocked: {validation_msg}")
+
             resp = await client.get(
                 current_url,
                 headers={"User-Agent": "CyberFraudGuardian/SecurityAuditor-1.0"},

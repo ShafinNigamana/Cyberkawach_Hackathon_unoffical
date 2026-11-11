@@ -280,6 +280,9 @@ class AnalyzeResponse(BaseModel):
     # Campaign (when available)
     fraud_dna: Optional[FraudDNA] = None
 
+    # Ownership claim token for anonymous incidents
+    claim_token: Optional[str] = None
+
     # Metadata
     fraud_category: Optional[str] = None
     language: str = "en"

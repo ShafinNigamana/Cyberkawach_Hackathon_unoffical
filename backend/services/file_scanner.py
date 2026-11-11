@@ -41,9 +41,10 @@ from typing import Any, AsyncGenerator, Callable, Optional
 import uuid
 import zipfile
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, computed_field
 
 from backend.config import get_settings
+from backend.services.dex_carver import scan_apk_archive_for_dex_threats
 from backend.utils.file_security import sanitize_filename
 from backend.utils.security_logging import safe_error_message
 from backend.utils.telemetry import record_file_scan_result
@@ -139,6 +140,12 @@ class FileScanRecord(BaseModel):
     original_filename: str
     safe_filename: str
     size_bytes: int = 0
+
+    @computed_field
+    @property
+    def filesize(self) -> int:
+        """Backward compatibility alias for frontend/external consumers."""
+        return self.size_bytes
     sha256: str = ""
     sha1: str = ""
     magic_mime: str = "application/octet-stream"
@@ -173,9 +180,64 @@ class FolderScanRecord(BaseModel):
     processing_time_ms: float = 0.0
 
 
-# In-memory scan registries
-_SCAN_RECORDS: dict[str, FileScanRecord] = {}
-_FOLDER_RECORDS: dict[str, FolderScanRecord] = {}
+from collections import OrderedDict
+import threading
+
+class BoundedScanStore:
+    """Thread-safe bounded in-memory scan store with LRU eviction."""
+    def __init__(self, capacity: int = 1000):
+        self.capacity = capacity
+        self._store = OrderedDict()
+        self._lock = threading.Lock()
+
+    def __getitem__(self, key):
+        with self._lock:
+            val = self._store[key]
+            self._store.move_to_end(key)
+            return val
+
+    def __setitem__(self, key, value):
+        with self._lock:
+            if key in self._store:
+                self._store.move_to_end(key)
+            self._store[key] = value
+            if len(self._store) > self.capacity:
+                self._store.popitem(last=False)
+
+    def get(self, key, default=None):
+        with self._lock:
+            if key in self._store:
+                self._store.move_to_end(key)
+                return self._store[key]
+            return default
+
+    def __contains__(self, key):
+        with self._lock:
+            return key in self._store
+
+    def __len__(self):
+        with self._lock:
+            return len(self._store)
+
+    def values(self):
+        with self._lock:
+            return list(self._store.values())
+
+    def items(self):
+        with self._lock:
+            return list(self._store.items())
+
+    def keys(self):
+        with self._lock:
+            return list(self._store.keys())
+
+    def clear(self):
+        with self._lock:
+            self._store.clear()
+
+# In-memory scan registries (bounded LRU stores, max 1000 records)
+_SCAN_RECORDS: BoundedScanStore = BoundedScanStore(1000)
+_FOLDER_RECORDS: BoundedScanStore = BoundedScanStore(1000)
 
 # Cached ClamAV daemon reachability
 _CLAMAV_PROBED_TIME = 0.0
@@ -488,7 +550,14 @@ class FileSecurityScanner:
 
         elif mime == "application/vnd.android.package-archive":
             record.findings.append("Android Application Package (.apk) inspected for side-load coercive permissions.")
-            if record.state != ScanState.MALICIOUS:
+            dex_report = scan_apk_archive_for_dex_threats(content)
+            record.deep_analysis["dex_forensics"] = dex_report.to_dict()
+            if dex_report.all_threat_indicators:
+                record.threat_signatures.extend(dex_report.all_threat_indicators)
+                record.findings.extend([f"[DEX Bytecode Artifact] {item}" for item in dex_report.all_threat_indicators])
+                record.state = ScanState.MALICIOUS
+                record.release_policy = ReleasePolicy.BLOCKED
+            elif record.state != ScanState.MALICIOUS:
                 record.state = ScanState.SUSPICIOUS
                 record.release_policy = ReleasePolicy.BLOCKED
 

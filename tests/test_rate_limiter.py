@@ -1,7 +1,11 @@
 """
 Unit tests for Phase 5: Tiered Sliding-Window Rate Limiting.
+Includes security verification against:
+- Dummy Bearer token rotation quota evasion
+- X-Forwarded-For IP spoofing from untrusted peers
 """
 
+from unittest.mock import patch
 import time
 import pytest
 from fastapi import HTTPException
@@ -52,17 +56,54 @@ def test_rate_limiter_client_tier_identification():
     assert limit == 15
     assert "anon:192.168.1.100" in key
 
-    # Authenticated request with Bearer token
+    # Authenticated request with VALID Bearer session
     scope_auth = {
         "type": "http",
         "client": ("192.168.1.100", 12345),
-        "headers": [(b"authorization", b"Bearer sample_jwt_lea_analyst_token")],
+        "headers": [(b"authorization", b"Bearer valid_session_token_123")],
     }
     req_auth = Request(scope_auth)
-    key_auth, tier_auth, limit_auth = get_client_identification(req_auth)
-    assert tier_auth == "auth"
-    assert limit_auth == 120
-    assert "auth:" in key_auth
+    with patch("backend.services.neo4j_repository.neo4j_repo.validate_session", return_value={"user_id": "usr_analyst_01"}):
+        key_auth, tier_auth, limit_auth = get_client_identification(req_auth)
+        assert tier_auth == "auth"
+        assert limit_auth == 120
+        assert key_auth == "auth:usr_analyst_01"
+
+    # Attack attempt: Dummy / rotating Bearer tokens without valid session must NOT elevate to auth
+    scope_dummy = {
+        "type": "http",
+        "client": ("192.168.1.100", 12345),
+        "headers": [(b"authorization", b"Bearer arbitrary_attacker_token_xyz")],
+    }
+    req_dummy = Request(scope_dummy)
+    with patch("backend.services.neo4j_repository.neo4j_repo.validate_session", return_value=None):
+        key_dummy, tier_dummy, limit_dummy = get_client_identification(req_dummy)
+        assert tier_dummy == "anon"
+        assert limit_dummy == 15
+        assert "anon:192.168.1.100" in key_dummy
+
+
+def test_rate_limiter_xff_spoofing_defense():
+    """Verify that X-Forwarded-For is ignored when the direct client is not a trusted proxy."""
+    # Untrusted client 203.0.113.5 attempts to spoof X-Forwarded-For
+    scope_untrusted = {
+        "type": "http",
+        "client": ("203.0.113.5", 54321),
+        "headers": [(b"x-forwarded-for", b"1.1.1.1")],
+    }
+    req_untrusted = Request(scope_untrusted)
+    key, tier, limit = get_client_identification(req_untrusted)
+    assert key == "anon:203.0.113.5"
+
+    # Trusted proxy 127.0.0.1 forwarding for 203.0.113.99
+    scope_trusted = {
+        "type": "http",
+        "client": ("127.0.0.1", 54321),
+        "headers": [(b"x-forwarded-for", b"203.0.113.99, 10.0.0.1")],
+    }
+    req_trusted = Request(scope_trusted)
+    key_t, tier_t, limit_t = get_client_identification(req_trusted)
+    assert key_t == "anon:203.0.113.99"
 
 
 def test_check_rate_limit_emits_429_with_retry_after():

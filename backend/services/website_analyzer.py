@@ -30,6 +30,7 @@ from backend.models.evidence import (
     EvidenceType,
     RiskDirection,
 )
+from backend.modules.brand_check import is_official_brand_domain
 from backend.services.domain_intel import clean_domain, is_safe_ip
 from backend.utils.sanitize import is_safe_url
 from backend.utils.security_logging import safe_error_message
@@ -209,11 +210,72 @@ def analyze_html_content(
     if not response_body:
         return analysis, evidence_items
 
-    # ─── 2. Page Title Extraction ───
+    # ─── 2. Page Title Extraction & Institutional Brand Impersonation Check ───
     title_match = _TITLE_REGEX.search(response_body)
     if title_match:
         page_title = html.unescape(title_match.group(1).strip())[:120]
         analysis["title"] = page_title
+
+        # Check for institutional brand claiming on non-official domain (Zero-Day Impersonation)
+        title_lower = page_title.lower()
+        institutional_brands = [
+            ("State Bank of India", ["state bank of india", "onlinesbi", "sbi yono", "yono sbi", "sbi bank"]),
+            ("HDFC Bank", ["hdfc bank", "hdfc netbanking"]),
+            ("ICICI Bank", ["icici bank", "icici netbanking"]),
+            ("Income Tax Department", ["income tax department", "e-filing", "incometax.gov.in"]),
+            ("UIDAI / Aadhaar", ["uidai", "myaadhaar", "aadhaar portal"]),
+            ("EPFO", ["epfo", "epfindia", "provident fund"]),
+            ("Axis Bank", ["axis bank", "axis netbanking"]),
+            ("Kotak Mahindra Bank", ["kotak mahindra", "kotak 811", "kotak bank"]),
+            ("Punjab National Bank", ["punjab national bank", "pnb netbanking"]),
+        ]
+        if not is_official_brand_domain(final_domain):
+            for brand_name, kws in institutional_brands:
+                if any(kw in title_lower for kw in kws):
+                    evidence_items.append(EvidenceItem(
+                        type=EvidenceType.BRAND_MISMATCH,
+                        source="website_analyzer",
+                        source_type="sandbox",
+                        evidence_tier="CONFIRMED",
+                        indicator=final_url,
+                        finding=f"Landing page claims official identity '{brand_name}' in title on unauthorized domain '{final_domain}'",
+                        description=f"DOM title '{page_title}' claims identity of {brand_name}, but domain '{final_domain}' is not registered infrastructure.",
+                        observed_value=f"Title: '{page_title}' | Domain: '{final_domain}'",
+                        interpretation="Zero-day brand impersonation attempt directly targeting citizen trust.",
+                        status=EvidenceStatus.CONFIRMED,
+                        reliability=EvidenceReliability.DETERMINISTIC_FACT,
+                        risk_direction=RiskDirection.INCREASES_RISK,
+                        severity=EvidenceSeverity.CRITICAL,
+                        confidence=0.96,
+                        correlation_group="brand_impersonation",
+                        raw_data={"claimed_brand": brand_name, "title": page_title, "domain": final_domain},
+                    ))
+                    break
+
+    # ─── Anti-Bot & Turnstile Challenge Gate Interception ───
+    headers_lower = {k.lower(): str(v).lower() for k, v in (response_headers or {}).items()}
+    is_challenge_body = any(sig in response_body.lower() for sig in ("just a moment...", "attention required! | cloudflare", "cf-mitigated", "turnstile.render", "challenge-running"))
+    is_challenge_header = "cf-mitigated" in headers_lower or ("cloudflare" in headers_lower.get("server", "") and analysis.get("status_code") in (403, 503))
+    if is_challenge_body or is_challenge_header:
+        analysis["challenge_detected"] = True
+        evidence_items.append(EvidenceItem(
+            type=EvidenceType.WEBSITE_BEHAVIOR,
+            source="website_analyzer",
+            source_type="sandbox",
+            evidence_tier="OBSERVED",
+            indicator=final_url,
+            finding="Anti-bot challenge / Cloudflare Turnstile gating destination page",
+            description=f"Target URL '{final_domain}' responded with an automated challenge / bot-defense gate.",
+            observed_value=f"Status: {analysis.get('status_code')} | Challenge signature detected",
+            interpretation="Anti-bot gating conceals phishing DOM from standard automated HTTP inspection; requires degraded status marking.",
+            status=EvidenceStatus.SUSPICIOUS,
+            reliability=EvidenceReliability.DETERMINISTIC_FACT,
+            risk_direction=RiskDirection.INCREASES_RISK,
+            severity=EvidenceSeverity.MEDIUM,
+            confidence=0.88,
+            correlation_group="anti_analysis_cloaking",
+            raw_data={"challenge_detected": True, "domain": final_domain},
+        ))
 
     # ─── 3. Credential Field & Password Input Detection ───
     has_pwd = bool(_PASSWORD_TYPE_REGEX.search(response_body))

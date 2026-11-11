@@ -16,9 +16,12 @@ import ipaddress
 import re
 from urllib.parse import urlparse
 
-_INCIDENT_ID_PATTERN = re.compile(r"^INC-\d{4}-[A-Fa-f0-9]{8}$")
+_INCIDENT_ID_PATTERN = re.compile(r"^INC-\d{4}-[A-Fa-f0-9]{8,32}$")
 _LANGUAGE_PATTERN = re.compile(r"^[a-zA-Z]{2}(-[a-zA-Z0-9]{2,4})?$")
 _DANGEROUS_SCHEMES = ('javascript:', 'data:', 'vbscript:', 'file:', 'blob:', 'about:')
+
+
+_ZERO_WIDTH_CHARS = re.compile(r"[\u200B-\u200D\uFEFF\u2060\u180E]")
 
 
 def sanitize_message(text: str, max_length: int = 10000) -> str:
@@ -26,6 +29,7 @@ def sanitize_message(text: str, max_length: int = 10000) -> str:
     Sanitize user-submitted message text.
     - Truncate to max length
     - Strip null bytes
+    - Strip zero-width and invisible smuggling characters
     - Strip control characters (except newline, tab, carriage return)
     - Strip bidirectional override characters used in spoofing attacks
     """
@@ -34,6 +38,7 @@ def sanitize_message(text: str, max_length: int = 10000) -> str:
 
     text = str(text)[:max_length]
     text = text.replace('\x00', '')
+    text = _ZERO_WIDTH_CHARS.sub('', text)
     text = re.sub(r'[\u202A-\u202E\u2066-\u2069]', '', text)
     text = re.sub(r'[\x01-\x08\x0b\x0c\x0e-\x1f\x7f]', '', text)
     return text
@@ -64,50 +69,15 @@ def is_safe_url(url: str) -> bool:
     """
     SSRF Protection (SEC-04):
     Ensure URL is an external web destination and cannot target private infrastructure.
-    Rejects:
-    - Non-http/https schemes
-    - Loopback addresses (127.0.0.1, localhost, ::1)
-    - Private IP ranges (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16)
-    - Cloud metadata addresses (169.254.169.254)
-    - Link-local and multicast addresses
+    Uses unified DNS resolution, RFC1918 blocking, and cloud metadata checks.
     """
     if not url:
         return False
 
     try:
-        parsed = urlparse(url)
-        if parsed.scheme.lower() not in ('http', 'https'):
-            return False
-
-        hostname = (parsed.hostname or '').lower().strip()
-        if not hostname:
-            return False
-
-        # Known local / internal hostnames
-        if hostname in ('localhost', '127.0.0.1', '::1', '0.0.0.0', 'local', 'internal'):
-            return False
-
-        if hostname.endswith(('.local', '.internal', '.lan', '.corp', '.home')):
-            return False
-
-        # Check if hostname is an IP address
-        try:
-            ip = ipaddress.ip_address(hostname)
-            if (
-                ip.is_private
-                or ip.is_loopback
-                or ip.is_link_local
-                or ip.is_multicast
-                or ip.is_reserved
-                or ip.is_unspecified
-                or str(ip) == '169.254.169.254'
-            ):
-                return False
-        except ValueError:
-            # Not an IP address literal, domain name is allowed
-            pass
-
-        return True
+        from backend.utils.ssrf import validate_url_for_ssrf
+        is_safe, _ = validate_url_for_ssrf(url)
+        return is_safe
     except Exception:
         return False
 

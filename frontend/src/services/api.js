@@ -427,5 +427,41 @@ export async function fetchIncidentGraph(incidentId) {
   return response.json();
 }
 
+export function getDossierUrl(incidentId) {
+  return `${API_BASE}/api/incidents/${encodeURIComponent(incidentId)}/dossier`;
+}
+
+export async function fetchCertifiedDossier(incidentId) {
+  const token = getAuthToken();
+  const headers = { 'X-Requested-With': 'XMLHttpRequest' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  const response = await fetch(getDossierUrl(incidentId), { headers });
+  if (!response.ok) throw new Error('Failed to load certified Section 63 BSA / 65B dossier');
+  return response.json();
+}
+
+export function getStixUrl(incidentId) {
+  return `${API_BASE}/api/incidents/${encodeURIComponent(incidentId)}/stix`;
+}
+
+export async function fetchStixBundle(incidentId) {
+  const token = getAuthToken();
+  const headers = { 'X-Requested-With': 'XMLHttpRequest' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  const response = await fetch(getStixUrl(incidentId), { headers });
+  if (!response.ok) throw new Error('Failed to load STIX 2.1 Threat Intelligence bundle');
+  return response.json();
+}
+
+export async function pollScanJob(jobId) {
+  const token = getAuthToken();
+  const headers = { 'X-Requested-With': 'XMLHttpRequest' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  const response = await fetch(`${API_BASE}/api/scan/jobs/${encodeURIComponent(jobId)}`, { headers });
+  if (!response.ok) throw new Error('Failed to poll scan job status');
+  return response.json();
+}
+
+
 
 

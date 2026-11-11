@@ -34,7 +34,7 @@ from backend.modules.brand_check import is_official_brand_domain
 _PROTECTED_INSTITUTIONAL_KEYWORDS = frozenset({
     "hdfc", "icici", "sbi", "yono", "axisbank", "paytm", "phonepe",
     "bhim", "epfindia", "incometax", "uidai", "aadhaar", "kotak", "pnbindia",
-    "canarabank", "bankofbaroda", "bob", "unionbank",
+    "canarabank", "bankofbaroda", "bob", "unionbank", "yesbank", "indusind",
 })
 
 
@@ -47,6 +47,7 @@ _SUSPICIOUS_TLDS = frozenset({
     '.lol', '.win', '.bid', '.cam', '.stream', '.space',
     '.quest', '.cfd', '.fun', '.uno', '.sbs', '.autos',
     '.cyou', '.guru', '.vip', '.zone', '.hair', '.beauty',
+    '.biz', '.info', '.cc',
 })
 
 # ─── Trusted TLDs (legitimate domains frequently impersonated) ───
@@ -66,6 +67,14 @@ _LEGITIMATE_MULTI_LEVEL = frozenset({
     'amazonaws.com', 'azurewebsites.net', 'blob.core.windows.net',
     'cloudfront.net', 'googleusercontent.com', 'github.io',
     'gitlab.io', 'vercel.app', 'web.app', 'firebaseapp.com',
+})
+
+# ─── Multi-tenant free/cloud hosting platforms frequently targeted for zero-day phishing ───
+_FREE_AND_CLOUD_HOSTS = frozenset({
+    'pages.dev', 'workers.dev', 'firebaseapp.com', 'web.app',
+    'vercel.app', 'netlify.app', 'ngrok-free.app', 'glitch.me',
+    'duckdns.org', '000webhostapp.com', 'render.com', 'b-cdn.net',
+    'surge.sh', 'github.io', 'gitlab.io', 'fleek.co',
 })
 
 # ─── Suspicious path keywords ───
@@ -247,6 +256,24 @@ def _analyze_single_url(url_signal: URLSignal) -> tuple[URLSignal, list[Evidence
                 raw_data={"url": url, "domain": host, "tld": tld, "signal": "suspicious_tld"},
             ))
 
+        # Off-Platform Messaging Redirect Lure (Telegram / WhatsApp channel recruitment)
+        if host.lower() in ('t.me', 'telegram.me', 'wa.me', 'api.whatsapp.com'):
+            signals.append('messaging_redirect')
+            evidence_items.append(EvidenceItem(
+                type=EvidenceType.URL_ANALYSIS,
+                source="url_analyzer",
+                description=f"Directs user off-platform to private unmoderated messaging channel ({host})",
+                observed_value=host,
+                interpretation="Social engineering lure directing users to private messaging channels commonly used in task scams and investment fraud",
+                status=EvidenceStatus.SUSPICIOUS,
+                reliability=EvidenceReliability.DETERMINISTIC_FACT,
+                risk_direction=RiskDirection.INCREASES_RISK,
+                severity=EvidenceSeverity.HIGH,
+                confidence=0.85,
+                correlation_group="messaging_lure",
+                raw_data={"url": url, "host": host, "signal": "messaging_redirect"},
+            ))
+
         # Subdomain Counting (Only for actual domains, taking compound TLDs and legitimate CDNs into account)
         is_cloud_multi = any(host.endswith(cloud) for cloud in _LEGITIMATE_MULTI_LEVEL)
         if not is_cloud_multi:
@@ -324,6 +351,30 @@ def _analyze_single_url(url_signal: URLSignal) -> tuple[URLSignal, list[Evidence
                         raw_data={"url": url, "domain": host, "brand_keyword": brand_kw},
                     ))
                     break
+
+        # Cloud / Free-Tier Multi-Tenant Hosting Subdomain Scrutiny (Zero-Day Defense)
+        matching_cloud_apex = next((ch for ch in _FREE_AND_CLOUD_HOSTS if host.endswith("." + ch)), None)
+        if matching_cloud_apex:
+            subdomain_part = host[:-len(matching_cloud_apex) - 1]
+            path_context_lower = (parsed.path or "").lower() + "?" + (parsed.query or "").lower()
+            subdomain_sensitive = any(kw in subdomain_part for kw in _PROTECTED_INSTITUTIONAL_KEYWORDS) or any(kw in subdomain_part for kw in ("kyc", "otp", "login", "verify", "update", "bank", "account", "secure"))
+            path_sensitive = any(w in path_context_lower for w in _SUSPICIOUS_PATH_WORDS) or any(w in path_context_lower for w in _PROTECTED_INSTITUTIONAL_KEYWORDS)
+            if subdomain_sensitive or path_sensitive:
+                signals.append("cloud_host_credential_lure")
+                evidence_items.append(EvidenceItem(
+                    type=EvidenceType.URL_ANALYSIS,
+                    source="url_analyzer",
+                    description=f"Sensitive authentication/banking lure hosted on multi-tenant cloud service ({matching_cloud_apex}): {host}",
+                    observed_value=host,
+                    interpretation=f"Subdomain on free/cloud hosting platform '{matching_cloud_apex}' targets sensitive verification flows, circumventing domain reputation feeds",
+                    status=EvidenceStatus.CONFIRMED,
+                    reliability=EvidenceReliability.DETERMINISTIC_FACT,
+                    risk_direction=RiskDirection.INCREASES_RISK,
+                    severity=EvidenceSeverity.HIGH,
+                    confidence=0.90,
+                    correlation_group="cloud_host_abuse",
+                    raw_data={"url": url, "host": host, "cloud_platform": matching_cloud_apex},
+                ))
 
     # ─── 3. Path & Query Heuristics (Applies to both IP and domains) ───
 

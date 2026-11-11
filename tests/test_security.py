@@ -336,6 +336,7 @@ def test_14_invalid_incident_id_format():
 # ─── 15. Unauthorized Incident Access & Isolation ───
 def test_15_unauthorized_incident_access_and_isolation():
     """Verify querying non-existent or unowned incident IDs returns 404 with no info disclosure."""
+    _incidents.clear()
     ghost_id = "INC-2026-00000000"
     resp = client.post(f"/api/incidents/{ghost_id}/state", json={"user_state": "paid"})
     assert resp.status_code == 404
@@ -385,6 +386,8 @@ def test_17_repeated_expensive_requests_and_memory_bounds():
     assert len(_incidents._store) == 1000
     assert "INC-2026-00000000" not in _incidents
     assert "INC-2026-0000044B" in _incidents
+
+    _incidents.clear()
 
 
 # ─── 18. Malicious Regex / ReDoS Defense ───

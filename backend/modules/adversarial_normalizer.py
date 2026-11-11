@@ -150,13 +150,14 @@ def normalize_adversarial_text(raw_text: str) -> Tuple[str, dict[str, Any], list
         evidence_items.append(EvidenceItem(
             type=EvidenceType.PATTERN_MATCH,
             source="adversarial_normalizer",
+            finding=f"Homoglyph visual deception detected: {sample_homo}",
             description=f"Detected {len(homoglyphs_replaced)} homoglyph character substitutions (e.g. {sample_homo})",
             observed_value=sample_homo,
             interpretation="Unicode homoglyphs (Cyrillic/Greek lookalikes) used to disguise banking and credential terms from security scanners",
-            status=EvidenceStatus.SUSPICIOUS,
+            status=EvidenceStatus.CONFIRMED,
             reliability=EvidenceReliability.DETERMINISTIC_FACT,
             risk_direction=RiskDirection.INCREASES_RISK,
-            severity=EvidenceSeverity.HIGH,
+            severity=EvidenceSeverity.CRITICAL,
             correlation_group="adversarial_evasion",
             raw_data={"homoglyphs": homoglyphs_replaced},
         ))

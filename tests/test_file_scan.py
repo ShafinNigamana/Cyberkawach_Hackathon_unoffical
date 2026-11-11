@@ -244,3 +244,23 @@ async def test_real_world_malware_carrier_kit_detection():
     assert any("Malware Dropper" in t for t in rec4.threat_signatures)
 
 
+@pytest.mark.anyio
+async def test_remote_download_ssrf_rejection():
+    """Verify that remote download scanning rejects SSRF to localhost, private IPs, and cloud metadata."""
+    forbidden_targets = [
+        "http://127.0.0.1:8000/api/health",
+        "http://localhost:8080/admin",
+        "http://169.254.169.254/latest/meta-data/",
+        "http://10.0.0.1/secrets.env",
+        "http://192.168.1.1/config",
+    ]
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
+        for target in forbidden_targets:
+            resp = await client.post("/api/scan/url", json={"download_url": target})
+            assert resp.status_code == 400
+            assert "ssrf" in resp.json()["detail"].lower()
+
+
+

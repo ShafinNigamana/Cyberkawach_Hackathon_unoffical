@@ -12,6 +12,7 @@ Enriches EvidenceItem with:
 
 from __future__ import annotations
 
+import secrets
 import uuid
 from datetime import datetime, timezone
 from enum import Enum
@@ -323,7 +324,9 @@ class IncidentEvidence(BaseModel):
     - `threat_intel` entries include `error` when a lookup failed.
     """
     # Identity
-    incident_id: str = Field(default_factory=lambda: f"INC-{datetime.now(timezone.utc).strftime('%Y')}-{uuid.uuid4().hex[:8].upper()}")
+    incident_id: str = Field(default_factory=lambda: f"INC-{datetime.now(timezone.utc).strftime('%Y')}-{uuid.uuid4().hex[:16].upper()}")
+    user_id: Optional[str] = None
+    claim_token: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     # Input

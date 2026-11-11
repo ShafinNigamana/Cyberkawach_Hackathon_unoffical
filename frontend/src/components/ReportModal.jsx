@@ -5,10 +5,11 @@ import {
   Download, 
   ExternalLink, 
   ShieldAlert, 
+  ShieldCheck,
   Copy, 
   Check 
 } from 'lucide-react';
-import { getExportUrl } from '../services/api';
+import { getExportUrl, getDossierUrl, fetchCertifiedDossier, getStixUrl, fetchStixBundle } from '../services/api';
 
 export default function ReportModal({ 
   isOpen = true, 
@@ -20,6 +21,7 @@ export default function ReportModal({
   copiedRef 
 }) {
   const [internalCopied, setInternalCopied] = useState(false);
+  const [dossierLoading, setDossierLoading] = useState(false);
 
   if (isOpen === false) return null;
 
@@ -64,6 +66,46 @@ export default function ReportModal({
     }
   };
 
+  const handleDownloadSection65B = async (e) => {
+    e.preventDefault();
+    try {
+      setDossierLoading(true);
+      const dossierData = await fetchCertifiedDossier(effectiveId);
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dossierData, null, 2));
+      const a = document.createElement('a');
+      a.setAttribute("href", dataStr);
+      a.setAttribute("download", `CyberKawach_${effectiveId}_Section63_BSA_Certificate.json`);
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      if (dossierData.fir_ready_text) {
+        await navigator.clipboard?.writeText?.(dossierData.fir_ready_text);
+        setInternalCopied(true);
+        setTimeout(() => setInternalCopied(false), 3000);
+      }
+    } catch {
+      window.open(getDossierUrl(effectiveId), '_blank');
+    } finally {
+      setDossierLoading(false);
+    }
+  };
+
+  const handleDownloadStix = async (e) => {
+    e.preventDefault();
+    try {
+      const stixData = await fetchStixBundle(effectiveId);
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(stixData, null, 2));
+      const a = document.createElement('a');
+      a.setAttribute("href", dataStr);
+      a.setAttribute("download", `CyberKawach_${effectiveId}_stix21.json`);
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch {
+      window.open(getStixUrl(effectiveId), '_blank');
+    }
+  };
+
   return (
     <div 
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/80 backdrop-blur-md overflow-y-auto animate-fade-in"
@@ -89,6 +131,26 @@ export default function ReportModal({
           </div>
 
           <div className="flex items-center space-x-2">
+            <button
+              onClick={handleDownloadSection65B}
+              disabled={dossierLoading}
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow cursor-pointer transition-all"
+              title="Download Certified Section 63 BSA 2023 (erstwhile 65B) Legal Evidence Package"
+            >
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">{dossierLoading ? 'Sealing...' : 'Sec 63 BSA (65B)'}</span>
+              <span className="sm:hidden">Sec 63</span>
+            </button>
+
+            <button
+              onClick={handleDownloadStix}
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold shadow cursor-pointer transition-all"
+              title="Download OASIS STIX 2.1 Threat Intelligence Bundle"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>STIX 2.1</span>
+            </button>
+
             <button
               onClick={handlePrint}
               className="inline-flex items-center space-x-1.5 px-3 py-1.5 btn-primary text-xs shadow cursor-pointer"

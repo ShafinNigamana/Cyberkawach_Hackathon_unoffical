@@ -99,6 +99,11 @@ ZERO_WIDTH_CHARS: dict[str, str] = {
     "\u200d": "Zero-Width Joiner",
     "\ufeff": "Byte Order Mark",
     "\u00ad": "Soft Hyphen",
+    "\u202e": "Right-to-Left Override (RLO)",
+    "\u202d": "Left-to-Right Override (LRO)",
+    "\u202b": "Right-to-Left Embedding (RLE)",
+    "\u202a": "Left-to-Right Embedding (LRE)",
+    "\u202c": "Pop Directional Formatting (PDF)",
 }
 
 

@@ -8,6 +8,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import secrets
 import time
 from typing import Any
 from fastapi import APIRouter, Request
@@ -78,10 +79,13 @@ async def analyze_message(request: AnalyzeRequest, raw_request: Request):
     )
 
     # Save to bounded LRU cache
+    if not evidence.user_id and not evidence.claim_token:
+        evidence.claim_token = secrets.token_urlsafe(32)
     incident_store[evidence.incident_id] = evidence
 
     return AnalyzeResponse(
         incident_id=evidence.incident_id,
+        claim_token=evidence.claim_token if not evidence.user_id else None,
         input_type=evidence.input_type,
         message_preview=evidence.message[:200],
         risk=evidence.risk,
@@ -182,11 +186,14 @@ async def analyze_message_stream(request: AnalyzeRequest, raw_request: Request):
                 yield f"event: {event_name}\ndata: {json.dumps(event_data, default=str)}\n\n"
 
             evidence = await pipeline_task
+            if not evidence.user_id and not evidence.claim_token:
+                evidence.claim_token = secrets.token_urlsafe(32)
             incident_store[evidence.incident_id] = evidence
 
             # 4. Synthesize final AnalyzeResponse payload
             final_resp = AnalyzeResponse(
                 incident_id=evidence.incident_id,
+                claim_token=evidence.claim_token if not evidence.user_id else None,
                 input_type=evidence.input_type,
                 message_preview=evidence.message[:200],
                 risk=evidence.risk,

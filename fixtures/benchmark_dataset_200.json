@@ -1,0 +1,3797 @@
+[
+  {
+    "id": "bench-fraud-bank-001",
+    "name": "SBI NetBanking PAN Block",
+    "category": "fraud_banking_kyc",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Dear SBI Customer, your NetBanking access is BLOCKED due to expired PAN card. Update PAN immediately to avoid permanent suspension: https://sbi-pan-kyc.top/portal -SBI",
+    "sender": "VM-SBINB",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "phishing",
+      "kyc"
+    ]
+  },
+  {
+    "id": "bench-fraud-bank-002",
+    "name": "HDFC Reward Points Expiring",
+    "category": "fraud_banking_kyc",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Dear HDFC User, your 9,850 reward points worth Rs 4,925 expire tonight! Redeem directly into your bank account now: https://hdfc-rewards-cash.xyz/claim -HDFC Bank",
+    "sender": "AD-HDFCBK",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "phishing",
+      "kyc"
+    ]
+  },
+  {
+    "id": "bench-fraud-bank-003",
+    "name": "ICICI Account Suspended KYC",
+    "category": "fraud_banking_kyc",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "URGENT ICICI Alert: Your bank account has been suspended today. Submit AADHAAR verification within 24 hours at https://icici-kyc-update.online or visit nearest branch.",
+    "sender": "+919876543210",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "phishing",
+      "kyc"
+    ]
+  },
+  {
+    "id": "bench-fraud-bank-004",
+    "name": "Axis Bank Debit Card Blocked",
+    "category": "fraud_banking_kyc",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Your Axis Bank Debit Card ending 8812 has been blocked due to suspicious activity. Unblock your card online immediately: https://axis-card-unblock.cc/auth",
+    "sender": "+919123456789",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "phishing",
+      "kyc"
+    ]
+  },
+  {
+    "id": "bench-fraud-bank-005",
+    "name": "PNB Yono Update APK Lure",
+    "category": "fraud_banking_kyc",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Punjab National Bank: New security mandatory update released. Download PNB One Update APK to continue netbanking: https://pnb-secure-update.club/pnb_one.apk",
+    "sender": "+918877665544",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "phishing",
+      "kyc"
+    ]
+  },
+  {
+    "id": "bench-fraud-bank-006",
+    "name": "Kotak 811 KYC Pending",
+    "category": "fraud_banking_kyc",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Dear Kotak 811 user, your full KYC is pending. Your account will be deactivated within 12 hours. Complete KYC: https://kotak-kyc-verify.vip/login",
+    "sender": "+917766554433",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "phishing",
+      "kyc"
+    ]
+  },
+  {
+    "id": "bench-fraud-bank-007",
+    "name": "Canara Bank Account Freeze",
+    "category": "fraud_banking_kyc",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Canara Bank Notice: Your savings account has been frozen by order. To unfreeze contact customer care or click: https://canara-helpdesk.top/unfreeze",
+    "sender": "+916655443322",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "phishing",
+      "kyc"
+    ]
+  },
+  {
+    "id": "bench-fraud-bank-008",
+    "name": "Bank of Baroda NetBanking Alert",
+    "category": "fraud_banking_kyc",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Bank of Baroda: Dear Customer your BOB netbanking account will be closed today. Click here https://bob-kyc-portal.net/login to update details.",
+    "sender": "+919988771122",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "phishing",
+      "kyc"
+    ]
+  },
+  {
+    "id": "bench-fraud-bank-009",
+    "name": "IndusInd Credit Limit Increase",
+    "category": "fraud_banking_kyc",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Congratulations! Your IndusInd Bank credit limit has been enhanced to Rs 5,00,000. Accept offer with zero charges: https://indusind-limit-enhance.biz/apply",
+    "sender": "+919012345678",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "phishing",
+      "kyc"
+    ]
+  },
+  {
+    "id": "bench-fraud-bank-010",
+    "name": "Union Bank Document Verification",
+    "category": "fraud_banking_kyc",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Union Bank Alert: Mandatory document re-verification required as per RBI guidelines. Failure leads to debit freeze: https://unionbank-doc-verify.org/portal",
+    "sender": "+918123456789",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "phishing",
+      "kyc"
+    ]
+  },
+  {
+    "id": "bench-fraud-bank-011",
+    "name": "Yes Bank Security Alert",
+    "category": "fraud_banking_kyc",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Yes Bank: Unauthorized login attempt detected from IP 185.220.101.5. If not you, secure your account instantly: https://yesbank-secure-auth.info/guard",
+    "sender": "+917123456789",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "phishing",
+      "kyc"
+    ]
+  },
+  {
+    "id": "bench-fraud-bank-012",
+    "name": "RBL Bank Card Protection Plan",
+    "category": "fraud_banking_kyc",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Dear RBL Cardholder, avoid Rs 2,999 auto-debit for Card Protection Plan. Click to cancel within 2 hours: https://rbl-cpp-cancel.site/deactivate",
+    "sender": "+918234567890",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "phishing",
+      "kyc"
+    ]
+  },
+  {
+    "id": "bench-fraud-bank-013",
+    "name": "Federal Bank KYC Expiry",
+    "category": "fraud_banking_kyc",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Federal Bank: Your KYC has expired. Outward transactions disabled. Restore services now: https://fednet-kyc-restore.xyz/auth",
+    "sender": "+919345678901",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "phishing",
+      "kyc"
+    ]
+  },
+  {
+    "id": "bench-fraud-bank-014",
+    "name": "IDFC First Bank Cash Refund",
+    "category": "fraud_banking_kyc",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "IDFC First Bank: Erroneous debit of Rs 3,490 detected on card ending 4410. Click to claim instant refund: https://idfc-refund-portal.top/claim",
+    "sender": "+918456789012",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "phishing",
+      "kyc"
+    ]
+  },
+  {
+    "id": "bench-fraud-bank-015",
+    "name": "SBI Yono Rewards Claim",
+    "category": "fraud_banking_kyc",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "SBI Yono Gift: You have won Rs 7,500 festive gift voucher from SBI. Claim directly into bank: https://sbi-yono-gift.live/claim",
+    "sender": "+917567890123",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "phishing",
+      "kyc"
+    ]
+  },
+  {
+    "id": "bench-fraud-bank-016",
+    "name": "HDFC NetBanking Block Notice",
+    "category": "fraud_banking_kyc",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "HDFC Alert: Your NetBanking password will expire in 2 hours. Update password to retain access: https://hdfc-netbank-pass.click/reset",
+    "sender": "+918678901234",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "phishing",
+      "kyc"
+    ]
+  },
+  {
+    "id": "bench-fraud-bank-017",
+    "name": "ICICI iMobile Mandate Upgrade",
+    "category": "fraud_banking_kyc",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "ICICI Bank: Important advisory to re-authenticate your iMobile app to enable international transactions: https://icici-imobile-auth.link/setup",
+    "sender": "+919789012345",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "phishing",
+      "kyc"
+    ]
+  },
+  {
+    "id": "bench-fraud-bank-018",
+    "name": "Axis Bank PAN Inoperative",
+    "category": "fraud_banking_kyc",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Dear Customer, your Axis savings account is inoperative due to PAN-Aadhaar de-linking. Link now: https://axis-pan-link.top/submit",
+    "sender": "+917890123456",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "phishing",
+      "kyc"
+    ]
+  },
+  {
+    "id": "bench-fraud-bank-019",
+    "name": "Central Bank KYC Deactivation",
+    "category": "fraud_banking_kyc",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Central Bank of India: Your account KYC deactivated. Please submit details online: https://centralbank-kyc-form.site/submit",
+    "sender": "+918901234567",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "phishing",
+      "kyc"
+    ]
+  },
+  {
+    "id": "bench-fraud-bank-020",
+    "name": "Bandhan Bank Balance Alert Fake",
+    "category": "fraud_banking_kyc",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Bandhan Bank: Rs 50,000 credited to account XX9012. If transaction failed, dispute immediately: https://bandhan-dispute-cell.online/dispute",
+    "sender": "+919012345671",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "phishing",
+      "kyc"
+    ]
+  },
+  {
+    "id": "bench-fraud-bank-021",
+    "name": "Standard Chartered KYC Urgency",
+    "category": "fraud_banking_kyc",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Standard Chartered: Regulatory KYC update mandatory. Click to verify: https://sc-kyc-india.top/verify",
+    "sender": "+918012345672",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "phishing",
+      "kyc"
+    ]
+  },
+  {
+    "id": "bench-fraud-bank-022",
+    "name": "Paytm Bank Wallet Block",
+    "category": "fraud_banking_kyc",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Paytm Payments Bank: Your wallet has been suspended. Withdraw remaining balance Rs 8,420: https://paytm-wallet-withdraw.vip/claim",
+    "sender": "+917012345673",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "phishing",
+      "kyc"
+    ]
+  },
+  {
+    "id": "bench-fraud-bank-023",
+    "name": "Airtel Payments Bank KYC",
+    "category": "fraud_banking_kyc",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Airtel Payments Bank: Full KYC required to continue UPI payments. Update: https://airtel-bank-kyc.site/kyc",
+    "sender": "+916012345674",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "phishing",
+      "kyc"
+    ]
+  },
+  {
+    "id": "bench-fraud-bank-024",
+    "name": "SBI YONO Maintenance Scam",
+    "category": "fraud_banking_kyc",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "SBI Notice: Yono server maintenance scheduled. Migrate your profile credentials now to prevent downtime: https://yono-sbi-server-migration.xyz/migrate",
+    "sender": "+919123987654",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "phishing",
+      "kyc"
+    ]
+  },
+  {
+    "id": "bench-fraud-bank-025",
+    "name": "Indian Overseas Bank KYC",
+    "category": "fraud_banking_kyc",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "IOB Bank: Your A/C is locked. Update KYC details at https://iob-customer-verification.top/kyc to unlock immediately.",
+    "sender": "+918123987654",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "phishing",
+      "kyc"
+    ]
+  },
+  {
+    "id": "bench-fraud-utility-001",
+    "name": "BESCOM Power Disconnection Tonight",
+    "category": "fraud_electricity_utility",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Dear Consumer, your electricity power will be disconnected tonight at 9:30 PM from the electric office because your previous month bill was not updated. Please immediately contact our electricity officer at 9876543210. -Electricity Office",
+    "sender": "+919876543210",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "electricity",
+      "disconnection",
+      "social_engineering"
+    ]
+  },
+  {
+    "id": "bench-fraud-utility-002",
+    "name": "MSEDCL Bill Payment Disconnect",
+    "category": "fraud_electricity_utility",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "MSEDCL Alert: Bill Rs 2,450 unpaid for consumer 04928172910. Power will be cut at 10:00 PM. Call power officer Mr. Sharma at 8765432109 or pay via https://msedcl-bill-pay.xyz",
+    "sender": "+918765432109",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "electricity",
+      "disconnection",
+      "social_engineering"
+    ]
+  },
+  {
+    "id": "bench-fraud-utility-003",
+    "name": "Tata Power Urgent Meter Disconnection",
+    "category": "fraud_electricity_utility",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Tata Power: Your smart meter shows zero balance. Power will be disconnected in 1 hour. Contact helpline 7654321098 immediately to restore connection.",
+    "sender": "+917654321098",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "electricity",
+      "disconnection",
+      "social_engineering"
+    ]
+  },
+  {
+    "id": "bench-fraud-utility-004",
+    "name": "DHBVN Electricity Cut Notice",
+    "category": "fraud_electricity_utility",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "DHBVN Notice: Your electricity connection 89201928 will be suspended tonight at 9:00 PM. Call bill manager on 9812345678 to update payment receipt.",
+    "sender": "+919812345678",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "electricity",
+      "disconnection",
+      "social_engineering"
+    ]
+  },
+  {
+    "id": "bench-fraud-utility-005",
+    "name": "BSES Delhi Power Cut Urgent",
+    "category": "fraud_electricity_utility",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "BSES Yamuna: Power disconnection order issued for CA 102938475. To avoid line cut contact electricity officer immediately on 9955443322.",
+    "sender": "+919955443322",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "electricity",
+      "disconnection",
+      "social_engineering"
+    ]
+  },
+  {
+    "id": "bench-fraud-utility-006",
+    "name": "Torrent Power Line Disconnection",
+    "category": "fraud_electricity_utility",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Torrent Power: Dear customer your power supply is being disconnected due to non-payment. Call sub-station officer at 9345678901.",
+    "sender": "+919345678901",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "electricity",
+      "disconnection",
+      "social_engineering"
+    ]
+  },
+  {
+    "id": "bench-fraud-utility-007",
+    "name": "Indane Gas Subsidy Discontinuation",
+    "category": "fraud_electricity_utility",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Indane LPG: Your gas cylinder subsidy has been stopped due to outdated Aadhaar linking. Click to update Aadhaar: https://indane-lpg-subsidy.top/kyc",
+    "sender": "+918234567812",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "electricity",
+      "disconnection",
+      "social_engineering"
+    ]
+  },
+  {
+    "id": "bench-fraud-utility-008",
+    "name": "Bharat Gas KYC Suspension",
+    "category": "fraud_electricity_utility",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Bharat Gas Alert: Your LPG connection will be terminated due to pending e-KYC. Call customer care 7890123456 or visit https://bharatgas-kyc.vip",
+    "sender": "+917890123456",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "electricity",
+      "disconnection",
+      "social_engineering"
+    ]
+  },
+  {
+    "id": "bench-fraud-utility-009",
+    "name": "Mahanagar Gas Pipeline Cut",
+    "category": "fraud_electricity_utility",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "MGL Notice: Pipeline PNG supply to consumer 8920192 will be disconnected today. Clear outstanding dues via link: https://mgl-billpay-fast.site/pay",
+    "sender": "+918901234512",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "electricity",
+      "disconnection",
+      "social_engineering"
+    ]
+  },
+  {
+    "id": "bench-fraud-utility-010",
+    "name": "UPPCL Power Cut Notice",
+    "category": "fraud_electricity_utility",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "UPPCL Electricity Alert: Your connection will be cut today at 9:30 PM. Contact electricity executive at 9456789012 to stop power cut.",
+    "sender": "+919456789012",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "electricity",
+      "disconnection",
+      "social_engineering"
+    ]
+  },
+  {
+    "id": "bench-fraud-utility-011",
+    "name": "Adani Electricity Smart Meter Alert",
+    "category": "fraud_electricity_utility",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Adani Electricity: Smart meter replacement fee of Rs 499 unpaid. Connection disconnection pending. Pay via https://adani-meter-dues.top/bill",
+    "sender": "+919567890123",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "electricity",
+      "disconnection",
+      "social_engineering"
+    ]
+  },
+  {
+    "id": "bench-fraud-utility-012",
+    "name": "PSPCL Punjab Power Disconnect",
+    "category": "fraud_electricity_utility",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "PSPCL Alert: Consumer 3002910291 bill pending. Power will be disconnected at 8:00 PM. Call line officer on 9678901234.",
+    "sender": "+919678901234",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "electricity",
+      "disconnection",
+      "social_engineering"
+    ]
+  },
+  {
+    "id": "bench-fraud-legal-001",
+    "name": "Mumbai Cyber Cell Digital Arrest",
+    "category": "fraud_digital_arrest",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "MUMBAI POLICE CYBER CRIME CELL: Notice of Digital Arrest issued against Aadhaar ending 9812. An illegal parcel containing 200g MDMA was seized at Mumbai airport under your name. Connect immediately on Skype id: mumbai_police_investigation to record statement or face physical arrest.",
+    "sender": "+919988112233",
+    "user_state": "received",
+    "tags": [
+      "digital_arrest",
+      "police_impersonation",
+      "coercion"
+    ]
+  },
+  {
+    "id": "bench-fraud-legal-002",
+    "name": "CBI Court Summons Notice",
+    "category": "fraud_digital_arrest",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "CENTRAL BUREAU OF INVESTIGATION (CBI): Legal Summons Case #CBI/2026/8920. Money laundering charges under PMLA Act filed. Join virtual interrogation room within 30 mins: https://cbi-court-virtual.top/case8920",
+    "sender": "+918877223344",
+    "user_state": "received",
+    "tags": [
+      "digital_arrest",
+      "police_impersonation",
+      "coercion"
+    ]
+  },
+  {
+    "id": "bench-fraud-legal-003",
+    "name": "TRAI Mobile Disconnection Order",
+    "category": "fraud_digital_arrest",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "TRAI Legal Department: Your mobile number +91-9876543210 is involved in sending 1,200 illegal harassment messages. All telecom identifiers registered with your Aadhaar will be disconnected in 2 hours. Press 9 or call 9123456789.",
+    "sender": "+919123456789",
+    "user_state": "received",
+    "tags": [
+      "digital_arrest",
+      "police_impersonation",
+      "coercion"
+    ]
+  },
+  {
+    "id": "bench-fraud-legal-004",
+    "name": "Supreme Court E-Challan Warrant",
+    "category": "fraud_digital_arrest",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Supreme Court of India E-Committee: Non-bailable arrest warrant issued against you for contempt of court. View case summary and post bail online: https://sci-bail-portal.xyz/warrant",
+    "sender": "+917766334455",
+    "user_state": "received",
+    "tags": [
+      "digital_arrest",
+      "police_impersonation",
+      "coercion"
+    ]
+  },
+  {
+    "id": "bench-fraud-legal-005",
+    "name": "Customs Department Narcotic Parcel",
+    "category": "fraud_digital_arrest",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Indian Customs Department - IGI Airport: Consignment AW-892019 contains unauthorized foreign currency ($50,000) and illegal narcotics. Contact customs officer Mr. R.K. Verma on WhatsApp 9876540123 to resolve penalty.",
+    "sender": "+919876540123",
+    "user_state": "received",
+    "tags": [
+      "digital_arrest",
+      "police_impersonation",
+      "coercion"
+    ]
+  },
+  {
+    "id": "bench-fraud-legal-006",
+    "name": "ED Money Laundering Notice",
+    "category": "fraud_digital_arrest",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Enforcement Directorate (ED): Freezing order issued on all bank accounts under your PAN. Report to video interrogation room immediately: https://ed-investigation-india.top/summons",
+    "sender": "+918765430123",
+    "user_state": "received",
+    "tags": [
+      "digital_arrest",
+      "police_impersonation",
+      "coercion"
+    ]
+  },
+  {
+    "id": "bench-fraud-legal-007",
+    "name": "Delhi Police Cyber Cell Arrest",
+    "category": "fraud_digital_arrest",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Delhi Police Cyber Cell: FIR #492/2026 registered for child sexual abuse material downloading. Digital surveillance active on your IP. Connect to officer via WhatsApp call at 9765430123.",
+    "sender": "+919765430123",
+    "user_state": "received",
+    "tags": [
+      "digital_arrest",
+      "police_impersonation",
+      "coercion"
+    ]
+  },
+  {
+    "id": "bench-fraud-legal-008",
+    "name": "Interpol Red Notice Impersonation",
+    "category": "fraud_digital_arrest",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "INTERPOL National Central Bureau New Delhi: Red Notice Alert issued for international wire fraud. Surrender to nearest embassy or contact compliance officer on +919654320123.",
+    "sender": "+919654320123",
+    "user_state": "received",
+    "tags": [
+      "digital_arrest",
+      "police_impersonation",
+      "coercion"
+    ]
+  },
+  {
+    "id": "bench-fraud-legal-009",
+    "name": "Telecom Ministry SIM Block Threat",
+    "category": "fraud_digital_arrest",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Department of Telecommunications (DoT): Final warning. 9 SIM cards issued illegally on your Aadhaar. Call 9543210987 immediately to verify your identity.",
+    "sender": "+919543210987",
+    "user_state": "received",
+    "tags": [
+      "digital_arrest",
+      "police_impersonation",
+      "coercion"
+    ]
+  },
+  {
+    "id": "bench-fraud-legal-010",
+    "name": "Narcotics Control Bureau Summons",
+    "category": "fraud_digital_arrest",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "NCB India: Seizure of contraband package destined to your residential address. Connect with investigating inspector on WhatsApp 9432109876 to verify credentials.",
+    "sender": "+919432109876",
+    "user_state": "received",
+    "tags": [
+      "digital_arrest",
+      "police_impersonation",
+      "coercion"
+    ]
+  },
+  {
+    "id": "bench-fraud-courier-001",
+    "name": "India Post Address Incomplete Customs",
+    "category": "fraud_fake_delivery",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "India Post: Your package #IN982019283 could not be delivered due to incomplete home address. Update address and pay Rs 32 re-delivery fee within 24h: https://indiapost-parcels-update.top/track",
+    "sender": "+919811223344",
+    "user_state": "received",
+    "tags": [
+      "courier",
+      "delivery",
+      "fake_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-courier-002",
+    "name": "Delhivery Customs Clearance Unpaid",
+    "category": "fraud_fake_delivery",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Delhivery: Consignment AWB782910 has arrived at hub with pending customs duty of Rs 48.00. Clear payment now to dispatch out for delivery: https://delhivery-customs-pay.site/clear",
+    "sender": "+918822334455",
+    "user_state": "received",
+    "tags": [
+      "courier",
+      "delivery",
+      "fake_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-courier-003",
+    "name": "Blue Dart Parcel Reschedule Fee",
+    "category": "fraud_fake_delivery",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Blue Dart Express: Delivery failed. Consignee unavailable. Reschedule your delivery slot and confirm delivery PIN: https://bluedart-reschedule-portal.xyz/track",
+    "sender": "+917733445566",
+    "user_state": "received",
+    "tags": [
+      "courier",
+      "delivery",
+      "fake_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-courier-004",
+    "name": "Amazon Delivery Address Verification",
+    "category": "fraud_fake_delivery",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Amazon India: Your order #402-9182918-192810 could not be delivered. Please update your delivery address to avoid return: https://amazon-delivery-update.top/address",
+    "sender": "+916644556677",
+    "user_state": "received",
+    "tags": [
+      "courier",
+      "delivery",
+      "fake_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-courier-005",
+    "name": "DHL Express Duty Tax Pending",
+    "category": "fraud_fake_delivery",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "DHL Express: Package #928371928 has duty tax unpaid Rs 120. Pay customs online to avoid package destruction: https://dhl-express-customs.cc/pay",
+    "sender": "+919955667788",
+    "user_state": "received",
+    "tags": [
+      "courier",
+      "delivery",
+      "fake_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-courier-006",
+    "name": "DTDC Tracking Address Missing",
+    "category": "fraud_fake_delivery",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "DTDC Courier: Incomplete delivery address for consignment D92810291. Reschedule delivery: https://dtdc-express-track.info/update",
+    "sender": "+918866778899",
+    "user_state": "received",
+    "tags": [
+      "courier",
+      "delivery",
+      "fake_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-courier-007",
+    "name": "FedEx Package On Hold",
+    "category": "fraud_fake_delivery",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "FedEx India: Your shipment #829102918 is held at regional transit facility. Pay import surcharge Rs 99: https://fedex-clearance-online.site/pay",
+    "sender": "+917777889900",
+    "user_state": "received",
+    "tags": [
+      "courier",
+      "delivery",
+      "fake_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-courier-008",
+    "name": "Ekart Logistics Address Confirmation",
+    "category": "fraud_fake_delivery",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Ekart Logistics: Delivery partner unable to locate street address. Update GPS coordinates and pay Rs 10 verification charge: https://ekart-address-update.xyz/locate",
+    "sender": "+916688990011",
+    "user_state": "received",
+    "tags": [
+      "courier",
+      "delivery",
+      "fake_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-courier-009",
+    "name": "Shadowfax Delivery Attempt Failed",
+    "category": "fraud_fake_delivery",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Shadowfax: 2nd delivery attempt failed for order. Click here to confirm alternate address: https://shadowfax-delivery-reschedule.top/confirm",
+    "sender": "+919999001122",
+    "user_state": "received",
+    "tags": [
+      "courier",
+      "delivery",
+      "fake_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-courier-010",
+    "name": "India Post Registered Letter Notice",
+    "category": "fraud_fake_delivery",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "India Post Alert: Important registered legal notice awaiting delivery. Verify identification proof to release letter: https://indiapost-speedpost-notice.top/verify",
+    "sender": "+918888112233",
+    "user_state": "received",
+    "tags": [
+      "courier",
+      "delivery",
+      "fake_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-job-001",
+    "name": "Part-time YouTube Video Liking Job",
+    "category": "fraud_job_task",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Hi! Earn Rs 2,500 to Rs 8,000 daily by simply liking YouTube videos and rating hotels on Google Maps. No skills required. Daily payout via UPI. Contact manager on Telegram: https://t.me/GlobalTaskHR2026 or WhatsApp +919876501234",
+    "sender": "+919876501234",
+    "user_state": "received",
+    "tags": [
+      "job_scam",
+      "telegram_task",
+      "advance_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-job-002",
+    "name": "Amazon Data Entry Work From Home",
+    "category": "fraud_job_task",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Amazon India Hiring: Part time data entry jobs. Earn Rs 35,000/month working 2 hours/day. Laptop provided. Registration fee Rs 499 only. Pay via PhonePe: hr_recruitment@upi. Contact on WhatsApp 9123450987.",
+    "sender": "+919123450987",
+    "user_state": "received",
+    "tags": [
+      "job_scam",
+      "telegram_task",
+      "advance_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-job-003",
+    "name": "Telegram VIP Investment Task Group",
+    "category": "fraud_job_task",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Earn 300% profit in 15 minutes! Deposit Rs 1,000 and get Rs 3,000 back guaranteed through our crypto trading algorithm. Join VIP channel now: https://t.me/CryptoProfitIndiaVIP",
+    "sender": "+918811229900",
+    "user_state": "received",
+    "tags": [
+      "job_scam",
+      "telegram_task",
+      "advance_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-job-004",
+    "name": "Google Review Rating Part Time Job",
+    "category": "fraud_job_task",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Earn Rs 150 per review! Work from home for Google Partners. Complete 10 reviews daily and earn Rs 1,500. Message HR on WhatsApp: https://wa.me/919988776655?text=JobDetails",
+    "sender": "+919988776655",
+    "user_state": "received",
+    "tags": [
+      "job_scam",
+      "telegram_task",
+      "advance_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-job-005",
+    "name": "Flipkart Merchant Affiliate Task",
+    "category": "fraud_job_task",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Flipkart Merchant Task: Help merchants boost product ratings. Complete prepaid task to receive 30% commission instantly. Join task group: https://chat-invite.top/flipkart_tasks",
+    "sender": "+917711228899",
+    "user_state": "received",
+    "tags": [
+      "job_scam",
+      "telegram_task",
+      "advance_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-job-006",
+    "name": "Typing Job with Registration Fee",
+    "category": "fraud_job_task",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Urgent requirement for offline PDF to Word typing. Rs 250 per page. Earn Rs 45,000 monthly. Security deposit Rs 999 refundable with first salary. Register: https://typing-jobs-india.xyz/apply",
+    "sender": "+916611227788",
+    "user_state": "received",
+    "tags": [
+      "job_scam",
+      "telegram_task",
+      "advance_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-job-007",
+    "name": "Instagram Influencer Assistant Hiring",
+    "category": "fraud_job_task",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Wanted: Instagram Page Assistant. Reply to comments and earn Rs 25,000/month. Only 20 slots left! Contact HR coordinator on Telegram @InstaWorkIndia",
+    "sender": "+919922338877",
+    "user_state": "received",
+    "tags": [
+      "job_scam",
+      "telegram_task",
+      "advance_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-job-008",
+    "name": "Hotel Booking Review Commission",
+    "category": "fraud_job_task",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Make money traveling! Rate luxury hotels on TripAdvisor and earn Rs 3,000/day. Instant withdrawal to bank account. Message coordinator on WhatsApp +918833447766.",
+    "sender": "+918833447766",
+    "user_state": "received",
+    "tags": [
+      "job_scam",
+      "telegram_task",
+      "advance_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-job-009",
+    "name": "Online Captcha Typing Job",
+    "category": "fraud_job_task",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Work from mobile. Solve 100 captchas = Rs 500. Work anytime anywhere. Pay Rs 299 activation fee to start: https://captcha-work-portal.top/register",
+    "sender": "+917733446655",
+    "user_state": "received",
+    "tags": [
+      "job_scam",
+      "telegram_task",
+      "advance_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-job-010",
+    "name": "Overseas Work Visa Job Offer",
+    "category": "fraud_job_task",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Canada Work Permit guaranteed without IELTS! Construction and hospitality vacancies with free food and accommodation. Pay processing fee Rs 5,500 to secure slot: https://canada-visa-express.xyz/apply",
+    "sender": "+916633445544",
+    "user_state": "received",
+    "tags": [
+      "job_scam",
+      "telegram_task",
+      "advance_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-lottery-001",
+    "name": "KBC Lucky Draw 25 Lakhs Prize",
+    "category": "fraud_lottery_prize",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "CONGRATULATIONS! Your mobile number has won Rs 25,00,000 in Kaun Banega Crorepati (KBC) Sim Card Lucky Draw 2026. File #KBC-8890. To claim prize money, contact KBC Manager Rana Pratap Singh on WhatsApp: +919876541230. Do not delete message.",
+    "sender": "+919876541230",
+    "user_state": "received",
+    "tags": [
+      "lottery",
+      "cashback",
+      "upi_fraud",
+      "advance_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-lottery-002",
+    "name": "Google Pay Anniversary Scratch Card",
+    "category": "fraud_lottery_prize",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "🎉 You have won a Google Pay Cash Reward of Rs 1,999! Click link to claim directly into your bank account: https://gpay-festive-reward.site/claim?id=92810",
+    "sender": "+919123451230",
+    "user_state": "received",
+    "tags": [
+      "lottery",
+      "cashback",
+      "upi_fraud",
+      "advance_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-lottery-003",
+    "name": "WhatsApp International Lottery Award",
+    "category": "fraud_lottery_prize",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Dear WhatsApp User, your number selected in WhatsApp Global Mega Lottery 2026 for prize of 500,000 USD. Send passport copy and registration fee $100 to claims@whatsapp-lottery.org",
+    "sender": "+918823451230",
+    "user_state": "received",
+    "tags": [
+      "lottery",
+      "cashback",
+      "upi_fraud",
+      "advance_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-lottery-004",
+    "name": "Fake PhonePe Cashback Collect Request",
+    "category": "fraud_lottery_prize",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "PhonePe: You received a cashback of Rs 2,500 on your recent payment! Enter your UPI PIN on the next screen to accept credit into your account: https://phonepe-cashback-accept.top/claim",
+    "sender": "+917723451230",
+    "user_state": "received",
+    "tags": [
+      "lottery",
+      "cashback",
+      "upi_fraud",
+      "advance_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-lottery-005",
+    "name": "UPI Refund Reversal PIN Trick",
+    "category": "fraud_lottery_prize",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Merchant refund of Rs 1,499 approved for failed order. To receive refund, approve collect request in your GPay app and enter UPI PIN: https://upi-merchant-refund.xyz/approve",
+    "sender": "+916623451230",
+    "user_state": "received",
+    "tags": [
+      "lottery",
+      "cashback",
+      "upi_fraud",
+      "advance_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-lottery-006",
+    "name": "Car Lucky Draw Winner Notice",
+    "category": "fraud_lottery_prize",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Congratulations! You won a brand new Mahindra Thar in Big Bazaar 25th Anniversary Draw. Pay RTO registration fee Rs 8,500 to dispatch vehicle: https://bigbazaar-car-lucky.top/claim",
+    "sender": "+919934561230",
+    "user_state": "received",
+    "tags": [
+      "lottery",
+      "cashback",
+      "upi_fraud",
+      "advance_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-lottery-007",
+    "name": "Govt PM Mudra Loan Instant Approval",
+    "category": "fraud_lottery_prize",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "PM Mudra Yojana: Loan of Rs 5,00,000 approved at 2% annual interest with 50% subsidy. No collateral needed. Pay file charge Rs 1,999: https://pm-mudra-loan-portal.site/apply",
+    "sender": "+918834561230",
+    "user_state": "received",
+    "tags": [
+      "lottery",
+      "cashback",
+      "upi_fraud",
+      "advance_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-lottery-008",
+    "name": "PM Kisan Samman Nidhi 16th Installment",
+    "category": "fraud_lottery_prize",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "PM-KISAN Alert: Your 16th installment of Rs 2,000 is on hold due to missing Aadhaar biometric verification. Complete e-KYC: https://pmkisan-ekyc-portal.top/verify",
+    "sender": "+917734561230",
+    "user_state": "received",
+    "tags": [
+      "lottery",
+      "cashback",
+      "upi_fraud",
+      "advance_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-lottery-009",
+    "name": "Income Tax Refund Rs 24,500 Pending",
+    "category": "fraud_lottery_prize",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Income Tax Department: Refund of Rs 24,500 calculated for Assessment Year 2025-26. Submit bank account and NetBanking credentials to disburse: https://incometax-refund-gov.top/claim",
+    "sender": "+916634561230",
+    "user_state": "received",
+    "tags": [
+      "lottery",
+      "cashback",
+      "upi_fraud",
+      "advance_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-lottery-010",
+    "name": "Instant 7-Day Loan Blackmail Lure",
+    "category": "fraud_lottery_prize",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Instant Cash in 5 mins! Get Rs 50,000 without CIBIL score. Download RupeeLoan Pro APK: https://instant-rupee-loan.club/rupee.apk. 100% approval.",
+    "sender": "+919945671230",
+    "user_state": "received",
+    "tags": [
+      "lottery",
+      "cashback",
+      "upi_fraud",
+      "advance_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-lottery-011",
+    "name": "Electricity Bill Cashback Voucher",
+    "category": "fraud_lottery_prize",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Get 100% cashback on your electricity bill payment! Click to activate your discount coupon: https://bill-cashback-voucher.xyz/activate",
+    "sender": "+918845671230",
+    "user_state": "received",
+    "tags": [
+      "lottery",
+      "cashback",
+      "upi_fraud",
+      "advance_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-lottery-012",
+    "name": "Jio 5G Free 1 Year Recharge",
+    "category": "fraud_lottery_prize",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Ambani Family Wedding Gift: Jio offering 1 year free 5G unlimited recharge to all users! Recharge now before offer expires: https://jio-free-recharge-offer.top/claim",
+    "sender": "+917745671230",
+    "user_state": "received",
+    "tags": [
+      "lottery",
+      "cashback",
+      "upi_fraud",
+      "advance_fee"
+    ]
+  },
+  {
+    "id": "bench-fraud-lottery-013",
+    "name": "Airtel Free 84 Days Data Lure",
+    "category": "fraud_lottery_prize",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Airtel Anniversary Offer: Free 84 days 2GB/day recharge for all prepaid users. Claim your gift: https://airtel-free-recharge.live/gift",
+    "sender": "+916645671230",
+    "user_state": "received",
+    "tags": [
+      "lottery",
+      "cashback",
+      "upi_fraud",
+      "advance_fee"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-001",
+    "name": "SBI UPI Debit Alert",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Dear SBI Customer, your A/C ending in 4921 has been debited by Rs 1,450.00 on 26-Sep-2026. Ref: UPI/626918291048. Avail Bal: Rs 34,820.00. For disputes, visit https://www.onlinesbi.sbi or call 18001234. -State Bank of India",
+    "sender": "VM-SBINB",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-002",
+    "name": "HDFC Card Transaction OTP",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "481920 is your secret OTP for transaction of Rs 3,200.00 at AMAZON INDIA with HDFC Bank Card ending 1042. OTP valid for 10 mins. Never share OTP or password with anyone, including bank officials.",
+    "sender": "AD-HDFCBK",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-003",
+    "name": "ICICI Salary Credit Notification",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Your ICICI Bank A/c XX4019 is credited with Rs 85,000.00 on 30-Sep-2026 towards Salary. Clear Bal: Rs 1,42,850.25. Download statement in iMobile app. -ICICI Bank",
+    "sender": "VK-ICICIB",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-004",
+    "name": "Axis Bank ATM Withdrawal Alert",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Rs 5,000.00 withdrawn from Axis Bank ATM at MG Road Bangalore on Card ending 9012. Avail Bal: Rs 42,100.50. If not done by you, SMS BLOCK to 56161600. -Axis Bank",
+    "sender": "BZ-AXISBK",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-005",
+    "name": "Kotak Bank UPI Payment Alert",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Paid Rs 350.00 to Starbucks India from Kotak Bank A/C XX8819. UPI Ref: 429102910291. Avail Bal: Rs 18,400.00. Kotak Bank.",
+    "sender": "AD-KOTAKB",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-006",
+    "name": "PNB NEFT Credit Alert",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Dear Customer, your PNB Account XX1029 is credited with Rs 12,000.00 through NEFT from MOHAN LAL. Ref: PNBNEFT202609281. -Punjab National Bank",
+    "sender": "BP-PNBSMS",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-007",
+    "name": "Canara Bank IMPS Outward",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Dear Customer, Rs 7,500.00 debited from Canara Bank A/C XX5544 via IMPS to RAMESH on 28-Sep-2026. Ref: 427102918291. Avail Bal Rs 29,100. -Canara Bank",
+    "sender": "BW-CANBNK",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-008",
+    "name": "Bank of Baroda Card Swipe",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Dear BOB Customer, your Debit Card ending 3321 was swiped for Rs 1,890.00 at D-MART. Available balance: Rs 15,400.00. -Bank of Baroda",
+    "sender": "BP-BOBSMS",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-009",
+    "name": "IndusInd NetBanking Login Alert",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "IndusInd Bank: Login to NetBanking detected on 28-Sep-2026 at 14:32 IST from Chrome browser. If not done by you, call 18602677777 immediately.",
+    "sender": "AD-INDUSB",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-010",
+    "name": "Union Bank Bill Payment Alert",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Union Bank: Payment of Rs 1,200.00 made to BESCOM towards electricity bill. Ref: UBI42819201. Available balance: Rs 22,400. -Union Bank",
+    "sender": "BP-UBISMS",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-011",
+    "name": "SBI Cheque Clearing Credit",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "SBI: Cheque #891029 for Rs 45,000.00 has been cleared and credited to your A/c XX3344. Total Avail Bal: Rs 88,200.00. -SBI",
+    "sender": "VM-SBINB",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-012",
+    "name": "HDFC Auto Debit EMI Deducted",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "HDFC Bank Alert: Rs 14,500.00 debited towards Car Loan EMI #LN892019 from A/c ending 2041 on 05-Sep-2026. Bal: Rs 55,200. -HDFC Bank",
+    "sender": "AD-HDFCBK",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-013",
+    "name": "ICICI FD Interest Credited",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Dear Customer, interest of Rs 3,420.00 on Fixed Deposit #FD98201 has been credited to your linked Savings Account XX8910. -ICICI Bank",
+    "sender": "VK-ICICIB",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-014",
+    "name": "Axis Bank Credit Card Bill Generated",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Axis Bank: Your Credit Card ending 7741 statement for Sep 2026 is generated. Total Dues: Rs 8,420.00, Min Due: Rs 500.00, Due Date: 18-Oct-2026. Pay via Axis Mobile App.",
+    "sender": "BZ-AXISBK",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-015",
+    "name": "Kotak 811 Zero Balance Alert",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Your Kotak 811 Account ending 1122 has an available balance of Rs 5,420.00 as on 28-Sep-2026. No minimum balance required. Kotak Mahindra Bank.",
+    "sender": "AD-KOTAKB",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-016",
+    "name": "IDFC First Interest Credit",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "IDFC FIRST Bank: Monthly interest of Rs 480.00 for your savings account XX9912 has been credited. High interest credited every month! -IDFC First",
+    "sender": "AD-IDFCFB",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-017",
+    "name": "RBL Bank Card International Disabled",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "RBL Bank: International usage on your Credit Card ending 4410 has been disabled as requested. Manage card limits in RBL MyCard App.",
+    "sender": "AD-RBLBNK",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-018",
+    "name": "Federal Bank Fund Transfer Confirmation",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Federal Bank: Transferred Rs 2,000.00 to SURESH via FedMobile on 28-Sep-2026. Txn ID: FT2627182910. Balance: Rs 14,200.00.",
+    "sender": "AD-FEDBNK",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-019",
+    "name": "SBI Inward Remittance Alert",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "SBI: Inward remittance of EUR 250.00 processed for your A/c XX7722. Equivalent INR 22,450.00 credited after forex conversion. -SBI",
+    "sender": "VM-SBINB",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-020",
+    "name": "HDFC Debit Card Block Confirmation",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "HDFC Bank: Your Debit Card ending 5512 has been permanently BLOCKED as per your phone banking request. New card will be delivered in 5 working days.",
+    "sender": "AD-HDFCBK",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-021",
+    "name": "Standard Chartered Statement Link",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Dear Client, your SCB account e-statement for Aug 2026 has been sent to your registered email address. For queries call priority helpline. -StanChart",
+    "sender": "AD-SCBANK",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-022",
+    "name": "Paytm Wallet Add Money",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Rs 1,000.00 added to your Paytm Wallet from HDFC Bank A/C ending 4019. Updated wallet balance: Rs 1,450.00. UPI Ref: 428190291029.",
+    "sender": "AD-PAYTMB",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-023",
+    "name": "Aadhaar OTP Authentication",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "291048 is your Aadhaar verification OTP for authentication at UIDAI e-Gov portal. Valid for 10 minutes. Do not share OTP with anyone. -UIDAI",
+    "sender": "AD-UIDAI",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-024",
+    "name": "IRCTC Ticket Booking OTP",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "892019 is OTP for IRCTC login. Never share your IRCTC password or OTP with anyone. -IRCTC",
+    "sender": "AD-IRCTC",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-025",
+    "name": "CoWIN Vaccine Registration OTP",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Your OTP for CoWIN registration is 492019. Valid for 3 minutes. -National Health Authority, Govt of India",
+    "sender": "AD-NHAGOV",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-026",
+    "name": "Amazon Delivery OTP Verification",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "4829 is your Amazon delivery verification code for package #402-9182918. Share this OTP with the delivery associate only upon receiving package.",
+    "sender": "AD-AMAZON",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-027",
+    "name": "Zomato Order Confirmation Alert",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Order #982918 for Rs 420.00 confirmed at Biryani Blues. Track live order status in Zomato app. Enjoy your meal!",
+    "sender": "AD-ZOMATO",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-028",
+    "name": "Swiggy Instamart Order Out for Delivery",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Your Swiggy Instamart order is out for delivery with partner Ramesh! Track your delivery partner in app.",
+    "sender": "AD-SWIGGY",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-029",
+    "name": "Flipkart Delivery PIN Code",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Your Flipkart delivery agent is arriving today with package FMPC892019. Delivery PIN is 9182. Share only when receiving parcel.",
+    "sender": "AD-FLIPKT",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-030",
+    "name": "JioFiber Bill Payment Receipt",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "JioFiber: Received Rs 824.82 for Service ID 08049281928 via AutoPay on 26-Sep-2026. View invoice in MyJio app. -Reliance Jio",
+    "sender": "AD-JIOFBR",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-031",
+    "name": "FASTag Low Balance Alert",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "NHAI FASTag: Low balance warning for tag on KA04ME1234. Available balance Rs 65.00. Minimum threshold is Rs 100. Recharge tag at https://fastag.ihmcl.com or bank app.",
+    "sender": "AD-FASTAG",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-032",
+    "name": "IRCTC Cancellation Refund Credited",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "IRCTC Refund: Rs 1,840.00 for cancelled PNR 4291029102 credited back to your original payment mode on 26-Sep-2026. Txn ID: REF26102910. -IRCTC",
+    "sender": "AD-IRCTC",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-033",
+    "name": "SBI Fixed Deposit Auto-Renewal",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "SBI: Your Term Deposit #3920192810 for Rs 1,00,000.00 has matured and auto-renewed for 1 year at 6.80% p.a. Maturity date: 28-Sep-2027. -State Bank of India",
+    "sender": "VM-SBINB",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-034",
+    "name": "ICICI Credit Card Online OTP",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "749201 is your OTP for payment of Rs 1,499.00 at BOOKMYSHOW with ICICI Bank Card ending 4019. Valid for 5 mins. Do not share OTP with anyone.",
+    "sender": "VK-ICICIB",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-035",
+    "name": "Axis Bank E-Mandate Registration",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Axis Bank: E-Mandate #MN892019 for Netflix Entertainment Rs 649/month successfully registered on Debit Card ending 9012. Manage mandates in Axis Mobile app.",
+    "sender": "BZ-AXISBK",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-036",
+    "name": "HDFC Mutual Fund SIP Debit",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "HDFC Bank: Rs 5,000.00 debited towards Mutual Fund SIP for HDFC Top 100 Fund from A/C XX4019 on 25-Sep-2026. Available balance: Rs 48,200.00. -HDFC Bank",
+    "sender": "AD-HDFCBK",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-037",
+    "name": "Canara Bank Pension Credit",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Canara Bank: Central Pension of Rs 32,450.00 for Sep 2026 credited to Pension Account ending 5544 on 28-Sep-2026. Avail Bal Rs 52,100. -Canara Bank",
+    "sender": "BW-CANBNK",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-038",
+    "name": "Kotak Cheque Book Dispatched",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Kotak Bank: Cheque book containing 25 leaves dispatched via Blue Dart AWB 429102910 for A/C XX8819. Deliverable in 3 working days. Kotak Mahindra Bank.",
+    "sender": "AD-KOTAKB",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-039",
+    "name": "PNB Kisan Credit Card Subsidy",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "PNB: Interest subvention subsidy of Rs 4,200.00 credited to your KCC Account XX1029 under Govt scheme on 24-Sep-2026. -Punjab National Bank",
+    "sender": "BP-PNBSMS",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-bank-040",
+    "name": "Bank of Baroda Passbook Summary",
+    "category": "legitimate_banking_alerts",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "BOB: Summary for A/C XX3321. Total Credits this month: Rs 64,000.00, Total Debits: Rs 28,450.00. Current Bal: Rs 45,950.00. -Bank of Baroda",
+    "sender": "BP-BOBSMS",
+    "user_state": "received",
+    "tags": [
+      "banking",
+      "legitimate",
+      "otp",
+      "debit_alert"
+    ]
+  },
+  {
+    "id": "bench-legit-util-001",
+    "name": "India Post Authentic Tracking",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Your India Post consignment EK928371928IN has reached Bangalore NSH. Expected delivery by 27-Sep-2026. Track your consignment at https://www.indiapost.gov.in/_layouts/15/dpt/track.aspx",
+    "sender": "AD-POSTIN",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-002",
+    "name": "BESCOM Official Payment Receipt",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Dear Consumer, payment of Rs 1,840 for BESCOM Account ID 8920192810 received successfully on 25-Sep-2026 via BBPS. Download official receipt from https://bescom.karnataka.gov.in -BESCOM",
+    "sender": "AD-BESCOM",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-003",
+    "name": "Delhivery Out For Delivery",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Delhivery: Shipment 78392019281 from Nykaa is out for delivery with courier partner Sunil (9876500000). Track: https://www.delhivery.com/track/package/78392019281",
+    "sender": "AD-DLHVRY",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-004",
+    "name": "Blue Dart Shipment Delivered",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Blue Dart: Consignment 429182910 delivered on 27-Sep-2026 at 16:45 to SECURITY. Thank you for choosing Blue Dart. Track: https://www.bluedart.com",
+    "sender": "AD-BLUDART",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-005",
+    "name": "Tata Power Monthly Bill Reminder",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Tata Power-DDL: Bill for CA 60019281029 of Rs 2,140.00 generated. Due date: 08-Oct-2026. Pay online to avail 1% rebate at https://www.tatapower-ddl.com",
+    "sender": "AD-TPDDL",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-006",
+    "name": "BSES Rajdhani Bill Notification",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "BSES Rajdhani: Electricity bill for CA 100291029 of Rs 1,420.00 is due on 05-Oct-2026. Pay seamlessly via official BSES mobile app.",
+    "sender": "AD-BSESDEL",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-007",
+    "name": "Mahanagar Gas Invoice Receipt",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "MGL: Received Rs 680.00 towards PNG bill for Consumer #20192810 on 24-Sep-2026. Invoice available at https://www.mahanagargas.com",
+    "sender": "AD-MGLGAS",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-008",
+    "name": "Indane Refill Booking Confirmation",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Your Indane LPG cylinder refill booking #92810291 is confirmed for Consumer #89201. Expected delivery in 2 working days. -Indian Oil",
+    "sender": "AD-IOCLPG",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-009",
+    "name": "Bharat Gas Subsidy Credit Alert",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "LPG Subsidy of Rs 200.00 for booking ref #892019 has been credited to your Aadhaar linked bank account on 22-Sep-2026. -BPCL",
+    "sender": "AD-BPCLPG",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-010",
+    "name": "HP Gas Cash Memo Notification",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "HP Gas: Cash memo #CM892019 for Rs 853.00 generated for order #892019. Track refill delivery in HP Pay app. -HPCL",
+    "sender": "AD-HPCLPG",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-011",
+    "name": "Jio Prepaid Plan Expiry Reminder",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Dear Jio user, your daily 1.5GB plan on 9876543210 expires in 3 days on 01-Oct-2026. Recharge with Rs 299 to continue unlimited 5G in MyJio app.",
+    "sender": "AD-JIOSMS",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-012",
+    "name": "Airtel Unlimited Pack Activated",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Airtel: Recharge of Rs 719 successful for 9812345678. Unlimited calls, 1.5GB/day, 84 days validity activated. Manage pack in Airtel Thanks app.",
+    "sender": "AD-AIRTEL",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-013",
+    "name": "Vodafone Idea Bill Receipt",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Vi: Payment of Rs 599.00 received towards postpaid bill for 9922334455 on 25-Sep-2026. Next bill date 20-Oct-2026. Vi App.",
+    "sender": "AD-VISMS",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-014",
+    "name": "ACT Fibernet Bill Due Notice",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "ACT Fibernet: Monthly broadband bill for Account #10492810 of Rs 1,178.82 generated. Pay before 04-Oct-2026 at https://www.actcorp.in to avoid interruption.",
+    "sender": "AD-ACTFBR",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-015",
+    "name": "Tata Play DTH Balance Notification",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Tata Play: Your subscriber account 1092810291 balance is Rs 45.00. Recharge by 30-Sep-2026 to ensure uninterrupted TV entertainment. Tata Play App.",
+    "sender": "AD-TATAPLY",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-016",
+    "name": "Airtel DTH Recharge Successful",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Airtel Digital TV: Customer ID 3009281920 recharged with Rs 350.00. Next recharge due on 28-Oct-2026. Thank you for choosing Airtel.",
+    "sender": "AD-AIRDTH",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-017",
+    "name": "NDMA Earthquake Disaster Alert",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "NDMA Severe Weather Warning: Heavy rainfall and thunderstorm expected in Coastal Karnataka for next 24 hours. Stay indoors, avoid waterlogged areas. Helpline: 1077. -National Disaster Management Authority",
+    "sender": "ND-DISAST",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-018",
+    "name": "Election Commission Voter Information",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Election Commission of India: National Voter Service Portal enables voters to search name in electoral roll and download digital e-EPIC card from https://voters.eci.gov.in -ECI",
+    "sender": "AD-ECISMS",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-019",
+    "name": "Har Ghar Tiranga Official Campaign",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "JG-REGINF-G\nThis Independence Day, celebrate 150 years of Vande Mataram with Har Ghar Tiranga. Hoist Tiranga at home & upload your selfie on https://harghartiranga.com/\nAdvisory as per the Telecommunications Act 2023. Acquiring SIMs or telecom identifiers by fraud, cheating or personation is a punishable offence under the Telecommunications Act, 2023 with imprisonment up to 3 years, a fine up to Rs. 50 lakhs or both.",
+    "sender": "JG-REGINF-G",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-020",
+    "name": "Income Tax Official Return Processed",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Income Tax Department: Intimation under Section 143(1) for PAN ABCDE1234F for AY 2025-26 has been processed. Download intimation notice from official e-filing portal https://www.incometax.gov.in",
+    "sender": "AD-INCOMT",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-021",
+    "name": "EPFO Provident Fund Balance",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Dear Member, your EPF balance for UAN 100928192019 is Rs 3,42,850.00. Contribution of Rs 6,800.00 for Aug 2026 received from employer. -EPFO",
+    "sender": "AD-EPFOHO",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-022",
+    "name": "Passport Seva Kendra Appointment",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Passport Seva: Appointment confirmed for Application ARN 26-1029384750 at PSK Lalbagh Bangalore on 04-Oct-2026 at 10:15 AM. Carry original documents. -Govt of India",
+    "sender": "AD-PASSPT",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-023",
+    "name": "FASTag Toll Deduction Alert",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "NHAI FASTag: Toll of Rs 85.00 deducted at Devanahalli Plaza for vehicle KA-04-ME-1234 on 28-Sep-2026 at 09:12. Balance: Rs 420.00. -IHMCL",
+    "sender": "AD-FASTAG",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-024",
+    "name": "IRCTC Train Charting Notification",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "IRCTC: Charting done for Train 12658 Chennai Express for journey on 29-Sep-2026. PNR: 4291029102. Coach: B3, Berth: 42 (MB). -IRCTC",
+    "sender": "AD-IRCTC",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-025",
+    "name": "Swiggy Grocery Delivered",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Your Instamart order has been delivered! Rate your delivery partner Ramesh in the Swiggy app. Need help? Visit Help Center in app.",
+    "sender": "AD-SWIGGY",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-026",
+    "name": "DigiLocker Driving License Issued",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "DigiLocker: Transport Dept Karnataka has issued your Driving License #DL042019281 to your DigiLocker. Access verified document at https://digilocker.gov.in",
+    "sender": "AD-DGLCKR",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-027",
+    "name": "Indane LPG Delivered Successfully",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "Your Indane 14.2 kg LPG cylinder refill has been delivered today to Consumer #89201. For complaints or refill booking visit https://cx.indianoil.in",
+    "sender": "AD-IOCLPG",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-028",
+    "name": "Indian Railways PNR Confirmed",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "IRCTC PNR Alert: PNR 4291029102 for Train 12008 Shatabdi Express is now CONFIRMED. Coach C2, Seat 45. Download ticket from https://www.irctc.co.in",
+    "sender": "AD-IRCTC",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-029",
+    "name": "CoWIN Precaution Dose Reminder",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "CoWIN: Precaution dose of COVID-19 vaccine is now due for Beneficiary ID 892019281. Book slot on https://cowin.gov.in -Ministry of Health",
+    "sender": "AD-NHAGOV",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-legit-util-030",
+    "name": "BESCOM Scheduled Maintenance Notice",
+    "category": "legitimate_utilities_courier",
+    "ground_truth": "BENIGN",
+    "expected_risk": [
+      "LOW",
+      "UNKNOWN"
+    ],
+    "message": "BESCOM Advisory: Scheduled grid maintenance on 02-Oct-2026 from 10 AM to 2 PM in Indiranagar feeder area. Power supply will be interrupted. For queries call 1912.",
+    "sender": "AD-BESCOM",
+    "user_state": "received",
+    "tags": [
+      "utility",
+      "courier",
+      "telecom",
+      "gov",
+      "legitimate"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-001",
+    "name": "Pre-Approved Bank Personal Loan Offer",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "Dear Customer, you are pre-approved for an HDFC Bank Personal Loan up to Rs 10 Lakhs with attractive interest rates. To apply, visit your nearest HDFC branch or login to netbanking at https://www.hdfcbank.com. T&C apply.",
+    "sender": "AD-HDFCBK",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-002",
+    "name": "Amazon Great Indian Festival Sale Alert",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "Great Indian Festival starts midnight! Up to 80% off on electronics, mobiles and home appliances. Add your wishlist items to cart now on Amazon app. Shop early before stocks run out!",
+    "sender": "AD-AMAZON",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-003",
+    "name": "Dominos Weekend Pizza BOGO Offer",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "Weekend Special! Buy 1 Medium Pizza and get 1 Free today. Use code BOGO at checkout on Dominos App. Offer valid till 11 PM tonight. Order now!",
+    "sender": "AD-DOMINO",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-004",
+    "name": "School Monthly Fee Reminder",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "DPS Bangalore South: Dear Parent, tuition fee for Quarter 3 for student Aditi Sharma (Class 8-B) is due on 10-Oct-2026. Kindly pay via the official parent school portal.",
+    "sender": "AD-DPSBLR",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-005",
+    "name": "Insurance Renewal Reminder",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "HDFC Life: Your Life Insurance Policy #18291029 is due for renewal premium Rs 24,000 on 15-Oct-2026. Pay online at https://www.hdfclife.com or visit branch.",
+    "sender": "AD-HDFCLI",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-006",
+    "name": "Hospital Dental Checkup Appointment",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "Manipal Hospital: Your dental checkup with Dr. Sneha Rao is scheduled for tomorrow 29-Sep-2026 at 4:30 PM. For rescheduling call 080-22221111.",
+    "sender": "AD-MANIPL",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-007",
+    "name": "Gym Membership Expiry Alert",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "Cult.fit: Your CultPass Elite membership expires in 7 days on 05-Oct-2026. Renew early to lock in your existing subscription rate. Open Cult app.",
+    "sender": "AD-CULTFT",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-008",
+    "name": "BookMyShow Movie Ticket Confirmed",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "Booking confirmed! 2 tickets for Avengers at PVR Forum Koramangala on 30-Sep-2026 at 7:15 PM. Show your booking QR code at entrance.",
+    "sender": "AD-BMSHOW",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-009",
+    "name": "Uber Ride Receipt",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "Your Tuesday evening trip with Uber was Rs 284.50. We hope you enjoyed your ride. View your trip receipt in the Uber app.",
+    "sender": "AD-UBERIN",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-010",
+    "name": "Ola Auto Booking OTP",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "4820 is your Ola Auto OTP for ride with driver Suresh (Auto KA-01-AB-1234). Share OTP with driver when boarding auto.",
+    "sender": "AD-OLACAB",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-011",
+    "name": "Lenskart Eyewear Buy 1 Get 1",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "Lenskart Gold Member Exclusive: Buy 1 Get 1 Free on all eyeglasses & sunglasses! Visit nearest store or shop on lenskart.com with code GOLD.",
+    "sender": "AD-LENSKT",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-012",
+    "name": "Apollo Pharmacy Order Dispatched",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "Apollo 24|7: Your medicine order #MED982019 is dispatched and will be delivered within 2 hours. Delivery partner assigned. Apollo Pharmacy.",
+    "sender": "AD-APOLLO",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-013",
+    "name": "Myntra End of Reason Sale Lure",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "Myntra EORS: Flat 50-80% off on top fashion brands! Extra 10% instant discount on ICICI Bank cards. Shop now on Myntra app.",
+    "sender": "AD-MYNTRA",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-014",
+    "name": "MakeMyTrip Flight Web Check-in",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "MakeMyTrip: Web check-in is now open for IndiGo flight 6E-452 from BLR to DEL departing tomorrow at 06:15 AM. Check-in on IndiGo website.",
+    "sender": "AD-MMTRIP",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-015",
+    "name": "Urban Company Service Partner Assigned",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "Urban Company: Professional AC Service scheduled for today between 11 AM - 1 PM. Partner Manoj will reach your location shortly.",
+    "sender": "AD-URBANP",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-016",
+    "name": "Feedback Survey Request with Shortlink",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "Thank you for shopping at Lifestyle! How was your experience today? Rate us in this 30-second survey: https://feedback-lifestyle.in/s/98201",
+    "sender": "AD-LFSTYL",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-017",
+    "name": "Bank Branch Visit KYC Reminder",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "Dear Customer, RBI mandates periodic KYC update. Please visit your home branch SBI MG Road with original Aadhaar and PAN before 30-Nov-2026. -SBI",
+    "sender": "VM-SBINB",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-018",
+    "name": "Car Service Service Due Reminder",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "Maruti Suzuki Service: Your Swift Dzire KA05MB1234 is due for periodic maintenance service. Book appointment at Mandovi Motors: 080-49201928.",
+    "sender": "AD-MARUTI",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-019",
+    "name": "Credit Card Upgrade Offer Official",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "ICICI Bank: You are eligible to upgrade your existing card to Sapphiro Credit Card with airport lounge access. Check eligibility in iMobile app.",
+    "sender": "VK-ICICIB",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-020",
+    "name": "Society Maintenance Bill Notice",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "Prestige Shantiniketan RWA: Maintenance dues of Rs 6,800 for Flat 402 for Oct 2026 generated. Pay via MyGate app before 10th to avoid late fee.",
+    "sender": "AD-MYGATE",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-021",
+    "name": "Airtel Thanks Gold Benefit",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "Airtel Thanks: Claim your complimentary Disney+ Hotstar 3-month subscription today through the Rewards section of Airtel Thanks app.",
+    "sender": "AD-AIRTEL",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-022",
+    "name": "Google Security Verification Code",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "G-892019 is your Google verification code. Never share your code with anyone.",
+    "sender": "Google",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-023",
+    "name": "GitHub Password Reset Verification",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "Use verification code 492810 to reset your GitHub account password. This code expires in 15 minutes.",
+    "sender": "GitHub",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-024",
+    "name": "Microsoft Account Security Code",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "Microsoft account security code: 829104. If you didn't request this code, you can safely ignore this message.",
+    "sender": "Microsoft",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-025",
+    "name": "LinkedIn Two-Factor Authentication",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "Your LinkedIn verification code is 281920. Do not share this code with anyone.",
+    "sender": "LinkedIn",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-026",
+    "name": "Cred Credit Card Bill Due Reminder",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "CRED Alert: Your Axis Bank Credit Card bill of Rs 14,290 is due in 3 days. Pay on CRED to earn cashback and avoid late fees.",
+    "sender": "AD-CRED",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-027",
+    "name": "PolicyBazaar Term Insurance Quote",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "PolicyBazaar: 1 Crore Term Life Insurance at Rs 490/month for 30-year non-smoker. Compare quotes from 15 top insurers at policybazaar.com",
+    "sender": "AD-POLBZR",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-028",
+    "name": "Zerodha Quarterly Settlement Payout",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "Zerodha: Quarterly funds settlement of unutilized trading balance Rs 12,450.00 initiated to your primary bank account XX4019 on 26-Sep-2026.",
+    "sender": "AD-ZERODH",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-029",
+    "name": "Groww Mutual Fund NAV Allotment",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "Groww: Your order for Nippon India Small Cap Fund executed. Units allotted at NAV Rs 142.85. Check your portfolio on Groww app.",
+    "sender": "AD-GROWW",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-edge-ambig-030",
+    "name": "Netmeds Medicine Refill Alert",
+    "category": "edge_cases_ambiguous",
+    "ground_truth": "AMBIGUOUS",
+    "expected_risk": [
+      "LOW",
+      "MEDIUM"
+    ],
+    "message": "Netmeds: Time to refill your monthly diabetes medication prescription. Flat 20% off on your repeat order with code REFILL20 on Netmeds.",
+    "sender": "AD-NTMEDS",
+    "user_state": "received",
+    "tags": [
+      "promotional",
+      "commercial",
+      "edge_case",
+      "otp"
+    ]
+  },
+  {
+    "id": "bench-adv-evasion-001",
+    "name": "Zero-Width Smuggled Banking KYC",
+    "category": "adversarial_evasion",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Dear SBI​Customer, your‌a/c‍is​blocked. Update​KYC​now: https://sbi-verify.top/portal",
+    "sender": "+919876543210",
+    "user_state": "received",
+    "tags": [
+      "adversarial",
+      "homoglyph",
+      "zero_width",
+      "evasion",
+      "phishing"
+    ]
+  },
+  {
+    "id": "bench-adv-evasion-002",
+    "name": "Cyrillic Homoglyph Brand SBI Domain",
+    "category": "adversarial_evasion",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Dear Customer, update your profile at https://www.sbі.com/verify to avoid account closure.",
+    "sender": "+919123456789",
+    "user_state": "received",
+    "tags": [
+      "adversarial",
+      "homoglyph",
+      "zero_width",
+      "evasion",
+      "phishing"
+    ]
+  },
+  {
+    "id": "bench-adv-evasion-003",
+    "name": "Leetspeak K-Y-C Urgency Bypass",
+    "category": "adversarial_evasion",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "URGENT: Your A-C-C-O-U-N-T is bl0cked. Submit K_Y_C immediately to unbl0ck: https://bank-safety-fix.xyz",
+    "sender": "+918877665544",
+    "user_state": "received",
+    "tags": [
+      "adversarial",
+      "homoglyph",
+      "zero_width",
+      "evasion",
+      "phishing"
+    ]
+  },
+  {
+    "id": "bench-adv-evasion-004",
+    "name": "Anchor Mismatch Hyperlink Lure",
+    "category": "adversarial_evasion",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Click <a href='https://malicious-harvesting.site/login'>https://www.onlinesbi.sbi</a> to secure your banking profile.",
+    "sender": "+917766554433",
+    "user_state": "received",
+    "tags": [
+      "adversarial",
+      "homoglyph",
+      "zero_width",
+      "evasion",
+      "phishing"
+    ]
+  },
+  {
+    "id": "bench-adv-evasion-005",
+    "name": "Zero-Width Smuggled Electricity Threat",
+    "category": "adversarial_evasion",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "BESCOM‌Electricity​Power will be‍disconnected at 9:30 PM. Call officer​9876543210 immediately.",
+    "sender": "+919876543210",
+    "user_state": "received",
+    "tags": [
+      "adversarial",
+      "homoglyph",
+      "zero_width",
+      "evasion",
+      "phishing"
+    ]
+  },
+  {
+    "id": "bench-adv-evasion-006",
+    "name": "Homoglyph Google Typosquat",
+    "category": "adversarial_evasion",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Congratulations from Gооgle! You won Rs 10,00,000. Claim at https://gооgle-reward.top/win",
+    "sender": "+916655443322",
+    "user_state": "received",
+    "tags": [
+      "adversarial",
+      "homoglyph",
+      "zero_width",
+      "evasion",
+      "phishing"
+    ]
+  },
+  {
+    "id": "bench-adv-evasion-007",
+    "name": "Space-Padded Phishing Keyword Evasion",
+    "category": "adversarial_evasion",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "D e a r  C u s t o m e r, y o u r  P A N  c a r d  h a s  e x p i r e d. U p d a t e: https://pan-kyc-verify.top/id",
+    "sender": "+919988771122",
+    "user_state": "received",
+    "tags": [
+      "adversarial",
+      "homoglyph",
+      "zero_width",
+      "evasion",
+      "phishing"
+    ]
+  },
+  {
+    "id": "bench-adv-evasion-008",
+    "name": "Punycode Encoded Phishing Domain",
+    "category": "adversarial_evasion",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Verify your HDFC NetBanking session: https://xn--hdfcbnk-9va.com/login now to avoid lockout.",
+    "sender": "+919012345678",
+    "user_state": "received",
+    "tags": [
+      "adversarial",
+      "homoglyph",
+      "zero_width",
+      "evasion",
+      "phishing"
+    ]
+  },
+  {
+    "id": "bench-adv-evasion-009",
+    "name": "Double Slash URL Redirection Trick",
+    "category": "adversarial_evasion",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Your package is held. View details: https://www.indiapost.gov.in@track-customs-duty.top/verify",
+    "sender": "+918123456789",
+    "user_state": "received",
+    "tags": [
+      "adversarial",
+      "homoglyph",
+      "zero_width",
+      "evasion",
+      "phishing"
+    ]
+  },
+  {
+    "id": "bench-adv-evasion-010",
+    "name": "Hex Encoded IP Address Phishing",
+    "category": "adversarial_evasion",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "SBI Alert: Immediate action required. Connect to security host: http://0x7F000001/sbi/auth",
+    "sender": "+917123456789",
+    "user_state": "received",
+    "tags": [
+      "adversarial",
+      "homoglyph",
+      "zero_width",
+      "evasion",
+      "phishing"
+    ]
+  },
+  {
+    "id": "bench-adv-evasion-011",
+    "name": "Zero-Width Space OTP Smuggling",
+    "category": "adversarial_evasion",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Never​share​your​OTP. To cancel fraudulent charge of Rs 9,999 click: https://cancel-charge-refund.top/auth",
+    "sender": "+918234567890",
+    "user_state": "received",
+    "tags": [
+      "adversarial",
+      "homoglyph",
+      "zero_width",
+      "evasion",
+      "phishing"
+    ]
+  },
+  {
+    "id": "bench-adv-evasion-012",
+    "name": "Full-Width Unicode Character Lure",
+    "category": "adversarial_evasion",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Ｄｅａｒ Ｃｕｓｔｏｍｅｒ， ｙｏｕｒ ｂａｎｋ ａｃｃｏｕｎｔ ｉｓ ｆｒｏｚｅｎ． Ｃｌｉｃｋ https://bank-unfreeze.top",
+    "sender": "+919345678901",
+    "user_state": "received",
+    "tags": [
+      "adversarial",
+      "homoglyph",
+      "zero_width",
+      "evasion",
+      "phishing"
+    ]
+  },
+  {
+    "id": "bench-adv-evasion-013",
+    "name": "Disguised IP Octal Phishing URL",
+    "category": "adversarial_evasion",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "NetBanking Security Alert: Update your profile at http://0177.0.0.1/verify before midnight.",
+    "sender": "+918456789012",
+    "user_state": "received",
+    "tags": [
+      "adversarial",
+      "homoglyph",
+      "zero_width",
+      "evasion",
+      "phishing"
+    ]
+  },
+  {
+    "id": "bench-adv-evasion-014",
+    "name": "Homoglyph Amazon Impersonation",
+    "category": "adversarial_evasion",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Your Amаzon parcel could not be delivered. Pay Rs 25 redelivery at https://amаzon-parcel.top/track",
+    "sender": "+917567890123",
+    "user_state": "received",
+    "tags": [
+      "adversarial",
+      "homoglyph",
+      "zero_width",
+      "evasion",
+      "phishing"
+    ]
+  },
+  {
+    "id": "bench-adv-evasion-015",
+    "name": "Subdomain Brand Masking Evasion",
+    "category": "adversarial_evasion",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Legitimate portal access: https://www.onlinesbi.sbi.banking-portal-secure-update.top/login",
+    "sender": "+918678901234",
+    "user_state": "received",
+    "tags": [
+      "adversarial",
+      "homoglyph",
+      "zero_width",
+      "evasion",
+      "phishing"
+    ]
+  },
+  {
+    "id": "bench-adv-evasion-016",
+    "name": "Mixed Character Script Smuggling",
+    "category": "adversarial_evasion",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "ICICI Bаnk: Account debited Rs 49,000. If unauthorized, dispute at https://icici-fraud-dispute.cc",
+    "sender": "+919789012345",
+    "user_state": "received",
+    "tags": [
+      "adversarial",
+      "homoglyph",
+      "zero_width",
+      "evasion",
+      "phishing"
+    ]
+  },
+  {
+    "id": "bench-adv-evasion-017",
+    "name": "Right-to-Left Override Character Smuggling",
+    "category": "adversarial_evasion",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Important bank document: statement_‮cod.exe uploaded for your review.",
+    "sender": "+917890123456",
+    "user_state": "received",
+    "tags": [
+      "adversarial",
+      "homoglyph",
+      "zero_width",
+      "evasion",
+      "phishing"
+    ]
+  },
+  {
+    "id": "bench-adv-evasion-018",
+    "name": "Soft Hyphen Word Fragmentation",
+    "category": "adversarial_evasion",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Up­date your K­Y­C now at https://kyc-direct-update.top/sbi to avoid account closure.",
+    "sender": "+918901234567",
+    "user_state": "received",
+    "tags": [
+      "adversarial",
+      "homoglyph",
+      "zero_width",
+      "evasion",
+      "phishing"
+    ]
+  },
+  {
+    "id": "bench-adv-evasion-019",
+    "name": "Zero-Width Non-Joiner Injection",
+    "category": "adversarial_evasion",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Your account is s‌t‌o‌p‌p‌e‌d. Complete KYC: https://unblock-account-fast.top/sbi",
+    "sender": "+919012345671",
+    "user_state": "received",
+    "tags": [
+      "adversarial",
+      "homoglyph",
+      "zero_width",
+      "evasion",
+      "phishing"
+    ]
+  },
+  {
+    "id": "bench-adv-evasion-020",
+    "name": "Encoded Shortlink Redirection Evasion",
+    "category": "adversarial_evasion",
+    "ground_truth": "MALICIOUS",
+    "expected_risk": [
+      "HIGH",
+      "CRITICAL"
+    ],
+    "message": "Dear user, claim your cash reward: http://bit.ly/3xSecFake -> https://malicious-credential-stealer.top",
+    "sender": "+918012345672",
+    "user_state": "received",
+    "tags": [
+      "adversarial",
+      "homoglyph",
+      "zero_width",
+      "evasion",
+      "phishing"
+    ]
+  }
+]

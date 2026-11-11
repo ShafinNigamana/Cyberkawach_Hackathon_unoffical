@@ -149,13 +149,21 @@ rate_limiter = SlidingWindowRateLimiter(
 )
 
 
-def get_rate_limiter(rate_limit: Optional[int] = None) -> SlidingWindowRateLimiter:
+def get_rate_limiter(
+    rate_limit: Optional[int] = None,
+    anon_limit: Optional[int] = None,
+    auth_limit: Optional[int] = None,
+) -> SlidingWindowRateLimiter:
     """Return the global rate limiter instance, optionally updating limits for test suites."""
     global rate_limiter
     if rate_limit is not None:
         rate_limiter.default_limit = rate_limit
         rate_limiter.anon_limit = rate_limit
         rate_limiter.auth_limit = rate_limit
+    if anon_limit is not None:
+        rate_limiter.anon_limit = anon_limit
+    if auth_limit is not None:
+        rate_limiter.auth_limit = auth_limit
     return rate_limiter
 
 
@@ -164,31 +172,45 @@ def get_client_identification(request: Request) -> Tuple[str, str, int]:
     Extract client identity and applicable quota limit:
     - Authenticated users (Bearer token / Session) -> 120 req/min
     - Anonymous requests (Client IP) -> 15 req/min
+    Hardened against:
+    - Bearer token rotation evasion (unvalidated tokens never elevate quota)
+    - X-Forwarded-For spoofing (only trusted proxy peer IPs can set upstream client IP)
     """
-    # 1. Check Authorization Bearer header
+    settings = get_settings()
+
+    # 1. Check Authorization Bearer header or X-Session-Token
     auth_header = request.headers.get("Authorization", "").strip()
+    raw_token = ""
     if auth_header.lower().startswith("bearer "):
         raw_token = auth_header[7:].strip()
-        if raw_token:
-            token_hash = hashlib.sha256(raw_token.encode("utf-8")).hexdigest()[:16]
-            try:
-                from backend.services.neo4j_repository import neo4j_repo
-                session_data = neo4j_repo.validate_session(raw_token)
-                if session_data:
-                    user_id = session_data.get("user_id", token_hash)
-                    return f"auth:{user_id}", "auth", settings.rate_limit_auth_per_minute
-            except Exception:
-                pass
-            # Valid Bearer format present
-            return f"auth:{token_hash}", "auth", settings.rate_limit_auth_per_minute
+    elif request.headers.get("X-Session-Token"):
+        raw_token = request.headers.get("X-Session-Token", "").strip()
 
-    # 2. Extract Client IP
-    client_ip = request.client.host if request.client else "unknown"
+    if raw_token:
+        try:
+            from backend.services.neo4j_repository import neo4j_repo
+            session_data = neo4j_repo.validate_session(raw_token)
+            if session_data:
+                user_dict = session_data.get("user") if isinstance(session_data, dict) and "user" in session_data else session_data
+                user_id = user_dict.get("user_id") if isinstance(user_dict, dict) else hashlib.sha256(raw_token.encode("utf-8")).hexdigest()[:16]
+                return f"auth:{user_id}", "auth", rate_limiter.auth_limit
+        except Exception:
+            pass
+        # Unvalidated or expired token: DO NOT elevate tier or key on unvalidated token.
+        # Fall through to anonymous IP-based limiting.
+
+    # 2. Extract Client IP with trusted proxy verification
+    peer_ip = request.client.host if request.client else "unknown"
+    trusted = getattr(settings, "trusted_proxy_list", ["127.0.0.1", "::1"])
+
+    client_ip = peer_ip
     forwarded = request.headers.get("X-Forwarded-For")
-    if forwarded:
-        client_ip = forwarded.split(",")[0].strip()
+    if forwarded and (peer_ip in trusted):
+        first_hop = forwarded.split(",")[0].strip()
+        if first_hop:
+            client_ip = first_hop
 
-    return f"anon:{client_ip}", "anon", settings.rate_limit_anon_per_minute
+    return f"anon:{client_ip}", "anon", rate_limiter.anon_limit
 
 
 def check_rate_limit(request: Request) -> None:
@@ -213,10 +235,6 @@ def check_rate_limit(request: Request) -> None:
         )
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-            detail={
-                "error": "Too Many Requests",
-                "message": f"Rate limit of {limit} requests per minute exceeded for your tier.",
-                "retry_after_seconds": retry_after,
-            },
+            detail=f"Rate limit exceeded: maximum {limit} requests per minute for your tier. Retry after {retry_after}s.",
             headers={"Retry-After": str(retry_after)},
         )

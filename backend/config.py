@@ -58,6 +58,7 @@ class Settings(BaseSettings):
 
     # ─── Security ───
     cors_origins: str = "http://localhost:3000,http://127.0.0.1:3000,http://localhost:8000,http://127.0.0.1:8000"
+    trusted_proxies: str = "127.0.0.1,::1"
     max_message_length: int = 10000
     max_urls_per_message: int = 20
 
@@ -78,6 +79,11 @@ class Settings(BaseSettings):
         origins = [o.strip() for o in self.cors_origins.split(",") if o.strip()]
         # Disallow wildcard when credentials are used
         return [o for o in origins if o != "*"]
+
+    @property
+    def trusted_proxy_list(self) -> list[str]:
+        return [p.strip() for p in self.trusted_proxies.split(",") if p.strip()]
+
 
     @property
     def allowed_upload_type_list(self) -> list[str]:

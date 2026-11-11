@@ -494,7 +494,20 @@
         } catch (err) {
             loading.hidden = true;
             loading.style.display = 'none';
-            alert(`Analysis failed: ${err.message}\n\nPlease verify that the backend is running on port 8000.`);
+            showToast(`Analysis failed: ${err.message}`, 5000);
+            if (results && explanationContent) {
+                results.hidden = false;
+                results.style.display = 'block';
+                explanationContent.innerHTML = `
+                    <div class="negative-bounds-section" style="border-left: 4px solid #ef4444; background: rgba(239, 68, 68, 0.08); padding: 1rem; border-radius: 6px;">
+                        <div class="negative-bounds-header" style="color: #dc2626; font-weight: 700; margin-bottom: 0.5rem;">
+                            ⚠ Analysis Unavailable
+                        </div>
+                        <p style="margin: 0.5rem 0; color: var(--color-text-primary);">Unable to complete automated threat evaluation: <strong>${Components.escapeHtml(err.message)}</strong></p>
+                        <p style="font-size: 0.875rem; color: var(--color-text-secondary); margin-top: 0.5rem;">If you are facing an active scam or financial fraud, please immediately contact the <strong>National Cyber Crime Helpline at 1930</strong> or register a complaint at <a href="https://cybercrime.gov.in" target="_blank" rel="noopener" style="text-decoration: underline; font-weight: 600;">cybercrime.gov.in</a>.</p>
+                    </div>
+                `;
+            }
         } finally {
             loading.hidden = true;
             loading.style.display = 'none';

@@ -59,7 +59,9 @@ _FRAUD_CATEGORIES: list[tuple[str, list[tuple[re.Pattern, float]]]] = [
         (re.compile(r'\b(?:job|hiring|vacancy|recruit|salary|earn|income|work\s*from\s*home)\b', re.I), 0.3),
         (re.compile(r'\b(?:part[\s-]?time|full[\s-]?time|daily\s*(?:earn|income|pay)|per\s*(?:day|hour))\b', re.I), 0.35),
         (re.compile(r'\b(?:registration|joining)\s*(?:fee|charge|amount)\b', re.I), 0.4),
-        (re.compile(r'(?:नौकरी|वेतन|रोजगार|નોકરી|வேலைவாய்ப்பு)', re.U), 0.35),
+        (re.compile(r'\b(?:rating\s*products?|liking\s*(?:videos?|trailers?)|reviewing\s*(?:hotels?|products?|movies?)|youtube\s*(?:task|like)|task\s*(?:bonus|reward)|daily\s*income\s*guaranteed)\b', re.I), 0.5),
+        (re.compile(r'\b(?:telegram|t\.me|wa\.me|whatsapp\s*(?:hr|group)|hr\s*manager|contact\s*hr)\b', re.I), 0.35),
+        (re.compile(r'(?:नौकरी|वेतन|रोजगार|नोकरी|வேலைவாய்ப்பு)', re.U), 0.35),
     ]),
     ("investment", [
         (re.compile(r'\b(?:invest|trading|stock|crypto|bitcoin|forex|mutual\s*fund)\b', re.I), 0.3),
@@ -90,9 +92,9 @@ _FRAUD_CATEGORIES: list[tuple[str, list[tuple[re.Pattern, float]]]] = [
         (re.compile(r'\b(?:apk|download\s*app|interest\s*rate)\b', re.I), 0.25),
     ]),
     ("extortion_legal", [
-        (re.compile(r'\b(?:cbi|customs|cyber\s*crime|police|narcotics|ncb|court|enforcement\s*directorate|ed)\b', re.I), 0.45),
-        (re.compile(r'\b(?:arrest|warrant|summons?|contraband|illegal\s*parcel|fir|ipc)\b', re.I), 0.45),
-        (re.compile(r'\b(?:digital\s*arrest|skype|surrender|police\s*station|video\s*call)\b', re.I), 0.4),
+        (re.compile(r'\b(?:cbi|customs|cyber\s*crime|police|narcotics|ncb|court|enforcement\s*directorate|ed|interpol|red\s*(?:corner|notice)|dcp|money\s*laundering)\b', re.I), 0.5),
+        (re.compile(r'\b(?:arrest|warrant|summons?|contraband|illegal\s*parcel|fir|ipc|wire\s*fraud|surrender\s*required)\b', re.I), 0.5),
+        (re.compile(r'\b(?:digital\s*arrest|skype|surrender|police\s*station|video\s*call|liaison\s*officer)\b', re.I), 0.45),
         # Indic native scripts: Hindi, Gujarati, Tamil
         (re.compile(r'(?:डिजिटल\s*अरेस्ट|पुलिस|सीबीआई|वारंट|गिरफ्तारी|अदालत|ડિજિટલ\s*ધરપકડ|પોલીસ|વોરંટ|સીબીઆઈ|டிஜிட்டல்\s*கைது|காவல்துறை|வாரண்ட்)', re.U), 0.5),
     ]),

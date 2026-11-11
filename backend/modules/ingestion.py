@@ -184,6 +184,38 @@ def extract_iocs(evidence: IncidentEvidence, additional_urls: list[str] | None =
     # Build URL signals
     evidence.urls = [_url_to_signal(u) for u in found_urls]
 
+    # Deterministic static homoglyph detection on all extracted/provided domains
+    try:
+        from backend.services.domain_intel import detect_homoglyphs
+        for u_sig in evidence.urls:
+            if u_sig.domain:
+                homo_res = detect_homoglyphs(u_sig.domain)
+                if homo_res.get("is_spoofed"):
+                    target = u_sig.domain
+                    evidence.evidence.append(EvidenceItem(
+                        type=EvidenceType.URL_ANALYSIS,
+                        source="homoglyph_detector",
+                        source_type="content",
+                        evidence_tier="OBSERVED",
+                        indicator=target,
+                        finding=f"Homoglyph Unicode / Punycode visual spoofing detected: '{target}' masquerades as '{homo_res['normalized_domain']}'",
+                        description=(
+                            f"Domain contains {homo_res['homoglyph_count']} lookalike character(s) from a foreign script (e.g. Cyrillic) "
+                            f"or Punycode prefix (xn--) to deceive human visual inspection into believing it is '{homo_res['normalized_domain']}'."
+                        ),
+                        observed_value=f"Target: {target} -> Visual clone of: {homo_res['normalized_domain']}",
+                        interpretation="Homoglyph visual deception is a deliberate technique to forge known organizational brands.",
+                        status=EvidenceStatus.CONFIRMED,
+                        reliability=EvidenceReliability.DETERMINISTIC_FACT,
+                        risk_direction=RiskDirection.INCREASES_RISK,
+                        severity=EvidenceSeverity.CRITICAL,
+                        confidence=0.95,
+                        correlation_group="domain_homoglyph_spoofing",
+                        raw_data=homo_res,
+                    ))
+    except Exception:
+        pass
+
     # Extract other IOCs with fast pre-filters to prevent ReDoS
     normalized = adv_text
     emails = _EMAIL_PATTERN.findall(normalized) if '@' in normalized else []

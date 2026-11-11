@@ -5,6 +5,7 @@ Enforces strict IDOR protection, input validation, and evidentiary consistency.
 
 from __future__ import annotations
 
+import hmac
 import logging
 import secrets
 from typing import Optional
@@ -36,6 +37,34 @@ logger = logging.getLogger("cyber_guardian.incidents")
 settings = get_settings()
 
 incidents_router = APIRouter(prefix="/api/incidents", tags=["incidents"])
+
+def verify_incident_access(incident: Any, user_id: Optional[str], raw_request: Optional[Request]) -> None:
+    """
+    Enforce IDOR protection:
+    1. Authenticated incidents: require matching authenticated user_id.
+    2. Anonymous incidents: require matching claim_token (via X-Incident-Claim-Token header or query param).
+    """
+    owner_id = getattr(incident, "user_id", None)
+    if isinstance(incident, dict):
+        owner_id = incident.get("user_id")
+
+    if owner_id is not None:
+        if not user_id or user_id != owner_id:
+            raise HTTPException(status_code=404, detail="Incident not found or unauthorized.")
+        return
+
+    # Anonymous incident
+    expected_token = getattr(incident, "claim_token", None)
+    if isinstance(incident, dict):
+        expected_token = incident.get("claim_token")
+
+    if expected_token:
+        client_token = None
+        if raw_request:
+            client_token = raw_request.headers.get("X-Incident-Claim-Token") or raw_request.query_params.get("claim_token")
+        if not client_token or not hmac.compare_digest(str(client_token), str(expected_token)):
+            raise HTTPException(status_code=404, detail="Incident not found or unauthorized.")
+
 
 
 @incidents_router.get("", response_model=IncidentHistoryResponse)
@@ -90,6 +119,7 @@ async def get_incident_by_id(incident_id: str, raw_request: Request):
     # Check bounded in-memory store as offline fallback
     if incident_id in incident_store:
         ev = incident_store[incident_id]
+        verify_incident_access(ev, user_id, raw_request)
         return AnalyzeResponse(
             incident_id=ev.incident_id,
             input_type=ev.input_type,
@@ -107,9 +137,9 @@ async def get_incident_by_id(incident_id: str, raw_request: Request):
             model_confidence=ev.ml_classifier.confidence if ev.ml_classifier.available else None,
             fraud_dna=ev.fraud_dna if ev.fraud_dna.available else None,
             fraud_category=ev.fraud_category,
-            language=ev.language,
-            response_language=ev.response_language,
-            input_language=ev.input_language,
+            language=ev.language or "en",
+            response_language=ev.response_language or ev.language or "en",
+            input_language=ev.input_language or ev.language or "en",
             processing_time_ms=ev.processing_time_ms,
             modules_executed=ev.modules_executed,
             modules_failed=ev.modules_failed,
@@ -148,6 +178,7 @@ async def get_incident_relationship_graph(incident_id: str, raw_request: Request
     # In-memory fallback graph representation
     if incident_id in incident_store:
         ev = incident_store[incident_id]
+        verify_incident_access(ev, user_id, raw_request)
         nodes = [
             {"id": incident_id, "label": "Incident", "type": "Incident", "properties": {"risk": ev.risk.level.value}}
         ]
@@ -195,14 +226,16 @@ async def get_incident_action_history(incident_id: str, raw_request: Request):
         if not inc:
             raise HTTPException(status_code=404, detail="Incident history not found or unauthorized.")
     else:
-        inc = incident_store.get(incident_id)
-        if not inc:
+        inc_obj = incident_store.get(incident_id)
+        if not inc_obj:
             raise HTTPException(status_code=404, detail="Incident history not found or unauthorized.")
-        if hasattr(inc, "__dict__"):
-            inc = {
-                "created_at": inc.created_at.isoformat(),
-                "current_user_state": "received",
-            }
+        if getattr(inc_obj, "user_id", None) is not None:
+            if not user_id or user_id != inc_obj.user_id:
+                raise HTTPException(status_code=404, detail="Incident history not found or unauthorized.")
+        inc = {
+            "created_at": inc_obj.created_at.isoformat() if hasattr(inc_obj, "created_at") else "",
+            "current_user_state": "received",
+        }
 
     current_state = inc.get("current_user_state", "received") if inc else "received"
     created_ts = inc.get("created_at") if inc else incident_store[incident_id].created_at.isoformat()
@@ -242,10 +275,14 @@ async def update_user_state(
     if not validate_incident_id(incident_id):
         raise HTTPException(status_code=400, detail="Invalid incident ID format")
 
+    user = get_current_user_optional(raw_request)
+    user_id = user["user_id"] if user else None
+
     if incident_id not in incident_store:
         raise HTTPException(status_code=404, detail="Incident not found")
 
     evidence = incident_store[incident_id]
+    verify_incident_access(evidence, user_id, raw_request)
 
     req_lang = getattr(request, "response_language", None) or getattr(request, "language", None)
     if req_lang:
@@ -299,9 +336,9 @@ async def update_user_state(
         model_confidence=evidence.ml_classifier.confidence if evidence.ml_classifier.available else None,
         fraud_dna=evidence.fraud_dna if evidence.fraud_dna.available else None,
         fraud_category=evidence.fraud_category,
-        language=evidence.language,
-        response_language=evidence.response_language,
-        input_language=evidence.input_language,
+        language=evidence.language or "en",
+        response_language=evidence.response_language or evidence.language or "en",
+        input_language=evidence.input_language or evidence.language or "en",
         processing_time_ms=evidence.processing_time_ms,
         modules_executed=evidence.modules_executed,
         modules_failed=evidence.modules_failed,
@@ -321,17 +358,21 @@ async def get_incident_osint(
     if raw_request:
         check_rate_limit(raw_request)
 
-    current_settings = get_settings()
+    try:
+        import backend.main
+        current_settings = backend.main.get_settings()
+    except Exception:
+        current_settings = get_settings()
+
     if not current_settings.osint_enabled:
         return OSINTResponse(status="disabled", evidence=[], raw={})
 
     if not validate_incident_id(incident_id):
         raise HTTPException(status_code=400, detail="Invalid incident ID format")
 
-    if incident_id not in incident_store:
+    incident = incident_store.get(incident_id)
+    if not incident:
         raise HTTPException(status_code=404, detail="Incident or domain not found")
-
-    incident = incident_store[incident_id]
 
     domain = None
     if incident.urls:
@@ -364,6 +405,63 @@ async def get_incident_osint(
     )
 
 
+@incidents_router.get("/{incident_id}/dossier")
+async def get_certified_incident_dossier(
+    incident_id: str,
+    raw_request: Request = None,
+):
+    """
+    Export certified Section 65B forensic dossier with cryptographic SHA-256 seal
+    and 1930 portal pre-filled complaint text.
+    """
+    if raw_request:
+        check_rate_limit(raw_request)
+
+    if not validate_incident_id(incident_id):
+        raise HTTPException(status_code=400, detail="Invalid incident ID format")
+
+    user = get_current_user_optional(raw_request) if raw_request else None
+    user_id = user["user_id"] if user else None
+
+    incident = incident_store.get(incident_id)
+    if not incident:
+        raise HTTPException(status_code=404, detail="Incident not found or unauthorized.")
+
+    verify_incident_access(incident, user_id, raw_request)
+
+    from backend.services.dossier_service import generate_certified_dossier
+    return generate_certified_dossier(incident)
+
+
+@incidents_router.get("/{incident_id}/stix")
+async def get_stix_bundle_export(
+    incident_id: str,
+    raw_request: Request = None,
+):
+    """
+    Export incident evidence as an OASIS STIX 2.1 JSON Threat Intelligence Bundle
+    for enterprise SIEM / SOAR / TIP ingestion (Splunk, Sentinel, MISP).
+    """
+    if raw_request:
+        check_rate_limit(raw_request)
+
+    if not validate_incident_id(incident_id):
+        raise HTTPException(status_code=400, detail="Invalid incident ID format")
+
+    user = get_current_user_optional(raw_request) if raw_request else None
+    user_id = user["user_id"] if user else None
+
+    incident = incident_store.get(incident_id)
+    if not incident:
+        raise HTTPException(status_code=404, detail="Incident not found or unauthorized.")
+
+    verify_incident_access(incident, user_id, raw_request)
+
+    from backend.services.stix_service import generate_stix_bundle
+    bundle = generate_stix_bundle(incident)
+    return JSONResponse(content=bundle, media_type="application/vnd.oasis.stix+json; version=2.1")
+
+
 @incidents_router.get("/{incident_id}/report")
 @incidents_router.get("/{incident_id}/export")
 async def export_incident(
@@ -381,10 +479,14 @@ async def export_incident(
     if not validate_incident_id(incident_id):
         raise HTTPException(status_code=400, detail="Invalid incident ID format")
 
-    if incident_id not in incident_store:
-        raise HTTPException(status_code=404, detail="Incident not found")
+    user = get_current_user_optional(raw_request) if raw_request else None
+    user_id = user["user_id"] if user else None
 
-    incident = incident_store[incident_id]
+    incident = incident_store.get(incident_id)
+    if not incident:
+        raise HTTPException(status_code=404, detail="Incident not found or unauthorized.")
+
+    verify_incident_access(incident, user_id, raw_request)
 
     if settings.neo4j_enabled and raw_request:
         user = get_current_user_optional(raw_request)

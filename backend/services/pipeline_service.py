@@ -107,6 +107,7 @@ async def execute_analysis_pipeline(
             normalized_sender = SenderContext(sender_id=s_val)
 
     evidence = IncidentEvidence(
+        user_id=user_id,
         input_type=normalized_input_type,
         message=cleaned_message,
         original_input=cleaned_message,
@@ -126,7 +127,7 @@ async def execute_analysis_pipeline(
         from backend.services.indicators import extract_indicators
 
         evidence = extract_iocs(evidence, cleaned_urls)
-        extracted_ind = extract_indicators(evidence.message)
+        extracted_ind = extract_indicators(evidence.original_input or evidence.message)
         for mismatch in extracted_ind.anchor_mismatches:
             evidence.evidence.append(
                 EvidenceItem(
@@ -247,7 +248,7 @@ async def execute_analysis_pipeline(
 
             if domain_list:
                 domain_res = await asyncio.gather(
-                    *[asyncio.to_thread(collect_domain_evidence, d) for d in domain_list[:3]],
+                    *[asyncio.to_thread(collect_domain_evidence, d) for d in domain_list[:8]],
                     return_exceptions=True,
                 )
                 for r in domain_res:
@@ -260,7 +261,7 @@ async def execute_analysis_pipeline(
         try:
             from backend.services.website_analyzer import inspect_website
 
-            urls_to_inspect = [u.url for u in evidence.urls[:3] if u.url]
+            urls_to_inspect = [u.url for u in evidence.urls[:8] if u.url]
             if urls_to_inspect:
                 site_res = await asyncio.gather(
                     *[inspect_website(target) for target in urls_to_inspect],
@@ -518,14 +519,32 @@ async def execute_analysis_pipeline(
 
         return ti_results, items, exec_mods, fail_mods
 
-    # Dispatch enrichment coroutines concurrently
-    enrichment_outcomes = await asyncio.gather(
-        _enrich_urls_and_websites(),
-        _enrich_senders(),
-        _enrich_financial(),
-        _enrich_threat_intel(),
-        return_exceptions=True,
-    )
+    # Dispatch enrichment coroutines concurrently with resilient SLA deadline
+    t_url = asyncio.create_task(_enrich_urls_and_websites())
+    t_snd = asyncio.create_task(_enrich_senders())
+    t_fin = asyncio.create_task(_enrich_financial())
+    t_ti = asyncio.create_task(_enrich_threat_intel())
+    enrich_tasks = [t_url, t_snd, t_fin, t_ti]
+
+    done, pending = await asyncio.wait(enrich_tasks, timeout=4.5)
+    for p in pending:
+        p.cancel()
+
+    enrichment_outcomes = []
+    for t in enrich_tasks:
+        if t in done:
+            try:
+                enrichment_outcomes.append(t.result())
+            except Exception as e:
+                enrichment_outcomes.append(e)
+        else:
+            enrichment_outcomes.append(None)
+
+    if pending:
+        logger.warning(
+            "Pipeline parallel enrichment exceeded SLA for %d tasks; proceeding with available signals.",
+            len(pending),
+        )
 
     # 1. Unpack URL & Website results
     url_site_out = enrichment_outcomes[0]

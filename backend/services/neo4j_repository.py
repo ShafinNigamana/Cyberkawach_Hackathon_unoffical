@@ -160,6 +160,20 @@ class Neo4jRepository:
                     created_at TEXT NOT NULL
                 )
             """)
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS investigations (
+                    incident_id TEXT PRIMARY KEY,
+                    user_id TEXT,
+                    created_at TEXT NOT NULL,
+                    input_type TEXT NOT NULL,
+                    raw_input TEXT,
+                    risk_score REAL DEFAULT 0.0,
+                    risk_level TEXT DEFAULT 'UNKNOWN',
+                    user_category TEXT DEFAULT 'UNKNOWN',
+                    processing_time_ms REAL,
+                    fraud_category TEXT
+                )
+            """)
         return conn
 
     def get_driver(self) -> Optional[neo4j.Driver]:
@@ -1109,17 +1123,60 @@ class Neo4jRepository:
             except Exception:
                 pass
 
-        # Fallback to local SQLite investigations table
+        # Fallback to local SQLite storage (incidents.db first, investigations.db second) with strict tenant isolation
+        # 1. Check incidents.db
+        try:
+            incidents_db_path = Path(__file__).resolve().parent.parent / "data" / "incidents.db"
+            if incidents_db_path.exists():
+                conn = sqlite3.connect(str(incidents_db_path), check_same_thread=False, timeout=10.0)
+                conn.row_factory = sqlite3.Row
+                try:
+                    rows = conn.execute(
+                        """
+                        SELECT incident_id, user_id, payload, updated_at
+                        FROM incidents
+                        WHERE user_id = ?
+                        ORDER BY updated_at DESC
+                        LIMIT ?
+                        """,
+                        (user_id, limit),
+                    ).fetchall()
+                    if rows:
+                        results = []
+                        for r in rows:
+                            try:
+                                payload = json.loads(r["payload"])
+                            except Exception:
+                                payload = {}
+                            results.append({
+                                "incident_id": r["incident_id"],
+                                "created_at": payload.get("created_at") or r["updated_at"],
+                                "input_type": payload.get("input_type", "message"),
+                                "title": payload.get("title") or f"Threat Triage {r['incident_id']}",
+                                "message_preview": (payload.get("raw_input") or payload.get("message") or "")[:200],
+                                "risk_score": float(payload.get("risk_score") or payload.get("threat_score") or 0.0),
+                                "risk_level": payload.get("risk_level") or payload.get("threat_level") or "UNKNOWN",
+                                "fraud_category": payload.get("fraud_category") or "generic",
+                                "campaign_id": payload.get("campaign_id"),
+                            })
+                        return results
+                finally:
+                    conn.close()
+        except Exception as e:
+            logger.warning("Local incidents.db fallback query failed: %s", e)
+
+        # 2. Check investigations.db fallback
         try:
             conn = self._get_sqlite_conn()
             rows = conn.execute(
                 """
                 SELECT incident_id, created_at, input_type, raw_input, risk_score, risk_level, fraud_category
                 FROM investigations
+                WHERE user_id = ?
                 ORDER BY created_at DESC
                 LIMIT ?
                 """,
-                (limit,),
+                (user_id, limit),
             ).fetchall()
             conn.close()
             results = []
