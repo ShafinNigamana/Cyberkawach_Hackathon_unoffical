@@ -61,6 +61,12 @@ function getPlainLanguageVerdict(result) {
   if (riskLevel === 'CRITICAL' || riskLevel === 'HIGH') {
     return 'High-Risk Cyber Threat: Message exhibits coercive urgency, deceptive credential harvesting, or unverified external payment links.';
   }
+  if (riskLevel === 'UNKNOWN' || result.risk?.evidence_sufficiency === 'INSUFFICIENT') {
+    return 'Unverified Content / Insufficient Data: Contains unverified tracking links or insufficient indicators to confirm safety. Treat with caution and do not disclose credentials.';
+  }
+  if (result.risk?.evidence_sufficiency === 'PARTIAL' && (result.urls || []).length > 0) {
+    return 'Unlisted Link / Passive Intelligence: No matches in threat databases, but the link is unverified and not an official institutional domain. Exercise standard caution.';
+  }
   return 'Authentic / Low Risk Communication: Official notification with verified parameters. No credential theft or malicious indicators detected.';
 }
 
@@ -86,8 +92,12 @@ export default function ResultsDashboard({
   const incidentId = result.incident_id || 'INC-2026-PENDING';
   const riskScore = Math.round((result.risk?.score || 0) * 100);
   const riskLevel = (result.risk?.level || 'UNKNOWN').toUpperCase();
-  const isHighRisk = riskLevel === 'CRITICAL' || riskLevel === 'HIGH' || riskScore >= 70;
-  const isSafe = riskLevel === 'LOW' || riskLevel === 'UNKNOWN' || riskScore < 40;
+  const isUnknown = riskLevel === 'UNKNOWN' || result.risk?.evidence_sufficiency === 'INSUFFICIENT';
+  const isHighRisk = (riskLevel === 'CRITICAL' || riskLevel === 'HIGH' || riskScore >= 55) && !isUnknown;
+  const isSuspicious = (riskLevel === 'MEDIUM' || (riskScore >= 20 && riskScore < 55)) && !isUnknown && !isHighRisk;
+  const isSafe = (riskLevel === 'LOW' && riskScore < 20) && !isUnknown && !isHighRisk && !isSuspicious;
+  const isSufficientSafe = isSafe && result.risk?.evidence_sufficiency === 'SUFFICIENT';
+  const isPartialLow = isSafe && !isSufficientSafe;
 
   const categoryLabel = result.fraud_category
     ? result.fraud_category.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
@@ -103,7 +113,7 @@ export default function ResultsDashboard({
 
   // Find most important detected finding
   const primaryEvidence = (result.evidence || [])[0]?.description ||
-    (isHighRisk ? 'Coercive urgency & deceptive credentials harvesting indicators detected.' : 'No malicious markers found.');
+    (isHighRisk ? 'Coercive urgency & deceptive credentials harvesting indicators detected.' : isUnknown ? 'Insufficient verifiable signals to confirm authenticity.' : 'No malicious markers found.');
 
   return (
     <div className="w-full max-w-5xl mx-auto space-y-6" id="results-dashboard" aria-live="polite">
@@ -171,9 +181,13 @@ export default function ResultsDashboard({
       <section className={`clean-card clean-card-hover p-6 sm:p-7 relative overflow-hidden ${
         isHighRisk
           ? 'bg-rose-50/40 border-rose-200 dark:bg-rose-950/20 dark:border-rose-900/60'
-          : isSafe
-            ? 'bg-emerald-50/40 border-emerald-200 dark:bg-emerald-950/20 dark:border-emerald-900/60'
-            : 'bg-amber-50/40 border-amber-200 dark:bg-amber-950/20 dark:border-amber-900/60'
+          : isUnknown
+            ? 'bg-slate-100/70 border-slate-300 dark:bg-slate-900/40 dark:border-slate-800'
+            : isSuspicious
+              ? 'bg-amber-50/40 border-amber-200 dark:bg-amber-950/20 dark:border-amber-900/60'
+              : isSufficientSafe
+                ? 'bg-emerald-50/40 border-emerald-200 dark:bg-emerald-950/20 dark:border-emerald-900/60'
+                : 'bg-teal-50/40 border-teal-200 dark:bg-teal-950/20 dark:border-teal-900/60'
       }`}>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
           <div className="space-y-3 flex-1">
@@ -182,12 +196,30 @@ export default function ResultsDashboard({
               <span className={`inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-extrabold tracking-wider uppercase ${
                 isHighRisk
                   ? 'bg-rose-600 text-white'
-                  : isSafe
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-amber-600 text-white'
+                  : isUnknown
+                    ? 'bg-slate-600 text-white dark:bg-slate-700'
+                    : isSuspicious
+                      ? 'bg-amber-600 text-white'
+                      : isSufficientSafe
+                        ? 'bg-emerald-600 text-white'
+                        : isPartialLow
+                          ? 'bg-teal-700 text-white dark:bg-teal-800'
+                          : 'bg-amber-600 text-white'
               }`}>
                 <span className="w-1.5 h-1.5 rounded-full bg-white" />
-                <span>{isHighRisk ? 'CONFIRMED PHISHING' : isSafe ? 'VERIFIED BENIGN' : 'SUSPICIOUS'} • {riskScore}/100 RISK</span>
+                <span>
+                  {isHighRisk
+                    ? 'CONFIRMED PHISHING'
+                    : isUnknown
+                      ? 'UNVERIFIED / INSUFFICIENT DATA'
+                      : isSuspicious
+                        ? 'SUSPICIOUS / ELEVATED RISK'
+                        : isSufficientSafe
+                          ? 'VERIFIED BENIGN'
+                          : isPartialLow
+                            ? 'LOW RISK (UNLISTED / CAUTION)'
+                            : 'SUSPICIOUS'} • {riskScore}/100 RISK
+                </span>
               </span>
 
               <span className="text-xs font-mono text-slate-500 dark:text-slate-400">
@@ -227,9 +259,13 @@ export default function ResultsDashboard({
                   className={`transition-all duration-1000 ease-out ${
                     isHighRisk
                       ? 'stroke-rose-600 dark:stroke-rose-500'
-                      : isSafe
-                        ? 'stroke-emerald-600 dark:stroke-emerald-500'
-                        : 'stroke-amber-600 dark:stroke-amber-500'
+                      : isSuspicious
+                        ? 'stroke-amber-600 dark:stroke-amber-500'
+                        : isSufficientSafe
+                          ? 'stroke-emerald-600 dark:stroke-emerald-500'
+                          : isPartialLow
+                            ? 'stroke-teal-600 dark:stroke-teal-500'
+                            : 'stroke-slate-500 dark:stroke-slate-400'
                   }`}
                   strokeWidth="7"
                   strokeDasharray={2 * Math.PI * 36}
@@ -358,6 +394,7 @@ export default function ResultsDashboard({
           {/* SECTION 6: THREAT INTELLIGENCE & DOMAIN INFRASTRUCTURE */}
           <ThreatIntelCards
             threatIntel={result.threat_intel}
+            urls={result.urls}
             brandAnalysis={result.brand_impersonation}
           />
 

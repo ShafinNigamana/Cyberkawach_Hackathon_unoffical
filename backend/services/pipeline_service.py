@@ -526,7 +526,7 @@ async def execute_analysis_pipeline(
     t_ti = asyncio.create_task(_enrich_threat_intel())
     enrich_tasks = [t_url, t_snd, t_fin, t_ti]
 
-    done, pending = await asyncio.wait(enrich_tasks, timeout=4.5)
+    done, pending = await asyncio.wait(enrich_tasks, timeout=6.5)
     for p in pending:
         p.cancel()
 
@@ -621,9 +621,22 @@ async def execute_analysis_pipeline(
                         sig_label = f"{provider_label}: {ti.threat_type or 'Confirmed Phishing / Social Engineering'}"
                         if sig_label not in u.signals:
                             u.signals.insert(0, sig_label)
-    elif isinstance(ti_out, Exception):
+    elif isinstance(ti_out, Exception) or ti_out is None:
         modules_failed.append("threat_intel")
-        evidence.errors.append(f"threat_intel: {safe_error_message(ti_out)}")
+        err_msg = safe_error_message(ti_out) if isinstance(ti_out, Exception) else "Threat intel lookup timed out"
+        evidence.errors.append(f"threat_intel: {err_msg}")
+        target_urls = [u.url for u in evidence.urls if u.url]
+        if target_urls:
+            from backend.models.evidence import ThreatIntelResult, ThreatIntelStatus
+            for p in ["safe_browsing", "phishtank", "phishstats"]:
+                evidence.threat_intel.append(
+                    ThreatIntelResult(
+                        source=p,
+                        lookup_url=target_urls[0],
+                        intel_status=ThreatIntelStatus.SOURCE_ERROR,
+                        error="Feed query timed out or unavailable",
+                    )
+                )
 
     # Emit Infrastructure & Threat Intel milestones
     await _emit_event(

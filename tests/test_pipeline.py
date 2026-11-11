@@ -328,8 +328,10 @@ def test_end_to_end_analyze_api():
 
     # Verify incident state update endpoint
     inc_id = data["incident_id"]
+    claim_token = data.get("claim_token")
+    headers = {"X-Incident-Claim-Token": claim_token} if claim_token else {}
     state_payload = {"user_state": "paid"}
-    update_resp = client.post(f"/api/incidents/{inc_id}/state", json=state_payload)
+    update_resp = client.post(f"/api/incidents/{inc_id}/state", json=state_payload, headers=headers)
     assert update_resp.status_code == 200
     update_data = update_resp.json()
     assert update_data["response"]["user_state"] == "paid"

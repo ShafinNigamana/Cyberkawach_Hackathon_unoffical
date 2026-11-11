@@ -45,7 +45,7 @@ from backend.utils.security_logging import safe_error_message
 
 logger = logging.getLogger(__name__)
 
-_DEFAULT_TIMEOUT = 4.0
+_DEFAULT_TIMEOUT = 3.0
 
 
 class ThreatIntelProvider(abc.ABC):
@@ -86,7 +86,7 @@ async def _get_urlhaus_online_set() -> set[str]:
         if now - _URLHAUS_FEED_CACHE[0] < 900 and _URLHAUS_FEED_CACHE[1]:
             return _URLHAUS_FEED_CACHE[1]
     try:
-        async with httpx.AsyncClient(timeout=8.0) as client:
+        async with httpx.AsyncClient(timeout=3.0) as client:
             resp = await client.get(
                 "https://urlhaus.abuse.ch/downloads/text_online/",
                 headers={"User-Agent": "CyberKawach-Intel/1.0"},

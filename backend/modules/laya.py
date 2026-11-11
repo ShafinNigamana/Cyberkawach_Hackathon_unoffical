@@ -425,24 +425,26 @@ async def run_laya_triage(evidence: IncidentEvidence) -> IncidentEvidence:
             laya_status = EvidenceStatus.SUSPICIOUS
             laya_severity = EvidenceSeverity.HIGH if fraud_val >= 0.80 else EvidenceSeverity.MEDIUM
             laya_direction = RiskDirection.INCREASES_RISK
-        elif fraud_val >= 0.35:
-            laya_status = EvidenceStatus.POSSIBLE
+        elif fraud_val >= 0.40:
+            laya_status = EvidenceStatus.SUSPICIOUS
             laya_severity = EvidenceSeverity.LOW
-            laya_direction = RiskDirection.NEUTRAL
+            laya_direction = RiskDirection.INCREASES_RISK
         else:
             laya_status = EvidenceStatus.OBSERVED
             laya_severity = EvidenceSeverity.INFORMATIONAL
             laya_direction = RiskDirection.NEUTRAL
 
         # Attach Laya typed decision to evidence list with provenance
+        desc = (
+            f"Laya fast typed decision: scam likelihood {fraud_val:.0%}, "
+            f"category: {cat_val}, credential risk: {cred_val:.0%}, payment risk: {pay_val:.0%}"
+        )
         evidence.evidence.append(
             EvidenceItem(
                 type=EvidenceType.LAYA_SIGNAL,
                 source="laya",
-                description=(
-                    f"Laya fast typed decision: scam likelihood {fraud_val:.0%}, "
-                    f"category: {cat_val}, credential risk: {cred_val:.0%}, payment risk: {pay_val:.0%}"
-                ),
+                finding=desc,
+                description=desc,
                 confidence=fraud_val,
                 status=laya_status,
                 reliability=EvidenceReliability.MODEL_SIGNAL,

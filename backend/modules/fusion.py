@@ -86,10 +86,10 @@ _WEIGHTS = {
 # ─── Risk level thresholds ───
 
 _THRESHOLDS = {
-    RiskLevel.CRITICAL: 0.85,
-    RiskLevel.HIGH: 0.60,
-    RiskLevel.MEDIUM: 0.30,
-    RiskLevel.LOW: 0.15,
+    RiskLevel.CRITICAL: 0.80,
+    RiskLevel.HIGH: 0.55,
+    RiskLevel.MEDIUM: 0.25,
+    RiskLevel.LOW: 0.10,
 }
 
 
@@ -376,6 +376,20 @@ def fuse_evidence(evidence: IncidentEvidence) -> IncidentEvidence:
             continue
 
         weight = _WEIGHTS.get(item.type, 0.05)
+        # Dynamically scale weight for high-confidence model detections & suspicious indicators
+        if item.type == EvidenceType.ML_SIGNAL:
+            if item.severity in (EvidenceSeverity.HIGH, EvidenceSeverity.CRITICAL) or "phishing" in (item.description or "").lower():
+                weight = max(weight, 0.40)
+            elif item.status == EvidenceStatus.SUSPICIOUS:
+                weight = max(weight, 0.25)
+        elif item.type == EvidenceType.LAYA_SIGNAL:
+            if item.severity in (EvidenceSeverity.HIGH, EvidenceSeverity.CRITICAL) or (item.confidence or 0.0) >= 0.70:
+                weight = max(weight, 0.35)
+            elif item.status == EvidenceStatus.SUSPICIOUS:
+                weight = max(weight, 0.25)
+        elif item.type == EvidenceType.URL_ANALYSIS and getattr(item, "status", None) == EvidenceStatus.SUSPICIOUS:
+            weight = max(weight, 0.20)
+
         conf = item.confidence if item.confidence is not None else 1.0
 
         # Apply correlation dampening for multiple signals in the same correlation group
@@ -397,6 +411,23 @@ def fuse_evidence(evidence: IncidentEvidence) -> IncidentEvidence:
             contributing_factors.append(
                 f"{item.source}: {item.description[:80]} (+{contribution:.2f})"
             )
+
+    # Ensure high-confidence model phishing detection establishes a proportional risk floor
+    for item in evidence.evidence:
+        if getattr(item, "risk_direction", None) == RiskDirection.INCREASES_RISK:
+            desc_l = (item.description or "").lower()
+            conf = item.confidence or 0.0
+            if (
+                item.type == EvidenceType.ML_SIGNAL
+                and ("phishing" in desc_l or item.severity in (EvidenceSeverity.HIGH, EvidenceSeverity.CRITICAL))
+                and conf >= 0.70
+            ):
+                min_phish_score = round(conf * 0.85, 2)
+                if total_score < min_phish_score:
+                    total_score = min_phish_score
+                    contributing_factors.append(
+                        f"[ML PHISHING ELEVATION] High-confidence machine learning classification ({conf:.0%}) set risk floor to {min_phish_score:.2f}"
+                    )
 
     # ─────────────────────────────────────────────────────────────
     # Contradictory Signal Resolution: Verified Official Brand Domains & Government Infrastructure
@@ -482,7 +513,7 @@ def fuse_evidence(evidence: IncidentEvidence) -> IncidentEvidence:
         final_level = RiskLevel.LOW
         final_category = UserCategory.LOW_CONCERN
         final_score = 0.0
-    elif not active_suspicious_items and (text_words < 6 or not has_verifiable_indicators):
+    elif not active_suspicious_items and (text_words < 6 and not has_verifiable_indicators):
         # Input lacks sufficient substance to evaluate
         evidence_sufficiency = "INSUFFICIENT"
         final_level = RiskLevel.UNKNOWN

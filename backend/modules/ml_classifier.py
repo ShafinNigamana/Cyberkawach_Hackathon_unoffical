@@ -445,9 +445,9 @@ async def run_ml_classification(evidence: IncidentEvidence) -> IncidentEvidence:
             ml_severity = EvidenceSeverity.HIGH if confidence >= 0.80 else EvidenceSeverity.MEDIUM
             ml_direction = RiskDirection.INCREASES_RISK
         elif classification == "suspicious":
-            ml_status = EvidenceStatus.POSSIBLE
+            ml_status = EvidenceStatus.SUSPICIOUS
             ml_severity = EvidenceSeverity.LOW
-            ml_direction = RiskDirection.NEUTRAL
+            ml_direction = RiskDirection.INCREASES_RISK
         else:
             ml_status = EvidenceStatus.OBSERVED
             ml_severity = EvidenceSeverity.INFORMATIONAL
@@ -455,15 +455,18 @@ async def run_ml_classification(evidence: IncidentEvidence) -> IncidentEvidence:
 
         token_hint = f" | Indicative signals: {', '.join(top_tokens[:3])}" if top_tokens else ""
 
+        desc = (
+            f"Scikit-Learn Hybrid Classifier ({classification.upper()}, {confidence:.0%} confidence): "
+            f"Calibrated TF-IDF + pipeline context classification{token_hint}"
+        )
+
         # Attach ML EvidenceItem
         evidence.evidence.append(
             EvidenceItem(
                 type=EvidenceType.ML_SIGNAL,
                 source="ml_classifier",
-                description=(
-                    f"Scikit-Learn Hybrid Classifier ({classification.upper()}, {confidence:.0%} confidence): "
-                    f"Calibrated TF-IDF + pipeline context classification{token_hint}"
-                ),
+                finding=desc,
+                description=desc,
                 confidence=confidence,
                 status=ml_status,
                 reliability=EvidenceReliability.MODEL_SIGNAL,

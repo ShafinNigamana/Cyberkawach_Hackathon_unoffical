@@ -218,9 +218,14 @@ def extract_iocs(evidence: IncidentEvidence, additional_urls: list[str] | None =
 
     # Extract other IOCs with fast pre-filters to prevent ReDoS
     normalized = adv_text
+    # Strip extracted URLs from text before phone extraction to prevent query params/UUIDs from matching as phones
+    text_without_urls = normalized
+    for u in found_urls:
+        text_without_urls = text_without_urls.replace(u, " ")
+
     emails = _EMAIL_PATTERN.findall(normalized) if '@' in normalized else []
-    phones = [p.strip() for p in _PHONE_PATTERN.findall(normalized) if len(p.strip()) >= 7]
-    ips = _IP_PATTERN.findall(normalized) if any(c.isdigit() for c in normalized) else []
+    phones = [p.strip() for p in _PHONE_PATTERN.findall(text_without_urls) if len(p.strip()) >= 7]
+    ips = _IP_PATTERN.findall(text_without_urls) if any(c.isdigit() for c in text_without_urls) else []
     upi_ids = _UPI_PATTERN.findall(normalized) if '@' in normalized else []
 
     all_iocs = []

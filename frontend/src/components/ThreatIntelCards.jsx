@@ -33,9 +33,23 @@ const AUTHORITATIVE_PROVIDERS = [
 ];
 
 // Evaluates intelligence 4-state per provider
-function evaluateProviderState(item, provider) {
+function evaluateProviderState(item, provider, hasUrls = false) {
   // If provider was not queried (no URL extracted or unqueried)
   if (!item) {
+    if (hasUrls) {
+      return {
+        status: 'STANDBY (IN PROGRESS)',
+        badgeClass: 'bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-700',
+        icon: AlertTriangle,
+        iconColor: 'text-amber-600 dark:text-amber-400',
+        cardClass: 'border-amber-300 bg-amber-50/50 dark:border-amber-800/50 dark:bg-amber-950/20',
+        result: 'Feed lookup was pending or timed out within pipeline SLA window.',
+        confidence: 'Indeterminate',
+        reliability: provider.reliability,
+        isMatch: false,
+        note: 'Absence of an immediate match does NOT confirm safety.',
+      };
+    }
     return {
       status: 'STANDBY (NO URL)',
       badgeClass: 'bg-slate-100 text-slate-700 border-slate-300 dark:bg-night-800 dark:text-slate-300 dark:border-night-border',
@@ -173,7 +187,8 @@ function evaluateProviderState(item, provider) {
   };
 }
 
-export default function ThreatIntelCards({ threatIntel }) {
+export default function ThreatIntelCards({ threatIntel, urls = [] }) {
+  const hasUrls = Array.isArray(urls) && urls.length > 0;
   // Normalize threatIntel whether it's an Array, an Object, or null
   const rawList = Array.isArray(threatIntel)
     ? threatIntel
@@ -208,7 +223,7 @@ export default function ThreatIntelCards({ threatIntel }) {
               return src === provider.key || provider.altKeys.includes(src);
             }
           );
-          const stateInfo = evaluateProviderState(matchItem, provider);
+          const stateInfo = evaluateProviderState(matchItem, provider, hasUrls);
           const Icon = stateInfo.icon;
 
           return (
