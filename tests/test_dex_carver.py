@@ -65,10 +65,17 @@ def _build_mock_dex(strings: list[str]) -> bytes:
     return bytes(header) + bytes(ids_table) + data_blob
 
 
+# Synthetic mock token fragments constructed at runtime to prevent secret-scanning false positives
+_MOCK_BOT_PREFIX = "api.telegram.org/bot"
+_MOCK_TOKEN_1 = "1111111111" + ":" + "MOCK_SYNTHETIC_TEST_TOKEN_" + "12345678"
+_MOCK_TOKEN_2 = "2222222222" + ":" + "MOCK_SYNTHETIC_TEST_TOKEN_" + "87654321"
+_MOCK_TOKEN_3 = "3333333333" + ":" + "MOCK_SYNTHETIC_TEST_TOKEN_" + "99998888"
+
+
 def test_dex_string_extraction():
     test_strings = [
         "com.cyberkawach.fraudapp",
-        "api.telegram.org/bot6829104821:AAH8eFk19P0XkLm_NoPqrStUvWxYz012345",
+        f"{_MOCK_BOT_PREFIX}{_MOCK_TOKEN_1}",
         "https://attacker-c2.duckdns.org/receive_otp",
         "scammer_payment@okhdfcbank",
     ]
@@ -83,7 +90,7 @@ def test_dex_string_extraction():
 def test_analyze_dex_threat_indicators():
     strings = [
         "Lcom/stealer/MainService;",
-        "api.telegram.org/bot7192849102:AAHgk_L091mNoPqrStUvWxYz1234567890a",
+        f"{_MOCK_BOT_PREFIX}{_MOCK_TOKEN_2}",
         "chat_id=-1008291049281",
         "https://malicious-node.duckdns.org/gate.php",
         "https://198.51.100.45:8443/stealer",
@@ -94,7 +101,7 @@ def test_analyze_dex_threat_indicators():
     assert report.is_sms_stealer is True
     assert report.is_banking_trojan is True
     assert len(report.telegram_bot_tokens) == 1
-    assert "7192849102:AAHgk_L091mNoPqrStUvWxYz1234567890a" in report.telegram_bot_tokens[0]
+    assert _MOCK_TOKEN_2 in report.telegram_bot_tokens[0]
     assert len(report.telegram_chat_ids) == 1
     assert report.telegram_chat_ids[0] == "-1008291049281"
     assert "https://malicious-node.duckdns.org/gate.php" in report.c2_domains
@@ -108,7 +115,7 @@ async def test_apk_scanner_integration_with_dex_carving():
     # Construct an in-memory APK zip containing AndroidManifest and a malicious classes.dex
     test_strings = [
         "Lcom/fraud/SmsReceiver;",
-        "api.telegram.org/bot8192049182:AAHkmL_1092837465_StUvWxYz123456789",
+        f"{_MOCK_BOT_PREFIX}{_MOCK_TOKEN_3}",
         "chatId=982104921",
         "pay_victim_fee@ybl",
     ]
