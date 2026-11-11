@@ -25,29 +25,29 @@ export default function AdaptiveGuidance({
   const isHighAlert = currentState === 'entered_credentials' || urgency === 'urgent';
   const isCaution = currentState === 'clicked';
 
-  // Distinct container style based on severity level
-  let containerStyle = "border-slate-200 bg-white dark:border-night-border dark:bg-night-850";
-  let headerColor = "text-indigo-600 dark:text-violet-400";
-  let badgeColor = "bg-indigo-50 text-indigo-800 border-indigo-200 dark:bg-night-800 dark:text-violet-300 dark:border-night-border font-bold";
+  // Distinct container style based on severity level with Light & Dark theme support
+  let containerStyle = "border-slate-200 bg-white dark:border-border-dark dark:bg-surface-dark-elevated";
+  let headerColor = "text-accent dark:text-emerald-400";
+  let badgeColor = "bg-emerald-50 text-accent border-emerald-200 dark:bg-surface-dark-hover dark:text-emerald-300 dark:border-border-dark font-bold";
 
   if (isEmergency) {
-    containerStyle = "border-rose-400/90 bg-rose-50/60 dark:border-rose-700/70 dark:bg-rose-950/25 ring-1 ring-rose-400/30";
+    containerStyle = "border-rose-400 bg-rose-50/80 dark:border-rose-600/70 dark:bg-rose-950/25 ring-2 ring-rose-400/30";
     headerColor = "text-rose-600 dark:text-rose-400";
-    badgeColor = "bg-rose-100 text-rose-900 border-rose-300 font-bold dark:bg-rose-900/80 dark:text-rose-200 dark:border-rose-600 animate-pulse";
+    badgeColor = "bg-rose-100 text-rose-900 border-rose-300 font-bold dark:bg-rose-900/80 dark:text-rose-200 dark:border-rose-500 animate-pulse";
   } else if (isHighAlert) {
-    containerStyle = "border-amber-300 bg-amber-50/50 dark:border-amber-700/60 dark:bg-amber-950/20";
+    containerStyle = "border-amber-400 bg-amber-50/60 dark:border-amber-600/70 dark:bg-amber-950/20";
     headerColor = "text-amber-700 dark:text-amber-400";
     badgeColor = "bg-amber-100 text-amber-900 border-amber-300 font-bold dark:bg-amber-900/60 dark:text-amber-200 dark:border-amber-600";
   } else if (isCaution) {
-    containerStyle = "border-amber-200 bg-slate-50/80 dark:border-night-border dark:bg-night-850";
+    containerStyle = "border-amber-300 bg-slate-50/80 dark:border-border-dark dark:bg-surface-dark-elevated";
     headerColor = "text-amber-700 dark:text-amber-300";
-    badgeColor = "bg-amber-50 text-amber-800 border-amber-200 dark:bg-night-800 dark:text-amber-300 dark:border-night-border";
+    badgeColor = "bg-amber-50 text-amber-800 border-amber-200 dark:bg-surface-dark-hover dark:text-amber-300 dark:border-border-dark";
   }
 
   return (
-    <section className={`luxury-card p-5 sm:p-6 transition-all duration-300 shadow-sm ${containerStyle}`} aria-label="Adaptive Citizen Guidance">
+    <section className={`clean-card clean-card-hover p-5 sm:p-6 transition-all duration-300 shadow-sm ${containerStyle}`} aria-label="Adaptive Citizen Guidance">
       {/* Header Bar */}
-      <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-200 dark:border-night-border">
+      <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-200 dark:border-border-dark">
         <div className="flex items-center space-x-2">
           <ShieldAlert className={`w-5 h-5 ${headerColor}`} />
           <h3 className="text-base font-bold text-slate-900 dark:text-white">
@@ -130,7 +130,7 @@ export default function AdaptiveGuidance({
       {response.reporting_info && response.reporting_info.length > 0 && (
         <div className="mb-4">
           <h4 className="text-xs font-bold text-slate-900 dark:text-slate-300 uppercase tracking-wide mb-2 flex items-center space-x-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-purple-500 dark:bg-purple-400" />
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-500" />
             <span>Official Reporting Channels</span>
           </h4>
           <ul className="space-y-1">
@@ -162,8 +162,8 @@ export default function AdaptiveGuidance({
             disabled={isUpdatingState}
             className={`px-3 py-2 rounded-xl text-xs font-bold border text-center transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${
               currentState === 'received'
-                ? 'bg-slate-900 text-white dark:bg-gradient-to-r dark:from-indigo-600 dark:to-violet-600 border-transparent shadow-xs'
-                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 dark:bg-night-800 dark:text-slate-300 dark:border-night-border dark:hover:bg-night-750'
+                ? 'bg-gradient-to-r from-slate-800 to-slate-900 text-white border-transparent shadow-card-elevated'
+                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 dark:bg-surface-dark-hover dark:text-slate-300 dark:border-border-dark dark:hover:bg-surface-dark-hover'
             }`}
           >
             1. Only Received
@@ -175,8 +175,8 @@ export default function AdaptiveGuidance({
             disabled={isUpdatingState}
             className={`px-3 py-2 rounded-xl text-xs font-bold border text-center transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${
               currentState === 'clicked'
-                ? 'bg-amber-600 text-white border-amber-700 shadow-xs'
-                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 dark:bg-night-800 dark:text-slate-300 dark:border-night-border dark:hover:bg-night-750'
+                ? 'bg-amber-600 text-white border-amber-700 shadow-sm'
+                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 dark:bg-surface-dark-hover dark:text-slate-300 dark:border-border-dark dark:hover:bg-surface-dark-hover'
             }`}
           >
             2. Clicked Link
@@ -188,8 +188,8 @@ export default function AdaptiveGuidance({
             disabled={isUpdatingState}
             className={`px-3 py-2 rounded-xl text-xs font-bold border text-center transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 ${
               currentState === 'entered_credentials'
-                ? 'bg-orange-600 text-white border-orange-700 shadow-xs'
-                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 dark:bg-night-800 dark:text-slate-300 dark:border-night-border dark:hover:bg-night-750'
+                ? 'bg-orange-600 text-white border-orange-700 shadow-sm'
+                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50 dark:bg-surface-dark-hover dark:text-slate-300 dark:border-border-dark dark:hover:bg-surface-dark-hover'
             }`}
           >
             3. Entered Details

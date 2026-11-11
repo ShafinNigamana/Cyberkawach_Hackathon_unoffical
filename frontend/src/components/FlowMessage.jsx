@@ -208,7 +208,7 @@ export default function FlowMessage({
       </div>
 
       {/* ─── Dedicated Message Form ─── */}
-      <form onSubmit={handleFormSubmit} noValidate className="luxury-card p-6 sm:p-7 space-y-5">
+      <form onSubmit={handleFormSubmit} noValidate className="clean-card clean-card-hover p-6 shadow-sm space-y-5">
         {/* Textarea Header with Tools */}
         <div>
           <div className="flex items-center justify-between mb-2">
@@ -219,16 +219,16 @@ export default function FlowMessage({
               <button
                 type="button"
                 onClick={handlePaste}
-                className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-night-800 dark:hover:bg-night-750 text-slate-700 dark:text-slate-300 text-xs font-semibold transition-colors cursor-pointer border border-slate-200 dark:border-night-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+                className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-surface-dark-hover dark:hover:bg-surface-dark-hover text-slate-700 dark:text-slate-300 text-xs font-semibold transition-colors cursor-pointer border border-slate-200 dark:border-border-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
                 title="Paste from clipboard"
               >
-                <ClipboardPaste className="w-3.5 h-3.5 text-indigo-500 dark:text-violet-400" />
+                <ClipboardPaste className="w-3.5 h-3.5 text-accent dark:text-emerald-400" />
                 <span>{t(lang, 'paste', 'Paste')}</span>
               </button>
               <button
                 type="button"
                 onClick={handleClear}
-                className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-night-800 dark:hover:bg-night-750 text-slate-700 dark:text-slate-300 text-xs font-semibold transition-colors cursor-pointer border border-slate-200 dark:border-night-border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+                className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-surface-dark-hover dark:hover:bg-surface-dark-hover text-slate-700 dark:text-slate-300 text-xs font-semibold transition-colors cursor-pointer border border-slate-200 dark:border-border-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
                 title="Clear input"
               >
                 <Eraser className="w-3.5 h-3.5 text-slate-400" />
@@ -251,8 +251,8 @@ export default function FlowMessage({
                 if (validationError) setValidationError(null);
               }}
               placeholder={t(lang, 'msgPlaceholder', 'Paste suspicious SMS, WhatsApp message, email, or select an example above...')}
-              className={`w-full bg-slate-50/90 text-slate-900 placeholder-slate-400 border rounded-2xl p-4 pb-11 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 dark:bg-night-950 dark:text-slate-100 dark:placeholder-slate-500 transition-all font-sans leading-relaxed resize-y ${
-                validationError ? 'border-rose-500 ring-1 ring-rose-500' : 'border-slate-200 dark:border-night-border'
+              className={`w-full bg-slate-50/80 text-slate-900 placeholder-slate-400 border rounded-2xl p-3.5 pb-10 text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-emerald-700 dark:bg-surface-dark/80 dark:text-slate-100 dark:placeholder-slate-500 transition-all font-sans leading-relaxed resize-y ${
+                validationError ? 'border-rose-500 ring-1 ring-rose-500' : 'border-slate-200 dark:border-border-dark'
               }`}
             />
 
@@ -262,21 +262,10 @@ export default function FlowMessage({
               onClick={() => setVoiceModalOpen(true)}
               aria-label="Open Multilingual Voice Dictation"
               title="Click to speak suspicious message via Multilingual Voice Dictation"
-              className="absolute bottom-3 left-3 p-1.5 rounded-lg transition-all duration-150 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-1 bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 dark:bg-night-800 dark:hover:bg-night-750 dark:text-slate-300 dark:border-night-border focus:ring-indigo-400 shadow-2xs"
+              className="absolute bottom-2.5 left-2.5 p-1.5 rounded-lg transition-all duration-150 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-1 bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 dark:bg-surface-dark-hover dark:hover:bg-surface-dark-hover dark:text-slate-300 dark:border-border-dark focus:ring-accent shadow-2xs"
             >
-              <Mic className="w-4 h-4 text-indigo-600 dark:text-violet-400" />
+              <Mic className="w-4 h-4 text-accent dark:text-emerald-400" />
             </button>
-
-            {isListening && (
-              <span className="absolute bottom-3 left-12 flex items-center space-x-1 py-1 px-2 rounded-md bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800">
-                <span className="w-1.5 h-3 bg-rose-500 rounded-full animate-bounce" />
-                <span className="w-1.5 h-4 bg-rose-600 rounded-full animate-bounce [animation-delay:0.15s]" />
-                <span className="w-1.5 h-3 bg-rose-500 rounded-full animate-bounce [animation-delay:0.3s]" />
-                <span className="text-[10px] font-mono font-bold text-rose-700 dark:text-rose-300 pl-1">
-                  Active
-                </span>
-              </span>
-            )}
           </div>
 
           {/* Voice status hint & quick simulation chip */}
@@ -318,7 +307,7 @@ export default function FlowMessage({
               id="flow-channel-select"
               value={channel}
               onChange={(e) => setChannel(e.target.value)}
-              className="w-full bg-slate-50 text-slate-900 border border-slate-300 dark:border-night-border rounded-xl px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-night-950 dark:text-slate-200 cursor-pointer font-medium"
+              className="w-full bg-slate-50 text-slate-900 border border-slate-300 dark:border-border-dark rounded-xl px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-accent dark:bg-surface-dark dark:text-slate-200 cursor-pointer font-medium"
             >
               <option value="sms">{t(lang, 'chanSms', 'SMS / Text Message')}</option>
               <option value="chat">{t(lang, 'chanChat', 'WhatsApp / Telegram / Chat')}</option>
@@ -335,12 +324,12 @@ export default function FlowMessage({
               id="flow-user-state"
               value={userState}
               onChange={(e) => setUserState(e.target.value)}
-              className={`w-full border rounded-xl px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer font-medium ${
+              className={`w-full border rounded-xl px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-accent cursor-pointer font-medium ${
                 userState === 'paid' 
                   ? 'border-rose-500 text-rose-900 bg-rose-50 dark:border-rose-600 dark:text-rose-300 dark:bg-rose-950/30' 
                   : userState === 'entered_credentials'
                   ? 'border-amber-500 text-amber-950 bg-amber-50 dark:border-amber-600 dark:text-amber-300 dark:bg-amber-950/30'
-                  : 'bg-slate-50 text-slate-900 border-slate-300 dark:bg-night-950 dark:text-slate-200 dark:border-night-border'
+                  : 'bg-slate-50 text-slate-900 border-slate-300 dark:bg-surface-dark dark:text-slate-200 dark:border-border-dark'
               }`}
             >
               <option value="received">{t(lang, 'sitReceived', '1. I only received this message (No action taken yet)')}</option>
@@ -356,9 +345,9 @@ export default function FlowMessage({
           <button
             type="button"
             onClick={() => setShowUrlField(!showUrlField)}
-            className="flex items-center space-x-1.5 text-xs text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-violet-400 transition-colors focus:outline-none cursor-pointer font-semibold rounded focus-visible:ring-2 focus-visible:ring-indigo-500"
+            className="flex items-center space-x-1.5 text-xs text-slate-600 hover:text-accent dark:text-slate-400 dark:hover:text-emerald-400 transition-colors focus:outline-none cursor-pointer font-semibold rounded focus-visible:ring-2 focus-visible:ring-emerald-500"
           >
-            <LinkIcon className="w-3.5 h-3.5 text-indigo-500" />
+            <LinkIcon className="w-3.5 h-3.5 text-accent" />
             <span>{t(lang, 'addUrlsOptional', 'Additional Web Links (Optional)')}</span>
             {showUrlField ? <ChevronUp className="w-3 h-3 ml-1" /> : <ChevronDown className="w-3 h-3 ml-1" />}
           </button>
@@ -371,19 +360,19 @@ export default function FlowMessage({
                 value={urls}
                 onChange={(e) => setUrls(e.target.value)}
                 placeholder="https://sbi-kyc-verify-urgent.com/login"
-                className="w-full bg-slate-50 text-slate-900 placeholder-slate-400 border border-slate-300 dark:border-night-border rounded-xl p-3 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-night-950 dark:text-slate-100 dark:placeholder-slate-600"
+                className="w-full bg-slate-50 text-slate-900 placeholder-slate-400 border border-slate-300 dark:border-border-dark rounded-xl p-3 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-accent dark:bg-surface-dark dark:text-slate-100 dark:placeholder-slate-600"
               />
             </div>
           )}
         </div>
 
-        {/* Primary Action Row */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-slate-200 dark:border-night-border">
+        {/* Primary Action Row with Luxury Gradient Button & Zero PII note */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-slate-200 dark:border-border-dark">
           <button
             type="submit"
             id="analyze-btn"
             disabled={isAnalyzing}
-            className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-8 py-3 bg-slate-900 hover:bg-slate-800 text-white dark:bg-gradient-to-r dark:from-indigo-600 dark:to-violet-600 dark:hover:from-indigo-500 dark:hover:to-violet-500 font-bold rounded-xl text-sm shadow-sm transition-all duration-150 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+            className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-8 py-3 bg-slate-900 hover:bg-slate-800 text-white dark:bg-gradient-to-r dark:from-accent dark:to-accent-hover dark:hover:from-accent dark:hover:to-emerald-300 font-bold rounded-xl text-sm shadow-card-elevated transition-all duration-150 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
           >
             {isAnalyzing ? (
               <>

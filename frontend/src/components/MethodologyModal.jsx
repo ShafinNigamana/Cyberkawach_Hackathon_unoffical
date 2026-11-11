@@ -6,7 +6,6 @@ import {
   Scale, 
   Cpu, 
   FileCheck2, 
-  ExternalLink,
   Award
 } from 'lucide-react';
 
@@ -20,11 +19,11 @@ export default function MethodologyModal({ isOpen, onClose }) {
       aria-modal="true"
       aria-label="Technical Methodology and Architecture Guarantees"
     >
-      <div className="bg-white dark:bg-night-900 border border-slate-200 dark:border-night-border rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl text-slate-800 dark:text-slate-200 overflow-hidden">
+      <div className="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl text-slate-800 dark:text-slate-200 overflow-hidden transition-colors">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-slate-200 dark:border-night-border bg-slate-50 dark:bg-night-950">
+        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-slate-200 dark:border-border-dark bg-slate-50 dark:bg-surface-dark-elevated">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-violet-400 border border-indigo-500/20 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/80 flex items-center justify-center flex-shrink-0">
               <FileCheck2 className="w-5 h-5" />
             </div>
             <div>
@@ -32,13 +31,13 @@ export default function MethodologyModal({ isOpen, onClose }) {
                 Technical Methodology & Security Architecture
               </h3>
               <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                Institutional Triage Standards • Cyber Kavach S2 • Indian Cyber Crime Coordination Centre (I4C) Partner
+                Institutional Triage Standards • Cyber Kawach • Indian Cyber Crime Coordination Centre (I4C) Partner Protocol
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-night-800 text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-surface-dark-hover text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors cursor-pointer"
             aria-label="Close Modal"
           >
             <X className="w-5 h-5" />
@@ -46,14 +45,14 @@ export default function MethodologyModal({ isOpen, onClose }) {
         </div>
 
         {/* Content Body */}
-        <div className="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs leading-relaxed bg-slate-50/50 dark:bg-night-900/50">
+        <div className="p-5 sm:p-6 overflow-y-auto space-y-4 text-xs leading-relaxed bg-slate-50/50 dark:bg-surface-dark/50">
           <p className="text-slate-700 dark:text-slate-300">
             Cyber Fraud Guardian operates as a civic-interest, zero-retention cyber threat classification engine engineered for high epistemic rigor. The architecture adheres to rigorous public sector security specifications:
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
             {/* Guarantee 1: Zero PII Leakage */}
-            <div className="p-4 bg-white dark:bg-night-800 rounded-xl border border-slate-200 dark:border-night-border shadow-xs">
+            <div className="p-4 bg-white dark:bg-surface-dark-elevated rounded-xl border border-slate-200 dark:border-border-dark shadow-xs">
               <div className="flex items-center space-x-2 text-amber-600 dark:text-amber-400 font-bold mb-1.5">
                 <Lock className="w-4 h-4" />
                 <span className="text-xs">Zero-PII In-Memory Redaction</span>
@@ -64,7 +63,7 @@ export default function MethodologyModal({ isOpen, onClose }) {
             </div>
 
             {/* Guarantee 2: Epistemic Modesty */}
-            <div className="p-4 bg-white dark:bg-night-800 rounded-xl border border-slate-200 dark:border-night-border shadow-xs">
+            <div className="p-4 bg-white dark:bg-surface-dark-elevated rounded-xl border border-slate-200 dark:border-border-dark shadow-xs">
               <div className="flex items-center space-x-2 text-indigo-600 dark:text-indigo-400 font-bold mb-1.5">
                 <Scale className="w-4 h-4" />
                 <span className="text-xs">Epistemic Modesty Standard</span>
@@ -75,7 +74,7 @@ export default function MethodologyModal({ isOpen, onClose }) {
             </div>
 
             {/* Guarantee 3: Bounded In-Memory Storage */}
-            <div className="p-4 bg-white dark:bg-night-800 rounded-xl border border-slate-200 dark:border-night-border shadow-xs">
+            <div className="p-4 bg-white dark:bg-surface-dark-elevated rounded-xl border border-slate-200 dark:border-border-dark shadow-xs">
               <div className="flex items-center space-x-2 text-emerald-600 dark:text-emerald-400 font-bold mb-1.5">
                 <Cpu className="w-4 h-4" />
                 <span className="text-xs">Bounded Cache Architecture</span>
@@ -86,8 +85,8 @@ export default function MethodologyModal({ isOpen, onClose }) {
             </div>
 
             {/* Guarantee 4: Verified Threat Feeds */}
-            <div className="p-4 bg-white dark:bg-night-800 rounded-xl border border-slate-200 dark:border-night-border shadow-xs">
-              <div className="flex items-center space-x-2 text-violet-600 dark:text-violet-400 font-bold mb-1.5">
+            <div className="p-4 bg-white dark:bg-surface-dark-elevated rounded-xl border border-slate-200 dark:border-border-dark shadow-xs">
+              <div className="flex items-center space-x-2 text-emerald-600 dark:text-emerald-400 font-bold mb-1.5">
                 <ShieldCheck className="w-4 h-4" />
                 <span className="text-xs">Hardened Passive Threat Intel</span>
               </div>
@@ -98,7 +97,7 @@ export default function MethodologyModal({ isOpen, onClose }) {
           </div>
 
           {/* Audit & Compliance Standards */}
-          <div className="p-4 bg-white dark:bg-night-800 rounded-xl border border-slate-200 dark:border-night-border mt-3 shadow-xs">
+          <div className="p-4 bg-white dark:bg-surface-dark-elevated rounded-xl border border-slate-200 dark:border-border-dark mt-3 shadow-xs">
             <h4 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-2 flex items-center space-x-1.5">
               <Award className="w-4 h-4 text-amber-500 dark:text-amber-400" />
               <span>Security & Audit Certifications</span>
@@ -121,10 +120,10 @@ export default function MethodologyModal({ isOpen, onClose }) {
         </div>
 
         {/* Footer */}
-        <div className="p-4 sm:p-5 border-t border-slate-200 dark:border-night-border bg-slate-50 dark:bg-night-950 flex justify-end">
+        <div className="p-4 sm:p-5 border-t border-slate-200 dark:border-border-dark bg-slate-50 dark:bg-surface-dark-elevated flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 btn-secondary text-xs cursor-pointer font-medium"
+            className="px-4 py-2 bg-slate-200 hover:bg-slate-300 dark:bg-surface-dark-hover dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-lg text-xs cursor-pointer font-medium transition-colors"
           >
             Close Overview
           </button>

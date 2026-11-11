@@ -106,13 +106,13 @@ export default function ResultsDashboard({
     (isHighRisk ? 'Coercive urgency & deceptive credentials harvesting indicators detected.' : 'No malicious markers found.');
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-6" id="results-dashboard" aria-live="polite">
-      {/* ─── Top Control Bar: Back Navigation, Reference ID, & Quick vs Full Evidence Toggle ─── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-night-border">
+    <div className="w-full max-w-5xl mx-auto space-y-6" id="results-dashboard" aria-live="polite">
+      {/* ─── Top Control Bar: Back Navigation, Case ID, & View Switcher ─── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/80 dark:border-border-dark">
         <button
           type="button"
           onClick={onCheckAnother}
-          className="inline-flex items-center space-x-1.5 text-xs font-semibold text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white transition-colors cursor-pointer self-start focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded"
+          className="inline-flex items-center space-x-1.5 text-xs font-bold text-slate-700 hover:text-accent dark:text-slate-300 dark:hover:text-emerald-300 transition-colors cursor-pointer self-start focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Check Another Message / Link</span>
@@ -120,12 +120,12 @@ export default function ResultsDashboard({
 
         <div className="flex items-center space-x-3 self-end sm:self-auto flex-wrap">
           {/* Reference ID Pill */}
-          <div className="flex items-center space-x-1.5 px-3 py-1 rounded-lg bg-slate-100 dark:bg-night-800 border border-slate-200 dark:border-night-border text-xs shadow-2xs">
-            <span className="text-[10px] font-mono text-slate-500 uppercase">Case ID:</span>
+          <div className="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-surface-dark-elevated border border-slate-200 dark:border-border-dark text-xs shadow-2xs">
+            <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Case ID:</span>
             <span className="font-mono font-bold text-slate-900 dark:text-slate-100">{incidentId}</span>
             <button
               onClick={handleCopyRef}
-              className="ml-1 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded"
+              className="ml-1 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded"
               title="Copy Incident ID"
             >
               {copiedRef ? <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
@@ -133,12 +133,13 @@ export default function ResultsDashboard({
           </div>
 
           {/* Quick View vs Full Evidence Segmented Switch */}
-          <div className="flex items-center bg-slate-100 dark:bg-night-800 p-1 rounded-xl border border-slate-200 dark:border-night-border shadow-2xs" role="group" aria-label="Inspection Depth">
+          <div className="flex items-center bg-slate-100 dark:bg-surface-dark-elevated p-1 rounded-xl border border-slate-200 dark:border-border-dark shadow-2xs" role="group" aria-label="Inspection Depth">
             <button
               type="button"
               onClick={() => setViewMode('quick')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${viewMode === 'quick'
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950 shadow-sm'
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
+                viewMode === 'quick'
+                  ? 'bg-slate-900 text-white dark:bg-emerald-600 dark:text-white shadow-sm'
                   : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
                 }`}
             >
@@ -147,16 +148,18 @@ export default function ResultsDashboard({
             <button
               type="button"
               onClick={() => setViewMode('full')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center space-x-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${viewMode === 'full'
-                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950 shadow-sm'
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center space-x-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
+                viewMode === 'full'
+                  ? 'bg-slate-900 text-white dark:bg-emerald-600 dark:text-white shadow-sm'
                   : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
                 }`}
             >
-              <span>Full Evidence</span>
-              <span className={`ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-mono ${viewMode === 'full'
-                  ? 'bg-slate-800 text-slate-200 dark:bg-slate-200 dark:text-slate-800'
-                  : 'bg-slate-200 dark:bg-night-700 text-slate-600 dark:text-slate-400'
-                }`}>
+              <span>Full Dossier</span>
+              <span className={`ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-mono ${
+                viewMode === 'full'
+                  ? 'bg-white/20 text-white'
+                  : 'bg-slate-200 dark:bg-surface-dark-hover text-slate-600 dark:text-slate-400'
+              }`}>
                 {(result.evidence || []).length}
               </span>
             </button>
@@ -164,8 +167,8 @@ export default function ResultsDashboard({
         </div>
       </div>
 
-      {/* ─── SECTION 1: EDITORIAL INCIDENT DOSSIER HEADER & CORE ASSESSMENT ─── */}
-      <section className={`p-6 sm:p-7 rounded-2xl border transition-all duration-300 shadow-sm relative overflow-hidden ${
+      {/* ─── SECTION 1: WHAT IS HAPPENING? ─── */}
+      <section className={`clean-card clean-card-hover p-6 sm:p-7 relative overflow-hidden ${
         isHighRisk
           ? 'bg-rose-50/40 border-rose-200 dark:bg-rose-950/20 dark:border-rose-900/60'
           : isSafe
@@ -198,8 +201,8 @@ export default function ResultsDashboard({
             </h3>
 
             {/* Most Important Detected Issue */}
-            <div className="p-3 rounded-xl bg-white dark:bg-night-900 border border-slate-200 dark:border-night-border flex items-start space-x-2 text-xs text-slate-700 dark:text-slate-300 shadow-2xs">
-              <span className="font-bold text-slate-900 dark:text-white flex-shrink-0">Key Finding:</span>
+            <div className="p-3.5 rounded-xl bg-slate-50/80 dark:bg-surface-dark-elevated/70 border border-slate-200/80 dark:border-border-dark flex items-start space-x-2.5 text-xs text-slate-700 dark:text-slate-300">
+              <span className="font-extrabold text-slate-900 dark:text-white flex-shrink-0">Key Finding:</span>
               <span>{primaryEvidence}</span>
             </div>
           </div>
@@ -213,7 +216,7 @@ export default function ResultsDashboard({
                   cx="44"
                   cy="44"
                   r="36"
-                  className="stroke-slate-200 dark:stroke-night-800"
+                  className="stroke-slate-200 dark:stroke-surface-dark-hover"
                   strokeWidth="7"
                   fill="transparent"
                 />
@@ -249,7 +252,7 @@ export default function ResultsDashboard({
               <button
                 type="button"
                 onClick={() => setReportModalOpen(true)}
-                className="inline-flex items-center justify-center space-x-1.5 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-950 text-xs font-bold shadow-sm transition-all active:scale-[0.98] cursor-pointer"
+                className="inline-flex items-center justify-center space-x-1.5 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-emerald-600 dark:hover:bg-emerald-500 dark:text-white text-xs font-bold shadow-card-elevated transition-all active:scale-[0.98] cursor-pointer"
               >
                 <FileText className="w-3.5 h-3.5" />
                 <span>Generate Dossier</span>
@@ -259,9 +262,9 @@ export default function ResultsDashboard({
                 <button
                   type="button"
                   onClick={() => onOpenAuthModal('Sign in to permanently archive this investigation into your Citizen Dossier.')}
-                  className="inline-flex items-center justify-center space-x-1.5 px-3 py-1.5 rounded-xl border border-slate-300 dark:border-night-border bg-white dark:bg-night-800 hover:bg-slate-50 dark:hover:bg-night-700 text-slate-700 dark:text-slate-300 text-[11px] font-semibold transition-all cursor-pointer"
+                  className="inline-flex items-center justify-center space-x-1.5 px-3 py-1.5 rounded-xl border border-slate-300 dark:border-border-dark bg-white dark:bg-surface-dark-elevated hover:bg-slate-50 dark:hover:bg-surface-dark-hover text-slate-700 dark:text-slate-300 text-[11px] font-semibold transition-all cursor-pointer"
                 >
-                  <BookmarkPlus className="w-3.5 h-3.5 text-indigo-500" />
+                  <BookmarkPlus className="w-3.5 h-3.5 text-emerald-500" />
                   <span>Save to Account</span>
                 </button>
               ) : (
@@ -276,7 +279,7 @@ export default function ResultsDashboard({
 
         {/* Evidentiary Artifact & Threat Analysis Card */}
         {result.message && (
-          <div className="mt-5 pt-4 border-t border-slate-200/80 dark:border-night-border/80 space-y-3">
+          <div className="mt-5 pt-4 border-t border-slate-200/80 dark:border-border-dark space-y-3">
             <div className="flex items-center justify-between text-xs">
               <span className="font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider text-[11px]">
                 Evidentiary Artifact & Threat Analysis
@@ -284,22 +287,22 @@ export default function ResultsDashboard({
               <span className="text-[10px] font-mono text-slate-400">Untrusted Communication</span>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-white dark:bg-night-950 border border-slate-200 dark:border-night-border font-mono text-xs text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-wrap break-words">
+            <div className="p-3.5 rounded-xl bg-white dark:bg-surface-dark-elevated border border-slate-200 dark:border-border-dark font-mono text-xs text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-wrap break-words">
               {result.message}
             </div>
 
             {/* IOC extraction table */}
             {result.urls && result.urls.length > 0 && (
-              <div className="overflow-x-auto border border-slate-200 dark:border-night-border rounded-xl">
+              <div className="overflow-x-auto border border-slate-200 dark:border-border-dark rounded-xl">
                 <table className="w-full text-left text-xs font-mono">
                   <thead>
-                    <tr className="bg-slate-100 dark:bg-night-800 border-b border-slate-200 dark:border-night-border text-slate-600 dark:text-slate-400 text-[10px]">
+                    <tr className="bg-slate-100 dark:bg-surface-dark-elevated border-b border-slate-200 dark:border-border-dark text-slate-600 dark:text-slate-400 text-[10px]">
                       <th className="p-2.5">Indicator Type</th>
                       <th className="p-2.5">Observed Artifact</th>
                       <th className="p-2.5">Classification</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-night-border bg-white dark:bg-night-900/60">
+                  <tbody className="divide-y divide-slate-100 dark:divide-border-dark bg-white dark:bg-surface-dark">
                     {result.urls.map((u, idx) => (
                       <tr key={idx}>
                         <td className="p-2.5 text-slate-500">Extracted URL</td>
@@ -334,7 +337,7 @@ export default function ResultsDashboard({
 
       {/* ─── VIEW MODE: FULL EVIDENCE (DEEP SCAN LEVEL 3) ─── */}
       {viewMode === 'full' ? (
-        <div className="space-y-6 pt-2 border-t border-slate-200 dark:border-night-border">
+        <div className="space-y-6 pt-2 border-t border-slate-200 dark:border-border-dark">
           {/* SECTION 3: WHY DID YOU SAY THAT? (Epistemic Reasoning) */}
           <ExplanationCard explanation={result.explanation} />
 
@@ -371,7 +374,7 @@ export default function ResultsDashboard({
         </div>
       ) : (
         /* In Quick View: Provide an obvious, friendly banner to inspect deeper evidence */
-        <div className="p-4 rounded-xl border border-slate-200 dark:border-night-border bg-white dark:bg-night-850 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-2xs">
+        <div className="clean-card clean-card-hover p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div>
             <h4 className="text-xs font-bold text-slate-900 dark:text-white">
               Want to inspect forensic evidence, threat feeds, or the attack path?
@@ -384,20 +387,20 @@ export default function ResultsDashboard({
           <button
             type="button"
             onClick={() => setViewMode('full')}
-            className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-night-800 dark:hover:bg-night-750 border border-slate-300 dark:border-night-border text-slate-800 dark:text-slate-200 text-xs font-bold transition-colors cursor-pointer shadow-2xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-white dark:bg-surface-dark-hover hover:bg-slate-100 dark:hover:bg-surface-dark-elevated border border-slate-200 dark:border-border-dark text-slate-800 dark:text-slate-200 text-xs font-bold transition-all cursor-pointer shadow-xs active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
           >
-            <Eye className="w-3.5 h-3.5 text-slate-600 dark:text-slate-400" />
+            <Eye className="w-3.5 h-3.5 text-accent dark:text-emerald-400" />
             <span>Switch to Full Evidence View</span>
           </button>
         </div>
       )}
 
       {/* ─── SECTION 8: REPORT THIS INCIDENT (Formal Reporting Flow) ─── */}
-      <section className="bg-white dark:bg-night-850 border border-slate-200 dark:border-night-border rounded-xl p-5 space-y-3 shadow-2xs">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <section className="clean-card clean-card-hover p-5 sm:p-6 space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h4 className="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-1.5">
-              <FileText className="w-4 h-4 text-indigo-500 dark:text-violet-400" />
+            <h4 className="text-sm font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+              <FileText className="w-4 h-4 text-accent dark:text-emerald-400" />
               <span>Official Law Enforcement & 1930 Incident Dossier</span>
             </h4>
             <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">
@@ -408,7 +411,7 @@ export default function ResultsDashboard({
           <button
             type="button"
             onClick={() => setReportModalOpen(true)}
-            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-gradient-to-r dark:from-indigo-600 dark:to-violet-600 text-xs font-bold shadow-xs transition-all active:scale-[0.99] cursor-pointer flex-shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+            className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-emerald-600 dark:hover:bg-emerald-500 text-xs font-bold shadow-card-elevated transition-all active:scale-[0.98] cursor-pointer flex-shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
           >
             <FileText className="w-4 h-4" />
             <span>Generate Incident Report</span>

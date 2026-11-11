@@ -10,6 +10,7 @@ import MethodologyModal from './components/MethodologyModal';
 import LanguageSelectionModal from './components/LanguageSelectionModal';
 import AuthModal from './components/AuthModal';
 import FileScanModal from './components/FileScanModal';
+import Sidebar from './components/Sidebar';
 import Footer from './components/Footer';
 import { analyzeMessage, updateUserState, fetchHealth, fetchCurrentUser } from './services/api';
 import { TRANSLATIONS } from './i18n/translations';
@@ -223,45 +224,74 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors relative">
-      {/* First-visit and On-demand Language Selection Modal */}
-      <LanguageSelectionModal
-        isOpen={languageModalOpen}
-        onClose={() => setLanguageModalOpen(false)}
-        onSelectLanguage={(selected) => {
-          handleLangChange(selected);
-          setLanguageModalOpen(false);
-        }}
-        currentLang={lang}
-      />
-
-      {/* Top Command Bar */}
-      <Header
-        lang={lang}
-        onLangChange={handleLangChange}
-        fontSize={fontSize}
-        onFontSizeChange={handleFontSizeChange}
-        isDark={isDark}
-        onThemeToggle={handleThemeToggle}
-        onOpenMethodology={() => setMethodologyOpen(true)}
-        onOpenLanguageModal={() => setLanguageModalOpen(true)}
-        healthData={healthData}
+    <div className="min-h-screen bg-surface-secondary text-slate-900 dark:bg-surface-dark dark:text-slate-100 flex font-sans transition-colors duration-200 relative overflow-x-hidden">
+      
+      {/* Command Center Collapsible Navigation Sidebar */}
+      <Sidebar
         currentFlow={currentFlow}
-        currentUser={currentUser}
-        onOpenAuthModal={(prompt, tab) => openAuth(prompt, tab)}
-        onOpenFileScanModal={() => setFileScanModalOpen(true)}
         onSelectFlow={(flow) => {
           if (flow === 'filescan') {
             setFileScanModalOpen(true);
             return;
           }
+          if (!currentUser && flow !== 'home') {
+            openAuth(`Please sign in or register to access the ${flow} triage engine.`, 'login', flow);
+            return;
+          }
           setError(null);
           setCurrentFlow(flow);
         }}
+        currentUser={currentUser}
+        onOpenAuthModal={(prompt, tab) => openAuth(prompt, tab)}
+        onOpenFileScanModal={() => setFileScanModalOpen(true)}
+        healthData={healthData}
+        isCollapsed={isSidebarCollapsed}
+        onToggleCollapse={() => {
+          const next = !isSidebarCollapsed;
+          setIsSidebarCollapsed(next);
+          localStorage.setItem('cf_sidebar_collapsed', next ? 'true' : 'false');
+        }}
+        isMobileOpen={isMobileSidebarOpen}
+        onCloseMobile={() => setIsMobileSidebarOpen(false)}
+        onSelectPreset={handleSelectPreset}
+        lang={lang}
       />
 
-      {/* Main Content Workspace Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8" id="main-content">
+      {/* Main Workspace Area (offsets based on sidebar state) */}
+      <div className={`flex-1 flex flex-col min-w-0 transition-all duration-300 ease-in-out ${
+        isSidebarCollapsed ? 'lg:pl-[76px]' : 'lg:pl-[268px]'
+      }`}>
+        {/* First-visit and On-demand Language Selection Modal */}
+        <LanguageSelectionModal
+          isOpen={languageModalOpen}
+          onClose={() => setLanguageModalOpen(false)}
+          onSelectLanguage={(selected) => {
+            handleLangChange(selected);
+            setLanguageModalOpen(false);
+          }}
+          currentLang={lang}
+        />
+
+        {/* Top Command Bar */}
+        <Header
+          lang={lang}
+          onLangChange={handleLangChange}
+          fontSize={fontSize}
+          onFontSizeChange={handleFontSizeChange}
+          isDark={isDark}
+          onThemeToggle={handleThemeToggle}
+          onOpenMethodology={() => setMethodologyOpen(true)}
+          onOpenLanguageModal={() => setLanguageModalOpen(true)}
+          healthData={healthData}
+          currentFlow={currentFlow}
+          currentUser={currentUser}
+          onOpenAuthModal={(prompt, tab) => openAuth(prompt, tab)}
+          onOpenFileScanModal={() => setFileScanModalOpen(true)}
+          onToggleMobileMenu={() => setIsMobileSidebarOpen(true)}
+        />
+
+        {/* Main Content Workspace Container */}
+        <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8" id="main-content">
           {/* Error Notification */}
           {error && (
             <div className="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-900 dark:bg-rose-950/60 dark:border-rose-800 dark:text-rose-200 rounded-2xl text-xs sm:text-sm flex items-center justify-between shadow-xs">
@@ -332,6 +362,7 @@ export default function App() {
               lang={lang}
               currentUser={currentUser}
               onOpenAuthModal={(prompt, tab) => openAuth(prompt, tab)}
+              healthData={healthData}
               onOpenFileScanModal={() => setFileScanModalOpen(true)}
             />
           )}
@@ -370,5 +401,6 @@ export default function App() {
           onAuthSuccess={handleAuthSuccess}
         />
       </div>
+    </div>
   );
 }

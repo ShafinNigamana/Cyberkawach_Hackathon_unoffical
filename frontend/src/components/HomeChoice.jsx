@@ -24,7 +24,8 @@ import {
   CheckCircle2,
   Terminal,
   Activity,
-  Upload
+  Upload,
+  LogIn
 } from 'lucide-react';
 import { PRESET_SCENARIOS } from '../data/presets';
 import { t } from '../i18n/translations';
@@ -48,8 +49,16 @@ export default function HomeChoice({
   isAnalyzing = false,
   lang = 'en',
   currentUser = null,
-  onOpenAuthModal = () => {}
+  onOpenAuthModal = () => {},
+  healthData = null
 }) {
+  const totalModulesCount = healthData?.modules 
+    ? Object.keys(healthData.modules).length 
+    : 12;
+  const activeModulesCount = healthData?.modules 
+    ? Object.values(healthData.modules).filter(Boolean).length 
+    : totalModulesCount;
+
   const [activeMode, setActiveMode] = useState('sms'); // 'sms' | 'url' | 'ocr' | 'voice'
   const [inputText, setInputText] = useState('');
   const [userState, setUserState] = useState('received');
@@ -58,6 +67,11 @@ export default function HomeChoice({
   const [voiceModalOpen, setVoiceModalOpen] = useState(false);
   const fileInputRef = useRef(null);
   const baseTextRef = useRef('');
+
+  const getPresetTitle = (preset) => {
+    const key = `preset_${preset.id.replace(/-/g, '_')}`;
+    return t(lang, key, preset.title);
+  };
 
   // Handle voice transcript streaming and final phrase commits
   const handleVoiceTranscript = useCallback((text, isFinal) => {
@@ -147,10 +161,29 @@ export default function HomeChoice({
     }
   };
 
+  const handlePresetClick = (preset) => {
+    if (!currentUser) {
+      onOpenAuthModal('Please sign in or register to run benchmark scenario tests.');
+      return;
+    }
+    if (onSelectPreset) {
+      onSelectPreset(preset);
+    } else {
+      setInputText(preset.message);
+      if (preset.type === 'url') setActiveMode('url');
+      else setActiveMode('sms');
+    }
+  };
+
   // Handle Main Submission
   const handleSubmitTriage = (e) => {
     e?.preventDefault();
     if (!inputText.trim()) return;
+
+    if (!currentUser) {
+      onOpenAuthModal('Please sign in or register to execute verified threat triage.');
+      return;
+    }
 
     if (onSubmit) {
       onSubmit({
@@ -168,103 +201,151 @@ export default function HomeChoice({
   const defanged = defangText(inputText);
 
   return (
-    <div className="w-full max-w-6xl mx-auto space-y-6 py-2">
-      {/* ─── 1. Authoritative Institutional Masthead ─── */}
-      <div className="border-b border-slate-200 dark:border-night-border pb-4 pt-1">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          {/* Breadcrumbs & Title */}
-          <div className="space-y-1">
-            <div className="flex items-center space-x-2 text-xs font-mono text-slate-500 dark:text-slate-400">
-              <span>National Cyber Defense</span>
-              <span>/</span>
-              <span className="text-slate-900 dark:text-white font-bold">Investigation Workbench</span>
+    <div className="w-full max-w-5xl mx-auto space-y-8 py-4 sm:py-6">
+      {/* ─── Hero Section ─── */}
+      <div className="relative space-y-4 pt-4 pb-2 text-left sm:text-center">
+        {/* Status Badge */}
+        <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-slate-200 dark:border-border-dark bg-white dark:bg-surface-dark-elevated text-slate-700 dark:text-slate-300 text-xs font-semibold shadow-2xs">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span>{t(lang, 'homeHeroBadge', 'National Citizen Cyber Threat Triage')}</span>
+          <span className="text-slate-300 dark:text-slate-700">•</span>
+          <span className="text-emerald-600 dark:text-emerald-400 font-mono text-[11px]">{activeModulesCount}/{totalModulesCount} Modules Active</span>
+        </div>
+
+        {/* Main Headline */}
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-[1.15]">
+          Verify threats before{' '}
+          <span className="text-accent dark:text-emerald-400">
+            you click or pay
+          </span>
+        </h2>
+
+        {/* Supporting description */}
+        <p className="max-w-2xl mx-auto text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+          {t(lang, 'homeHeroSub', 'Institutional epistemic triage for coercive SMS, fake banking portals, phishing APKs, and digital arrest extortion. Zero data retention.')}
+        </p>
+      </div>
+
+      {/* ─── Citizen Access Gate Status Banner ─── */}
+      {!currentUser ? (
+        <div className="clean-card clean-card-hover p-5 sm:p-6 flex flex-col md:flex-row items-center justify-between gap-5">
+          <div className="flex items-start space-x-4">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-accent/20 to-accent-hover/20 text-accent dark:text-emerald-400 flex items-center justify-center flex-shrink-0 border border-emerald-500/20">
+              <Lock className="w-6 h-6" />
             </div>
-            <div className="flex items-center space-x-3">
-              <div className="w-7 h-7 rounded-lg bg-slate-900 text-white dark:bg-white dark:text-slate-950 flex items-center justify-center font-bold text-xs shadow-xs font-mono">
-                SOC
+            <div>
+              <div className="flex items-center space-x-2">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase bg-emerald-50 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                  Citizen Verification Required
+                </span>
+                <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
+                  Chain-of-Custody Protected
+                </span>
               </div>
-              <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-                National Cyber Threat Triage Console
-              </h1>
+              <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white mt-1">
+                Authenticate to Access Verified Threat Triage
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
+                In compliance with National Cyber Threat framework standards, users sign in to submit suspicious messages, inspect URLs, and receive forensic reports.
+              </p>
             </div>
           </div>
-
-          {/* Telemetry Indicator */}
-          <div className="flex items-center space-x-2 sm:self-end">
-            <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded-full border border-slate-200 dark:border-night-border bg-white dark:bg-night-900 text-slate-700 dark:text-slate-300 text-xs font-mono shadow-2xs">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>48,219 Verified Analyses Today</span>
-              <span className="text-slate-300 dark:text-slate-700">•</span>
-              <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Zero PII Retained</span>
+          <div className="flex items-center space-x-2 flex-shrink-0 w-full md:w-auto">
+            <button
+              type="button"
+              onClick={() => onOpenAuthModal('Please sign in or register to analyze suspicious communications.')}
+              className="w-full md:w-auto px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-accent dark:hover:bg-accent-hover text-white font-bold text-xs transition-all shadow-card flex items-center justify-center space-x-2 cursor-pointer active:scale-[0.98]"
+            >
+              <LogIn className="w-4 h-4" />
+              <span>Sign In / Register</span>
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs">
+          <div className="flex items-center space-x-3.5">
+            <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+              <ShieldCheck className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center space-x-1.5">
+                <span>Authenticated Citizen Session:</span>
+                <span className="text-emerald-600 dark:text-emerald-400 font-mono font-bold">
+                  {currentUser.display_name || currentUser.email}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5">
+                Direct zero-retention analysis enabled. Every scan is hashed with SHA-256 for legal chain-of-custody.
+              </p>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* ─── 2. Main Two-Column Forensic Workspace ─── */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* ─── Left Column (60%): Advanced Forensic Triage Workbench ─── */}
+      {/* ─── 2-Column Main Interactive Triage Workspace ─── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Left Column (60%): Interactive Triage Studio */}
         <div className="lg:col-span-7 space-y-4">
-          <div className="editorial-workbench p-5 sm:p-6 space-y-4">
-            {/* Workbench Header & Mode Selector Pills */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-night-border pb-4">
-              <div>
-                <h2 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center space-x-2">
-                  <Terminal className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                  <span>Advanced Forensic Triage Workbench</span>
-                </h2>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                  Real-time indicator extraction with client-side zero-PII sanitization
-                </p>
-              </div>
-
-              {/* Tool Mode Segmented Pills */}
-              <div className="flex items-center flex-wrap gap-1 bg-slate-100 dark:bg-night-800 p-1 rounded-xl border border-slate-200/80 dark:border-night-border">
+          <div className="clean-card clean-card-hover p-5 sm:p-6 space-y-4">
+            {/* Mode Switcher Tabs */}
+            <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-border-dark pb-3 flex-wrap gap-2">
+              <div className="flex items-center space-x-1 bg-slate-100 dark:bg-surface-dark-elevated p-1 rounded-xl">
                 <button
                   type="button"
                   onClick={() => setActiveMode('sms')}
-                  className={`px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                     activeMode === 'sms'
-                      ? 'bg-white dark:bg-night-900 text-slate-900 dark:text-white shadow-xs font-bold'
+                      ? 'bg-white dark:bg-surface-dark text-slate-900 dark:text-white shadow-xs font-bold'
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
-                  SMS / WhatsApp
+                  Text / SMS
                 </button>
                 <button
                   type="button"
                   onClick={() => setActiveMode('url')}
-                  className={`px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                     activeMode === 'url'
-                      ? 'bg-white dark:bg-night-900 text-slate-900 dark:text-white shadow-xs font-bold'
+                      ? 'bg-white dark:bg-surface-dark text-slate-900 dark:text-white shadow-xs font-bold'
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
-                  URL Sandbox
+                  Website URL
                 </button>
                 <button
                   type="button"
                   onClick={() => setActiveMode('ocr')}
-                  className={`px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                     activeMode === 'ocr'
-                      ? 'bg-white dark:bg-night-900 text-slate-900 dark:text-white shadow-xs font-bold'
+                      ? 'bg-white dark:bg-surface-dark text-slate-900 dark:text-white shadow-xs font-bold'
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
-                  Document OCR
+                  Screenshot OCR
                 </button>
                 <button
                   type="button"
                   onClick={() => setActiveMode('voice')}
-                  className={`px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                     activeMode === 'voice'
-                      ? 'bg-white dark:bg-night-900 text-slate-900 dark:text-white shadow-xs font-bold'
+                      ? 'bg-white dark:bg-surface-dark text-slate-900 dark:text-white shadow-xs font-bold'
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
                   Audio Waveform
                 </button>
               </div>
+
+              {/* Dictation Modal Trigger */}
+              <button
+                type="button"
+                onClick={() => setVoiceModalOpen(true)}
+                className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-border-dark bg-slate-50 dark:bg-surface-dark-elevated text-slate-700 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 text-xs font-medium transition-colors cursor-pointer"
+                title="Open Multilingual Speech Dictation Console"
+              >
+                <Mic className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                <span>Dictate</span>
+              </button>
             </div>
 
             {/* Side-by-Side Editor & Live Defanged Preview Pane */}
@@ -277,11 +358,11 @@ export default function HomeChoice({
                     <button
                       type="button"
                       onClick={handlePaste}
-                      className="inline-flex items-center space-x-1 hover:text-indigo-600 dark:hover:text-violet-400 cursor-pointer"
+                      className="inline-flex items-center space-x-1 hover:text-emerald-600 dark:hover:text-emerald-400 cursor-pointer"
                       title="Paste from clipboard"
                     >
                       <Clipboard className="w-3 h-3" />
-                      <span>[Ctrl+V] Paste</span>
+                      <span>{pasteNotice ? 'Pasted!' : '[Ctrl+V] Paste'}</span>
                     </button>
                     {inputText && (
                       <button
@@ -297,8 +378,8 @@ export default function HomeChoice({
                 </div>
 
                 {/* Line numbered text input */}
-                <div className="relative flex rounded-xl border border-slate-200 dark:border-night-border bg-slate-50/60 dark:bg-night-950/60 overflow-hidden focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500">
-                  <div className="w-8 py-3 bg-slate-100/70 dark:bg-night-900/80 border-r border-slate-200 dark:border-night-border font-mono text-[10px] text-slate-400 select-none text-right pr-2 leading-relaxed">
+                <div className="relative flex rounded-xl border border-slate-200 dark:border-border-dark bg-slate-50/60 dark:bg-surface-dark-elevated/60 overflow-hidden focus-within:ring-2 focus-within:ring-emerald-500/20 focus-within:border-emerald-500">
+                  <div className="w-8 py-3 bg-slate-100/70 dark:bg-surface-dark border-r border-slate-200 dark:border-border-dark font-mono text-[10px] text-slate-400 select-none text-right pr-2 leading-relaxed">
                     {Array.from({ length: lineCount }).map((_, i) => (
                       <div key={i}>{i + 1}</div>
                     ))}
@@ -326,11 +407,11 @@ export default function HomeChoice({
                   <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">Auto-Sanitized</span>
                 </div>
 
-                <div className="defanged-box p-3 h-[180px] overflow-y-auto text-xs text-slate-700 dark:text-slate-300 whitespace-pre-wrap break-words leading-relaxed">
+                <div className="p-3 h-[180px] overflow-y-auto text-xs text-slate-700 dark:text-slate-300 rounded-xl border border-slate-200 dark:border-border-dark bg-slate-100/40 dark:bg-surface-dark-elevated/40 whitespace-pre-wrap break-words leading-relaxed font-mono">
                   {defanged ? (
                     <div>{defanged}</div>
                   ) : (
-                    <div className="text-slate-400 dark:text-slate-600 italic">
+                    <div className="text-slate-400 dark:text-slate-600 italic font-sans text-xs">
                       Live preview with defanged URLs (hxxps[://]...) and masked Aadhaar/OTP tokens will appear here as you type.
                     </div>
                   )}
@@ -338,118 +419,74 @@ export default function HomeChoice({
               </div>
             </div>
 
-            {/* OCR File Upload / Audio Voice Waveform Bar */}
-            {activeMode === 'ocr' ? (
-              <div className="p-4 border border-dashed border-slate-300 dark:border-slate-700 rounded-xl bg-slate-50/50 dark:bg-night-950/40 text-center space-y-2">
-                {isOcrUploading ? (
-                  <div className="flex flex-col items-center justify-center py-2 space-y-2">
-                    <div className="w-6 h-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
-                    <span className="text-xs font-mono font-semibold text-indigo-600 dark:text-violet-400">
-                      Processing OCR optical layers & extracting text...
-                    </span>
-                  </div>
-                ) : (
-                  <>
-                    <Upload className="w-5 h-5 text-indigo-500 mx-auto" />
-                    <div className="text-xs text-slate-600 dark:text-slate-400">
-                      <label className="font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer">
-                        Click to browse screenshot
-                        <input 
-                          ref={fileInputRef} 
-                          type="file" 
-                          accept="image/*" 
-                          onChange={handleFileUpload} 
-                          className="hidden" 
-                        />
-                      </label>{' '}
-                      or drag and drop PNG, JPG, or WEBP image
-                    </div>
-                  </>
-                )}
+            {/* OCR Upload Dropzone when in OCR mode */}
+            {activeMode === 'ocr' && (
+              <div className="p-4 rounded-xl border-2 border-dashed border-slate-300 dark:border-border-dark bg-slate-50/50 dark:bg-surface-dark-elevated/30 flex flex-col items-center justify-center text-center space-y-2">
+                <Upload className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                <div className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                  Select or drop a screenshot here
+                </div>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                  Text & embedded URLs will be extracted automatically via OCR
+                </p>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  ref={fileInputRef}
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isOcrUploading}
+                  className="px-4 py-1.5 bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-lg text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-surface-dark-hover transition-colors cursor-pointer"
+                >
+                  {isOcrUploading ? 'Extracting text...' : 'Browse Image'}
+                </button>
               </div>
-            ) : (
-              <div className="space-y-2">
-                <div className="flex items-center justify-between p-3 rounded-xl border border-slate-200 dark:border-night-border bg-slate-50 dark:bg-night-950">
-                  <div className="flex items-center space-x-3">
+            )}
+
+            {/* Voice Dictation controls when in voice mode */}
+            {activeMode === 'voice' && (
+              <div className="p-4 rounded-xl border border-slate-200 dark:border-border-dark bg-slate-50/50 dark:bg-surface-dark-elevated/30 space-y-3">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <div className="flex items-center space-x-2">
                     <button
                       type="button"
-                      onClick={() => setVoiceModalOpen(true)}
-                      className="w-10 h-10 rounded-xl flex items-center justify-center transition-all cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-600/20 flex-shrink-0"
-                      title="Click to speak your message (Hindi, English, Tamil, Telugu, etc.)"
+                      onClick={toggleSpeech}
+                      className={`inline-flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-xs ${
+                        isListening
+                          ? 'bg-rose-600 text-white animate-pulse'
+                          : 'bg-emerald-600 text-white hover:bg-emerald-500'
+                      }`}
                     >
-                      <Mic className="w-5 h-5" />
+                      {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                      <span>{isListening ? `Listening (${recordingSeconds}s)...` : 'Start Microphone'}</span>
                     </button>
 
-                    <div 
-                      onClick={() => setVoiceModalOpen(true)}
-                      className="cursor-pointer"
-                    >
-                      <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center space-x-1.5">
-                        <span>Multilingual Voice Dictation</span>
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-indigo-100 dark:bg-violet-950/80 text-indigo-700 dark:text-violet-300 font-semibold animate-pulse">
-                          Tap Mic to Speak
-                        </span>
-                      </div>
-                      <div className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">
-                        Hindi • English • Tamil • Telugu • Bengali • Marathi • Gujarati
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Animated Waveform Visualizer or Quick Demo */}
-                  {isListening ? (
-                    <div className="flex items-center space-x-1 h-6 pr-2">
-                      {Array.from({ length: 8 }).map((_, i) => (
-                        <span key={i} className="audio-bar w-1 bg-blue-600 dark:bg-blue-400 rounded-full" />
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="flex items-center space-x-2">
-                      <button
-                        type="button"
-                        onClick={handleVoiceSampleClick}
-                        className="text-[10px] font-mono text-indigo-600 dark:text-violet-400 hover:underline cursor-pointer bg-indigo-50 dark:bg-violet-950/60 px-2 py-1 rounded border border-indigo-200 dark:border-violet-800/60 font-semibold"
-                        title="Simulate speech-to-text transcript"
-                      >
-                        Try Voice Sample
-                      </button>
-                      <span className="text-[10px] font-mono text-slate-400 bg-slate-100 dark:bg-night-800 px-2 py-0.5 rounded border border-slate-200 dark:border-night-border hidden sm:inline">
-                        {isVoiceSupported ? 'Audio Ready' : 'Demo Mode'}
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Voice Status Diagnostic Callouts */}
-                {errorMessage && (
-                  <div className="p-3 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-xl text-xs text-amber-900 dark:text-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-                    <span>
-                      ⚠️ {errorMessage}
-                    </span>
                     <button
                       type="button"
                       onClick={handleVoiceSampleClick}
-                      className="px-2.5 py-1 bg-amber-600 text-white font-bold rounded-lg text-[11px] hover:bg-amber-700 cursor-pointer flex-shrink-0"
+                      className="px-3 py-2 rounded-xl border border-slate-200 dark:border-border-dark bg-white dark:bg-surface-dark text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-surface-dark-hover text-xs font-semibold transition-colors cursor-pointer"
                     >
-                      Try Voice Sample
+                      Load Audio Demo
                     </button>
                   </div>
-                )}
 
-                {voiceStatus === 'error_unsupported' && (
-                  <div className="p-3 bg-slate-100 dark:bg-night-900 border border-slate-200 dark:border-night-border rounded-xl text-xs text-slate-700 dark:text-slate-300">
-                    ℹ️ <strong>Speech Recognition API</strong> is not available in this browser. Please use <strong>Google Chrome</strong> or <strong>Microsoft Edge</strong> for real-time speech-to-text.
-                  </div>
-                )}
+                  <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
+                    Supports 8 Indian Languages
+                  </span>
+                </div>
 
-                {voiceStatus === 'error_network' && (
+                {voiceStatus === 'network_error' && (
                   <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 rounded-xl text-xs text-rose-800 dark:text-rose-200">
                     ⚠️ <strong>Speech network service offline:</strong> The browser speech recognition server could not be reached. Please check your internet connection or paste text directly.
                   </div>
                 )}
 
                 {voiceStatus === 'error_no_speech' && (
-                  <div className="p-2.5 bg-slate-100 dark:bg-night-900 border border-slate-200 dark:border-night-border rounded-xl text-xs text-slate-600 dark:text-slate-400">
+                  <div className="p-2.5 bg-slate-100 dark:bg-surface-dark-elevated border border-slate-200 dark:border-border-dark rounded-xl text-xs text-slate-600 dark:text-slate-400">
                     No speech was detected. Tap the mic icon again and speak clearly.
                   </div>
                 )}
@@ -457,13 +494,13 @@ export default function HomeChoice({
             )}
 
             {/* Bottom Actions: User State Selector + Analyze Button */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-slate-100 dark:border-night-border">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-slate-100 dark:border-border-dark">
               <div className="flex items-center space-x-2 text-xs text-slate-600 dark:text-slate-400">
                 <span className="font-medium text-slate-700 dark:text-slate-300">Your Current State:</span>
                 <select
                   value={userState}
                   onChange={(e) => setUserState(e.target.value)}
-                  className="px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-night-border bg-white dark:bg-night-900 text-slate-800 dark:text-slate-200 text-xs font-semibold focus:outline-none cursor-pointer"
+                  className="px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-border-dark bg-white dark:bg-surface-dark text-slate-800 dark:text-slate-200 text-xs font-semibold focus:outline-none cursor-pointer"
                 >
                   <option value="received">Just Received (Safest)</option>
                   <option value="clicked">Clicked Link (High Risk)</option>
@@ -476,7 +513,7 @@ export default function HomeChoice({
                 type="button"
                 onClick={handleSubmitTriage}
                 disabled={isAnalyzing || !inputText.trim()}
-                className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-2.5 btn-primary cursor-pointer text-xs font-bold shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-2.5 bg-slate-900 hover:bg-slate-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-md transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isAnalyzing ? (
                   <>
@@ -496,8 +533,8 @@ export default function HomeChoice({
 
         {/* ─── Right Column (40%): Live Cyber Threat Intel Bulletin ─── */}
         <div className="lg:col-span-5 space-y-4">
-          <div className="editorial-workbench p-5 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-night-border pb-3">
+          <div className="clean-card clean-card-hover p-5 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-border-dark pb-3">
               <div className="flex items-center space-x-2">
                 <Radio className="w-4 h-4 text-rose-600 animate-pulse" />
                 <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
@@ -512,7 +549,7 @@ export default function HomeChoice({
             {/* 3 Real Indian Threat Cards */}
             <div className="space-y-3">
               {/* Card 1: Electricity Bill */}
-              <div className="bulletin-card p-4 space-y-2.5 border-l-4 border-l-rose-600">
+              <div className="p-3.5 rounded-xl border border-slate-200 dark:border-border-dark bg-white dark:bg-surface-dark space-y-2 border-l-4 border-l-rose-600 shadow-2xs">
                 <div className="flex items-start justify-between">
                   <div>
                     <h4 className="text-xs font-bold text-slate-900 dark:text-white">
@@ -527,7 +564,7 @@ export default function HomeChoice({
                   </span>
                 </div>
 
-                <div className="space-y-1 text-[11px] font-mono text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-night-950 p-2 rounded-lg border border-slate-100 dark:border-night-border">
+                <div className="space-y-1 text-[11px] font-mono text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-surface-dark-elevated p-2 rounded-lg border border-slate-100 dark:border-border-dark">
                   <div className="text-[10px] font-bold text-slate-500 uppercase">Observed IOC Domains:</div>
                   <div className="text-rose-600 dark:text-rose-400 break-all">eilielectricity.com • electtricity.com</div>
                 </div>
@@ -537,7 +574,7 @@ export default function HomeChoice({
                   <button
                     type="button"
                     onClick={() => handleLoadBulletin('preset-electricity')}
-                    className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+                    className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer"
                   >
                     Load Benchmark →
                   </button>
@@ -545,7 +582,7 @@ export default function HomeChoice({
               </div>
 
               {/* Card 2: Digital Arrest Syndicate */}
-              <div className="bulletin-card p-4 space-y-2.5 border-l-4 border-l-amber-500">
+              <div className="p-3.5 rounded-xl border border-slate-200 dark:border-border-dark bg-white dark:bg-surface-dark space-y-2 border-l-4 border-l-amber-500 shadow-2xs">
                 <div className="flex items-start justify-between">
                   <div>
                     <h4 className="text-xs font-bold text-slate-900 dark:text-white">
@@ -560,7 +597,7 @@ export default function HomeChoice({
                   </span>
                 </div>
 
-                <div className="space-y-1 text-[11px] font-mono text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-night-950 p-2 rounded-lg border border-slate-100 dark:border-night-border">
+                <div className="space-y-1 text-[11px] font-mono text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-surface-dark-elevated p-2 rounded-lg border border-slate-100 dark:border-border-dark">
                   <div className="text-[10px] font-bold text-slate-500 uppercase">Observed IOC Domains:</div>
                   <div className="text-amber-600 dark:text-amber-400 break-all">vodless.com • statemin.com</div>
                 </div>
@@ -570,7 +607,7 @@ export default function HomeChoice({
                   <button
                     type="button"
                     onClick={() => handleLoadBulletin('preset-digital-arrest')}
-                    className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+                    className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer"
                   >
                     Load Benchmark →
                   </button>
@@ -578,7 +615,7 @@ export default function HomeChoice({
               </div>
 
               {/* Card 3: India Post Delivery APK */}
-              <div className="bulletin-card p-4 space-y-2.5 border-l-4 border-l-rose-600">
+              <div className="p-3.5 rounded-xl border border-slate-200 dark:border-border-dark bg-white dark:bg-surface-dark space-y-2 border-l-4 border-l-rose-600 shadow-2xs">
                 <div className="flex items-start justify-between">
                   <div>
                     <h4 className="text-xs font-bold text-slate-900 dark:text-white">
@@ -593,7 +630,7 @@ export default function HomeChoice({
                   </span>
                 </div>
 
-                <div className="space-y-1 text-[11px] font-mono text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-night-950 p-2 rounded-lg border border-slate-100 dark:border-night-border">
+                <div className="space-y-1 text-[11px] font-mono text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-surface-dark-elevated p-2 rounded-lg border border-slate-100 dark:border-border-dark">
                   <div className="text-[10px] font-bold text-slate-500 uppercase">Observed IOC Domains:</div>
                   <div className="text-rose-600 dark:text-rose-400 break-all">indiaposts.com • indiapost.com</div>
                 </div>
@@ -603,7 +640,7 @@ export default function HomeChoice({
                   <button
                     type="button"
                     onClick={() => handleLoadBulletin('preset-india-post')}
-                    className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+                    className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer"
                   >
                     Load Benchmark →
                   </button>
@@ -615,7 +652,7 @@ export default function HomeChoice({
       </div>
 
       {/* ─── 3. Emergency 1930 Helpline Banner ─── */}
-      <div className="p-4 rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50/70 dark:bg-rose-950/40 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
+      <div className="p-4 rounded-2xl border border-rose-200 dark:border-rose-900/60 bg-rose-50/70 dark:bg-rose-950/40 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
         <div className="flex items-center space-x-3 text-center sm:text-left">
           <div className="w-10 h-10 rounded-xl bg-rose-600 text-white flex items-center justify-center flex-shrink-0 shadow-sm">
             <PhoneCall className="w-5 h-5" />
@@ -632,11 +669,89 @@ export default function HomeChoice({
 
         <a
           href="tel:1930"
-          className="inline-flex items-center space-x-1.5 px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-lg shadow-sm transition-colors cursor-pointer whitespace-nowrap"
+          className="inline-flex items-center space-x-1.5 px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl shadow-sm transition-colors cursor-pointer whitespace-nowrap"
         >
           <PhoneCall className="w-3.5 h-3.5" />
           <span>Call 1930 Now</span>
         </a>
+      </div>
+
+      {/* ─── Benchmark Typologies Quick-Test Section ─── */}
+      <div className="clean-card clean-card-hover p-5 sm:p-6 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+          <div className="flex items-center space-x-2 text-xs font-bold text-slate-900 dark:text-white">
+            <FlaskConical className="w-4 h-4 text-accent dark:text-emerald-400" />
+            <span>{t(lang, 'presetsBarTitle', 'Preloaded Benchmark Threat Scenarios:')}</span>
+            {!currentUser && (
+              <span className="text-[10px] text-slate-400 font-normal">
+                (Sign In Required)
+              </span>
+            )}
+          </div>
+          <span className="text-[11px] text-slate-500 dark:text-slate-400">
+            {t(lang, 'presetsBarSub', 'Real-world Indian cybercrime typologies')}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+          {PRESET_SCENARIOS.map((preset) => (
+            <button
+              key={preset.id}
+              type="button"
+              onClick={() => handlePresetClick(preset)}
+              className="p-3 rounded-xl border border-slate-200/90 dark:border-border-dark bg-slate-50/70 dark:bg-surface-dark-elevated/60 hover:bg-white dark:hover:bg-surface-dark hover:border-emerald-500/30 text-left transition-all group cursor-pointer shadow-2xs"
+            >
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-accent dark:group-hover:text-emerald-300 transition-colors truncate">
+                  {getPresetTitle(preset)}
+                </span>
+                {!currentUser && <Lock className="w-3 h-3 text-slate-400 ml-1 flex-shrink-0" />}
+              </div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1">
+                {preset.message}
+              </p>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ─── Institutional Trust & Guarantee Badges ─── */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-2">
+        <div className="flex items-center space-x-3.5 p-4 rounded-xl border border-slate-200/80 dark:border-border-dark bg-white dark:bg-surface-dark-elevated text-xs text-slate-600 dark:text-slate-400 shadow-2xs">
+          <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-surface-dark-hover flex items-center justify-center flex-shrink-0 text-accent dark:text-emerald-400">
+            <Lock className="w-4.5 h-4.5" />
+          </div>
+          <div>
+            <strong className="text-slate-900 dark:text-white block font-bold">
+              {t(lang, 'badgeZeroRetentionTitle', 'Zero Retention')}
+            </strong>
+            <span className="text-[11px]">{t(lang, 'badgeZeroRetentionDesc', 'Ephemeral in-memory analysis; zero storage.')}</span>
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-3.5 p-4 rounded-xl border border-slate-200/80 dark:border-border-dark bg-white dark:bg-surface-dark-elevated text-xs text-slate-600 dark:text-slate-400 shadow-2xs">
+          <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-surface-dark-hover flex items-center justify-center flex-shrink-0 text-emerald-600 dark:text-emerald-400">
+            <ShieldCheck className="w-4.5 h-4.5" />
+          </div>
+          <div>
+            <strong className="text-slate-900 dark:text-white block font-bold">
+              {t(lang, 'badgeSafeSandboxTitle', 'Safe Sandbox')}
+            </strong>
+            <span className="text-[11px]">{t(lang, 'badgeSafeSandboxDesc', 'Unopened links tested via passive OSINT feeds.')}</span>
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-3.5 p-4 rounded-xl border border-slate-200/80 dark:border-border-dark bg-white dark:bg-surface-dark-elevated text-xs text-slate-600 dark:text-slate-400 shadow-2xs">
+          <div className="w-9 h-9 rounded-xl bg-rose-50 dark:bg-surface-dark-hover flex items-center justify-center flex-shrink-0 text-rose-600 dark:text-rose-400">
+            <PhoneCall className="w-4.5 h-4.5" />
+          </div>
+          <div>
+            <strong className="text-slate-900 dark:text-white block font-bold">
+              {t(lang, 'badge1930Title', '1930 Integration')}
+            </strong>
+            <span className="text-[11px]">{t(lang, 'badge1930Desc', 'Emergency Golden Hour guidance ready.')}</span>
+          </div>
+        </div>
       </div>
 
       {/* Multilingual Voice Dictation Console Modal */}

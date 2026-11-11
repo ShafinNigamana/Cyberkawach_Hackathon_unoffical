@@ -8,7 +8,7 @@ export const TRANSLATIONS = {
     // Government / Header
     portalGov: "Government of India",
     portalGovHi: "भारत सरकार",
-    division: "Cyber Kavach S2 • I4C Partner",
+    division: "Cyber Kavach • I4C Partner",
     emergencyHelpline: "Emergency Helpline",
     portalTitle: "Cyber Fraud Guardian",
     portalTagline: "National Citizen Cyber Threat Triage Portal",
@@ -170,8 +170,8 @@ export const TRANSLATIONS = {
     cannotConclude: "What the Guardian Cannot Conclude",
 
     // Footer
-    footerSubtitle: "Indian Cyber Crime Coordination Centre (I4C) Partner Initiative • Track S2",
-    footerDesc: "An evidence-driven, epistemically grounded cyber threat classification and triage framework built for the Cyber Kavach Challenge 2026, BSides Ahmedabad.",
+    footerSubtitle: "Indian Cyber Crime Coordination Centre (I4C) Partner Initiative",
+    footerDesc: "An evidence-driven, epistemically grounded cyber threat classification and triage framework for citizen safety.",
     footerMethodology: "View Technical Methodology & Audits",
     footerOfficialPortals: "Official National Portals",
     footerGuarantees: "Citizen Privacy Guarantees",
@@ -182,7 +182,7 @@ export const TRANSLATIONS = {
   hi: {
     portalGov: "भारत सरकार",
     portalGovHi: "भारत सरकार",
-    division: "साइबर कवच S2 • I4C पार्टनर",
+    division: "साइबर कवच • I4C पार्टनर",
     emergencyHelpline: "आपातकालीन हेल्पलाइन",
     portalTitle: "साइबर फ्रॉड गार्डियन",
     portalTagline: "राष्ट्रीय नागरिक साइबर खतरा ट्राइएज पोर्टल",
@@ -333,8 +333,8 @@ export const TRANSLATIONS = {
     syndicateAlert: "फ्रॉड डीएनए सिंडिकेट अभियान चेतावनी",
     cannotConclude: "गार्डियन क्या निष्कर्ष नहीं निकाल सकता",
 
-    footerSubtitle: "भारतीय साइबर अपराध समन्वय केंद्र (I4C) पार्टनर पहल • ट्रैक S2",
-    footerDesc: "साइबर कवच चैलेंज 2026, BSides अहमदाबाद हेतु विकसित साक्ष्य-आधारित साइबर सुरक्षा व ट्राइएज फ्रेमवर्क।",
+    footerSubtitle: "भारतीय साइबर अपराध समन्वय केंद्र (I4C) पार्टनर पहल",
+    footerDesc: "नागरिक सुरक्षा हेतु साक्ष्य-आधारित साइबर सुरक्षा व ट्राइएज फ्रेमवर्क।",
     footerMethodology: "तकनीकी कार्यप्रणाली एवं ऑडिट देखें",
     footerOfficialPortals: "आधिकारिक राष्ट्रीय पोर्टल",
     footerGuarantees: "नागरिक गोपनीयता गारंटी",
@@ -345,7 +345,7 @@ export const TRANSLATIONS = {
   gu: {
     portalGov: "ભારત સરકાર",
     portalGovHi: "भारत सरकार",
-    division: "સાયબર કવચ S2 • I4C પાર્ટનર",
+    division: "સાયબર કવચ • I4C પાર્ટનર",
     emergencyHelpline: "ઇમરજન્સી હેલ્પલાઇન",
     portalTitle: "સાયબર ફ્રોડ ગાર્ડિયન",
     portalTagline: "રાષ્ટ્રીય નાગરિક સાયબર જોખમ તપાસ પોર્ટલ",
@@ -496,8 +496,8 @@ export const TRANSLATIONS = {
     syndicateAlert: "ફ્રોડ ડીએનએ સિન્ડિકેટ ચેતવણી",
     cannotConclude: "ગાર્ડિયન શું નક્કી કરી શકતું નથી",
 
-    footerSubtitle: "ભારતીય સાયબર ક્રાઈમ કોઓર્ડિનેશન સેન્ટર (I4C) પાર્ટનર પહેલ • ટ્રેક S2",
-    footerDesc: "સાયબર કવચ ચેલેન્જ 2026, BSides અમદાવાદ માટે વિકસાવેલ સાયબર સુરક્ષા તપાસ ફ્રેમવર્ક.",
+    footerSubtitle: "ભારતીય સાયબર ક્રાઈમ કોઓર્ડિનેશન સેન્ટર (I4C) પાર્ટનર પહેલ",
+    footerDesc: "નાગરિક સુરક્ષા માટે વિકસાવેલ સાયબર સુરક્ષા તપાસ ફ્રેમવર્ક.",
     footerMethodology: "ટેકનિકલ પદ્ધતિ અને ઓડિટ જુઓ",
     footerOfficialPortals: "સત્તાવાર રાષ્ટ્રીય પોર્ટલ",
     footerGuarantees: "નાગરિક ગોપનીયતા ગેરંટી",
@@ -508,7 +508,7 @@ export const TRANSLATIONS = {
   ta: {
     portalGov: "இந்திய அரசு",
     portalGovHi: "भारत सरकार",
-    division: "சைபர் கவச் S2 • I4C கூட்டாளர்",
+    division: "சைபர் கவச் • I4C கூட்டாளர்",
     emergencyHelpline: "அவசர உதவி எண்",
     portalTitle: "சைபர் மோசடி கார்டியன்",
     portalTagline: "தேசிய குடிமக்கள் சைபர் அச்சுறுத்தல் பகுப்பாய்வு தளம்",
@@ -659,8 +659,8 @@ export const TRANSLATIONS = {
     syndicateAlert: "மோசடி DNA கூட்டமைப்பு எச்சரிக்கை",
     cannotConclude: "கார்டியன் தீர்மானிக்க முடியாதவை",
 
-    footerSubtitle: "இந்திய சைபர் குற்ற ஒருங்கிணைப்பு மையம் (I4C) கூட்டாளர் முயற்சி • ட்ராக் S2",
-    footerDesc: "சைபர் கவாச் சேலஞ்ச் 2026, BSides அகமதாபாத்திற்காக உருவாக்கப்பட்ட சைபர் அச்சுறுத்தல் பகுப்பாய்வு தளம்.",
+    footerSubtitle: "இந்திய சைபர் குற்ற ஒருங்கிணைப்பு மையம் (I4C) கூட்டாளர் முயற்சி",
+    footerDesc: "குடிமக்கள் பாதுகாப்பிற்கான சைபர் அச்சுறுத்தல் பகுப்பாய்வு தளம்.",
     footerMethodology: "தொழில்நுட்ப முறையியல் மற்றும் தணிக்கைகளைக் காண்க",
     footerOfficialPortals: "அதிகாரப்பூர்வ தேசிய தளங்கள்",
     footerGuarantees: "குடிமக்கள் தனியுரிமை உத்தரவாதம்",
@@ -671,7 +671,7 @@ export const TRANSLATIONS = {
   te: {
     portalGov: "భారత ప్రభుత్వం",
     portalGovHi: "भारत सरकार",
-    division: "సైబర్ కవచ్ S2 • I4C భాగస్వామి",
+    division: "సైబర్ కవచ్ • I4C భాగస్వామి",
     emergencyHelpline: "అత్యవసర హెల్ప్‌లైన్",
     portalTitle: "సైబర్ ఫ్రాడ్ గార్డియన్",
     portalTagline: "జాతీయ పౌర సైబర్ ముప్పు విశ్లేషణ పోర్టల్",
@@ -822,8 +822,8 @@ export const TRANSLATIONS = {
     syndicateAlert: "ఫ్రాడ్ DNA సిండికేట్ హెచ్చరిక",
     cannotConclude: "గార్డియన్ నిర్ధారించలేని అంశాలు",
 
-    footerSubtitle: "ఇండియన్ సైబర్ క్రైమ్ కోఆర్డినేషన్ సెంటర్ (I4C) భాగస్వామి చొరవ • ట్రాక్ S2",
-    footerDesc: "సైబర్ కవచ్ ఛాలెంజ్ 2026, BSides అహ్మదాబాద్ కోసం రూపొందించబడిన సైబర్ భద్రతా ఫ్రేమ్‌వర్క్.",
+    footerSubtitle: "ఇండియన్ సైబర్ క్రైమ్ కోఆర్డినేషన్ సెంటర్ (I4C) భాగస్వామి చొరవ",
+    footerDesc: "పౌరుల భద్రత కోసం రూపొందించబడిన సైబర్ భద్రతా ఫ్రేమ్‌వర్క్.",
     footerMethodology: "సాంకేతిక పద్ధతి మరియు ఆడిట్‌లను చూడండి",
     footerOfficialPortals: "అధికారిక జాతీయ పోర్టల్స్",
     footerGuarantees: "పౌర గోప్యతా హామీలు",
@@ -834,7 +834,7 @@ export const TRANSLATIONS = {
   bn: {
     portalGov: "ভারত সরকার",
     portalGovHi: "भारत सरकार",
-    division: "সাইবার কবচ S2 • I4C অংশীদার",
+    division: "সাইবার কবচ • I4C অংশীদার",
     emergencyHelpline: "জরুরি হেল্পলাইন",
     portalTitle: "সাইবার ফ্রড গার্ডিয়ান",
     portalTagline: "জাতীয় নাগরিক সাইবার হুমকি ট্রায়াজ পোর্টাল",
@@ -985,8 +985,8 @@ export const TRANSLATIONS = {
     syndicateAlert: "ফ্রড ডিএনএ সিন্ডিকেট সতর্কতা",
     cannotConclude: "গার্ডিয়ান যা নিশ্চিত করতে পারে না",
 
-    footerSubtitle: "ইন্ডিয়ান সাইবার ক্রাইম কোঅর্ডিনেশন সেন্টার (I4C) পার্টনার উদ্যোগ • ট্র্যাক S2",
-    footerDesc: "সাইবার কবচ চ্যালেঞ্জ ২০২৬, BSides আহমেদাবাদের জন্য তৈরি সাইবার সুরক্ষা ফ্রেমওয়ার্ক।",
+    footerSubtitle: "ইন্ডিয়ান সাইবার ক্রাইম কোঅর্ডিনেশন সেন্টার (I4C) পার্টনার উদ্যোগ",
+    footerDesc: "নাগরিক নিরাপত্তার জন্য তৈরি সাইবার সুরক্ষা ফ্রেমওয়ার্ক।",
     footerMethodology: "প্রযুক্তিগত পদ্ধতি ও নিরীক্ষা দেখুন",
     footerOfficialPortals: "অফিসিয়াল জাতীয় পোর্টাল",
     footerGuarantees: "নাগরিক গোপনীয়তা গ্যারান্টি",

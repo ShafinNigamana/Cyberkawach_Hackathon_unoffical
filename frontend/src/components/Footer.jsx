@@ -1,33 +1,32 @@
 import React, { useState } from 'react';
-import { Shield, ChevronDown, ChevronUp, ExternalLink, Lock, CheckCircle2 } from 'lucide-react';
+import { ChevronDown, ChevronUp, ExternalLink, Lock, CheckCircle2 } from 'lucide-react';
 import { t } from '../i18n/translations';
+import CyberKawachLogo from './CyberKawachLogo';
 
 export default function Footer({ onOpenMethodology, lang = 'en' }) {
   const [mobilePortalOpen, setMobilePortalOpen] = useState(false);
   const [mobileGuaranteesOpen, setMobileGuaranteesOpen] = useState(false);
 
   return (
-    <footer className="w-full bg-slate-100/90 dark:bg-night-950/95 backdrop-blur-md border-t border-slate-200/90 dark:border-night-border text-slate-600 dark:text-slate-400 text-xs mt-12 py-10 px-4 sm:px-6 select-none transition-colors relative z-20" role="contentinfo">
+    <footer className="w-full bg-slate-100/90 dark:bg-surface-dark/95 backdrop-blur-md border-t border-slate-200/90 dark:border-border-dark text-slate-600 dark:text-slate-400 text-xs mt-12 py-10 px-4 sm:px-6 select-none transition-colors relative z-20" role="contentinfo">
       <div className="max-w-7xl mx-auto space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pb-8 border-b border-slate-200 dark:border-night-border/80">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pb-8 border-b border-slate-200 dark:border-border-dark/80">
           {/* Col 1: Identity & Partnership */}
           <div className="space-y-3">
             <div className="flex items-center space-x-3">
-              <div className="w-9 h-9 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-950 flex items-center justify-center flex-shrink-0 shadow-sm">
-                <Shield className="w-4.5 h-4.5" strokeWidth={2.2} />
-              </div>
+              <CyberKawachLogo size="sm" />
               <div>
                 <h4 className="text-sm font-bold text-slate-900 dark:text-white">
                   {t(lang, 'portalTitle', 'Cyber Fraud Guardian')}
                 </h4>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                  {t(lang, 'footerSubtitle', 'Indian Cyber Crime Coordination Centre (I4C) Partner Initiative • Track S2')}
+                  {t(lang, 'footerSubtitle', 'Indian Cyber Crime Coordination Centre (I4C) Partner Initiative')}
                 </p>
               </div>
             </div>
 
             <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
-              {t(lang, 'footerDesc', 'An evidence-driven, epistemically grounded cyber threat classification and triage framework built for the Cyber Kavach Challenge 2026, BSides Ahmedabad.')}
+              {t(lang, 'footerDesc', 'An evidence-driven, epistemically grounded cyber threat classification and triage framework for citizen safety.')}
             </p>
 
             <button
