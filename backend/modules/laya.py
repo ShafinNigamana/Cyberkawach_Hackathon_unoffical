@@ -46,9 +46,10 @@ _heads = {}
 
 
 # Training representations for the multi-head typed decision tasks
+# Balanced multi-class dataset covering all 12 threat archetypes + benign samples
 _CALIBRATION_DATA = [
     # (text, fraud, category, brand_imp, cred_req, pay_req, deep_analysis)
-    # ─── Phishing & Fraud Patterns ───
+    # ─── 1. Banking Phishing (fraud ~ 0.94, cat: banking) ───
     (
         "Dear Customer Your SBI account has been BLOCKED due to incomplete KYC verification. Click here: http://sbi-kyc.xyz",
         0.94, "banking", 0.95, 0.90, 0.20, 0.40
@@ -74,6 +75,16 @@ _CALIBRATION_DATA = [
         0.94, "banking", 0.90, 0.90, 0.20, 0.45
     ),
     (
+        "Axis Bank Alert: Account suspended due to non-submission of mandatory PAN KYC documents. Update at http://axis-kyc-portal.top immediately.",
+        0.93, "banking", 0.90, 0.91, 0.20, 0.45
+    ),
+    (
+        "Kotak Mahindra Bank: Netbanking profile locked due to unauthorized login. Reactivate credentials at http://kotak-secure-login.site",
+        0.94, "banking", 0.90, 0.93, 0.20, 0.45
+    ),
+
+    # ─── 2. Electricity & Utility Cutoff (fraud ~ 0.93, cat: electricity) ───
+    (
         "Dear consumer your electricity power will be disconnected tonight at 9:30 pm from electricity office because your previous month bill was not updated. Please immediately contact our electricity officer at 9821839201. -Electricity Department",
         0.92, "electricity", 0.70, 0.20, 0.90, 0.60
     ),
@@ -81,6 +92,24 @@ _CALIBRATION_DATA = [
         "Dear consumer electricity power will be disconnected tonight at 9.30pm from electricity office because your previous month bill was not updated please contact our electricity officer 9821049210 http://vidhyut-bill.apk",
         0.95, "electricity", 0.75, 0.30, 0.92, 0.65
     ),
+    (
+        "Mahavitaran notice: Dear customer your electricity power supply will be cut off tonight due to unpaid bill. Pay immediately or call 9182391029",
+        0.93, "electricity", 0.75, 0.25, 0.90, 0.60
+    ),
+    (
+        "BESCOM alert: Power disconnection order issued for consumer ID 98219482. Clear pending arrears immediately via APK download: http://bescom-bill.apk",
+        0.95, "electricity", 0.75, 0.30, 0.92, 0.65
+    ),
+    (
+        "Tata Power Notice: Urgent electric line disconnection today 8 PM. Settle your overdue balance by calling officer 9821049210",
+        0.92, "electricity", 0.70, 0.20, 0.90, 0.60
+    ),
+    (
+        "Urgent electricity department warning: Power supply will be disconnected in 1 hour. Pay overdue bill now via link: http://electricity-payment.live",
+        0.93, "electricity", 0.70, 0.25, 0.91, 0.60
+    ),
+
+    # ─── 3. Courier & Customs Fraud (fraud ~ 0.92, cat: courier) ───
     (
         "Your parcel from Amazon could not be delivered due to incorrect address. Pay Rs 25 customs charge: http://amaz0n-delivery.top",
         0.91, "courier", 0.88, 0.30, 0.85, 0.35
@@ -94,25 +123,45 @@ _CALIBRATION_DATA = [
         0.94, "courier", 0.88, 0.40, 0.85, 0.40
     ),
     (
-        "Delhivery package delivery failed. Reschedule delivery date and pay processing fee Rs 15",
-        0.88, "courier", 0.85, 0.25, 0.80, 0.40
+        "Delhivery package delivery failed. Reschedule delivery date and pay processing fee Rs 15 at http://delhivery-redelivery.site",
+        0.90, "courier", 0.85, 0.25, 0.82, 0.40
     ),
     (
-        "Income Tax Refund of Rs 18,500 has been approved. Update bank account details within 48 hours to receive refund http://incometax-refund.link",
-        0.93, "government", 0.80, 0.85, 0.15, 0.50
+        "BlueDart shipment on hold at customs. Pay handling fee Rs 49 to release parcel: http://bluedart-release.top",
+        0.91, "courier", 0.85, 0.25, 0.85, 0.40
     ),
     (
-        "Income Tax Department Notice: Your tax refund of Rs 24,850 is waiting. Submit your bank account and PAN details at http://incometax-efiling-refund.info/login to process.",
-        0.95, "government", 0.85, 0.90, 0.15, 0.50
+        "DHL Express: Courier package detained due to unpaid customs duty Rs 120. Update delivery address and pay at http://dhl-customs.link",
+        0.92, "courier", 0.85, 0.30, 0.85, 0.40
     ),
+
+    # ─── 4. Digital Arrest & Legal Extortion (fraud ~ 0.95, cat: extortion_legal) ───
     (
         "CBI Official Notice: An arrest warrant has been issued against your Aadhaar card for money laundering. Join police Skype video investigation immediately to avoid physical arrest.",
         0.95, "extortion_legal", 0.80, 0.70, 0.85, 0.75
     ),
     (
-        "E-challan pending traffic police fine. Arrest warrant will be issued if payment not made today",
-        0.89, "government", 0.70, 0.20, 0.90, 0.55
+        "Mumbai Police Cyber Crime: Your identity used in illegal contraband parcel. Transfer security deposit to RBI verification account to avoid immediate detention.",
+        0.96, "extortion_legal", 0.80, 0.70, 0.92, 0.80
     ),
+    (
+        "TRAI Legal Notice: An illegal SIM registered on your Aadhaar card was used in cyber terrorism. Physical police raid will occur in 2 hours unless you join Skype interrogation.",
+        0.95, "extortion_legal", 0.75, 0.70, 0.85, 0.75
+    ),
+    (
+        "Delhi Police Cyber Cell: Your Aadhaar linked bank accounts are frozen under Section 420 IPC. Report on video call to cyber inspector immediately.",
+        0.94, "extortion_legal", 0.80, 0.65, 0.85, 0.70
+    ),
+    (
+        "Narcotics Control Bureau: Contraband parcel containing MDMA intercepted in your name. Download police warrant and transfer bail security deposit to avoid arrest.",
+        0.96, "extortion_legal", 0.80, 0.70, 0.92, 0.80
+    ),
+    (
+        "Supreme Court e-Summons: You are summoned for urgent court hearing regarding financial tax fraud. Failure to appear will trigger immediate non-bailable warrant.",
+        0.93, "extortion_legal", 0.75, 0.60, 0.80, 0.70
+    ),
+
+    # ─── 5. Fake Lottery & Rewards (fraud ~ 0.95, cat: lottery_prize) ───
     (
         "CONGRATULATIONS! You have WON Rs 25,00,000 in Google Annual Lottery. Pay processing fee Rs 4,999 to claim",
         0.96, "lottery_prize", 0.85, 0.40, 0.95, 0.30
@@ -126,6 +175,20 @@ _CALIBRATION_DATA = [
         0.95, "lottery_prize", 0.70, 0.30, 0.85, 0.35
     ),
     (
+        "Jio 5G Celebration Lucky Draw: You are selected for free 1 year recharge and Rs 50,000 cash. Click to claim voucher http://jio-recharge.site",
+        0.94, "lottery_prize", 0.80, 0.35, 0.85, 0.35
+    ),
+    (
+        "PhonePe Scratch Card: You won Rs 4,999 cash cashback. Click link to deposit instantly into your bank account: http://phonepe-cashback.top",
+        0.94, "lottery_prize", 0.80, 0.40, 0.90, 0.35
+    ),
+    (
+        "Amazon Mega Festive Gift: You won iPhone 15 Pro Max. Pay Rs 999 shipping charge to receive delivery tomorrow http://amazon-festive-gift.top",
+        0.93, "lottery_prize", 0.85, 0.30, 0.90, 0.35
+    ),
+
+    # ─── 6. Part-Time Job & Task Scams (fraud ~ 0.91, cat: job_offer) ───
+    (
         "Earn Rs 3,000 to Rs 8,000 daily from home! Part time online job: simply like YouTube videos and write hotel reviews. No investment needed. Contact manager on Telegram: @amazon_review_job2026 to start now.",
         0.92, "job_offer", 0.70, 0.25, 0.88, 0.45
     ),
@@ -138,62 +201,206 @@ _CALIBRATION_DATA = [
         0.90, "job_offer", 0.75, 0.25, 0.90, 0.40
     ),
     (
+        "YouTube video like and subscribe part time job earn Rs 150 per like. Contact HR manager on Telegram @daily_task_payout",
+        0.91, "job_offer", 0.65, 0.20, 0.85, 0.40
+    ),
+    (
+        "Work from mobile: Complete 15 minutes Google Maps rating task and earn Rs 2,500 daily. WhatsApp HR to get registered with deposit.",
+        0.90, "job_offer", 0.65, 0.25, 0.88, 0.40
+    ),
+    (
+        "Freelance online typing job: Earn Rs 2,000 per assignment. Transfer refundable security deposit of Rs 1,499 to receive project files.",
+        0.89, "job_offer", 0.20, 0.30, 0.90, 0.45
+    ),
+
+    # ─── 7. UPI Collect & Refund Fraud (fraud ~ 0.94, cat: upi_fraud) ───
+    (
         "Dear customer, your refund of Rs 4,500 for order #89281 has been initiated. Open PhonePe or Google Pay and approve the collect request sent to your UPI ID to receive money in your account.",
         0.94, "upi_fraud", 0.65, 0.85, 0.95, 0.65
     ),
+    (
+        "Google Pay: Cashback of Rs 2,499 approved. Approve the pending collect request on GPay and enter your UPI PIN to claim funds.",
+        0.95, "upi_fraud", 0.70, 0.85, 0.95, 0.65
+    ),
+    (
+        "Paytm Refund: Rs 3,850 failed recharge refund initiated. Enter UPI PIN to confirm credit into your wallet.",
+        0.95, "upi_fraud", 0.70, 0.85, 0.95, 0.65
+    ),
+    (
+        "PhonePe refund notification: Tap to accept collect request of Rs 5,000 sent by merchant to receive your return payment.",
+        0.94, "upi_fraud", 0.70, 0.85, 0.95, 0.65
+    ),
+    (
+        "Flipkart order cancellation refund Rs 1,999 waiting. Accept UPI mandate request in your banking app to receive money.",
+        0.93, "upi_fraud", 0.75, 0.80, 0.92, 0.60
+    ),
+
+    # ─── 8. Fake Loan Scams (fraud ~ 0.93, cat: loan_fraud) ───
     (
         "Personal loan pre-approved Rs 10 Lakhs at zero interest. Transfer processing fee Rs 1,999 to download loan sanction letter: http://instant-cash-india.xyz/loan.apk",
         0.93, "loan_fraud", 0.30, 0.40, 0.92, 0.60
     ),
     (
+        "Instant Mudra Loan approved Rs 5,00,000 with zero collateral. Pay file charge Rs 2,499 to disburse funds to bank.",
+        0.94, "loan_fraud", 0.50, 0.35, 0.92, 0.60
+    ),
+    (
+        "SBI Instant Loan approved for Rs 3,50,000. Transfer insurance verification fee Rs 3,200 to manager account to release funds immediately.",
+        0.95, "loan_fraud", 0.80, 0.40, 0.94, 0.65
+    ),
+    (
+        "Bajaj Finance instant paperless loan Rs 8,00,000 pre-approved. Pay processing fee Rs 1,850 via UPI to generate agreement.",
+        0.93, "loan_fraud", 0.85, 0.35, 0.92, 0.60
+    ),
+    (
+        "Emergency quick cash loan approved within 15 minutes. Install loan app from http://quick-cash-loan.apk and pay verification fee.",
+        0.94, "loan_fraud", 0.30, 0.45, 0.94, 0.65
+    ),
+
+    # ─── 9. Investment & Crypto Scams (fraud ~ 0.93, cat: investment) ───
+    (
         "Guaranteed 10x return in stock market and crypto trading. Join VIP WhatsApp group deposit 10,000",
         0.92, "investment", 0.20, 0.30, 0.92, 0.60
     ),
+    (
+        "Institutional stock market insider tips. 500% profit guaranteed in 3 days. Send deposit to VIP broker telegram.",
+        0.93, "investment", 0.20, 0.30, 0.94, 0.65
+    ),
+    (
+        "Forex trading automated AI bot: Earn Rs 25,000 daily passive income. Deposit minimum Rs 5,000 to activate bot in Telegram @forex_bot_india",
+        0.92, "investment", 0.25, 0.30, 0.93, 0.60
+    ),
+    (
+        "Crypto arbitrage pool: 20% daily compounding returns guaranteed by smart contracts. Transfer USDT to join private syndicate.",
+        0.93, "investment", 0.20, 0.30, 0.95, 0.65
+    ),
+    (
+        "Tata Mutual Fund private pre-IPO allocation: Buy shares at 80% discount before market listing. Deposit to designated trustee bank account.",
+        0.94, "investment", 0.80, 0.40, 0.94, 0.65
+    ),
+
+    # ─── 10. Tech Support Scams (fraud ~ 0.90, cat: tech_support) ───
     (
         "Microsoft Security Alert: Computer infected with trojan virus. Call toll-free helpline for remote support",
         0.89, "tech_support", 0.88, 0.65, 0.40, 0.50
     ),
     (
+        "Windows Defender detected suspicious spyware on your device. Call Microsoft certified support 1800-891-2910 immediately.",
+        0.90, "tech_support", 0.88, 0.65, 0.40, 0.50
+    ),
+    (
+        "Apple Security Warning: Your iCloud account is locked due to unauthorized access from Moscow. Call Apple executive 1800-291-9201",
+        0.91, "tech_support", 0.88, 0.70, 0.35, 0.50
+    ),
+    (
+        "Your PC is locked due to Trojan virus infection. Do not restart computer. Contact support helpline 9821049210 to unlock device.",
+        0.90, "tech_support", 0.80, 0.60, 0.50, 0.55
+    ),
+    (
+        "Google Account Alert: Critical security vulnerability found on your Android device. Download antivirus fix from http://google-security-fix.top",
+        0.92, "tech_support", 0.88, 0.75, 0.30, 0.50
+    ),
+
+    # ─── 11. Telecom & SIM Swap Scams (fraud ~ 0.93, cat: telecom) ───
+    (
+        "Your SIM card KYC is expired. Outgoing and incoming calls will be blocked in 24 hours. Submit Aadhaar at http://airtel-sim-kyc.top",
+        0.93, "telecom", 0.85, 0.88, 0.40, 0.50
+    ),
+    (
         "Your SIM card KYC is expired. Services will be stopped tonight. Recharge and submit Aadhaar http://airtel-sim-kyc.top",
         0.92, "telecom", 0.85, 0.88, 0.40, 0.50
     ),
+    (
+        "Jio 4G SIM verification overdue. Your mobile number will be deactivated tonight. Call customer executive 9182391029 immediately.",
+        0.93, "telecom", 0.85, 0.85, 0.40, 0.50
+    ),
+    (
+        "Your WhatsApp will be deactivated in 12 hours. Verify your account now by forwarding your 6-digit registration code.",
+        0.92, "telecom", 0.80, 0.92, 0.20, 0.50
+    ),
+    (
+        "BSNL SIM upgrade alert: Your 3G SIM will be disconnected today. Send SMS to port number to convert to 5G instantly.",
+        0.91, "telecom", 0.85, 0.80, 0.35, 0.50
+    ),
 
-    # ─── Legitimate / Benign Patterns ───
+    # ─── 12. Government & Tax Scams (fraud ~ 0.93, cat: government) ───
+    (
+        "Income Tax Refund of Rs 18,500 has been approved. Update bank account details within 48 hours to receive refund http://incometax-refund.link",
+        0.93, "government", 0.80, 0.85, 0.15, 0.50
+    ),
+    (
+        "Income Tax Department Notice: Your tax refund of Rs 24,850 is waiting. Submit your bank account and PAN details at http://incometax-efiling-refund.info/login to process.",
+        0.95, "government", 0.85, 0.90, 0.15, 0.50
+    ),
+    (
+        "E-challan pending traffic police fine. Arrest warrant will be issued if payment not made today",
+        0.89, "government", 0.70, 0.20, 0.90, 0.55
+    ),
+    (
+        "Traffic Police Notice: Unpaid speed violation e-challan MH02-8921. Pay fine within 24 hours at http://echallan-parivahan.top to avoid impounding vehicle.",
+        0.92, "government", 0.80, 0.30, 0.90, 0.55
+    ),
+    (
+        "PM Kisan Yojana subsidy of Rs 6,000 approved for your Aadhaar card. Update your bank account details at http://pm-kisan-subsidy.site to disburse funds.",
+        0.94, "government", 0.80, 0.85, 0.20, 0.50
+    ),
+
+    # ─── 13. Legitimate / Benign (fraud ~ 0.03, cat: none) ───
     (
         "Dear SBI Customer, your A/C ending in 4921 has been debited by Rs 1,450.00 on 26-Sep-2026. Ref: UPI/626918291048. Avail Bal: Rs 34,820.00. For disputes, visit https://www.onlinesbi.sbi or call 18001234. -State Bank of India",
-        0.03, "banking", 0.02, 0.01, 0.02, 0.05
+        0.03, "none", 0.02, 0.01, 0.02, 0.05
     ),
     (
         "Your SBI account XX1234 has been debited with Rs 2,500.00 on 25-Sep-2026. Available balance Rs 45,230.50. Call 1800111111 if not you",
-        0.04, "banking", 0.03, 0.02, 0.02, 0.08
+        0.04, "none", 0.03, 0.02, 0.02, 0.08
     ),
     (
         "481920 is your secret OTP for transaction of Rs 3,200.00 at AMAZON INDIA with HDFC Bank Card ending 1042. OTP valid for 10 mins. Never share OTP or password with anyone, including bank officials.",
-        0.05, "banking", 0.03, 0.02, 0.02, 0.05
+        0.05, "none", 0.03, 0.02, 0.02, 0.05
     ),
     (
         "Your OTP for Amazon shopping transaction is 482910. Valid for 10 mins. Do not share with anyone",
         0.05, "none", 0.02, 0.02, 0.02, 0.05
     ),
     (
+        "829104 is your verification code for logging into ICICI iMobile. Valid for 5 minutes. Bank never calls asking for OTP.",
+        0.04, "none", 0.03, 0.02, 0.02, 0.05
+    ),
+    (
+        "SBI: 391029 is OTP for login on OnlineSBI. Do NOT share OTP or password with anyone. Bank never asks for it.",
+        0.04, "none", 0.03, 0.02, 0.02, 0.05
+    ),
+    (
         "Your India Post consignment EK928371928IN has reached Bangalore NSH. Expected delivery by 27-Sep-2026. Track your consignment at https://www.indiapost.gov.in/_layouts/15/dpt/track.aspx",
-        0.02, "courier", 0.02, 0.01, 0.01, 0.04
+        0.02, "none", 0.02, 0.01, 0.01, 0.04
     ),
     (
         "Your package from Flipkart has been delivered to your doorstep. Thank you for shopping with us",
-        0.03, "courier", 0.03, 0.01, 0.01, 0.05
+        0.03, "none", 0.03, 0.01, 0.01, 0.05
     ),
     (
         "Dear Consumer, payment of Rs 1,840 for BESCOM Account ID 8920192810 received successfully on 25-Sep-2026 via BBPS. Download official receipt from https://bescom.karnataka.gov.in -BESCOM",
-        0.02, "electricity", 0.02, 0.01, 0.01, 0.04
+        0.02, "none", 0.02, 0.01, 0.01, 0.04
     ),
     (
         "Dear Customer, your electricity bill of Rs 1,240 for August is due on 15-Sep. Pay via official BESCOM portal",
-        0.04, "electricity", 0.03, 0.02, 0.04, 0.08
+        0.04, "none", 0.03, 0.02, 0.04, 0.08
+    ),
+    (
+        "MSEDCL Receipt: Payment of Rs 1,450 received against Consumer No 028491823910 on 24-Sep-2026. Transaction ID 98219482194. Thank you.",
+        0.02, "none", 0.02, 0.01, 0.01, 0.04
     ),
     (
         "Paid Rs 450 to Chai Point successfully from your UPI Linked Account. UPI Ref No: 426819283910. Check passbook in Paytm app.",
         0.03, "none", 0.02, 0.01, 0.02, 0.05
+    ),
+    (
+        "Money Sent: Rs 1,200.00 transferred successfully to Ramesh Kumar (ramesh@okhdfcbank) via Google Pay. UPI Ref: 391820192810.",
+        0.03, "none", 0.02, 0.01, 0.02, 0.05
+    ),
+    (
+        "Received Rs 500.00 from Priya Sharma on PhonePe. Updated wallet balance is Rs 1,450.00.",
+        0.02, "none", 0.01, 0.01, 0.01, 0.04
     ),
     (
         "Hi, please call me back when free.",
@@ -209,21 +416,21 @@ _CALIBRATION_DATA = [
     ),
     (
         "Your account XX5678 was credited with INR 65,000.00 on 28-Aug-2026 towards monthly salary. Available balance INR 89,200.00",
-        0.02, "banking", 0.02, 0.01, 0.02, 0.05
+        0.02, "none", 0.02, 0.01, 0.02, 0.05
     ),
     (
         "Dear Customer, your HDFC bank credit card ending 4410 payment of Rs 4,120 has been received. Thank you",
-        0.03, "banking", 0.03, 0.01, 0.02, 0.08
+        0.03, "none", 0.03, 0.01, 0.02, 0.08
     ),
     (
         "ICICI Bank: Rs 150.00 spent on your Debit Card ending in 9812 at Starbucks on 24-Sep-2026. Avail Bal: INR 32,100",
-        0.03, "banking", 0.02, 0.01, 0.02, 0.06
+        0.03, "none", 0.02, 0.01, 0.02, 0.06
     ),
 ]
 
 
 def _init_local_laya():
-    """Calibrate local fast multi-head decision heads."""
+    """Calibrate local fast multi-head decision heads with low-variance regularized estimators."""
     global _is_calibrated, _vectorizer, _heads
     if _is_calibrated:
         return
@@ -234,42 +441,45 @@ def _init_local_laya():
 
         texts = [row[0] for row in _CALIBRATION_DATA]
 
+        # Regularized feature extraction: limit dimension to prevent memorization / high-variance overfitting
         _vectorizer = TfidfVectorizer(
             ngram_range=(1, 2),
-            max_features=800,
+            max_features=120,
+            min_df=2,
+            sublinear_tf=True,
             lowercase=True,
             stop_words="english",
         )
         x = _vectorizer.fit_transform(texts)
 
-        # Head 1: Fraud score (calibrated logistic probability [0, 1])
+        # Head 1: Fraud score (regularized balanced logistic regression C=1.5, max_iter=400)
         fraud_labels = [1 if row[1] >= 0.5 else 0 for row in _CALIBRATION_DATA]
-        h_fraud = LogisticRegression(C=2.0, max_iter=300, class_weight="balanced")
+        h_fraud = LogisticRegression(C=1.5, max_iter=400, class_weight="balanced")
         h_fraud.fit(x, fraud_labels)
         _heads["fraud"] = h_fraud
 
-        # Head 2: Category choice (multi-class classification)
-        h_cat = LogisticRegression(C=2.0, max_iter=300)
+        # Head 2: Category choice (balanced multi-class logistic regression C=1.5)
+        h_cat = LogisticRegression(C=1.5, max_iter=400, class_weight="balanced")
         h_cat.fit(x, [row[2] for row in _CALIBRATION_DATA])
         _heads["category"] = h_cat
 
-        # Head 3: Brand impersonation score
-        h_brand = Ridge(alpha=1.0)
+        # Head 3: Brand impersonation score (regularized L2 Ridge alpha=3.0)
+        h_brand = Ridge(alpha=3.0)
         h_brand.fit(x, [row[3] for row in _CALIBRATION_DATA])
         _heads["brand"] = h_brand
 
-        # Head 4: Credential request score
-        h_cred = Ridge(alpha=1.0)
+        # Head 4: Credential request score (regularized L2 Ridge alpha=3.0)
+        h_cred = Ridge(alpha=3.0)
         h_cred.fit(x, [row[4] for row in _CALIBRATION_DATA])
         _heads["credential"] = h_cred
 
-        # Head 5: Payment request score
-        h_pay = Ridge(alpha=1.0)
+        # Head 5: Payment request score (regularized L2 Ridge alpha=3.0)
+        h_pay = Ridge(alpha=3.0)
         h_pay.fit(x, [row[5] for row in _CALIBRATION_DATA])
         _heads["payment"] = h_pay
 
-        # Head 6: Deep analysis required (escalation score)
-        h_deep = Ridge(alpha=1.0)
+        # Head 6: Deep analysis required (regularized L2 Ridge alpha=3.0)
+        h_deep = Ridge(alpha=3.0)
         h_deep.fit(x, [row[6] for row in _CALIBRATION_DATA])
         _heads["deep_analysis"] = h_deep
 
