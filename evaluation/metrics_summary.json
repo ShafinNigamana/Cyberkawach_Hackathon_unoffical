@@ -1,12 +1,12 @@
 {
-  "evaluation_timestamp": "2026-11-12T06:24:53Z",
+  "evaluation_timestamp": "2026-11-12T06:32:27Z",
   "binary_classifiers": [
     {
       "name": "ML Baseline (ml_baseline.py)",
       "type": "Binary Classification (TF-IDF + LogisticRegression)",
-      "train_samples": 416,
-      "val_samples": 104,
-      "total_samples": 520,
+      "train_samples": 800,
+      "val_samples": 200,
+      "total_samples": 1000,
       "features_dim": 250,
       "train_accuracy": 1.0,
       "val_accuracy": 1.0,
@@ -14,15 +14,15 @@
       "precision": 1.0,
       "recall": 1.0,
       "f1_score": 1.0,
-      "auc_roc": 0.9999999999999999,
-      "pr_auc": 1.0,
+      "auc_roc": 1.0,
+      "pr_auc": 0.9999999999999999,
       "fpr": 0.0,
       "fnr": 0.0,
       "confusion_matrix": {
-        "tn": 42,
+        "tn": 80,
         "fp": 0,
         "fn": 0,
-        "tp": 62
+        "tp": 120
       },
       "cv_5fold": {
         "accuracy_mean": 1.0,
@@ -33,21 +33,21 @@
         "auc_std": 0.0
       },
       "latency": {
-        "mean_ms": 1.0174006666666666,
-        "std_ms": 0.7457518779948789,
-        "p50_ms": 0.6199,
-        "p95_ms": 2.6620500000000002,
-        "p99_ms": 3.551325999999999,
-        "min_ms": 0.5072,
-        "max_ms": 3.8448
+        "mean_ms": 0.9664336666666666,
+        "std_ms": 0.4078412960534472,
+        "p50_ms": 0.8613999999999999,
+        "p95_ms": 1.71447,
+        "p99_ms": 2.421271,
+        "min_ms": 0.5307,
+        "max_ms": 3.449
       }
     },
     {
       "name": "Scikit-Learn ML Classifier (ml_classifier.py)",
       "type": "Binary Classification (TF-IDF + LogisticRegression)",
-      "train_samples": 416,
-      "val_samples": 104,
-      "total_samples": 520,
+      "train_samples": 800,
+      "val_samples": 200,
+      "total_samples": 1000,
       "features_dim": 400,
       "train_accuracy": 1.0,
       "val_accuracy": 1.0,
@@ -56,14 +56,14 @@
       "recall": 1.0,
       "f1_score": 1.0,
       "auc_roc": 1.0,
-      "pr_auc": 1.0,
+      "pr_auc": 0.9999999999999999,
       "fpr": 0.0,
       "fnr": 0.0,
       "confusion_matrix": {
-        "tn": 42,
+        "tn": 80,
         "fp": 0,
         "fn": 0,
-        "tp": 62
+        "tp": 120
       },
       "cv_5fold": {
         "accuracy_mean": 1.0,
@@ -74,21 +74,21 @@
         "auc_std": 0.0
       },
       "latency": {
-        "mean_ms": 0.860918,
-        "std_ms": 0.30264648553937207,
-        "p50_ms": 0.75315,
-        "p95_ms": 1.54904,
-        "p99_ms": 1.69914,
-        "min_ms": 0.5296,
-        "max_ms": 1.9434
+        "mean_ms": 0.9131843333333333,
+        "std_ms": 0.43536592967436283,
+        "p50_ms": 0.7485999999999999,
+        "p95_ms": 1.7650750000000004,
+        "p99_ms": 2.3210209999999996,
+        "min_ms": 0.5353,
+        "max_ms": 4.3482
       }
     },
     {
       "name": "Laya Head 1: Fraud Classifier (laya.py)",
       "type": "Binary Classification (TF-IDF + LogisticRegression)",
-      "train_samples": 430,
-      "val_samples": 108,
-      "total_samples": 538,
+      "train_samples": 800,
+      "val_samples": 200,
+      "total_samples": 1000,
       "features_dim": 350,
       "train_accuracy": 1.0,
       "val_accuracy": 1.0,
@@ -101,10 +101,10 @@
       "fpr": 0.0,
       "fnr": 0.0,
       "confusion_matrix": {
-        "tn": 39,
+        "tn": 80,
         "fp": 0,
         "fn": 0,
-        "tp": 69
+        "tp": 120
       },
       "cv_5fold": {
         "accuracy_mean": 1.0,
@@ -115,13 +115,13 @@
         "auc_std": 0.0
       },
       "latency": {
-        "mean_ms": 0.9065046666666667,
-        "std_ms": 0.5205746009730231,
-        "p50_ms": 0.60275,
-        "p95_ms": 2.0096000000000003,
-        "p99_ms": 2.1725859999999995,
-        "min_ms": 0.5061,
-        "max_ms": 3.2779
+        "mean_ms": 1.1195246666666667,
+        "std_ms": 0.7364063069109485,
+        "p50_ms": 0.79465,
+        "p95_ms": 2.6797750000000002,
+        "p99_ms": 3.7217229999999986,
+        "min_ms": 0.5051,
+        "max_ms": 4.7095
       }
     }
   ],
@@ -145,8 +145,8 @@
       "upi_fraud"
     ],
     "total_classes": 14,
-    "train_samples": 430,
-    "val_samples": 108,
+    "train_samples": 800,
+    "val_samples": 200,
     "top1_accuracy": 1.0,
     "top3_accuracy": 1.0,
     "top5_accuracy": 1.0,
@@ -156,66 +156,66 @@
     "weighted_f1": 1.0,
     "multiclass_roc_auc": 1.0,
     "latency": {
-      "mean_ms": 0.6448170000000001,
-      "std_ms": 0.22336943825047625,
-      "p50_ms": 0.5695,
-      "p95_ms": 1.1272000000000002,
-      "p99_ms": 1.66834,
-      "min_ms": 0.5069,
-      "max_ms": 1.9687
+      "mean_ms": 1.1155663333333332,
+      "std_ms": 0.7556039194577335,
+      "p50_ms": 0.7140500000000001,
+      "p95_ms": 2.6795600000000004,
+      "p99_ms": 3.5783819999999995,
+      "min_ms": 0.4972,
+      "max_ms": 4.0442
     }
   },
   "continuous_heads": {
     "brand": {
       "head": "Laya Head: brand",
       "type": "Ridge Regression (alpha=3.0, Closed-Form Analytical Matrix Solver)",
-      "mae": 0.08418165998698236,
-      "rmse": 0.11371446846535348,
-      "r2_score": 0.9127345629736978,
+      "mae": 0.060518783946170746,
+      "rmse": 0.09201131871352355,
+      "r2_score": 0.9417069243650669,
       "applicable_metrics_note": "Closed-form analytical normal equation (X^T X + alpha*I)^(-1) X^T y. No iterative gradient descent epochs; AUC-ROC and top-k are not applicable to continuous real targets."
     },
     "credential": {
       "head": "Laya Head: credential",
       "type": "Ridge Regression (alpha=3.0, Closed-Form Analytical Matrix Solver)",
-      "mae": 0.07541475576963477,
-      "rmse": 0.096862573271978,
-      "r2_score": 0.9229273288479565,
+      "mae": 0.05074645970804452,
+      "rmse": 0.07438054000097243,
+      "r2_score": 0.9494749483910704,
       "applicable_metrics_note": "Closed-form analytical normal equation (X^T X + alpha*I)^(-1) X^T y. No iterative gradient descent epochs; AUC-ROC and top-k are not applicable to continuous real targets."
     },
     "payment": {
       "head": "Laya Head: payment",
       "type": "Ridge Regression (alpha=3.0, Closed-Form Analytical Matrix Solver)",
-      "mae": 0.09346302493010528,
-      "rmse": 0.1191323894543409,
-      "r2_score": 0.9159563416946509,
+      "mae": 0.07241076588117412,
+      "rmse": 0.10117451818005946,
+      "r2_score": 0.943548111886758,
       "applicable_metrics_note": "Closed-form analytical normal equation (X^T X + alpha*I)^(-1) X^T y. No iterative gradient descent epochs; AUC-ROC and top-k are not applicable to continuous real targets."
     },
     "deep_analysis": {
       "head": "Laya Head: deep_analysis",
       "type": "Ridge Regression (alpha=3.0, Closed-Form Analytical Matrix Solver)",
-      "mae": 0.05573329682227743,
-      "rmse": 0.07733763455285121,
-      "r2_score": 0.9046458203979721,
+      "mae": 0.043805576271370904,
+      "rmse": 0.06594402500363249,
+      "r2_score": 0.938373625432257,
       "applicable_metrics_note": "Closed-form analytical normal equation (X^T X + alpha*I)^(-1) X^T y. No iterative gradient descent epochs; AUC-ROC and top-k are not applicable to continuous real targets."
     }
   },
   "convergence_and_loss": {
     "ML Baseline (ml_baseline.py)": {
-      "converged_iteration": 9,
-      "final_train_loss": 0.09246775503252012,
-      "final_val_loss": 0.11290657377968968,
+      "converged_iteration": 8,
+      "final_train_loss": 0.0737082366046131,
+      "final_val_loss": 0.07415155058226182,
       "generalization_gap": 0.0
     },
     "Scikit-Learn ML Classifier (ml_classifier.py)": {
-      "converged_iteration": 9,
-      "final_train_loss": 0.076530340187757,
-      "final_val_loss": 0.1009688076564411,
+      "converged_iteration": 8,
+      "final_train_loss": 0.06481364897929832,
+      "final_val_loss": 0.07030649290530326,
       "generalization_gap": 0.0
     },
     "Laya Head 1: Fraud Classifier (laya.py)": {
       "converged_iteration": 8,
-      "final_train_loss": 0.10853846441178856,
-      "final_val_loss": 0.11477650282952,
+      "final_train_loss": 0.07130744285789714,
+      "final_val_loss": 0.07419297869527701,
       "generalization_gap": 0.0
     }
   }
