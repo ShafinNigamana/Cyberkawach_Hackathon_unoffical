@@ -194,3 +194,4 @@ if __name__ == "__main__":
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(samples, f, indent=2)
     print(f"Generated {len(samples)} distinct samples at {output_path}")
+
