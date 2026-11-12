@@ -208,27 +208,36 @@ def _init_classifier():
             logger.warning("Could not load cached ML classifier model: %s", e)
 
     try:
+        import json
         from sklearn.feature_extraction.text import TfidfVectorizer
         from sklearn.linear_model import LogisticRegression
 
-        texts = [row[0] for row in _TRAINING_DATA]
-        labels = [row[1] for row in _TRAINING_DATA]
+        corpus_file = Path(__file__).resolve().parent.parent / "data" / "ml_classifier_training_corpus.json"
+        if corpus_file.exists():
+            with open(corpus_file, "r", encoding="utf-8") as f:
+                c_data = json.load(f)
+            texts = [r["text"] for r in c_data]
+            labels = [r["label"] for r in c_data]
+        else:
+            texts = [row[0] for row in _TRAINING_DATA]
+            labels = [row[1] for row in _TRAINING_DATA]
 
         _vectorizer = TfidfVectorizer(
             ngram_range=(1, 2),
-            max_features=2500,
+            max_features=400,
+            min_df=2,
             lowercase=True,
             sublinear_tf=True,
             token_pattern=r"(?u)\b\w+\b|https?://\S+",
         )
         x = _vectorizer.fit_transform(texts)
 
-        _model = LogisticRegression(C=2.0, max_iter=400, class_weight="balanced", random_state=42)
+        _model = LogisticRegression(C=2.0, max_iter=500, class_weight="balanced", random_state=42)
         _model.fit(x, labels)
         _vectorizer.transform(["warmup message"])
 
         _is_ready = True
-        logger.info("Scikit-Learn ML Classifier pipeline initialized successfully with %d samples.", len(_TRAINING_DATA))
+        logger.info("Scikit-Learn ML Classifier pipeline initialized successfully with %d samples.", len(texts))
     except Exception as e:
         logger.warning("Failed to initialize Scikit-Learn ML Classifier: %s", e)
         _is_ready = False
