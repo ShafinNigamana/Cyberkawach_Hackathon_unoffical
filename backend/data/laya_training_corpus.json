@@ -1,0 +1,4844 @@
+[
+  {
+    "text": "Dear SBI customer, your account has been suspended due to pending PAN KYC verification. Update immediately at http://sbi-secure-portal.xyz",
+    "fraud": 0.95,
+    "category": "banking",
+    "brand_imp": 0.92,
+    "cred_req": 0.92,
+    "pay_req": 0.2,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear SBI customer, your account has been blocked due to incomplete Aadhaar linkage. Submit details now at http://hdfc-netbanking-verify.top",
+    "fraud": 0.94,
+    "category": "banking",
+    "brand_imp": 0.9,
+    "cred_req": 0.94,
+    "pay_req": 0.2,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear SBI customer, your account has been netbanking profile locked after suspicious login attempt. Unlock at http://icici-kyc-update.site",
+    "fraud": 0.95,
+    "category": "banking",
+    "brand_imp": 0.9,
+    "cred_req": 0.95,
+    "pay_req": 0.2,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear SBI customer, your account has been debit card deactivated for security reasons. Reactivate online at http://axis-login-auth.icu",
+    "fraud": 0.93,
+    "category": "banking",
+    "brand_imp": 0.88,
+    "cred_req": 0.9,
+    "pay_req": 0.2,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "Dear SBI customer, your account has been reward points worth Rs 9,850 expiring tonight. Redeem cash to bank account at http://kotak-support-online.link",
+    "fraud": 0.92,
+    "category": "banking",
+    "brand_imp": 0.85,
+    "cred_req": 0.85,
+    "pay_req": 0.4,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear HDFC Bank customer, your account has been suspended due to pending PAN KYC verification. Update immediately at http://pnb-netbanking-portal.info",
+    "fraud": 0.95,
+    "category": "banking",
+    "brand_imp": 0.92,
+    "cred_req": 0.92,
+    "pay_req": 0.2,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear HDFC Bank customer, your account has been blocked due to incomplete Aadhaar linkage. Submit details now at http://bank-kyc-service.top",
+    "fraud": 0.94,
+    "category": "banking",
+    "brand_imp": 0.9,
+    "cred_req": 0.94,
+    "pay_req": 0.2,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear HDFC Bank customer, your account has been netbanking profile locked after suspicious login attempt. Unlock at http://sbi-secure-portal.xyz",
+    "fraud": 0.95,
+    "category": "banking",
+    "brand_imp": 0.9,
+    "cred_req": 0.95,
+    "pay_req": 0.2,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear HDFC Bank customer, your account has been debit card deactivated for security reasons. Reactivate online at http://hdfc-netbanking-verify.top",
+    "fraud": 0.93,
+    "category": "banking",
+    "brand_imp": 0.88,
+    "cred_req": 0.9,
+    "pay_req": 0.2,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "Dear HDFC Bank customer, your account has been reward points worth Rs 9,850 expiring tonight. Redeem cash to bank account at http://icici-kyc-update.site",
+    "fraud": 0.92,
+    "category": "banking",
+    "brand_imp": 0.85,
+    "cred_req": 0.85,
+    "pay_req": 0.4,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear ICICI Bank customer, your account has been suspended due to pending PAN KYC verification. Update immediately at http://axis-login-auth.icu",
+    "fraud": 0.95,
+    "category": "banking",
+    "brand_imp": 0.92,
+    "cred_req": 0.92,
+    "pay_req": 0.2,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear ICICI Bank customer, your account has been blocked due to incomplete Aadhaar linkage. Submit details now at http://kotak-support-online.link",
+    "fraud": 0.94,
+    "category": "banking",
+    "brand_imp": 0.9,
+    "cred_req": 0.94,
+    "pay_req": 0.2,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear ICICI Bank customer, your account has been netbanking profile locked after suspicious login attempt. Unlock at http://pnb-netbanking-portal.info",
+    "fraud": 0.95,
+    "category": "banking",
+    "brand_imp": 0.9,
+    "cred_req": 0.95,
+    "pay_req": 0.2,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear ICICI Bank customer, your account has been debit card deactivated for security reasons. Reactivate online at http://bank-kyc-service.top",
+    "fraud": 0.93,
+    "category": "banking",
+    "brand_imp": 0.88,
+    "cred_req": 0.9,
+    "pay_req": 0.2,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "Dear ICICI Bank customer, your account has been reward points worth Rs 9,850 expiring tonight. Redeem cash to bank account at http://sbi-secure-portal.xyz",
+    "fraud": 0.92,
+    "category": "banking",
+    "brand_imp": 0.85,
+    "cred_req": 0.85,
+    "pay_req": 0.4,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear Axis Bank customer, your account has been suspended due to pending PAN KYC verification. Update immediately at http://hdfc-netbanking-verify.top",
+    "fraud": 0.95,
+    "category": "banking",
+    "brand_imp": 0.92,
+    "cred_req": 0.92,
+    "pay_req": 0.2,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear Axis Bank customer, your account has been blocked due to incomplete Aadhaar linkage. Submit details now at http://icici-kyc-update.site",
+    "fraud": 0.94,
+    "category": "banking",
+    "brand_imp": 0.9,
+    "cred_req": 0.94,
+    "pay_req": 0.2,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear Axis Bank customer, your account has been netbanking profile locked after suspicious login attempt. Unlock at http://axis-login-auth.icu",
+    "fraud": 0.95,
+    "category": "banking",
+    "brand_imp": 0.9,
+    "cred_req": 0.95,
+    "pay_req": 0.2,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear Axis Bank customer, your account has been debit card deactivated for security reasons. Reactivate online at http://kotak-support-online.link",
+    "fraud": 0.93,
+    "category": "banking",
+    "brand_imp": 0.88,
+    "cred_req": 0.9,
+    "pay_req": 0.2,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "Dear Axis Bank customer, your account has been reward points worth Rs 9,850 expiring tonight. Redeem cash to bank account at http://pnb-netbanking-portal.info",
+    "fraud": 0.92,
+    "category": "banking",
+    "brand_imp": 0.85,
+    "cred_req": 0.85,
+    "pay_req": 0.4,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear Kotak Mahindra Bank customer, your account has been suspended due to pending PAN KYC verification. Update immediately at http://bank-kyc-service.top",
+    "fraud": 0.95,
+    "category": "banking",
+    "brand_imp": 0.92,
+    "cred_req": 0.92,
+    "pay_req": 0.2,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear Kotak Mahindra Bank customer, your account has been blocked due to incomplete Aadhaar linkage. Submit details now at http://sbi-secure-portal.xyz",
+    "fraud": 0.94,
+    "category": "banking",
+    "brand_imp": 0.9,
+    "cred_req": 0.94,
+    "pay_req": 0.2,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear Kotak Mahindra Bank customer, your account has been netbanking profile locked after suspicious login attempt. Unlock at http://hdfc-netbanking-verify.top",
+    "fraud": 0.95,
+    "category": "banking",
+    "brand_imp": 0.9,
+    "cred_req": 0.95,
+    "pay_req": 0.2,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear Kotak Mahindra Bank customer, your account has been debit card deactivated for security reasons. Reactivate online at http://icici-kyc-update.site",
+    "fraud": 0.93,
+    "category": "banking",
+    "brand_imp": 0.88,
+    "cred_req": 0.9,
+    "pay_req": 0.2,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "Dear Kotak Mahindra Bank customer, your account has been reward points worth Rs 9,850 expiring tonight. Redeem cash to bank account at http://axis-login-auth.icu",
+    "fraud": 0.92,
+    "category": "banking",
+    "brand_imp": 0.85,
+    "cred_req": 0.85,
+    "pay_req": 0.4,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear Punjab National Bank customer, your account has been suspended due to pending PAN KYC verification. Update immediately at http://kotak-support-online.link",
+    "fraud": 0.95,
+    "category": "banking",
+    "brand_imp": 0.92,
+    "cred_req": 0.92,
+    "pay_req": 0.2,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear Punjab National Bank customer, your account has been blocked due to incomplete Aadhaar linkage. Submit details now at http://pnb-netbanking-portal.info",
+    "fraud": 0.94,
+    "category": "banking",
+    "brand_imp": 0.9,
+    "cred_req": 0.94,
+    "pay_req": 0.2,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear Punjab National Bank customer, your account has been netbanking profile locked after suspicious login attempt. Unlock at http://bank-kyc-service.top",
+    "fraud": 0.95,
+    "category": "banking",
+    "brand_imp": 0.9,
+    "cred_req": 0.95,
+    "pay_req": 0.2,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear Punjab National Bank customer, your account has been debit card deactivated for security reasons. Reactivate online at http://sbi-secure-portal.xyz",
+    "fraud": 0.93,
+    "category": "banking",
+    "brand_imp": 0.88,
+    "cred_req": 0.9,
+    "pay_req": 0.2,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "Dear Punjab National Bank customer, your account has been reward points worth Rs 9,850 expiring tonight. Redeem cash to bank account at http://hdfc-netbanking-verify.top",
+    "fraud": 0.92,
+    "category": "banking",
+    "brand_imp": 0.85,
+    "cred_req": 0.85,
+    "pay_req": 0.4,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear Canara Bank customer, your account has been suspended due to pending PAN KYC verification. Update immediately at http://icici-kyc-update.site",
+    "fraud": 0.95,
+    "category": "banking",
+    "brand_imp": 0.92,
+    "cred_req": 0.92,
+    "pay_req": 0.2,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear Canara Bank customer, your account has been blocked due to incomplete Aadhaar linkage. Submit details now at http://axis-login-auth.icu",
+    "fraud": 0.94,
+    "category": "banking",
+    "brand_imp": 0.9,
+    "cred_req": 0.94,
+    "pay_req": 0.2,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear Canara Bank customer, your account has been netbanking profile locked after suspicious login attempt. Unlock at http://kotak-support-online.link",
+    "fraud": 0.95,
+    "category": "banking",
+    "brand_imp": 0.9,
+    "cred_req": 0.95,
+    "pay_req": 0.2,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear Canara Bank customer, your account has been debit card deactivated for security reasons. Reactivate online at http://pnb-netbanking-portal.info",
+    "fraud": 0.93,
+    "category": "banking",
+    "brand_imp": 0.88,
+    "cred_req": 0.9,
+    "pay_req": 0.2,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "Dear Canara Bank customer, your account has been reward points worth Rs 9,850 expiring tonight. Redeem cash to bank account at http://bank-kyc-service.top",
+    "fraud": 0.92,
+    "category": "banking",
+    "brand_imp": 0.85,
+    "cred_req": 0.85,
+    "pay_req": 0.4,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Dear Consumer, your electricity power supply will be disconnected tonight at 9:30 PM from Electricity Department office because your previous month bill was not updated. Please immediately contact our electricity officer at 9820000000.",
+    "fraud": 0.93,
+    "category": "electricity",
+    "brand_imp": 0.75,
+    "cred_req": 0.25,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "Urgent Notice: Mahavitaran (MSEDCL) power cutoff order issued for consumer ID 10001. Clear bill immediately via APK update: http://vidhyut-bill-pay1.apk or call 9820000137",
+    "fraud": 0.95,
+    "category": "electricity",
+    "brand_imp": 0.8,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Dear Consumer, your electricity power supply will be disconnected today at 10:00 PM from BESCOM office because your previous month bill was not updated. Please immediately contact our electricity officer at 9820000274.",
+    "fraud": 0.93,
+    "category": "electricity",
+    "brand_imp": 0.75,
+    "cred_req": 0.25,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "Urgent Notice: Tata Power power cutoff order issued for consumer ID 10003. Clear bill immediately via APK update: http://vidhyut-bill-pay3.apk or call 9820000411",
+    "fraud": 0.95,
+    "category": "electricity",
+    "brand_imp": 0.8,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Dear Consumer, your electricity power supply will be disconnected tonight at 9:30 PM from BSES Yamuna office because your previous month bill was not updated. Please immediately contact our electricity officer at 9820000548.",
+    "fraud": 0.93,
+    "category": "electricity",
+    "brand_imp": 0.75,
+    "cred_req": 0.25,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "Urgent Notice: Torrent Power power cutoff order issued for consumer ID 10005. Clear bill immediately via APK update: http://vidhyut-bill-pay5.apk or call 9820000685",
+    "fraud": 0.95,
+    "category": "electricity",
+    "brand_imp": 0.8,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Dear Consumer, your electricity power supply will be disconnected today at 10:00 PM from UPPCL office because your previous month bill was not updated. Please immediately contact our electricity officer at 9820000822.",
+    "fraud": 0.93,
+    "category": "electricity",
+    "brand_imp": 0.75,
+    "cred_req": 0.25,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "Urgent Notice: Adani Electricity power cutoff order issued for consumer ID 10007. Clear bill immediately via APK update: http://vidhyut-bill-pay7.apk or call 9820000959",
+    "fraud": 0.95,
+    "category": "electricity",
+    "brand_imp": 0.8,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Dear Consumer, your electricity power supply will be disconnected tonight at 9:30 PM from Electricity Department office because your previous month bill was not updated. Please immediately contact our electricity officer at 9820001096.",
+    "fraud": 0.93,
+    "category": "electricity",
+    "brand_imp": 0.75,
+    "cred_req": 0.25,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "Urgent Notice: Mahavitaran (MSEDCL) power cutoff order issued for consumer ID 10009. Clear bill immediately via APK update: http://vidhyut-bill-pay9.apk or call 9820001233",
+    "fraud": 0.95,
+    "category": "electricity",
+    "brand_imp": 0.8,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Dear Consumer, your electricity power supply will be disconnected today at 10:00 PM from BESCOM office because your previous month bill was not updated. Please immediately contact our electricity officer at 9820001370.",
+    "fraud": 0.93,
+    "category": "electricity",
+    "brand_imp": 0.75,
+    "cred_req": 0.25,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "Urgent Notice: Tata Power power cutoff order issued for consumer ID 10011. Clear bill immediately via APK update: http://vidhyut-bill-pay11.apk or call 9820001507",
+    "fraud": 0.95,
+    "category": "electricity",
+    "brand_imp": 0.8,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Dear Consumer, your electricity power supply will be disconnected tonight at 9:30 PM from BSES Yamuna office because your previous month bill was not updated. Please immediately contact our electricity officer at 9820001644.",
+    "fraud": 0.93,
+    "category": "electricity",
+    "brand_imp": 0.75,
+    "cred_req": 0.25,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "Urgent Notice: Torrent Power power cutoff order issued for consumer ID 10013. Clear bill immediately via APK update: http://vidhyut-bill-pay13.apk or call 9820001781",
+    "fraud": 0.95,
+    "category": "electricity",
+    "brand_imp": 0.8,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Dear Consumer, your electricity power supply will be disconnected today at 10:00 PM from UPPCL office because your previous month bill was not updated. Please immediately contact our electricity officer at 9820001918.",
+    "fraud": 0.93,
+    "category": "electricity",
+    "brand_imp": 0.75,
+    "cred_req": 0.25,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "Urgent Notice: Adani Electricity power cutoff order issued for consumer ID 10015. Clear bill immediately via APK update: http://vidhyut-bill-pay15.apk or call 9820002055",
+    "fraud": 0.95,
+    "category": "electricity",
+    "brand_imp": 0.8,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Dear Consumer, your electricity power supply will be disconnected tonight at 9:30 PM from Electricity Department office because your previous month bill was not updated. Please immediately contact our electricity officer at 9820002192.",
+    "fraud": 0.93,
+    "category": "electricity",
+    "brand_imp": 0.75,
+    "cred_req": 0.25,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "Urgent Notice: Mahavitaran (MSEDCL) power cutoff order issued for consumer ID 10017. Clear bill immediately via APK update: http://vidhyut-bill-pay17.apk or call 9820002329",
+    "fraud": 0.95,
+    "category": "electricity",
+    "brand_imp": 0.8,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Dear Consumer, your electricity power supply will be disconnected today at 10:00 PM from BESCOM office because your previous month bill was not updated. Please immediately contact our electricity officer at 9820002466.",
+    "fraud": 0.93,
+    "category": "electricity",
+    "brand_imp": 0.75,
+    "cred_req": 0.25,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "Urgent Notice: Tata Power power cutoff order issued for consumer ID 10019. Clear bill immediately via APK update: http://vidhyut-bill-pay19.apk or call 9820002603",
+    "fraud": 0.95,
+    "category": "electricity",
+    "brand_imp": 0.8,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Dear Consumer, your electricity power supply will be disconnected tonight at 9:30 PM from BSES Yamuna office because your previous month bill was not updated. Please immediately contact our electricity officer at 9820002740.",
+    "fraud": 0.93,
+    "category": "electricity",
+    "brand_imp": 0.75,
+    "cred_req": 0.25,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "Urgent Notice: Torrent Power power cutoff order issued for consumer ID 10021. Clear bill immediately via APK update: http://vidhyut-bill-pay21.apk or call 9820002877",
+    "fraud": 0.95,
+    "category": "electricity",
+    "brand_imp": 0.8,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Dear Consumer, your electricity power supply will be disconnected today at 10:00 PM from UPPCL office because your previous month bill was not updated. Please immediately contact our electricity officer at 9820003014.",
+    "fraud": 0.93,
+    "category": "electricity",
+    "brand_imp": 0.75,
+    "cred_req": 0.25,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "Urgent Notice: Adani Electricity power cutoff order issued for consumer ID 10023. Clear bill immediately via APK update: http://vidhyut-bill-pay23.apk or call 9820003151",
+    "fraud": 0.95,
+    "category": "electricity",
+    "brand_imp": 0.8,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Dear Consumer, your electricity power supply will be disconnected tonight at 9:30 PM from Electricity Department office because your previous month bill was not updated. Please immediately contact our electricity officer at 9820003288.",
+    "fraud": 0.93,
+    "category": "electricity",
+    "brand_imp": 0.75,
+    "cred_req": 0.25,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "Urgent Notice: Mahavitaran (MSEDCL) power cutoff order issued for consumer ID 10025. Clear bill immediately via APK update: http://vidhyut-bill-pay25.apk or call 9820003425",
+    "fraud": 0.95,
+    "category": "electricity",
+    "brand_imp": 0.8,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Dear Consumer, your electricity power supply will be disconnected today at 10:00 PM from BESCOM office because your previous month bill was not updated. Please immediately contact our electricity officer at 9820003562.",
+    "fraud": 0.93,
+    "category": "electricity",
+    "brand_imp": 0.75,
+    "cred_req": 0.25,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "Urgent Notice: Tata Power power cutoff order issued for consumer ID 10027. Clear bill immediately via APK update: http://vidhyut-bill-pay27.apk or call 9820003699",
+    "fraud": 0.95,
+    "category": "electricity",
+    "brand_imp": 0.8,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "India Post: Your parcel #IN892019 cannot be delivered due to incorrect address or missing house number. Update your address and pay re-delivery fee Rs 48 at http://track-package-indiapost.top within 24 hrs.",
+    "fraud": 0.94,
+    "category": "courier",
+    "brand_imp": 0.85,
+    "cred_req": 0.65,
+    "pay_req": 0.85,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Urgent notification from BlueDart: Package #IN892062 is held at regional sorting facility. Pay customs clearance charge of Rs 125 immediately: http://parcel-release-hub.site/IN892062",
+    "fraud": 0.93,
+    "category": "courier",
+    "brand_imp": 0.8,
+    "cred_req": 0.6,
+    "pay_req": 0.9,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "Delhivery: Your parcel #IN892105 cannot be delivered due to incorrect address or missing house number. Update your address and pay re-delivery fee Rs 48 at http://track-package-delhivery.top within 24 hrs.",
+    "fraud": 0.94,
+    "category": "courier",
+    "brand_imp": 0.85,
+    "cred_req": 0.65,
+    "pay_req": 0.85,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Urgent notification from DTDC: Package #IN892148 is held at regional sorting facility. Pay customs clearance charge of Rs 125 immediately: http://parcel-release-hub.site/IN892148",
+    "fraud": 0.93,
+    "category": "courier",
+    "brand_imp": 0.8,
+    "cred_req": 0.6,
+    "pay_req": 0.9,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "FedEx India: Your parcel #IN892191 cannot be delivered due to incorrect address or missing house number. Update your address and pay re-delivery fee Rs 48 at http://track-package-fedexindia.top within 24 hrs.",
+    "fraud": 0.94,
+    "category": "courier",
+    "brand_imp": 0.85,
+    "cred_req": 0.65,
+    "pay_req": 0.85,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Urgent notification from Speed Post: Package #IN892234 is held at regional sorting facility. Pay customs clearance charge of Rs 125 immediately: http://parcel-release-hub.site/IN892234",
+    "fraud": 0.93,
+    "category": "courier",
+    "brand_imp": 0.8,
+    "cred_req": 0.6,
+    "pay_req": 0.9,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "DHL Express: Your parcel #IN892277 cannot be delivered due to incorrect address or missing house number. Update your address and pay re-delivery fee Rs 48 at http://track-package-dhlexpress.top within 24 hrs.",
+    "fraud": 0.94,
+    "category": "courier",
+    "brand_imp": 0.85,
+    "cred_req": 0.65,
+    "pay_req": 0.85,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Urgent notification from India Post: Package #IN892320 is held at regional sorting facility. Pay customs clearance charge of Rs 125 immediately: http://parcel-release-hub.site/IN892320",
+    "fraud": 0.93,
+    "category": "courier",
+    "brand_imp": 0.8,
+    "cred_req": 0.6,
+    "pay_req": 0.9,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "BlueDart: Your parcel #IN892363 cannot be delivered due to incorrect address or missing house number. Update your address and pay re-delivery fee Rs 48 at http://track-package-bluedart.top within 24 hrs.",
+    "fraud": 0.94,
+    "category": "courier",
+    "brand_imp": 0.85,
+    "cred_req": 0.65,
+    "pay_req": 0.85,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Urgent notification from Delhivery: Package #IN892406 is held at regional sorting facility. Pay customs clearance charge of Rs 125 immediately: http://parcel-release-hub.site/IN892406",
+    "fraud": 0.93,
+    "category": "courier",
+    "brand_imp": 0.8,
+    "cred_req": 0.6,
+    "pay_req": 0.9,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "DTDC: Your parcel #IN892449 cannot be delivered due to incorrect address or missing house number. Update your address and pay re-delivery fee Rs 48 at http://track-package-dtdc.top within 24 hrs.",
+    "fraud": 0.94,
+    "category": "courier",
+    "brand_imp": 0.85,
+    "cred_req": 0.65,
+    "pay_req": 0.85,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Urgent notification from FedEx India: Package #IN892492 is held at regional sorting facility. Pay customs clearance charge of Rs 125 immediately: http://parcel-release-hub.site/IN892492",
+    "fraud": 0.93,
+    "category": "courier",
+    "brand_imp": 0.8,
+    "cred_req": 0.6,
+    "pay_req": 0.9,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "Speed Post: Your parcel #IN892535 cannot be delivered due to incorrect address or missing house number. Update your address and pay re-delivery fee Rs 48 at http://track-package-speedpost.top within 24 hrs.",
+    "fraud": 0.94,
+    "category": "courier",
+    "brand_imp": 0.85,
+    "cred_req": 0.65,
+    "pay_req": 0.85,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Urgent notification from DHL Express: Package #IN892578 is held at regional sorting facility. Pay customs clearance charge of Rs 125 immediately: http://parcel-release-hub.site/IN892578",
+    "fraud": 0.93,
+    "category": "courier",
+    "brand_imp": 0.8,
+    "cred_req": 0.6,
+    "pay_req": 0.9,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "India Post: Your parcel #IN892621 cannot be delivered due to incorrect address or missing house number. Update your address and pay re-delivery fee Rs 48 at http://track-package-indiapost.top within 24 hrs.",
+    "fraud": 0.94,
+    "category": "courier",
+    "brand_imp": 0.85,
+    "cred_req": 0.65,
+    "pay_req": 0.85,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Urgent notification from BlueDart: Package #IN892664 is held at regional sorting facility. Pay customs clearance charge of Rs 125 immediately: http://parcel-release-hub.site/IN892664",
+    "fraud": 0.93,
+    "category": "courier",
+    "brand_imp": 0.8,
+    "cred_req": 0.6,
+    "pay_req": 0.9,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "Delhivery: Your parcel #IN892707 cannot be delivered due to incorrect address or missing house number. Update your address and pay re-delivery fee Rs 48 at http://track-package-delhivery.top within 24 hrs.",
+    "fraud": 0.94,
+    "category": "courier",
+    "brand_imp": 0.85,
+    "cred_req": 0.65,
+    "pay_req": 0.85,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Urgent notification from DTDC: Package #IN892750 is held at regional sorting facility. Pay customs clearance charge of Rs 125 immediately: http://parcel-release-hub.site/IN892750",
+    "fraud": 0.93,
+    "category": "courier",
+    "brand_imp": 0.8,
+    "cred_req": 0.6,
+    "pay_req": 0.9,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "FedEx India: Your parcel #IN892793 cannot be delivered due to incorrect address or missing house number. Update your address and pay re-delivery fee Rs 48 at http://track-package-fedexindia.top within 24 hrs.",
+    "fraud": 0.94,
+    "category": "courier",
+    "brand_imp": 0.85,
+    "cred_req": 0.65,
+    "pay_req": 0.85,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Urgent notification from Speed Post: Package #IN892836 is held at regional sorting facility. Pay customs clearance charge of Rs 125 immediately: http://parcel-release-hub.site/IN892836",
+    "fraud": 0.93,
+    "category": "courier",
+    "brand_imp": 0.8,
+    "cred_req": 0.6,
+    "pay_req": 0.9,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "DHL Express: Your parcel #IN892879 cannot be delivered due to incorrect address or missing house number. Update your address and pay re-delivery fee Rs 48 at http://track-package-dhlexpress.top within 24 hrs.",
+    "fraud": 0.94,
+    "category": "courier",
+    "brand_imp": 0.85,
+    "cred_req": 0.65,
+    "pay_req": 0.85,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Urgent notification from India Post: Package #IN892922 is held at regional sorting facility. Pay customs clearance charge of Rs 125 immediately: http://parcel-release-hub.site/IN892922",
+    "fraud": 0.93,
+    "category": "courier",
+    "brand_imp": 0.8,
+    "cred_req": 0.6,
+    "pay_req": 0.9,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "BlueDart: Your parcel #IN892965 cannot be delivered due to incorrect address or missing house number. Update your address and pay re-delivery fee Rs 48 at http://track-package-bluedart.top within 24 hrs.",
+    "fraud": 0.94,
+    "category": "courier",
+    "brand_imp": 0.85,
+    "cred_req": 0.65,
+    "pay_req": 0.85,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Urgent notification from Delhivery: Package #IN893008 is held at regional sorting facility. Pay customs clearance charge of Rs 125 immediately: http://parcel-release-hub.site/IN893008",
+    "fraud": 0.93,
+    "category": "courier",
+    "brand_imp": 0.8,
+    "cred_req": 0.6,
+    "pay_req": 0.9,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "DTDC: Your parcel #IN893051 cannot be delivered due to incorrect address or missing house number. Update your address and pay re-delivery fee Rs 48 at http://track-package-dtdc.top within 24 hrs.",
+    "fraud": 0.94,
+    "category": "courier",
+    "brand_imp": 0.85,
+    "cred_req": 0.65,
+    "pay_req": 0.85,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Urgent notification from FedEx India: Package #IN893094 is held at regional sorting facility. Pay customs clearance charge of Rs 125 immediately: http://parcel-release-hub.site/IN893094",
+    "fraud": 0.93,
+    "category": "courier",
+    "brand_imp": 0.8,
+    "cred_req": 0.6,
+    "pay_req": 0.9,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "Speed Post: Your parcel #IN893137 cannot be delivered due to incorrect address or missing house number. Update your address and pay re-delivery fee Rs 48 at http://track-package-speedpost.top within 24 hrs.",
+    "fraud": 0.94,
+    "category": "courier",
+    "brand_imp": 0.85,
+    "cred_req": 0.65,
+    "pay_req": 0.85,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Urgent notification from DHL Express: Package #IN893180 is held at regional sorting facility. Pay customs clearance charge of Rs 125 immediately: http://parcel-release-hub.site/IN893180",
+    "fraud": 0.93,
+    "category": "courier",
+    "brand_imp": 0.8,
+    "cred_req": 0.6,
+    "pay_req": 0.9,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "Dear User, your Paytm Wallet KYC documents have expired today. Account services and wallet transfers will be permanently stopped. Complete online re-KYC at http://kyc-verification-0.top",
+    "fraud": 0.94,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.92,
+    "pay_req": 0.3,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Mandatory Alert: PhonePe compliance requires biometric PAN update within 12 hours. Download QuickSupport app or verify at http://fast-kyc-portal.icu or call 9170000281.",
+    "fraud": 0.95,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.94,
+    "pay_req": 0.35,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "Dear User, your Google Pay UPI KYC documents have expired today. Account services and wallet transfers will be permanently stopped. Complete online re-KYC at http://kyc-verification-2.top",
+    "fraud": 0.94,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.92,
+    "pay_req": 0.3,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Mandatory Alert: Aadhaar UIDAI compliance requires biometric PAN update within 12 hours. Download QuickSupport app or verify at http://fast-kyc-portal.icu or call 9170000843.",
+    "fraud": 0.95,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.94,
+    "pay_req": 0.35,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "Dear User, your PAN NSDL KYC documents have expired today. Account services and wallet transfers will be permanently stopped. Complete online re-KYC at http://kyc-verification-4.top",
+    "fraud": 0.94,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.92,
+    "pay_req": 0.3,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Mandatory Alert: Voter ID Portal compliance requires biometric PAN update within 12 hours. Download QuickSupport app or verify at http://fast-kyc-portal.icu or call 9170001405.",
+    "fraud": 0.95,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.94,
+    "pay_req": 0.35,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "Dear User, your Paytm Wallet KYC documents have expired today. Account services and wallet transfers will be permanently stopped. Complete online re-KYC at http://kyc-verification-6.top",
+    "fraud": 0.94,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.92,
+    "pay_req": 0.3,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Mandatory Alert: PhonePe compliance requires biometric PAN update within 12 hours. Download QuickSupport app or verify at http://fast-kyc-portal.icu or call 9170001967.",
+    "fraud": 0.95,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.94,
+    "pay_req": 0.35,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "Dear User, your Google Pay UPI KYC documents have expired today. Account services and wallet transfers will be permanently stopped. Complete online re-KYC at http://kyc-verification-8.top",
+    "fraud": 0.94,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.92,
+    "pay_req": 0.3,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Mandatory Alert: Aadhaar UIDAI compliance requires biometric PAN update within 12 hours. Download QuickSupport app or verify at http://fast-kyc-portal.icu or call 9170002529.",
+    "fraud": 0.95,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.94,
+    "pay_req": 0.35,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "Dear User, your PAN NSDL KYC documents have expired today. Account services and wallet transfers will be permanently stopped. Complete online re-KYC at http://kyc-verification-10.top",
+    "fraud": 0.94,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.92,
+    "pay_req": 0.3,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Mandatory Alert: Voter ID Portal compliance requires biometric PAN update within 12 hours. Download QuickSupport app or verify at http://fast-kyc-portal.icu or call 9170003091.",
+    "fraud": 0.95,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.94,
+    "pay_req": 0.35,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "Dear User, your Paytm Wallet KYC documents have expired today. Account services and wallet transfers will be permanently stopped. Complete online re-KYC at http://kyc-verification-12.top",
+    "fraud": 0.94,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.92,
+    "pay_req": 0.3,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Mandatory Alert: PhonePe compliance requires biometric PAN update within 12 hours. Download QuickSupport app or verify at http://fast-kyc-portal.icu or call 9170003653.",
+    "fraud": 0.95,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.94,
+    "pay_req": 0.35,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "Dear User, your Google Pay UPI KYC documents have expired today. Account services and wallet transfers will be permanently stopped. Complete online re-KYC at http://kyc-verification-14.top",
+    "fraud": 0.94,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.92,
+    "pay_req": 0.3,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Mandatory Alert: Aadhaar UIDAI compliance requires biometric PAN update within 12 hours. Download QuickSupport app or verify at http://fast-kyc-portal.icu or call 9170004215.",
+    "fraud": 0.95,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.94,
+    "pay_req": 0.35,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "Dear User, your PAN NSDL KYC documents have expired today. Account services and wallet transfers will be permanently stopped. Complete online re-KYC at http://kyc-verification-16.top",
+    "fraud": 0.94,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.92,
+    "pay_req": 0.3,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Mandatory Alert: Voter ID Portal compliance requires biometric PAN update within 12 hours. Download QuickSupport app or verify at http://fast-kyc-portal.icu or call 9170004777.",
+    "fraud": 0.95,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.94,
+    "pay_req": 0.35,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "Dear User, your Paytm Wallet KYC documents have expired today. Account services and wallet transfers will be permanently stopped. Complete online re-KYC at http://kyc-verification-18.top",
+    "fraud": 0.94,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.92,
+    "pay_req": 0.3,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Mandatory Alert: PhonePe compliance requires biometric PAN update within 12 hours. Download QuickSupport app or verify at http://fast-kyc-portal.icu or call 9170005339.",
+    "fraud": 0.95,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.94,
+    "pay_req": 0.35,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "Dear User, your Google Pay UPI KYC documents have expired today. Account services and wallet transfers will be permanently stopped. Complete online re-KYC at http://kyc-verification-20.top",
+    "fraud": 0.94,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.92,
+    "pay_req": 0.3,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Mandatory Alert: Aadhaar UIDAI compliance requires biometric PAN update within 12 hours. Download QuickSupport app or verify at http://fast-kyc-portal.icu or call 9170005901.",
+    "fraud": 0.95,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.94,
+    "pay_req": 0.35,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "Dear User, your PAN NSDL KYC documents have expired today. Account services and wallet transfers will be permanently stopped. Complete online re-KYC at http://kyc-verification-22.top",
+    "fraud": 0.94,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.92,
+    "pay_req": 0.3,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Mandatory Alert: Voter ID Portal compliance requires biometric PAN update within 12 hours. Download QuickSupport app or verify at http://fast-kyc-portal.icu or call 9170006463.",
+    "fraud": 0.95,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.94,
+    "pay_req": 0.35,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "Dear User, your Paytm Wallet KYC documents have expired today. Account services and wallet transfers will be permanently stopped. Complete online re-KYC at http://kyc-verification-24.top",
+    "fraud": 0.94,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.92,
+    "pay_req": 0.3,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Mandatory Alert: PhonePe compliance requires biometric PAN update within 12 hours. Download QuickSupport app or verify at http://fast-kyc-portal.icu or call 9170007025.",
+    "fraud": 0.95,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.94,
+    "pay_req": 0.35,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "Dear User, your Google Pay UPI KYC documents have expired today. Account services and wallet transfers will be permanently stopped. Complete online re-KYC at http://kyc-verification-26.top",
+    "fraud": 0.94,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.92,
+    "pay_req": 0.3,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Mandatory Alert: Aadhaar UIDAI compliance requires biometric PAN update within 12 hours. Download QuickSupport app or verify at http://fast-kyc-portal.icu or call 9170007587.",
+    "fraud": 0.95,
+    "category": "kyc",
+    "brand_imp": 0.85,
+    "cred_req": 0.94,
+    "pay_req": 0.35,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 2,500,000 from Kaun Banega Crorepati (KBC) Lucky Draw. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 12500 to our manager. WhatsApp 9811000000 immediately or visit http://claim-prize-0.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 5,000,000 from Jio 5G Celebration Prize. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 25000 to our manager. WhatsApp 9811000099 immediately or visit http://claim-prize-1.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 1,000,000 from Amazon Diwali Mega Jackpot. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 5500 to our manager. WhatsApp 9811000198 immediately or visit http://claim-prize-2.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 750,000 from Flipkart Big Billion Winner. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 999 to our manager. WhatsApp 9811000297 immediately or visit http://claim-prize-3.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 2,500,000 from PhonePe Gold Scratch Card. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 12500 to our manager. WhatsApp 9811000396 immediately or visit http://claim-prize-4.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 5,000,000 from Kaun Banega Crorepati (KBC) Lucky Draw. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 25000 to our manager. WhatsApp 9811000495 immediately or visit http://claim-prize-5.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 1,000,000 from Jio 5G Celebration Prize. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 5500 to our manager. WhatsApp 9811000594 immediately or visit http://claim-prize-6.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 750,000 from Amazon Diwali Mega Jackpot. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 999 to our manager. WhatsApp 9811000693 immediately or visit http://claim-prize-7.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 2,500,000 from Flipkart Big Billion Winner. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 12500 to our manager. WhatsApp 9811000792 immediately or visit http://claim-prize-8.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 5,000,000 from PhonePe Gold Scratch Card. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 25000 to our manager. WhatsApp 9811000891 immediately or visit http://claim-prize-9.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 1,000,000 from Kaun Banega Crorepati (KBC) Lucky Draw. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 5500 to our manager. WhatsApp 9811000990 immediately or visit http://claim-prize-10.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 750,000 from Jio 5G Celebration Prize. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 999 to our manager. WhatsApp 9811001089 immediately or visit http://claim-prize-11.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 2,500,000 from Amazon Diwali Mega Jackpot. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 12500 to our manager. WhatsApp 9811001188 immediately or visit http://claim-prize-12.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 5,000,000 from Flipkart Big Billion Winner. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 25000 to our manager. WhatsApp 9811001287 immediately or visit http://claim-prize-13.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 1,000,000 from PhonePe Gold Scratch Card. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 5500 to our manager. WhatsApp 9811001386 immediately or visit http://claim-prize-14.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 750,000 from Kaun Banega Crorepati (KBC) Lucky Draw. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 999 to our manager. WhatsApp 9811001485 immediately or visit http://claim-prize-15.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 2,500,000 from Jio 5G Celebration Prize. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 12500 to our manager. WhatsApp 9811001584 immediately or visit http://claim-prize-16.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 5,000,000 from Amazon Diwali Mega Jackpot. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 25000 to our manager. WhatsApp 9811001683 immediately or visit http://claim-prize-17.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 1,000,000 from Flipkart Big Billion Winner. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 5500 to our manager. WhatsApp 9811001782 immediately or visit http://claim-prize-18.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 750,000 from PhonePe Gold Scratch Card. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 999 to our manager. WhatsApp 9811001881 immediately or visit http://claim-prize-19.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 2,500,000 from Kaun Banega Crorepati (KBC) Lucky Draw. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 12500 to our manager. WhatsApp 9811001980 immediately or visit http://claim-prize-20.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 5,000,000 from Jio 5G Celebration Prize. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 25000 to our manager. WhatsApp 9811002079 immediately or visit http://claim-prize-21.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 1,000,000 from Amazon Diwali Mega Jackpot. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 5500 to our manager. WhatsApp 9811002178 immediately or visit http://claim-prize-22.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 750,000 from Flipkart Big Billion Winner. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 999 to our manager. WhatsApp 9811002277 immediately or visit http://claim-prize-23.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 2,500,000 from PhonePe Gold Scratch Card. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 12500 to our manager. WhatsApp 9811002376 immediately or visit http://claim-prize-24.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 5,000,000 from Kaun Banega Crorepati (KBC) Lucky Draw. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 25000 to our manager. WhatsApp 9811002475 immediately or visit http://claim-prize-25.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 1,000,000 from Jio 5G Celebration Prize. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 5500 to our manager. WhatsApp 9811002574 immediately or visit http://claim-prize-26.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "CONGRATULATIONS! You have won Rs 750,000 from Amazon Diwali Mega Jackpot. To claim your winning prize cheque, deposit refundable processing and tax fee of Rs 999 to our manager. WhatsApp 9811002673 immediately or visit http://claim-prize-27.top",
+    "fraud": 0.96,
+    "category": "lottery_prize",
+    "brand_imp": 0.8,
+    "cred_req": 0.4,
+    "pay_req": 0.95,
+    "deep_analysis": 0.4
+  },
+  {
+    "text": "Earn Rs 2,500 to Rs 8,000 daily from home! Part time online job: like YouTube videos and write hotel reviews. No experience needed. Contact HR manager on Telegram @daily_task_0 to start.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Work from mobile: Complete 15 minutes Google Maps rating task and earn Rs 3,000 daily. WhatsApp HR to get registered with deposit.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Freelance online typing and data entry job: Earn Rs 25,000 monthly. Transfer refundable registration fee Rs 999 to receive project files.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Amazon telegram product review task: Earn Rs 150 per review. Join our VIP merchant channel @amazon_task_3 to claim daily payout.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Earn Rs 2,500 to Rs 8,000 daily from home! Part time online job: like YouTube videos and write hotel reviews. No experience needed. Contact HR manager on Telegram @daily_task_4 to start.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Work from mobile: Complete 15 minutes Google Maps rating task and earn Rs 3,000 daily. WhatsApp HR to get registered with deposit.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Freelance online typing and data entry job: Earn Rs 25,000 monthly. Transfer refundable registration fee Rs 999 to receive project files.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Amazon telegram product review task: Earn Rs 150 per review. Join our VIP merchant channel @amazon_task_7 to claim daily payout.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Earn Rs 2,500 to Rs 8,000 daily from home! Part time online job: like YouTube videos and write hotel reviews. No experience needed. Contact HR manager on Telegram @daily_task_8 to start.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Work from mobile: Complete 15 minutes Google Maps rating task and earn Rs 3,000 daily. WhatsApp HR to get registered with deposit.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Freelance online typing and data entry job: Earn Rs 25,000 monthly. Transfer refundable registration fee Rs 999 to receive project files.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Amazon telegram product review task: Earn Rs 150 per review. Join our VIP merchant channel @amazon_task_11 to claim daily payout.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Earn Rs 2,500 to Rs 8,000 daily from home! Part time online job: like YouTube videos and write hotel reviews. No experience needed. Contact HR manager on Telegram @daily_task_12 to start.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Work from mobile: Complete 15 minutes Google Maps rating task and earn Rs 3,000 daily. WhatsApp HR to get registered with deposit.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Freelance online typing and data entry job: Earn Rs 25,000 monthly. Transfer refundable registration fee Rs 999 to receive project files.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Amazon telegram product review task: Earn Rs 150 per review. Join our VIP merchant channel @amazon_task_15 to claim daily payout.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Earn Rs 2,500 to Rs 8,000 daily from home! Part time online job: like YouTube videos and write hotel reviews. No experience needed. Contact HR manager on Telegram @daily_task_16 to start.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Work from mobile: Complete 15 minutes Google Maps rating task and earn Rs 3,000 daily. WhatsApp HR to get registered with deposit.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Freelance online typing and data entry job: Earn Rs 25,000 monthly. Transfer refundable registration fee Rs 999 to receive project files.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Amazon telegram product review task: Earn Rs 150 per review. Join our VIP merchant channel @amazon_task_19 to claim daily payout.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Earn Rs 2,500 to Rs 8,000 daily from home! Part time online job: like YouTube videos and write hotel reviews. No experience needed. Contact HR manager on Telegram @daily_task_20 to start.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Work from mobile: Complete 15 minutes Google Maps rating task and earn Rs 3,000 daily. WhatsApp HR to get registered with deposit.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Freelance online typing and data entry job: Earn Rs 25,000 monthly. Transfer refundable registration fee Rs 999 to receive project files.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Amazon telegram product review task: Earn Rs 150 per review. Join our VIP merchant channel @amazon_task_23 to claim daily payout.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Earn Rs 2,500 to Rs 8,000 daily from home! Part time online job: like YouTube videos and write hotel reviews. No experience needed. Contact HR manager on Telegram @daily_task_24 to start.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Work from mobile: Complete 15 minutes Google Maps rating task and earn Rs 3,000 daily. WhatsApp HR to get registered with deposit.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Freelance online typing and data entry job: Earn Rs 25,000 monthly. Transfer refundable registration fee Rs 999 to receive project files.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "Amazon telegram product review task: Earn Rs 150 per review. Join our VIP merchant channel @amazon_task_27 to claim daily payout.",
+    "fraud": 0.92,
+    "category": "job_offer",
+    "brand_imp": 0.65,
+    "cred_req": 0.25,
+    "pay_req": 0.9,
+    "deep_analysis": 0.45
+  },
+  {
+    "text": "PhonePe Alert: Your cash refund of Rs 3,500 for recent failed transaction has been approved. Open PhonePe, tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Google Pay (GPay) Alert: Your cash refund of Rs 4,999 for recent failed transaction has been approved. Open Google Pay (GPay), tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Paytm UPI Alert: Your cash refund of Rs 8,200 for recent failed transaction has been approved. Open Paytm UPI, tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "BHIM UPI Alert: Your cash refund of Rs 2,150 for recent failed transaction has been approved. Open BHIM UPI, tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "PhonePe Alert: Your cash refund of Rs 6,800 for recent failed transaction has been approved. Open PhonePe, tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Google Pay (GPay) Alert: Your cash refund of Rs 3,500 for recent failed transaction has been approved. Open Google Pay (GPay), tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Paytm UPI Alert: Your cash refund of Rs 4,999 for recent failed transaction has been approved. Open Paytm UPI, tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "BHIM UPI Alert: Your cash refund of Rs 8,200 for recent failed transaction has been approved. Open BHIM UPI, tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "PhonePe Alert: Your cash refund of Rs 2,150 for recent failed transaction has been approved. Open PhonePe, tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Google Pay (GPay) Alert: Your cash refund of Rs 6,800 for recent failed transaction has been approved. Open Google Pay (GPay), tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Paytm UPI Alert: Your cash refund of Rs 3,500 for recent failed transaction has been approved. Open Paytm UPI, tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "BHIM UPI Alert: Your cash refund of Rs 4,999 for recent failed transaction has been approved. Open BHIM UPI, tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "PhonePe Alert: Your cash refund of Rs 8,200 for recent failed transaction has been approved. Open PhonePe, tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Google Pay (GPay) Alert: Your cash refund of Rs 2,150 for recent failed transaction has been approved. Open Google Pay (GPay), tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Paytm UPI Alert: Your cash refund of Rs 6,800 for recent failed transaction has been approved. Open Paytm UPI, tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "BHIM UPI Alert: Your cash refund of Rs 3,500 for recent failed transaction has been approved. Open BHIM UPI, tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "PhonePe Alert: Your cash refund of Rs 4,999 for recent failed transaction has been approved. Open PhonePe, tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Google Pay (GPay) Alert: Your cash refund of Rs 8,200 for recent failed transaction has been approved. Open Google Pay (GPay), tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Paytm UPI Alert: Your cash refund of Rs 2,150 for recent failed transaction has been approved. Open Paytm UPI, tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "BHIM UPI Alert: Your cash refund of Rs 6,800 for recent failed transaction has been approved. Open BHIM UPI, tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "PhonePe Alert: Your cash refund of Rs 3,500 for recent failed transaction has been approved. Open PhonePe, tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Google Pay (GPay) Alert: Your cash refund of Rs 4,999 for recent failed transaction has been approved. Open Google Pay (GPay), tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Paytm UPI Alert: Your cash refund of Rs 8,200 for recent failed transaction has been approved. Open Paytm UPI, tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "BHIM UPI Alert: Your cash refund of Rs 2,150 for recent failed transaction has been approved. Open BHIM UPI, tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "PhonePe Alert: Your cash refund of Rs 6,800 for recent failed transaction has been approved. Open PhonePe, tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Google Pay (GPay) Alert: Your cash refund of Rs 3,500 for recent failed transaction has been approved. Open Google Pay (GPay), tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Paytm UPI Alert: Your cash refund of Rs 4,999 for recent failed transaction has been approved. Open Paytm UPI, tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "BHIM UPI Alert: Your cash refund of Rs 8,200 for recent failed transaction has been approved. Open BHIM UPI, tap the pending collect request, and enter your 6-digit UPI PIN to receive money.",
+    "fraud": 0.95,
+    "category": "upi_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.85,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Dhani Cash: Pre-approved personal loan of Rs 500,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 1999 via UPI or download APK: http://instant-loan-0.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "KreditBee Instant: Pre-approved personal loan of Rs 1,000,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 2499 via UPI or download APK: http://instant-loan-1.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "Bajaj Finserv Personal Loan: Pre-approved personal loan of Rs 250,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 3500 via UPI or download APK: http://instant-loan-2.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "SBI Instant Mudra: Pre-approved personal loan of Rs 800,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 1499 via UPI or download APK: http://instant-loan-3.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "QuickCash Fast Loan: Pre-approved personal loan of Rs 500,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 1999 via UPI or download APK: http://instant-loan-4.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "Dhani Cash: Pre-approved personal loan of Rs 1,000,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 2499 via UPI or download APK: http://instant-loan-5.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "KreditBee Instant: Pre-approved personal loan of Rs 250,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 3500 via UPI or download APK: http://instant-loan-6.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "Bajaj Finserv Personal Loan: Pre-approved personal loan of Rs 800,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 1499 via UPI or download APK: http://instant-loan-7.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "SBI Instant Mudra: Pre-approved personal loan of Rs 500,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 1999 via UPI or download APK: http://instant-loan-8.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "QuickCash Fast Loan: Pre-approved personal loan of Rs 1,000,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 2499 via UPI or download APK: http://instant-loan-9.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "Dhani Cash: Pre-approved personal loan of Rs 250,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 3500 via UPI or download APK: http://instant-loan-10.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "KreditBee Instant: Pre-approved personal loan of Rs 800,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 1499 via UPI or download APK: http://instant-loan-11.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "Bajaj Finserv Personal Loan: Pre-approved personal loan of Rs 500,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 1999 via UPI or download APK: http://instant-loan-12.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "SBI Instant Mudra: Pre-approved personal loan of Rs 1,000,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 2499 via UPI or download APK: http://instant-loan-13.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "QuickCash Fast Loan: Pre-approved personal loan of Rs 250,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 3500 via UPI or download APK: http://instant-loan-14.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "Dhani Cash: Pre-approved personal loan of Rs 800,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 1499 via UPI or download APK: http://instant-loan-15.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "KreditBee Instant: Pre-approved personal loan of Rs 500,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 1999 via UPI or download APK: http://instant-loan-16.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "Bajaj Finserv Personal Loan: Pre-approved personal loan of Rs 1,000,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 2499 via UPI or download APK: http://instant-loan-17.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "SBI Instant Mudra: Pre-approved personal loan of Rs 250,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 3500 via UPI or download APK: http://instant-loan-18.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "QuickCash Fast Loan: Pre-approved personal loan of Rs 800,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 1499 via UPI or download APK: http://instant-loan-19.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "Dhani Cash: Pre-approved personal loan of Rs 500,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 1999 via UPI or download APK: http://instant-loan-20.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "KreditBee Instant: Pre-approved personal loan of Rs 1,000,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 2499 via UPI or download APK: http://instant-loan-21.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "Bajaj Finserv Personal Loan: Pre-approved personal loan of Rs 250,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 3500 via UPI or download APK: http://instant-loan-22.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "SBI Instant Mudra: Pre-approved personal loan of Rs 800,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 1499 via UPI or download APK: http://instant-loan-23.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "QuickCash Fast Loan: Pre-approved personal loan of Rs 500,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 1999 via UPI or download APK: http://instant-loan-24.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "Dhani Cash: Pre-approved personal loan of Rs 1,000,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 2499 via UPI or download APK: http://instant-loan-25.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "KreditBee Instant: Pre-approved personal loan of Rs 250,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 3500 via UPI or download APK: http://instant-loan-26.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "Bajaj Finserv Personal Loan: Pre-approved personal loan of Rs 800,000 at 1% interest with zero document verification. Transfer file processing fee of Rs 1499 via UPI or download APK: http://instant-loan-27.apk to disburse funds.",
+    "fraud": 0.94,
+    "category": "loan_fraud",
+    "brand_imp": 0.75,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.6
+  },
+  {
+    "text": "Guaranteed 500% return in 7 days with Institutional Stock Market Insider Group! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_0.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Guaranteed 300% return in 7 days with Crypto Arbitrage Automated AI Bot! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_1.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Guaranteed 1000% return in 7 days with Forex Daily Compounding Syndicate! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_2.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Guaranteed 250% return in 7 days with Pre-IPO Unlisted Shares Private Allocation! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_3.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Guaranteed 500% return in 7 days with Institutional Stock Market Insider Group! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_4.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Guaranteed 300% return in 7 days with Crypto Arbitrage Automated AI Bot! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_5.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Guaranteed 1000% return in 7 days with Forex Daily Compounding Syndicate! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_6.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Guaranteed 250% return in 7 days with Pre-IPO Unlisted Shares Private Allocation! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_7.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Guaranteed 500% return in 7 days with Institutional Stock Market Insider Group! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_8.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Guaranteed 300% return in 7 days with Crypto Arbitrage Automated AI Bot! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_9.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Guaranteed 1000% return in 7 days with Forex Daily Compounding Syndicate! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_10.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Guaranteed 250% return in 7 days with Pre-IPO Unlisted Shares Private Allocation! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_11.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Guaranteed 500% return in 7 days with Institutional Stock Market Insider Group! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_12.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Guaranteed 300% return in 7 days with Crypto Arbitrage Automated AI Bot! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_13.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Guaranteed 1000% return in 7 days with Forex Daily Compounding Syndicate! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_14.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Guaranteed 250% return in 7 days with Pre-IPO Unlisted Shares Private Allocation! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_15.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Guaranteed 500% return in 7 days with Institutional Stock Market Insider Group! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_16.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Guaranteed 300% return in 7 days with Crypto Arbitrage Automated AI Bot! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_17.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Guaranteed 1000% return in 7 days with Forex Daily Compounding Syndicate! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_18.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Guaranteed 250% return in 7 days with Pre-IPO Unlisted Shares Private Allocation! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_19.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Guaranteed 500% return in 7 days with Institutional Stock Market Insider Group! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_20.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Guaranteed 300% return in 7 days with Crypto Arbitrage Automated AI Bot! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_21.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Guaranteed 1000% return in 7 days with Forex Daily Compounding Syndicate! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_22.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Guaranteed 250% return in 7 days with Pre-IPO Unlisted Shares Private Allocation! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_23.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Guaranteed 500% return in 7 days with Institutional Stock Market Insider Group! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_24.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Guaranteed 300% return in 7 days with Crypto Arbitrage Automated AI Bot! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_25.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Guaranteed 1000% return in 7 days with Forex Daily Compounding Syndicate! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_26.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Guaranteed 250% return in 7 days with Pre-IPO Unlisted Shares Private Allocation! Zero risk, 100% principal protection verified by smart contracts. Transfer initial deposit of Rs 10,000 to VIP manager wallet in Telegram @wealth_group_27.",
+    "fraud": 0.93,
+    "category": "investment",
+    "brand_imp": 0.25,
+    "cred_req": 0.3,
+    "pay_req": 0.95,
+    "deep_analysis": 0.65
+  },
+  {
+    "text": "Microsoft Windows Defender CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891000 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Apple iCloud Security CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891029 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Google Android Device Protection CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891058 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "QuickHeal Antivirus CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891087 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Microsoft Windows Defender CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891116 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Apple iCloud Security CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891145 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Google Android Device Protection CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891174 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "QuickHeal Antivirus CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891203 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Microsoft Windows Defender CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891232 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Apple iCloud Security CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891261 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Google Android Device Protection CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891290 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "QuickHeal Antivirus CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891319 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Microsoft Windows Defender CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891348 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Apple iCloud Security CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891377 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Google Android Device Protection CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891406 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "QuickHeal Antivirus CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891435 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Microsoft Windows Defender CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891464 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Apple iCloud Security CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891493 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Google Android Device Protection CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891522 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "QuickHeal Antivirus CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891551 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Microsoft Windows Defender CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891580 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Apple iCloud Security CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891609 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Google Android Device Protection CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891638 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "QuickHeal Antivirus CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891667 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Microsoft Windows Defender CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891696 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Apple iCloud Security CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891725 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Google Android Device Protection CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891754 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "QuickHeal Antivirus CRITICAL ALERT: Suspicious Trojan.Spyware infection detected on your device! Your financial data is exposed. Do not shut down. Call certified customer support hotline 1800-891783 immediately.",
+    "fraud": 0.91,
+    "category": "tech_support",
+    "brand_imp": 0.88,
+    "cred_req": 0.7,
+    "pay_req": 0.45,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from Airtel: Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845000000 or update Aadhaar at http://sim-kyc-airtel.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from Jio: Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845000077 or update Aadhaar at http://sim-kyc-jio.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from Vodafone Idea (Vi): Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845000154 or update Aadhaar at http://sim-kyc-vodafone.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from BSNL: Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845000231 or update Aadhaar at http://sim-kyc-bsnl.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from Airtel: Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845000308 or update Aadhaar at http://sim-kyc-airtel.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from Jio: Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845000385 or update Aadhaar at http://sim-kyc-jio.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from Vodafone Idea (Vi): Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845000462 or update Aadhaar at http://sim-kyc-vodafone.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from BSNL: Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845000539 or update Aadhaar at http://sim-kyc-bsnl.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from Airtel: Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845000616 or update Aadhaar at http://sim-kyc-airtel.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from Jio: Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845000693 or update Aadhaar at http://sim-kyc-jio.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from Vodafone Idea (Vi): Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845000770 or update Aadhaar at http://sim-kyc-vodafone.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from BSNL: Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845000847 or update Aadhaar at http://sim-kyc-bsnl.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from Airtel: Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845000924 or update Aadhaar at http://sim-kyc-airtel.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from Jio: Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845001001 or update Aadhaar at http://sim-kyc-jio.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from Vodafone Idea (Vi): Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845001078 or update Aadhaar at http://sim-kyc-vodafone.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from BSNL: Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845001155 or update Aadhaar at http://sim-kyc-bsnl.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from Airtel: Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845001232 or update Aadhaar at http://sim-kyc-airtel.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from Jio: Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845001309 or update Aadhaar at http://sim-kyc-jio.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from Vodafone Idea (Vi): Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845001386 or update Aadhaar at http://sim-kyc-vodafone.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from BSNL: Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845001463 or update Aadhaar at http://sim-kyc-bsnl.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from Airtel: Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845001540 or update Aadhaar at http://sim-kyc-airtel.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from Jio: Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845001617 or update Aadhaar at http://sim-kyc-jio.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from Vodafone Idea (Vi): Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845001694 or update Aadhaar at http://sim-kyc-vodafone.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from BSNL: Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845001771 or update Aadhaar at http://sim-kyc-bsnl.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from Airtel: Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845001848 or update Aadhaar at http://sim-kyc-airtel.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from Jio: Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845001925 or update Aadhaar at http://sim-kyc-jio.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from Vodafone Idea (Vi): Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845002002 or update Aadhaar at http://sim-kyc-vodafone.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Notice from BSNL: Your 4G/5G SIM card KYC verification is pending. Outgoing calls and mobile data will be permanently blocked tonight at 10 PM. Call customer support officer 9845002079 or update Aadhaar at http://sim-kyc-bsnl.top",
+    "fraud": 0.93,
+    "category": "telecom",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.35,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Income Tax Department Notice: Your tax refund of Rs 28,450 is approved. Submit your bank account and PAN details at http://incometax-refund-portal.site to credit funds. (Ref #10000)",
+    "fraud": 0.94,
+    "category": "government",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.2,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Traffic Police Department: Pending speed violation e-challan MH02-8921. Pay fine within 24 hours at http://echallan-parivahan-pay.site to avoid vehicle seizure and court warrant. (Ref #10017)",
+    "fraud": 0.92,
+    "category": "government",
+    "brand_imp": 0.8,
+    "cred_req": 0.3,
+    "pay_req": 0.9,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "CBI Cyber Cell / Delhi Police: An FIR has been registered against your mobile number for illegal online activities. Call Deputy Commissioner immediately on WhatsApp +91-9821839201 to settle before arrest. (Ref #10034)",
+    "fraud": 0.95,
+    "category": "extortion_legal",
+    "brand_imp": 0.85,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.75
+  },
+  {
+    "text": "Customs Border Control: Parcel intercepted at airport containing narcotics addressed to your Aadhaar ID. Pay penalty fine Rs 45,000 to clearance officer to stop legal prosecution. (Ref #10051)",
+    "fraud": 0.95,
+    "category": "extortion_legal",
+    "brand_imp": 0.8,
+    "cred_req": 0.35,
+    "pay_req": 0.95,
+    "deep_analysis": 0.75
+  },
+  {
+    "text": "Income Tax Department Notice: Your tax refund of Rs 28,450 is approved. Submit your bank account and PAN details at http://incometax-refund-portal.site to credit funds. (Ref #10068)",
+    "fraud": 0.94,
+    "category": "government",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.2,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Traffic Police Department: Pending speed violation e-challan MH02-8921. Pay fine within 24 hours at http://echallan-parivahan-pay.site to avoid vehicle seizure and court warrant. (Ref #10085)",
+    "fraud": 0.92,
+    "category": "government",
+    "brand_imp": 0.8,
+    "cred_req": 0.3,
+    "pay_req": 0.9,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "CBI Cyber Cell / Delhi Police: An FIR has been registered against your mobile number for illegal online activities. Call Deputy Commissioner immediately on WhatsApp +91-9821839201 to settle before arrest. (Ref #10102)",
+    "fraud": 0.95,
+    "category": "extortion_legal",
+    "brand_imp": 0.85,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.75
+  },
+  {
+    "text": "Customs Border Control: Parcel intercepted at airport containing narcotics addressed to your Aadhaar ID. Pay penalty fine Rs 45,000 to clearance officer to stop legal prosecution. (Ref #10119)",
+    "fraud": 0.95,
+    "category": "extortion_legal",
+    "brand_imp": 0.8,
+    "cred_req": 0.35,
+    "pay_req": 0.95,
+    "deep_analysis": 0.75
+  },
+  {
+    "text": "Income Tax Department Notice: Your tax refund of Rs 28,450 is approved. Submit your bank account and PAN details at http://incometax-refund-portal.site to credit funds. (Ref #10136)",
+    "fraud": 0.94,
+    "category": "government",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.2,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Traffic Police Department: Pending speed violation e-challan MH02-8921. Pay fine within 24 hours at http://echallan-parivahan-pay.site to avoid vehicle seizure and court warrant. (Ref #10153)",
+    "fraud": 0.92,
+    "category": "government",
+    "brand_imp": 0.8,
+    "cred_req": 0.3,
+    "pay_req": 0.9,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "CBI Cyber Cell / Delhi Police: An FIR has been registered against your mobile number for illegal online activities. Call Deputy Commissioner immediately on WhatsApp +91-9821839201 to settle before arrest. (Ref #10170)",
+    "fraud": 0.95,
+    "category": "extortion_legal",
+    "brand_imp": 0.85,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.75
+  },
+  {
+    "text": "Customs Border Control: Parcel intercepted at airport containing narcotics addressed to your Aadhaar ID. Pay penalty fine Rs 45,000 to clearance officer to stop legal prosecution. (Ref #10187)",
+    "fraud": 0.95,
+    "category": "extortion_legal",
+    "brand_imp": 0.8,
+    "cred_req": 0.35,
+    "pay_req": 0.95,
+    "deep_analysis": 0.75
+  },
+  {
+    "text": "Income Tax Department Notice: Your tax refund of Rs 28,450 is approved. Submit your bank account and PAN details at http://incometax-refund-portal.site to credit funds. (Ref #10204)",
+    "fraud": 0.94,
+    "category": "government",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.2,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Traffic Police Department: Pending speed violation e-challan MH02-8921. Pay fine within 24 hours at http://echallan-parivahan-pay.site to avoid vehicle seizure and court warrant. (Ref #10221)",
+    "fraud": 0.92,
+    "category": "government",
+    "brand_imp": 0.8,
+    "cred_req": 0.3,
+    "pay_req": 0.9,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "CBI Cyber Cell / Delhi Police: An FIR has been registered against your mobile number for illegal online activities. Call Deputy Commissioner immediately on WhatsApp +91-9821839201 to settle before arrest. (Ref #10238)",
+    "fraud": 0.95,
+    "category": "extortion_legal",
+    "brand_imp": 0.85,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.75
+  },
+  {
+    "text": "Customs Border Control: Parcel intercepted at airport containing narcotics addressed to your Aadhaar ID. Pay penalty fine Rs 45,000 to clearance officer to stop legal prosecution. (Ref #10255)",
+    "fraud": 0.95,
+    "category": "extortion_legal",
+    "brand_imp": 0.8,
+    "cred_req": 0.35,
+    "pay_req": 0.95,
+    "deep_analysis": 0.75
+  },
+  {
+    "text": "Income Tax Department Notice: Your tax refund of Rs 28,450 is approved. Submit your bank account and PAN details at http://incometax-refund-portal.site to credit funds. (Ref #10272)",
+    "fraud": 0.94,
+    "category": "government",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.2,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Traffic Police Department: Pending speed violation e-challan MH02-8921. Pay fine within 24 hours at http://echallan-parivahan-pay.site to avoid vehicle seizure and court warrant. (Ref #10289)",
+    "fraud": 0.92,
+    "category": "government",
+    "brand_imp": 0.8,
+    "cred_req": 0.3,
+    "pay_req": 0.9,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "CBI Cyber Cell / Delhi Police: An FIR has been registered against your mobile number for illegal online activities. Call Deputy Commissioner immediately on WhatsApp +91-9821839201 to settle before arrest. (Ref #10306)",
+    "fraud": 0.95,
+    "category": "extortion_legal",
+    "brand_imp": 0.85,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.75
+  },
+  {
+    "text": "Customs Border Control: Parcel intercepted at airport containing narcotics addressed to your Aadhaar ID. Pay penalty fine Rs 45,000 to clearance officer to stop legal prosecution. (Ref #10323)",
+    "fraud": 0.95,
+    "category": "extortion_legal",
+    "brand_imp": 0.8,
+    "cred_req": 0.35,
+    "pay_req": 0.95,
+    "deep_analysis": 0.75
+  },
+  {
+    "text": "Income Tax Department Notice: Your tax refund of Rs 28,450 is approved. Submit your bank account and PAN details at http://incometax-refund-portal.site to credit funds. (Ref #10340)",
+    "fraud": 0.94,
+    "category": "government",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.2,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Traffic Police Department: Pending speed violation e-challan MH02-8921. Pay fine within 24 hours at http://echallan-parivahan-pay.site to avoid vehicle seizure and court warrant. (Ref #10357)",
+    "fraud": 0.92,
+    "category": "government",
+    "brand_imp": 0.8,
+    "cred_req": 0.3,
+    "pay_req": 0.9,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "CBI Cyber Cell / Delhi Police: An FIR has been registered against your mobile number for illegal online activities. Call Deputy Commissioner immediately on WhatsApp +91-9821839201 to settle before arrest. (Ref #10374)",
+    "fraud": 0.95,
+    "category": "extortion_legal",
+    "brand_imp": 0.85,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.75
+  },
+  {
+    "text": "Customs Border Control: Parcel intercepted at airport containing narcotics addressed to your Aadhaar ID. Pay penalty fine Rs 45,000 to clearance officer to stop legal prosecution. (Ref #10391)",
+    "fraud": 0.95,
+    "category": "extortion_legal",
+    "brand_imp": 0.8,
+    "cred_req": 0.35,
+    "pay_req": 0.95,
+    "deep_analysis": 0.75
+  },
+  {
+    "text": "Income Tax Department Notice: Your tax refund of Rs 28,450 is approved. Submit your bank account and PAN details at http://incometax-refund-portal.site to credit funds. (Ref #10408)",
+    "fraud": 0.94,
+    "category": "government",
+    "brand_imp": 0.85,
+    "cred_req": 0.88,
+    "pay_req": 0.2,
+    "deep_analysis": 0.5
+  },
+  {
+    "text": "Traffic Police Department: Pending speed violation e-challan MH02-8921. Pay fine within 24 hours at http://echallan-parivahan-pay.site to avoid vehicle seizure and court warrant. (Ref #10425)",
+    "fraud": 0.92,
+    "category": "government",
+    "brand_imp": 0.8,
+    "cred_req": 0.3,
+    "pay_req": 0.9,
+    "deep_analysis": 0.55
+  },
+  {
+    "text": "CBI Cyber Cell / Delhi Police: An FIR has been registered against your mobile number for illegal online activities. Call Deputy Commissioner immediately on WhatsApp +91-9821839201 to settle before arrest. (Ref #10442)",
+    "fraud": 0.95,
+    "category": "extortion_legal",
+    "brand_imp": 0.85,
+    "cred_req": 0.4,
+    "pay_req": 0.92,
+    "deep_analysis": 0.75
+  },
+  {
+    "text": "Customs Border Control: Parcel intercepted at airport containing narcotics addressed to your Aadhaar ID. Pay penalty fine Rs 45,000 to clearance officer to stop legal prosecution. (Ref #10459)",
+    "fraud": 0.95,
+    "category": "extortion_legal",
+    "brand_imp": 0.8,
+    "cred_req": 0.35,
+    "pay_req": 0.95,
+    "deep_analysis": 0.75
+  },
+  {
+    "text": "Dear SBI Customer, your A/c XX1000 has been debited by Rs 240.00 on 12-Nov-2026. Ref: UPI/POS/AMAZON INDIA. Avail Bal: Rs 34,500.20. If not done by you, visit sbi.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear HDFC Bank Customer, your A/c XX1013 has been debited by Rs 1,450.50 on 12-Nov-2026. Ref: UPI/POS/FLIPKART. Avail Bal: Rs 12,890.00. If not done by you, visit hdfcbank.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear ICICI Bank Customer, your A/c XX1026 has been debited by Rs 499.00 on 12-Nov-2026. Ref: UPI/POS/SWIGGY. Avail Bal: Rs 84,320.10. If not done by you, visit icicibank.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear Axis Bank Customer, your A/c XX1039 has been debited by Rs 3,200.00 on 12-Nov-2026. Ref: UPI/POS/ZOMATO. Avail Bal: Rs 4,210.50. If not done by you, visit axisbank.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear Kotak Bank Customer, your A/c XX1052 has been debited by Rs 85.00 on 12-Nov-2026. Ref: UPI/POS/UBER INDIA. Avail Bal: Rs 34,500.20. If not done by you, visit kotakbank.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear PNB Customer, your A/c XX1065 has been debited by Rs 12,500.00 on 12-Nov-2026. Ref: UPI/POS/BLINKIT. Avail Bal: Rs 12,890.00. If not done by you, visit pnb.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear Canara Bank Customer, your A/c XX1078 has been debited by Rs 780.00 on 12-Nov-2026. Ref: UPI/POS/APOLLO PHARMACY. Avail Bal: Rs 84,320.10. If not done by you, visit canarabank.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear Bank of Baroda Customer, your A/c XX1091 has been debited by Rs 55.00 on 12-Nov-2026. Ref: UPI/POS/SHELL PETROL. Avail Bal: Rs 4,210.50. If not done by you, visit bankofbaroda.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear SBI Customer, your A/c XX1104 has been debited by Rs 240.00 on 12-Nov-2026. Ref: UPI/POS/AMAZON INDIA. Avail Bal: Rs 34,500.20. If not done by you, visit sbi.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear HDFC Bank Customer, your A/c XX1117 has been debited by Rs 1,450.50 on 12-Nov-2026. Ref: UPI/POS/FLIPKART. Avail Bal: Rs 12,890.00. If not done by you, visit hdfcbank.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear ICICI Bank Customer, your A/c XX1130 has been debited by Rs 499.00 on 12-Nov-2026. Ref: UPI/POS/SWIGGY. Avail Bal: Rs 84,320.10. If not done by you, visit icicibank.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear Axis Bank Customer, your A/c XX1143 has been debited by Rs 3,200.00 on 12-Nov-2026. Ref: UPI/POS/ZOMATO. Avail Bal: Rs 4,210.50. If not done by you, visit axisbank.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear Kotak Bank Customer, your A/c XX1156 has been debited by Rs 85.00 on 12-Nov-2026. Ref: UPI/POS/UBER INDIA. Avail Bal: Rs 34,500.20. If not done by you, visit kotakbank.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear PNB Customer, your A/c XX1169 has been debited by Rs 12,500.00 on 12-Nov-2026. Ref: UPI/POS/BLINKIT. Avail Bal: Rs 12,890.00. If not done by you, visit pnb.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear Canara Bank Customer, your A/c XX1182 has been debited by Rs 780.00 on 12-Nov-2026. Ref: UPI/POS/APOLLO PHARMACY. Avail Bal: Rs 84,320.10. If not done by you, visit canarabank.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear Bank of Baroda Customer, your A/c XX1195 has been debited by Rs 55.00 on 12-Nov-2026. Ref: UPI/POS/SHELL PETROL. Avail Bal: Rs 4,210.50. If not done by you, visit bankofbaroda.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear SBI Customer, your A/c XX1208 has been debited by Rs 240.00 on 12-Nov-2026. Ref: UPI/POS/AMAZON INDIA. Avail Bal: Rs 34,500.20. If not done by you, visit sbi.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear HDFC Bank Customer, your A/c XX1221 has been debited by Rs 1,450.50 on 12-Nov-2026. Ref: UPI/POS/FLIPKART. Avail Bal: Rs 12,890.00. If not done by you, visit hdfcbank.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear ICICI Bank Customer, your A/c XX1234 has been debited by Rs 499.00 on 12-Nov-2026. Ref: UPI/POS/SWIGGY. Avail Bal: Rs 84,320.10. If not done by you, visit icicibank.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear Axis Bank Customer, your A/c XX1247 has been debited by Rs 3,200.00 on 12-Nov-2026. Ref: UPI/POS/ZOMATO. Avail Bal: Rs 4,210.50. If not done by you, visit axisbank.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear Kotak Bank Customer, your A/c XX1260 has been debited by Rs 85.00 on 12-Nov-2026. Ref: UPI/POS/UBER INDIA. Avail Bal: Rs 34,500.20. If not done by you, visit kotakbank.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear PNB Customer, your A/c XX1273 has been debited by Rs 12,500.00 on 12-Nov-2026. Ref: UPI/POS/BLINKIT. Avail Bal: Rs 12,890.00. If not done by you, visit pnb.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear Canara Bank Customer, your A/c XX1286 has been debited by Rs 780.00 on 12-Nov-2026. Ref: UPI/POS/APOLLO PHARMACY. Avail Bal: Rs 84,320.10. If not done by you, visit canarabank.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear Bank of Baroda Customer, your A/c XX1299 has been debited by Rs 55.00 on 12-Nov-2026. Ref: UPI/POS/SHELL PETROL. Avail Bal: Rs 4,210.50. If not done by you, visit bankofbaroda.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear SBI Customer, your A/c XX1312 has been debited by Rs 240.00 on 12-Nov-2026. Ref: UPI/POS/AMAZON INDIA. Avail Bal: Rs 34,500.20. If not done by you, visit sbi.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear HDFC Bank Customer, your A/c XX1325 has been debited by Rs 1,450.50 on 12-Nov-2026. Ref: UPI/POS/FLIPKART. Avail Bal: Rs 12,890.00. If not done by you, visit hdfcbank.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear ICICI Bank Customer, your A/c XX1338 has been debited by Rs 499.00 on 12-Nov-2026. Ref: UPI/POS/SWIGGY. Avail Bal: Rs 84,320.10. If not done by you, visit icicibank.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear Axis Bank Customer, your A/c XX1351 has been debited by Rs 3,200.00 on 12-Nov-2026. Ref: UPI/POS/ZOMATO. Avail Bal: Rs 4,210.50. If not done by you, visit axisbank.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear Kotak Bank Customer, your A/c XX1364 has been debited by Rs 85.00 on 12-Nov-2026. Ref: UPI/POS/UBER INDIA. Avail Bal: Rs 34,500.20. If not done by you, visit kotakbank.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear PNB Customer, your A/c XX1377 has been debited by Rs 12,500.00 on 12-Nov-2026. Ref: UPI/POS/BLINKIT. Avail Bal: Rs 12,890.00. If not done by you, visit pnb.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear Canara Bank Customer, your A/c XX1390 has been debited by Rs 780.00 on 12-Nov-2026. Ref: UPI/POS/APOLLO PHARMACY. Avail Bal: Rs 84,320.10. If not done by you, visit canarabank.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear Bank of Baroda Customer, your A/c XX1403 has been debited by Rs 55.00 on 12-Nov-2026. Ref: UPI/POS/SHELL PETROL. Avail Bal: Rs 4,210.50. If not done by you, visit bankofbaroda.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear SBI Customer, your A/c XX1416 has been debited by Rs 240.00 on 12-Nov-2026. Ref: UPI/POS/AMAZON INDIA. Avail Bal: Rs 34,500.20. If not done by you, visit sbi.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear HDFC Bank Customer, your A/c XX1429 has been debited by Rs 1,450.50 on 12-Nov-2026. Ref: UPI/POS/FLIPKART. Avail Bal: Rs 12,890.00. If not done by you, visit hdfcbank.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Dear ICICI Bank Customer, your A/c XX1442 has been debited by Rs 499.00 on 12-Nov-2026. Ref: UPI/POS/SWIGGY. Avail Bal: Rs 84,320.10. If not done by you, visit icicibank.com/dispute or call customer care.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "100000 is your secret One Time Password (OTP) for Amazon login. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "102713 is your secret One Time Password (OTP) for IRCTC tatkal ticket booking. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "105426 is your secret One Time Password (OTP) for Swiggy food order. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "108139 is your secret One Time Password (OTP) for NetBanking profile login. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "110852 is your secret One Time Password (OTP) for HDFC card transaction. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "113565 is your secret One Time Password (OTP) for ICICI iMobile. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "116278 is your secret One Time Password (OTP) for Flipkart checkout. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "118991 is your secret One Time Password (OTP) for Amazon login. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "121704 is your secret One Time Password (OTP) for IRCTC tatkal ticket booking. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "124417 is your secret One Time Password (OTP) for Swiggy food order. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "127130 is your secret One Time Password (OTP) for NetBanking profile login. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "129843 is your secret One Time Password (OTP) for HDFC card transaction. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "132556 is your secret One Time Password (OTP) for ICICI iMobile. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "135269 is your secret One Time Password (OTP) for Flipkart checkout. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "137982 is your secret One Time Password (OTP) for Amazon login. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "140695 is your secret One Time Password (OTP) for IRCTC tatkal ticket booking. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "143408 is your secret One Time Password (OTP) for Swiggy food order. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "146121 is your secret One Time Password (OTP) for NetBanking profile login. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "148834 is your secret One Time Password (OTP) for HDFC card transaction. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "151547 is your secret One Time Password (OTP) for ICICI iMobile. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "154260 is your secret One Time Password (OTP) for Flipkart checkout. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "156973 is your secret One Time Password (OTP) for Amazon login. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "159686 is your secret One Time Password (OTP) for IRCTC tatkal ticket booking. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "162399 is your secret One Time Password (OTP) for Swiggy food order. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "165112 is your secret One Time Password (OTP) for NetBanking profile login. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "167825 is your secret One Time Password (OTP) for HDFC card transaction. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "170538 is your secret One Time Password (OTP) for ICICI iMobile. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "173251 is your secret One Time Password (OTP) for Flipkart checkout. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "175964 is your secret One Time Password (OTP) for Amazon login. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "178677 is your secret One Time Password (OTP) for IRCTC tatkal ticket booking. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "181390 is your secret One Time Password (OTP) for Swiggy food order. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "184103 is your secret One Time Password (OTP) for NetBanking profile login. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "186816 is your secret One Time Password (OTP) for HDFC card transaction. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "189529 is your secret One Time Password (OTP) for ICICI iMobile. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "192242 is your secret One Time Password (OTP) for Flipkart checkout. Valid for 5 minutes. NEVER share your OTP, PIN or password with anyone, even bank officials. Cyber vigilance pays.",
+    "fraud": 0.04,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.02,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Jio: Your daily 1.5 GB high-speed data quota is 50% consumed. Renew or recharge via MyJio app.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Airtel: Your unlimited pack of Rs 299 expires in 3 days. Recharge on Airtel Thanks app to enjoy uninterrupted data and calls.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Vi: Your postpaid bill of Rs 499 for mobile number 98XXXX1234 is generated. Due date is 25-Nov. Pay via Vi App.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "BSNL: Plan validity extended till 31-Dec-2026. Thank you for choosing BSNL mobile services.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Dear Jio customer, thank you for recharging with Rs 666. 1.5GB/day + unlimited 5G data is active for 84 days.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Airtel Thanks: You have unlocked free Wynk Music subscription. Download Airtel Thanks app to activate.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Jio: 100% of your daily high-speed internet data has been exhausted. Speed reduced to 64Kbps.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Jio: Your daily 1.5 GB high-speed data quota is 50% consumed. Renew or recharge via MyJio app.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Airtel: Your unlimited pack of Rs 299 expires in 3 days. Recharge on Airtel Thanks app to enjoy uninterrupted data and calls.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Vi: Your postpaid bill of Rs 499 for mobile number 98XXXX1234 is generated. Due date is 25-Nov. Pay via Vi App.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "BSNL: Plan validity extended till 31-Dec-2026. Thank you for choosing BSNL mobile services.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Dear Jio customer, thank you for recharging with Rs 666. 1.5GB/day + unlimited 5G data is active for 84 days.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Airtel Thanks: You have unlocked free Wynk Music subscription. Download Airtel Thanks app to activate.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Jio: 100% of your daily high-speed internet data has been exhausted. Speed reduced to 64Kbps.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Jio: Your daily 1.5 GB high-speed data quota is 50% consumed. Renew or recharge via MyJio app.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Airtel: Your unlimited pack of Rs 299 expires in 3 days. Recharge on Airtel Thanks app to enjoy uninterrupted data and calls.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Vi: Your postpaid bill of Rs 499 for mobile number 98XXXX1234 is generated. Due date is 25-Nov. Pay via Vi App.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "BSNL: Plan validity extended till 31-Dec-2026. Thank you for choosing BSNL mobile services.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Dear Jio customer, thank you for recharging with Rs 666. 1.5GB/day + unlimited 5G data is active for 84 days.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Airtel Thanks: You have unlocked free Wynk Music subscription. Download Airtel Thanks app to activate.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Jio: 100% of your daily high-speed internet data has been exhausted. Speed reduced to 64Kbps.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Jio: Your daily 1.5 GB high-speed data quota is 50% consumed. Renew or recharge via MyJio app.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Airtel: Your unlimited pack of Rs 299 expires in 3 days. Recharge on Airtel Thanks app to enjoy uninterrupted data and calls.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Vi: Your postpaid bill of Rs 499 for mobile number 98XXXX1234 is generated. Due date is 25-Nov. Pay via Vi App.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "BSNL: Plan validity extended till 31-Dec-2026. Thank you for choosing BSNL mobile services.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Dear Jio customer, thank you for recharging with Rs 666. 1.5GB/day + unlimited 5G data is active for 84 days.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Airtel Thanks: You have unlocked free Wynk Music subscription. Download Airtel Thanks app to activate.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Jio: 100% of your daily high-speed internet data has been exhausted. Speed reduced to 64Kbps.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Jio: Your daily 1.5 GB high-speed data quota is 50% consumed. Renew or recharge via MyJio app.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Airtel: Your unlimited pack of Rs 299 expires in 3 days. Recharge on Airtel Thanks app to enjoy uninterrupted data and calls.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Vi: Your postpaid bill of Rs 499 for mobile number 98XXXX1234 is generated. Due date is 25-Nov. Pay via Vi App.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "BSNL: Plan validity extended till 31-Dec-2026. Thank you for choosing BSNL mobile services.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Dear Jio customer, thank you for recharging with Rs 666. 1.5GB/day + unlimited 5G data is active for 84 days.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Airtel Thanks: You have unlocked free Wynk Music subscription. Download Airtel Thanks app to activate.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "Jio: 100% of your daily high-speed internet data has been exhausted. Speed reduced to 64Kbps.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.03
+  },
+  {
+    "text": "BESCOM: Dear consumer, your electricity bill of Rs 890 for Account ID 892019 is generated. Due date 20-Nov. Pay online at official bescom.org portal.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Mahavitaran (MSEDCL): Bill of Rs 1,420 for Consumer No 0192819 generated. Due date 24-Nov. Avail prompt payment discount on msedcl.in",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Tata Power: Dear customer, payment of Rs 2,150 against bill #98218 received with thanks on 11-Nov-2026. Receipt is available in customer portal.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Indane Gas: Your LPG cylinder refill booking is confirmed. Order #89281. Delivery will be attempted within 2 working days.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Torrent Power: Dear Consumer, scheduled maintenance work in your area tomorrow between 10 AM to 1 PM. Power supply may be temporarily affected.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "BESCOM: Dear consumer, your electricity bill of Rs 890 for Account ID 892019 is generated. Due date 20-Nov. Pay online at official bescom.org portal.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Mahavitaran (MSEDCL): Bill of Rs 1,420 for Consumer No 0192819 generated. Due date 24-Nov. Avail prompt payment discount on msedcl.in",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Tata Power: Dear customer, payment of Rs 2,150 against bill #98218 received with thanks on 11-Nov-2026. Receipt is available in customer portal.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Indane Gas: Your LPG cylinder refill booking is confirmed. Order #89281. Delivery will be attempted within 2 working days.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Torrent Power: Dear Consumer, scheduled maintenance work in your area tomorrow between 10 AM to 1 PM. Power supply may be temporarily affected.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "BESCOM: Dear consumer, your electricity bill of Rs 890 for Account ID 892019 is generated. Due date 20-Nov. Pay online at official bescom.org portal.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Mahavitaran (MSEDCL): Bill of Rs 1,420 for Consumer No 0192819 generated. Due date 24-Nov. Avail prompt payment discount on msedcl.in",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Tata Power: Dear customer, payment of Rs 2,150 against bill #98218 received with thanks on 11-Nov-2026. Receipt is available in customer portal.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Indane Gas: Your LPG cylinder refill booking is confirmed. Order #89281. Delivery will be attempted within 2 working days.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Torrent Power: Dear Consumer, scheduled maintenance work in your area tomorrow between 10 AM to 1 PM. Power supply may be temporarily affected.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "BESCOM: Dear consumer, your electricity bill of Rs 890 for Account ID 892019 is generated. Due date 20-Nov. Pay online at official bescom.org portal.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Mahavitaran (MSEDCL): Bill of Rs 1,420 for Consumer No 0192819 generated. Due date 24-Nov. Avail prompt payment discount on msedcl.in",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Tata Power: Dear customer, payment of Rs 2,150 against bill #98218 received with thanks on 11-Nov-2026. Receipt is available in customer portal.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Indane Gas: Your LPG cylinder refill booking is confirmed. Order #89281. Delivery will be attempted within 2 working days.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Torrent Power: Dear Consumer, scheduled maintenance work in your area tomorrow between 10 AM to 1 PM. Power supply may be temporarily affected.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "BESCOM: Dear consumer, your electricity bill of Rs 890 for Account ID 892019 is generated. Due date 20-Nov. Pay online at official bescom.org portal.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Mahavitaran (MSEDCL): Bill of Rs 1,420 for Consumer No 0192819 generated. Due date 24-Nov. Avail prompt payment discount on msedcl.in",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Tata Power: Dear customer, payment of Rs 2,150 against bill #98218 received with thanks on 11-Nov-2026. Receipt is available in customer portal.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Indane Gas: Your LPG cylinder refill booking is confirmed. Order #89281. Delivery will be attempted within 2 working days.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Torrent Power: Dear Consumer, scheduled maintenance work in your area tomorrow between 10 AM to 1 PM. Power supply may be temporarily affected.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "BESCOM: Dear consumer, your electricity bill of Rs 890 for Account ID 892019 is generated. Due date 20-Nov. Pay online at official bescom.org portal.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Mahavitaran (MSEDCL): Bill of Rs 1,420 for Consumer No 0192819 generated. Due date 24-Nov. Avail prompt payment discount on msedcl.in",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Tata Power: Dear customer, payment of Rs 2,150 against bill #98218 received with thanks on 11-Nov-2026. Receipt is available in customer portal.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Indane Gas: Your LPG cylinder refill booking is confirmed. Order #89281. Delivery will be attempted within 2 working days.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Torrent Power: Dear Consumer, scheduled maintenance work in your area tomorrow between 10 AM to 1 PM. Power supply may be temporarily affected.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "BESCOM: Dear consumer, your electricity bill of Rs 890 for Account ID 892019 is generated. Due date 20-Nov. Pay online at official bescom.org portal.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Mahavitaran (MSEDCL): Bill of Rs 1,420 for Consumer No 0192819 generated. Due date 24-Nov. Avail prompt payment discount on msedcl.in",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Tata Power: Dear customer, payment of Rs 2,150 against bill #98218 received with thanks on 11-Nov-2026. Receipt is available in customer portal.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Indane Gas: Your LPG cylinder refill booking is confirmed. Order #89281. Delivery will be attempted within 2 working days.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Torrent Power: Dear Consumer, scheduled maintenance work in your area tomorrow between 10 AM to 1 PM. Power supply may be temporarily affected.",
+    "fraud": 0.02,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.04
+  },
+  {
+    "text": "Your shipment PKG918230 from BlueDart is out for delivery today. Delivery agent will arrive between 2 PM to 5 PM. Share delivery code 1000 with agent at doorstep.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Your shipment PKG918277 from Delhivery is out for delivery today. Delivery agent will arrive between 2 PM to 5 PM. Share delivery code 1009 with agent at doorstep.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Your shipment PKG918324 from Amazon is out for delivery today. Delivery agent will arrive between 2 PM to 5 PM. Share delivery code 1018 with agent at doorstep.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Your shipment PKG918371 from Flipkart is out for delivery today. Delivery agent will arrive between 2 PM to 5 PM. Share delivery code 1027 with agent at doorstep.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Your shipment PKG918418 from DTDC is out for delivery today. Delivery agent will arrive between 2 PM to 5 PM. Share delivery code 1036 with agent at doorstep.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Your shipment PKG918465 from Shadowfax is out for delivery today. Delivery agent will arrive between 2 PM to 5 PM. Share delivery code 1045 with agent at doorstep.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Your shipment PKG918512 from BlueDart is out for delivery today. Delivery agent will arrive between 2 PM to 5 PM. Share delivery code 1054 with agent at doorstep.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Your shipment PKG918559 from Delhivery is out for delivery today. Delivery agent will arrive between 2 PM to 5 PM. Share delivery code 1063 with agent at doorstep.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Your shipment PKG918606 from Amazon is out for delivery today. Delivery agent will arrive between 2 PM to 5 PM. Share delivery code 1072 with agent at doorstep.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Your shipment PKG918653 from Flipkart is out for delivery today. Delivery agent will arrive between 2 PM to 5 PM. Share delivery code 1081 with agent at doorstep.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Your shipment PKG918700 from DTDC is out for delivery today. Delivery agent will arrive between 2 PM to 5 PM. Share delivery code 1090 with agent at doorstep.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Your shipment PKG918747 from Shadowfax is out for delivery today. Delivery agent will arrive between 2 PM to 5 PM. Share delivery code 1099 with agent at doorstep.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Your shipment PKG918794 from BlueDart is out for delivery today. Delivery agent will arrive between 2 PM to 5 PM. Share delivery code 1108 with agent at doorstep.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Your shipment PKG918841 from Delhivery is out for delivery today. Delivery agent will arrive between 2 PM to 5 PM. Share delivery code 1117 with agent at doorstep.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Your shipment PKG918888 from Amazon is out for delivery today. Delivery agent will arrive between 2 PM to 5 PM. Share delivery code 1126 with agent at doorstep.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Your shipment PKG918935 from Flipkart is out for delivery today. Delivery agent will arrive between 2 PM to 5 PM. Share delivery code 1135 with agent at doorstep.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Your shipment PKG918982 from DTDC is out for delivery today. Delivery agent will arrive between 2 PM to 5 PM. Share delivery code 1144 with agent at doorstep.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Your shipment PKG919029 from Shadowfax is out for delivery today. Delivery agent will arrive between 2 PM to 5 PM. Share delivery code 1153 with agent at doorstep.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Your shipment PKG919076 from BlueDart is out for delivery today. Delivery agent will arrive between 2 PM to 5 PM. Share delivery code 1162 with agent at doorstep.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Your shipment PKG919123 from Delhivery is out for delivery today. Delivery agent will arrive between 2 PM to 5 PM. Share delivery code 1171 with agent at doorstep.",
+    "fraud": 0.03,
+    "category": "none",
+    "brand_imp": 0.02,
+    "cred_req": 0.01,
+    "pay_req": 0.02,
+    "deep_analysis": 0.05
+  },
+  {
+    "text": "Hey, are you free for a quick call this afternoon?",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Please find attached the presentation slides for tomorrow's client sync.",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Doctor appointment confirmed with Dr. Sharma tomorrow at 11:30 AM.",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Can we reschedule our lunch meeting to Friday 1 PM instead?",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Happy birthday! Wishing you a wonderful year ahead with family and friends.",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Don't forget to buy milk and groceries on your way back home.",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Thanks for the update, I will review the code pull request by evening.",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Flight ticket booked: BLR to DEL on 18th Nov. PNR: W92KP1. Have a safe journey!",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Hi Ramesh, can you send me the address of the venue for the party tonight?",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Please bring your laptop charger when you come to the office tomorrow.",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "The project deployment was successful and all servers are responding normally.",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Good morning team, reminder that our weekly all-hands sprint review is at 11 AM today.",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Hey, are you free for a quick call this afternoon?",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Please find attached the presentation slides for tomorrow's client sync.",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Doctor appointment confirmed with Dr. Sharma tomorrow at 11:30 AM.",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Can we reschedule our lunch meeting to Friday 1 PM instead?",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Happy birthday! Wishing you a wonderful year ahead with family and friends.",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Don't forget to buy milk and groceries on your way back home.",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Thanks for the update, I will review the code pull request by evening.",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Flight ticket booked: BLR to DEL on 18th Nov. PNR: W92KP1. Have a safe journey!",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Hi Ramesh, can you send me the address of the venue for the party tonight?",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Please bring your laptop charger when you come to the office tomorrow.",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "The project deployment was successful and all servers are responding normally.",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Good morning team, reminder that our weekly all-hands sprint review is at 11 AM today.",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Hey, are you free for a quick call this afternoon?",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Please find attached the presentation slides for tomorrow's client sync.",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Doctor appointment confirmed with Dr. Sharma tomorrow at 11:30 AM.",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Can we reschedule our lunch meeting to Friday 1 PM instead?",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Happy birthday! Wishing you a wonderful year ahead with family and friends.",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Don't forget to buy milk and groceries on your way back home.",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Thanks for the update, I will review the code pull request by evening.",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Flight ticket booked: BLR to DEL on 18th Nov. PNR: W92KP1. Have a safe journey!",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Hi Ramesh, can you send me the address of the venue for the party tonight?",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "Please bring your laptop charger when you come to the office tomorrow.",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  },
+  {
+    "text": "The project deployment was successful and all servers are responding normally.",
+    "fraud": 0.01,
+    "category": "none",
+    "brand_imp": 0.01,
+    "cred_req": 0.01,
+    "pay_req": 0.01,
+    "deep_analysis": 0.02
+  }
+]

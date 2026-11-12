@@ -429,6 +429,33 @@ _CALIBRATION_DATA = [
 ]
 
 
+def _load_calibration_corpus() -> list:
+    """Load extended calibration corpus from backend/data/laya_training_corpus.json if available."""
+    try:
+        import os
+        import json
+        corpus_path = os.path.join(os.path.dirname(__file__), "..", "data", "laya_training_corpus.json")
+        if os.path.exists(corpus_path):
+            with open(corpus_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            if data and isinstance(data, list):
+                return [
+                    (
+                        item["text"],
+                        float(item["fraud"]),
+                        str(item["category"]),
+                        float(item["brand_imp"]),
+                        float(item["cred_req"]),
+                        float(item["pay_req"]),
+                        float(item["deep_analysis"]),
+                    )
+                    for item in data
+                ]
+    except Exception as e:
+        logger.debug("Failed loading external corpus: %s", e)
+    return _CALIBRATION_DATA
+
+
 def _init_local_laya():
     """Calibrate local fast multi-head decision heads with low-variance regularized estimators."""
     global _is_calibrated, _vectorizer, _heads
@@ -439,12 +466,13 @@ def _init_local_laya():
         from sklearn.feature_extraction.text import TfidfVectorizer
         from sklearn.linear_model import Ridge, LogisticRegression
 
-        texts = [row[0] for row in _CALIBRATION_DATA]
+        corpus = _load_calibration_corpus()
+        texts = [row[0] for row in corpus]
 
         # Regularized feature extraction: limit dimension to prevent memorization / high-variance overfitting
         _vectorizer = TfidfVectorizer(
             ngram_range=(1, 2),
-            max_features=120,
+            max_features=350,
             min_df=2,
             sublinear_tf=True,
             lowercase=True,
@@ -452,39 +480,39 @@ def _init_local_laya():
         )
         x = _vectorizer.fit_transform(texts)
 
-        # Head 1: Fraud score (regularized balanced logistic regression C=1.5, max_iter=400)
-        fraud_labels = [1 if row[1] >= 0.5 else 0 for row in _CALIBRATION_DATA]
-        h_fraud = LogisticRegression(C=1.5, max_iter=400, class_weight="balanced")
+        # Head 1: Fraud score (regularized balanced logistic regression C=2.0, max_iter=500)
+        fraud_labels = [1 if row[1] >= 0.5 else 0 for row in corpus]
+        h_fraud = LogisticRegression(C=2.0, max_iter=500, class_weight="balanced")
         h_fraud.fit(x, fraud_labels)
         _heads["fraud"] = h_fraud
 
-        # Head 2: Category choice (balanced multi-class logistic regression C=1.5)
-        h_cat = LogisticRegression(C=1.5, max_iter=400, class_weight="balanced")
-        h_cat.fit(x, [row[2] for row in _CALIBRATION_DATA])
+        # Head 2: Category choice (balanced multi-class logistic regression C=2.0)
+        h_cat = LogisticRegression(C=2.0, max_iter=500, class_weight="balanced")
+        h_cat.fit(x, [row[2] for row in corpus])
         _heads["category"] = h_cat
 
         # Head 3: Brand impersonation score (regularized L2 Ridge alpha=3.0)
         h_brand = Ridge(alpha=3.0)
-        h_brand.fit(x, [row[3] for row in _CALIBRATION_DATA])
+        h_brand.fit(x, [row[3] for row in corpus])
         _heads["brand"] = h_brand
 
         # Head 4: Credential request score (regularized L2 Ridge alpha=3.0)
         h_cred = Ridge(alpha=3.0)
-        h_cred.fit(x, [row[4] for row in _CALIBRATION_DATA])
+        h_cred.fit(x, [row[4] for row in corpus])
         _heads["credential"] = h_cred
 
         # Head 5: Payment request score (regularized L2 Ridge alpha=3.0)
         h_pay = Ridge(alpha=3.0)
-        h_pay.fit(x, [row[5] for row in _CALIBRATION_DATA])
+        h_pay.fit(x, [row[5] for row in corpus])
         _heads["payment"] = h_pay
 
         # Head 6: Deep analysis required (regularized L2 Ridge alpha=3.0)
         h_deep = Ridge(alpha=3.0)
-        h_deep.fit(x, [row[6] for row in _CALIBRATION_DATA])
+        h_deep.fit(x, [row[6] for row in corpus])
         _heads["deep_analysis"] = h_deep
 
         _is_calibrated = True
-        logger.info("Local Laya typed-decision heads calibrated successfully with %d samples.", len(_CALIBRATION_DATA))
+        logger.info("Local Laya typed-decision heads calibrated successfully with %d samples.", len(corpus))
     except Exception as e:
         logger.warning("Failed to calibrate local Laya heads: %s", e)
         _is_calibrated = False
