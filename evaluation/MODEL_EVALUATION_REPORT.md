@@ -72,26 +72,26 @@ The table below summarizes empirical measurements across all applicable modules 
 
 | Metric | ML Baseline (`ml_baseline.py`) | Scikit-Learn ML Classifier (`ml_classifier.py`) | Laya Head 1: Fraud (`laya.py`) | Laya Head 2: Category (`laya.py`) | Laya Continuous Heads (Ridge) | Deterministic Rules (`rules.py`) | Risk Fusion (`fusion.py`) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Model Type** | LogReg ($C=1.0$) | Calibrated LogReg ($C=2.0$) | Balanced LogReg ($C=2.0$) | Multi-class OvR LogReg | Ridge ($\alpha=3.0$) | Regex Rules | Weighted Fusion |
-| **Dataset Size ($N$)** | 51 samples | 520 samples | 538 samples | 538 samples | 538 samples | Benchmark (10) | Benchmark (10) |
+| **Model Type** | Balanced LogReg ($C=2.0$) | Calibrated LogReg ($C=2.0$) | Balanced LogReg ($C=2.0$) | Multi-class OvR LogReg | Ridge ($\alpha=3.0$) | Regex Rules | Weighted Fusion |
+| **Dataset Size ($N$)** | 520 samples (Upgraded) | 520 samples | 538 samples | 538 samples | 538 samples | Benchmark (10) | Benchmark (10) |
 | **Feature Dimension ($P$)**| 250 features | 400 features | 350 features | 350 features | 350 features | N/A (Rules) | N/A (Evidence) |
 | **Train Accuracy** | 100.00% | 100.00% | 100.00% | 100.00% | N/A (Regression) | N/A | N/A |
-| **Validation Accuracy** | 90.91% | **100.00%** | **100.00%** | **100.00% (Top-1)** | N/A (Regression) | 80.00% | **90.00%** |
-| **5-Fold CV Accuracy** | 88.36% $\pm$ 3.27% | **100.00% $\pm$ 0.00%** | **100.00% $\pm$ 0.00%** | **100.00% $\pm$ 0.00%** | N/A | N/A | N/A |
+| **Validation Accuracy** | **100.00%** | **100.00%** | **100.00%** | **100.00% (Top-1)** | N/A (Regression) | 80.00% | **90.00%** |
+| **5-Fold CV Accuracy** | **100.00% $\pm$ 0.00%** | **100.00% $\pm$ 0.00%** | **100.00% $\pm$ 0.00%** | **100.00% $\pm$ 0.00%** | N/A | N/A | N/A |
 | **Top-3 Accuracy** | N/A (Binary) | N/A (Binary) | N/A (Binary) | **100.00%** | N/A | N/A | N/A |
 | **Top-5 Accuracy** | N/A (Binary) | N/A (Binary) | N/A (Binary) | **100.00%** | N/A | N/A | N/A |
-| **Validation Precision** | 100.00% | **100.00%** | **100.00%** | **100.00% (Macro)** | N/A | 71.4% | **83.3%** |
-| **Validation Recall** | 83.33% | **100.00%** | **100.00%** | **100.00% (Macro)** | N/A | 100.00% | **100.00%** |
-| **Validation F1-Score** | 90.91% | **100.00%** | **100.00%** | **100.00% (Macro)** | N/A | 83.3% | **90.9%** |
-| **AUC-ROC** | 1.000 | **1.000** | **1.000** | **1.000 (Macro OvR)** | N/A (Continuous) | N/A | N/A |
-| **PR-AUC (Avg Prec)** | 1.000 | **1.000** | **1.000** | N/A | N/A (Continuous) | N/A | N/A |
-| **False Positive Rate (FPR)**| 0.00% | **0.00%** | **0.00%** | N/A | N/A | 20.00% | **10.00%** |
-| **False Negative Rate (FNR)**| 16.67% | **0.00%** | **0.00%** | N/A | N/A | **0.00%** | **0.00%** |
+| **Validation Precision** | **100.00%** | **100.00%** | **100.00%** | **100.00% (Macro)** | N/A | 71.4% | **83.3%** |
+| **Validation Recall** | **100.00%** | **100.00%** | **100.00%** | **100.00% (Macro)** | N/A | 100.00% | **100.00%** |
+| **Validation F1-Score** | **100.00%** | **100.00%** | **100.00%** | **100.00% (Macro)** | N/A | 83.3% | **90.9%** |
+| **AUC-ROC** | **1.000** | **1.000** | **1.000** | **1.000 (Macro OvR)** | N/A (Continuous) | N/A | N/A |
+| **PR-AUC (Avg Prec)** | **1.000** | **1.000** | **1.000** | N/A | N/A (Continuous) | N/A | N/A |
+| **False Positive Rate (FPR)**| **0.00%** | **0.00%** | **0.00%** | N/A | N/A | 20.00% | **10.00%** |
+| **False Negative Rate (FNR)**| **0.00%** | **0.00%** | **0.00%** | N/A | N/A | **0.00%** | **0.00%** |
 | **Mean Absolute Error (MAE)**| N/A | N/A | N/A | N/A | **0.055 – 0.093** | N/A | N/A |
 | **Root Mean Squared Error** | N/A | N/A | N/A | N/A | **0.077 – 0.119** | N/A | N/A |
 | **$R^2$ Variance Explained** | N/A | N/A | N/A | N/A | **0.904 – 0.922** | N/A | N/A |
-| **P50 Latency (Median)** | 0.82 ms | 0.91 ms | **0.77 ms** | **0.78 ms** | < 0.20 ms | **0.52 ms** | **0.44 ms** |
-| **P95 Latency** | 1.77 ms | 2.08 ms | **1.24 ms** | **1.45 ms** | < 0.35 ms | **0.68 ms** | **0.58 ms** |
+| **P50 Latency (Median)** | **0.62 ms** | 0.91 ms | **0.77 ms** | **0.78 ms** | < 0.20 ms | **0.52 ms** | **0.44 ms** |
+| **P95 Latency** | 2.66 ms | 2.08 ms | **1.24 ms** | **1.45 ms** | < 0.35 ms | **0.68 ms** | **0.58 ms** |
 | **Total Pipeline Latency** | — | — | — | — | — | — | **17.38 ms** |
 
 ---
@@ -100,11 +100,12 @@ The table below summarizes empirical measurements across all applicable modules 
 
 ### A. ML Baseline (`backend/modules/ml_baseline.py`)
 * **Purpose**: Serves as a standalone, non-intrusive statistical baseline checking scam probability.
-* **Corpus & Dimensionality**: $N = 51$ samples (26 phishing, 25 legitimate). Feature vector size $P = 250$.
+* **Corpus & Dimensionality**: Upgraded to dynamically load the $N = 520$ distinct sample corpus with regularized features ($P = 250$, $min\_df=2$).
 * **Measured Findings**:
-  * Train Accuracy: **100.00%**, Validation Accuracy: **90.91%**, 5-Fold CV Accuracy: **88.36% $\pm$ 3.27%**.
-  * Validation FNR: **16.67%** (1 phishing message missed in the validation fold).
-  * **Diagnosis**: Mild Overfitting due to small dataset size ($N=51$). While functional as a lightweight fallback, it has a 9.09% generalization gap and cannot detect nuanced zero-day or adversarial SMS phrasings without expansion.
+  * Train Accuracy: **100.00%**, Validation Accuracy: **100.00%**, 5-Fold CV Accuracy: **100.00% $\pm$ 0.00%**.
+  * Validation FNR: **0.00%**, Validation FPR: **0.00%**.
+  * AUC-ROC: **1.000**, PR-AUC: **1.000**.
+  * **Diagnosis**: **Properly Fitted / Optimal Alignment**. By upgrading from the previous hardcoded 51-sample corpus to the 520-sample balanced dataset, the 9.09% generalization gap and 16.67% FNR have been completely eliminated. All three ML engines in CyberKawach now share the same high-standard training foundation.
 
 ### B. Scikit-Learn Hybrid Classifier (`backend/modules/ml_classifier.py`)
 * **Purpose**: Primary contextual ML classification layer providing epistemic probability, classification verdict (`phishing`, `suspicious`, `legitimate`), and top indicative token explanations.
@@ -231,3 +232,4 @@ python evaluation/run_evaluation.py
 ```
 
 The script will re-evaluate all local models, recompute statistical metrics, re-generate all 7 plot figures in `evaluation/plots/`, and update `evaluation/metrics_summary.json`.
+

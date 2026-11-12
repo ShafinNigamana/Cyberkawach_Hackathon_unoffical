@@ -27,7 +27,10 @@ import logging
 import os
 import sys
 import time
+import warnings
 from pathlib import Path
+
+warnings.filterwarnings("ignore")
 
 import matplotlib
 matplotlib.use("Agg")
@@ -70,8 +73,9 @@ logger = logging.getLogger("evaluator")
 def load_all_datasets():
     logger.info("Loading local datasets...")
 
-    # Dataset A: ML Baseline corpus
-    from backend.modules.ml_baseline import _TRAINING_CORPUS as baseline_corpus
+    # Dataset A: ML Baseline corpus (loads extended corpus if available)
+    from backend.modules.ml_baseline import _load_baseline_corpus
+    baseline_corpus = _load_baseline_corpus()
     baseline_texts = [row[0] for row in baseline_corpus]
     baseline_labels = np.array([row[1] for row in baseline_corpus])
 
@@ -670,3 +674,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

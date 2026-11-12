@@ -88,6 +88,22 @@ _TRAINING_CORPUS: list[tuple[str, int]] = [
 ]
 
 
+def _load_baseline_corpus() -> list[tuple[str, int]]:
+    """Load extended training corpus from backend/data/ml_classifier_training_corpus.json if available."""
+    try:
+        import json
+        from pathlib import Path
+        corpus_path = Path(__file__).resolve().parent.parent / "data" / "ml_classifier_training_corpus.json"
+        if corpus_path.exists():
+            with open(corpus_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            if data and isinstance(data, list):
+                return [(item["text"], int(item["label"])) for item in data]
+    except Exception as e:
+        logger.debug("Failed loading external corpus for ML baseline: %s", e)
+    return _TRAINING_CORPUS
+
+
 def _init_model():
     """Train the lightweight TF-IDF + Logistic Regression model on startup."""
     global _vectorizer, _classifier, _is_initialized
@@ -98,21 +114,24 @@ def _init_model():
         from sklearn.feature_extraction.text import TfidfVectorizer
         from sklearn.linear_model import LogisticRegression
 
-        texts = [item[0] for item in _TRAINING_CORPUS]
-        labels = [item[1] for item in _TRAINING_CORPUS]
+        corpus = _load_baseline_corpus()
+        texts = [item[0] for item in corpus]
+        labels = [item[1] for item in corpus]
 
         _vectorizer = TfidfVectorizer(
             ngram_range=(1, 2),
-            max_features=800,
+            max_features=400,
+            min_df=2,
             lowercase=True,
             sublinear_tf=True,
+            token_pattern=r"(?u)\b\w+\b|https?://\S+",
         )
         x_train = _vectorizer.fit_transform(texts)
 
-        _classifier = LogisticRegression(C=1.5, max_iter=300, random_state=42, class_weight="balanced")
+        _classifier = LogisticRegression(C=2.0, max_iter=500, random_state=42, class_weight="balanced")
         _classifier.fit(x_train, labels)
         _is_initialized = True
-        logger.info("ML Baseline model successfully initialized and calibrated with %d samples.", len(_TRAINING_CORPUS))
+        logger.info("ML Baseline model successfully initialized and calibrated with %d samples.", len(corpus))
     except Exception as e:
         logger.warning("Could not initialize ML baseline model: %s", e)
         _is_initialized = False
